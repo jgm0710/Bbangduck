@@ -35,5 +35,5 @@
 - Spring Security
     - Application 의 보안(인증, 권한, 인가 등)을 담당하는 스프링 하위 프레임워크
     
-- QueryDsl
+- Querydsl
     - Jpa 를 사용한 동적 쿼리를 보다 쉽게 사용하기 위한 의존성
