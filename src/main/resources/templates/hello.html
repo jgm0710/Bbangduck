@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello Project</title>
+</head>
+<body>
+<p>
+    <span>Test project title : </span>
+    <span th:text="*{title}"></span>
+</p>
+<p>
+    <span>Test project content : </span>
+    <span th:text="*{content}"></span>
+</p>
+<p id="api-string">
+    <span>Test hello api string : </span>
+</p>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            method: "GET",
+            url: "/api/hello",
+            statusCode: {
+                200: function (response) {
+                    $('#api-string').append(
+                        `
+                        <span>${response}</span>
+                        `
+                    )
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
