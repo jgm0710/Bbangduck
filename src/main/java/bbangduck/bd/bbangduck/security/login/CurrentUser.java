@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.security;
+package bbangduck.bd.bbangduck.security.login;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

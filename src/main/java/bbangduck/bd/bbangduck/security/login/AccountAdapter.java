@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.security;
+package bbangduck.bd.bbangduck.security.login;
 
 import bbangduck.bd.bbangduck.member.Member;
 import bbangduck.bd.bbangduck.member.MemberRole;

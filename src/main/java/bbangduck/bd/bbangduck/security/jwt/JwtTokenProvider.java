@@ -1,5 +1,6 @@
-package bbangduck.bd.bbangduck.security;
+package bbangduck.bd.bbangduck.security.jwt;
 
+import bbangduck.bd.bbangduck.security.login.LoginService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -20,13 +21,13 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
     private String secretKey = "temp";
-    private final SecurityProperties securityProperties;
+    private final JwtSecurityProperties jwtSecurityProperties;
     private final LoginService loginService;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
     protected void init() {
-        this.secretKey = Base64.getEncoder().encodeToString(securityProperties.getSecretKey().getBytes());
+        this.secretKey = Base64.getEncoder().encodeToString(jwtSecurityProperties.getSecretKey().getBytes());
     }
 
     // JWT 토큰 생성
@@ -37,7 +38,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + securityProperties.getTokenValidTime())) // set Expire Time
+                .setExpiration(new Date(now.getTime() + jwtSecurityProperties.getTokenValidTime())) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
@@ -56,7 +57,7 @@ public class JwtTokenProvider {
 
     // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(securityProperties.getJwtTokenHeader());
+        return request.getHeader(jwtSecurityProperties.getJwtTokenHeader());
     }
 
     // 토큰의 유효성 + 만료일자 확인
@@ -69,7 +70,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public SecurityProperties getSecurityProperties() {
-        return securityProperties;
+    public JwtSecurityProperties getJwtSecurityProperties() {
+        return jwtSecurityProperties;
     }
 }

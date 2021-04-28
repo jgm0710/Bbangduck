@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.security;
+package bbangduck.bd.bbangduck.security.jwt;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("security-jwt")
 @Getter
 @Setter
-public class SecurityProperties {
+public class JwtSecurityProperties {
 
     private long tokenValidSecond;
     private String secretKey;

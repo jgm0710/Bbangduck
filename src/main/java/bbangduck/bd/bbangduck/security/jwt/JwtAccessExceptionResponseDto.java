@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.security;
+package bbangduck.bd.bbangduck.security.jwt;
 
 
 import lombok.Getter;
