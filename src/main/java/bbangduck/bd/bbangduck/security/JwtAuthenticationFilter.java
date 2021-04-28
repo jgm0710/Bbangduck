@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@Component
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
@@ -27,7 +26,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     private final ObjectMapper objectMapper;
 
-    @Autowired
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper) {
         super(authenticationManager);
         this.jwtTokenProvider = jwtTokenProvider;

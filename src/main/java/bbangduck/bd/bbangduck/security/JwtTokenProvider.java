@@ -21,7 +21,7 @@ import java.util.List;
 public class JwtTokenProvider {
     private String secretKey = "temp";
     private final SecurityProperties securityProperties;
-    private final SignInService signInService;
+    private final LoginService loginService;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = signInService.loadUserByUsername(this.getEmail(token));
+        UserDetails userDetails = loginService.loadUserByUsername(this.getEmail(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

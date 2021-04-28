@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.security.exception;
 
+import bbangduck.bd.bbangduck.common.ExceptionStatus;
 import bbangduck.bd.bbangduck.member.social.SocialUserInfoDto;
-import bbangduck.bd.bbangduck.member.social.SocialType;
 import lombok.Getter;
 
 @Getter
@@ -13,10 +13,10 @@ public class SocialUserNotFoundException extends RuntimeException {
 
     private String viewName;
 
-    public SocialUserNotFoundException(ExceptionStatus exceptionStatus, SocialUserInfoDto socialUserInfoDto, String viewName) {
+    public SocialUserNotFoundException(ExceptionStatus exceptionStatus, SocialUserInfoDto socialUserInfoDto) {
         super(exceptionStatus.getMessage());
         this.status = exceptionStatus.getStatus();
         this.socialUserInfoDto = socialUserInfoDto;
-        this.viewName = viewName;
+        this.viewName = "social-sign-in-fail";
     }
 }

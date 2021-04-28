@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +18,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
     private final PasswordEncoder passwordEncoder;
 
-    private final SignInService signInService;
+    private final LoginService loginService;
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    private final ObjectMapper objectMapper;
 
     @Bean
     @Override
@@ -49,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().permitAll()   //모든 요청 허용
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), jwtTokenProvider, objectMapper), UsernamePasswordAuthenticationFilter.class)
         ;
 
     }
@@ -57,6 +60,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        super.configure(auth);
-        auth.userDetailsService(signInService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(loginService).passwordEncoder(passwordEncoder);
     }
 }

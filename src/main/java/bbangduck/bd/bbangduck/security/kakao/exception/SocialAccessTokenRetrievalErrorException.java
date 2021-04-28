@@ -1,9 +1,21 @@
 package bbangduck.bd.bbangduck.security.kakao.exception;
 
+import bbangduck.bd.bbangduck.common.ExceptionStatus;
 import bbangduck.bd.bbangduck.member.social.SocialType;
+import bbangduck.bd.bbangduck.member.social.SocialUserInfoDto;
+import bbangduck.bd.bbangduck.security.exception.SocialUserNotFoundException;
 
-public class SocialAccessTokenRetrievalErrorException extends RuntimeException {
+public class SocialAccessTokenRetrievalErrorException extends SocialUserNotFoundException {
+
     public SocialAccessTokenRetrievalErrorException(SocialType socialType) {
-        super("소셜 액세스 토큰을 검색하는 중에 오류가 발생했습니다. SocialType : " + socialType.name());
+        super(
+                ExceptionStatus.SOCIAL_ACCESS_TOKEN_RETRIEVAL_ERROR,
+                SocialUserInfoDto.builder()
+                        .socialId(null)
+                        .email(null)
+                        .nickname(null)
+                        .socialType(socialType)
+                        .build()
+        );
     }
 }

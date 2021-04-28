@@ -39,30 +39,17 @@ public class SocialSignInApiController {
             @RequestParam("code") String code,
             @RequestParam("state") String state
     ) {
-//        if (state.equals(kakaoLoginProperties.getAuthorizeState())) {
-//            KakaoOauth2TokenDto kakaoOauth2TokenDto = socialSignInService.getTokensFromKakao(code);
-//            log.debug("kakaoOauth2TokenDto = " + kakaoOauth2TokenDto.toString());
-//
-//            return ResponseEntity.ok(kakaoOauth2TokenDto);
-//        } else {
-//            log.debug("Authorize state wrong.");
-//            return (ResponseEntity<KakaoOauth2TokenDto>) ResponseEntity.badRequest();
-//        }
-        try {
-            KakaoOauth2TokenDto kakaoOauth2TokenDto = socialSignInService.getTokensFromKakao(code, state);
-            log.debug("kakaoOauth2TokenDto = " + kakaoOauth2TokenDto.toString());
 
-            KakaoUserInfoInterfaceDto kakaoUserInfoDto = socialSignInService.getUserInfoFromKakao(kakaoOauth2TokenDto);
-            log.debug("kakaoUserInfoDto = " + kakaoUserInfoDto);
+        KakaoOauth2TokenDto kakaoOauth2TokenDto = socialSignInService.getTokensFromKakao(code, state);
+        log.debug("kakaoOauth2TokenDto = " + kakaoOauth2TokenDto.toString());
 
-            Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfoDto.getId())
-                    .orElseThrow(() -> new KakaoUserNotFoundException(SocialUserInfoDto.createSocialRegisterDto(kakaoUserInfoDto)));
+        KakaoUserInfoInterfaceDto kakaoUserInfoDto = socialSignInService.getUserInfoFromKakao(kakaoOauth2TokenDto);
+        log.debug("kakaoUserInfoDto = " + kakaoUserInfoDto);
 
-            return null;
-        } catch (SocialSignInStateMismatchException e) {
-            return null;
-        } catch (SocialAccessTokenRetrievalErrorException e) {
-            return null;
-        }
+        Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfoDto.getId())
+                .orElseThrow(() -> new KakaoUserNotFoundException(SocialUserInfoDto.createSocialRegisterDto(kakaoUserInfoDto)));
+
+        return null;
+
     }
 }
