@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
@@ -16,6 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final SignInService signInService;
 
     @Bean
     @Override
@@ -48,4 +54,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        super.configure(auth);
+        auth.userDetailsService(signInService).passwordEncoder(passwordEncoder);
+    }
 }
