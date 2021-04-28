@@ -57,6 +57,22 @@ dependencies {
     //asciidoctor 추가
     // .adoc 파일에서 사용할 스니펫 속성이 자동으로 구성되어 build/generated-snippets 을 가리키게 됩니다
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.5.RELEASE'
+
+    //@ConfigurationProperties 를 사용하기 위한 위존성 추가
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    // 로그인 기능 구현을 위한 spring security oauth2 의존성 추가
+    // https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2
+    implementation group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.4.0.RELEASE'
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient'
+
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+
+
+
 }
 
 // asciidoctor 플러그인 설정 시작
