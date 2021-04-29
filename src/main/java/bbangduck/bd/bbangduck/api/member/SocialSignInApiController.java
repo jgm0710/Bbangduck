@@ -1,24 +1,27 @@
-package bbangduck.bd.bbangduck.api;
+package bbangduck.bd.bbangduck.api.member;
 
+import bbangduck.bd.bbangduck.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.Member;
 import bbangduck.bd.bbangduck.member.MemberQueryRepository;
+import bbangduck.bd.bbangduck.member.SignInService;
+import bbangduck.bd.bbangduck.member.dto.TokenDto;
 import bbangduck.bd.bbangduck.member.social.SocialUserInfoDto;
 import bbangduck.bd.bbangduck.member.social.SocialType;
 import bbangduck.bd.bbangduck.security.kakao.dto.KakaoUserInfoInterfaceDto;
 import bbangduck.bd.bbangduck.member.social.SocialSignInService;
-import bbangduck.bd.bbangduck.member.social.exception.SocialSignInStateMismatchException;
 import bbangduck.bd.bbangduck.security.kakao.KakaoOauth2TokenDto;
-import bbangduck.bd.bbangduck.security.kakao.exception.KakaoUserNotFoundException;
-import bbangduck.bd.bbangduck.security.kakao.exception.SocialAccessTokenRetrievalErrorException;
+import bbangduck.bd.bbangduck.security.kakao.exception.KakaoAuthFailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static bbangduck.bd.bbangduck.common.ModelAndViewAttributeName.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,13 +32,15 @@ public class SocialSignInApiController {
 
     private final MemberQueryRepository memberQueryRepository;
 
+    private final SignInService signInService;
+
     @GetMapping("/api/auth/kakao/sign-in")
     public void kakaoLoginRedirect(HttpServletResponse response) throws IOException {
         response.sendRedirect(socialSignInService.getKakaoAuthorizationUrl());
     }
 
     @GetMapping("/api/auth/kakao/sign-in/callback")
-    public ResponseEntity<KakaoOauth2TokenDto> kakaoLoginCallback(
+    public ModelAndView kakaoLoginCallback(
             @RequestParam("code") String code,
             @RequestParam("state") String state
     ) {
@@ -47,9 +52,19 @@ public class SocialSignInApiController {
         log.debug("kakaoUserInfoDto = " + kakaoUserInfoDto);
 
         Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfoDto.getId())
-                .orElseThrow(() -> new KakaoUserNotFoundException(SocialUserInfoDto.createSocialRegisterDto(kakaoUserInfoDto)));
+                .orElseThrow(() -> new KakaoAuthFailException(SocialUserInfoDto.createSocialRegisterDto(kakaoUserInfoDto)));
 
-        return null;
+        TokenDto tokenDto = signInService.signIn(findMember.getId());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("social-sign-in-result");
+        modelAndView.addObject(STATUS.name(), ResponseStatus.KAKAO_SIGN_IN_SUCCESS.getStatus());
+        modelAndView.addObject(MESSAGE.name(), ResponseStatus.KAKAO_SIGN_IN_SUCCESS.getMessage());
+        modelAndView.addObject(DATA.name(), tokenDto);
+
+        log.info("카카오 로그인에 성공했습니다. 회원 ID : {}", findMember.getId());
+
+        return modelAndView;
 
     }
 }

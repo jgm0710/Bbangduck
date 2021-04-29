@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -49,5 +50,9 @@ public class Member extends BaseEntityDateTime {
     @CollectionTable(name = "member_role", joinColumns = @JoinColumn(name = "member_id"))
     @Enumerated(EnumType.STRING)
     private Set<MemberRole> roles = new HashSet<>();
+
+    public List<String> getRoleNameList() {
+        return this.roles.stream().map(MemberRole::getRoleName).collect(Collectors.toList());
+    }
 
 }

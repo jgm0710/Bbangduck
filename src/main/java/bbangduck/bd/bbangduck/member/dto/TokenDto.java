@@ -1,18 +1,23 @@
-package bbangduck.bd.bbangduck.member;
+package bbangduck.bd.bbangduck.member.dto;
 
 import lombok.*;
 
-import javax.persistence.Embeddable;
 import java.time.LocalDateTime;
 
-@Embeddable
-@Getter
+@Data
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RefreshInfo {
+public class TokenDto {
+
+    private Long memberId;
+
+    private String accessToken;
+
+    private long accessTokenValidSecond;
 
     private String refreshToken;
 
     private LocalDateTime refreshTokenExpiredDate;
+
 }

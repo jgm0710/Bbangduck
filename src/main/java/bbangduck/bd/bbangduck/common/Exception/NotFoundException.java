@@ -1,13 +1,13 @@
 package bbangduck.bd.bbangduck.common.Exception;
 
-import bbangduck.bd.bbangduck.common.ExceptionStatus;
+import bbangduck.bd.bbangduck.common.ResponseStatus;
 
 public class NotFoundException extends StatusException{
-    public NotFoundException(ExceptionStatus exceptionStatus) {
-        super(exceptionStatus);
+    public NotFoundException(ResponseStatus responseStatus) {
+        super(responseStatus);
     }
 
-    public NotFoundException(ExceptionStatus exceptionStatus, String message) {
-        super(exceptionStatus, message);
+    public NotFoundException(ResponseStatus responseStatus, String message) {
+        super(responseStatus, message);
     }
 }
