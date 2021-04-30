@@ -18,6 +18,9 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
+/**
+ * 기본 Controller Test 상속
+ */
 @ExtendWith(value = {SpringExtension.class, RestDocumentationExtension.class})
 @Disabled
 public abstract class BaseControllerTest extends BaseTest{

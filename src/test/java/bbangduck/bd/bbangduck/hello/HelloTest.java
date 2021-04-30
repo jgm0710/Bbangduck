@@ -1,5 +1,7 @@
 package bbangduck.bd.bbangduck.hello;
 
+import bbangduck.bd.bbangduck.domain.hello.Hello;
+import bbangduck.bd.bbangduck.domain.hello.QHello;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
