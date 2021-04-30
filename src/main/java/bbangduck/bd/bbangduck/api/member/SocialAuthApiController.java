@@ -3,7 +3,7 @@ package bbangduck.bd.bbangduck.api.member;
 import bbangduck.bd.bbangduck.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.Member;
 import bbangduck.bd.bbangduck.member.MemberQueryRepository;
-import bbangduck.bd.bbangduck.member.SignInService;
+import bbangduck.bd.bbangduck.member.AuthenticationService;
 import bbangduck.bd.bbangduck.member.dto.TokenDto;
 import bbangduck.bd.bbangduck.member.social.SocialUserInfoDto;
 import bbangduck.bd.bbangduck.member.social.SocialType;
@@ -26,13 +26,13 @@ import static bbangduck.bd.bbangduck.common.ModelAndViewAttributeName.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class SocialSignInApiController {
+public class SocialAuthApiController {
 
     private final SocialSignInService socialSignInService;
 
     private final MemberQueryRepository memberQueryRepository;
 
-    private final SignInService signInService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/api/auth/kakao/sign-in")
     public void kakaoLoginRedirect(HttpServletResponse response) throws IOException {
@@ -54,7 +54,7 @@ public class SocialSignInApiController {
         Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfoDto.getId())
                 .orElseThrow(() -> new KakaoAuthFailException(SocialUserInfoDto.createSocialRegisterDto(kakaoUserInfoDto)));
 
-        TokenDto tokenDto = signInService.signIn(findMember.getId());
+        TokenDto tokenDto = authenticationService.signIn(findMember.getId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("social-sign-in-result");

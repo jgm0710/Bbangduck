@@ -1,7 +1,9 @@
 package bbangduck.bd.bbangduck.member;
 
 import bbangduck.bd.bbangduck.common.BaseEntityDateTime;
+import bbangduck.bd.bbangduck.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.member.social.SocialAccount;
+import bbangduck.bd.bbangduck.security.jwt.JwtSecurityProperties;
 import lombok.*;
 import lombok.Builder.Default;
 
@@ -50,6 +52,58 @@ public class Member extends BaseEntityDateTime {
     @CollectionTable(name = "member_role", joinColumns = @JoinColumn(name = "member_id"))
     @Enumerated(EnumType.STRING)
     private Set<MemberRole> roles = new HashSet<>();
+
+
+//.id()
+//.email()
+//.password()
+//.profileImage()
+//.socialAccountList()
+//.nickname()
+//.simpleIntroduction()
+//.reviewCount()
+//.refreshInfo()
+//.roles()
+
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+//                ", profileImage=" + profileImage +
+//                ", socialAccountList=" + socialAccountList +
+                ", nickname='" + nickname + '\'' +
+                ", simpleIntroduction='" + simpleIntroduction + '\'' +
+                ", reviewCount=" + reviewCount +
+//                ", refreshInfo=" + refreshInfo +
+                ", roles=" + roles +
+                '}';
+    }
+
+    public static Member signUp(MemberSignUpDto signUpDto, JwtSecurityProperties jwtSecurityProperties) {
+        Member member = Member.builder()
+                .email(signUpDto.getEmail())
+                .password(signUpDto.getPassword())
+                .profileImage(null)
+                .nickname(signUpDto.getNickname())
+                .simpleIntroduction(null)
+                .reviewCount(0)
+                .refreshInfo(RefreshInfo.init(jwtSecurityProperties))
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        SocialAccount socialAccount = SocialAccount.builder()
+                .socialId(signUpDto.getSocialId())
+                .socialType(signUpDto.getSocialType())
+                .member(member)
+                .build();
+
+        member.socialAccountList.add(socialAccount);
+
+        return member;
+    }
 
     public List<String> getRoleNameList() {
         return this.roles.stream().map(MemberRole::getRoleName).collect(Collectors.toList());

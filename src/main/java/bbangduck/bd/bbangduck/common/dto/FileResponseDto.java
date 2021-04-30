@@ -1,23 +1,17 @@
-package bbangduck.bd.bbangduck.member;
+package bbangduck.bd.bbangduck.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
-@Entity
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberProfileImage {
+public class FileResponseDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_profile_image_id")
-    private Long id;
+    private Long fileId;
 
     private String fileName;
 
@@ -31,8 +25,11 @@ public class MemberProfileImage {
 
     private String fileSize;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
-
+//.fileId()
+//.fileName()
+//.fileStoragePath()
+//.fileDownloadUrl()
+//.fileThumbnailDownloadUrl()
+//.fileType()
+//.fileSize()
 }

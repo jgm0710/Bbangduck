@@ -2,8 +2,7 @@ package bbangduck.bd.bbangduck.security;
 
 import bbangduck.bd.bbangduck.security.jwt.JwtAuthenticationFilter;
 import bbangduck.bd.bbangduck.security.jwt.JwtTokenProvider;
-import bbangduck.bd.bbangduck.security.login.LoginService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import bbangduck.bd.bbangduck.security.login.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +22,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final LoginService loginService;
+    private final AccountService accountService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -62,6 +61,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        super.configure(auth);
-        auth.userDetailsService(loginService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(accountService).passwordEncoder(passwordEncoder);
     }
 }

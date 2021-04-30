@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.member;
 
+import bbangduck.bd.bbangduck.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.member.dto.TokenDto;
 import bbangduck.bd.bbangduck.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.security.jwt.JwtSecurityProperties;
@@ -7,11 +8,13 @@ import bbangduck.bd.bbangduck.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SignInService {
+@Transactional(readOnly = true)
+public class AuthenticationService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -35,4 +38,13 @@ public class SignInService {
 
         return tokenDto;
     }
+
+    @Transactional
+    public Long signUp(MemberSignUpDto signUpDto) {
+        Member signUpMember = Member.signUp(signUpDto, jwtSecurityProperties);
+        Member savedMember = memberRepository.save(signUpMember);
+        log.debug("savedMember : {}", savedMember);
+        return savedMember.getId();
+    }
+
 }
