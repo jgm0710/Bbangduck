@@ -5,18 +5,17 @@ spring:
     url: jdbc:mysql://localhost:3306/bbangduck?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-    jpa:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
       hibernate:
-        ddl-auto: create
-      properties:
-        hibernate:
-          format_sql: true  #Jpa show-sql 시 나오는 쿼리를 정렬해서 출력
-          default_batch_fetch_size: 500  #Lazy 로딩 시 한 번에 가져올 개수 지정.
+        format_sql: true  #Jpa show-sql 시 나오는 쿼리를 정렬해서 출력
+        default_batch_fetch_size: 500  #Lazy 로딩 시 한 번에 가져올 개수 지정.
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: false
-
 
 logging:
   level:

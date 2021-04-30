@@ -444,7 +444,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#resources">리소스</a>
 <ul class="sectlevel1">
-<li><a href="#resources-test">Test 리소스</a></li>
+<li><a href="#resources-test">Test 리소스</a>
+<ul class="sectlevel2">
+<li><a href="#resources-test_curl_request">Example request</a></li>
+<li><a href="#resources-test_http_response">Example response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -490,15 +495,38 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>operation::hello[snippets='curl-request,http-response']</p>
+<div class="sect2">
+<h3 id="resources-test_curl_request"><a class="link" href="#resources-test_curl_request">Example request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/hello' -i -X GET</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resources-test_http_response"><a class="link" href="#resources-test_http_response">Example response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 18
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+
+hello api project.</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-28 23:02:17 KST
+Last updated 2021-04-29 19:00:57 KST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">

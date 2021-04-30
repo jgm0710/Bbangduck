@@ -27,7 +27,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final ObjectMapper objectMapper;
 
     @Bean
     @Override
@@ -55,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().permitAll()   //모든 요청 허용
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(authenticationManagerBean(), jwtTokenProvider, objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
         ;
 
     }

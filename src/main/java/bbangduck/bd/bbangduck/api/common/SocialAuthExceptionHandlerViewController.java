@@ -19,9 +19,9 @@ public class SocialAuthExceptionHandlerViewController {
     public ModelAndView socialAuthFailExceptionHandler(SocialAuthFailException exception) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName(exception.getViewName());
-        modelAndView.addObject(STATUS.name(), exception.getStatus());
-        modelAndView.addObject(MESSAGE.name(), exception.getMessage());
-        modelAndView.addObject(DATA.name(), exception.getSocialUserInfoDto());
+        modelAndView.addObject(STATUS.getAttributeName(), exception.getStatus());
+        modelAndView.addObject(MESSAGE.getAttributeName(), exception.getMessage());
+        modelAndView.addObject(DATA.getAttributeName(), exception.getSocialUserInfoDto());
         log.info(exception.toString());
 
         return modelAndView;
