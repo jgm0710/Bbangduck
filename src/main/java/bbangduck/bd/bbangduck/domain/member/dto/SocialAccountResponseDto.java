@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.dto;
 
-import bbangduck.bd.bbangduck.domain.member.model.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

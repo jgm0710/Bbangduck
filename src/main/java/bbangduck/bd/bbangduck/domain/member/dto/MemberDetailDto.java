@@ -2,7 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
-import bbangduck.bd.bbangduck.global.common.dto.FileResponseDto;
+import bbangduck.bd.bbangduck.global.common.FileResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,13 +42,8 @@ public class MemberDetailDto {
         FileResponseDto profileImageResponseDto = null;
         if (member.getProfileImage() != null) {
             profileImageResponseDto = FileResponseDto.builder()
-                    .fileId(member.getProfileImage().getId())
-                    .fileName(member.getProfileImage().getFileName())
-                    .fileStoragePath(member.getProfileImage().getFileStoragePath())
                     .fileDownloadUrl(member.getProfileImage().getFileDownloadUrl())
                     .fileThumbnailDownloadUrl(member.getProfileImage().getFileThumbnailDownloadUrl())
-                    .fileType(member.getProfileImage().getFileType())
-                    .fileSize(member.getProfileImage().getFileSize())
                     .build();
         }
 

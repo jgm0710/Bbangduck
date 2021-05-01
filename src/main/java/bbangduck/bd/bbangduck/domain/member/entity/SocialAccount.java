@@ -1,7 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
-import bbangduck.bd.bbangduck.domain.member.model.SocialType;
-import bbangduck.bd.bbangduck.global.common.util.BaseEntityDateTime;
+import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

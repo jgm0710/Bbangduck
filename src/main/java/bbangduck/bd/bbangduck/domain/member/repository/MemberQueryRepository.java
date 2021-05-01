@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.model.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
