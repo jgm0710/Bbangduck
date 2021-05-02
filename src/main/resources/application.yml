@@ -5,13 +5,13 @@ spring:
     url: jdbc:mysql://localhost:3306/bbangduck?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-    jpa:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
       hibernate:
-        ddl-auto: create
-      properties:
-        hibernate:
-          format_sql: true  #Jpa show-sql 시 나오는 쿼리를 정렬해서 출력
-          default_batch_fetch_size: 500  #Lazy 로딩 시 한 번에 가져올 개수 지정.
+        format_sql: true  #Jpa show-sql 시 나오는 쿼리를 정렬해서 출력
+        default_batch_fetch_size: 500  #Lazy 로딩 시 한 번에 가져올 개수 지정.
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
@@ -23,3 +23,21 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.springframework.security: debug #spring security에 대해 어떤 메세지가 출력이 되는지 확인
+
+kakao:
+  login:
+    properties:
+      native-app-key: 51a703abe9cf14386623caad48d40827
+      rest-api-key: d053f45a470a5203cc53bdfb65b69c03
+      java-script-key: d8952e843acd3811283f117ae4669d75
+      admin-key: 1fddc4fda55b89bc7ccfc287cb305db5
+      redirect-uri: http://localhost:8080/api/auth/kakao/sign-in/callback
+      client-secret: R5IwQ9giaSwMLQ7Ta4gvneADq2herZzg
+      authorize-state: bbangduck7
+      scope: profile account_email
+
+security-jwt:
+  jwt-token-header: X-AUTH-TOKEN
+  refresh-token-expired-date: 14
+  secret-key: bbangduck-jwt-secret-key
+  token-valid-second: 30000

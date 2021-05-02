@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.hello;
+package bbangduck.bd.bbangduck.domain.hello;
 
 import lombok.*;
 
