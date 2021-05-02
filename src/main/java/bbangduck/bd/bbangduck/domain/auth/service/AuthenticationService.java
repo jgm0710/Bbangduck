@@ -12,6 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원 인증에 대한 비즈니스 로직을 처리하기 위한 Service
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -42,8 +47,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public Long signUp(MemberSignUpDto signUpDto) {
-        Member signUpMember = Member.signUp(signUpDto, jwtSecurityProperties);
+    public Long signUp(Member signUpMember) {
         Member savedMember = memberRepository.save(signUpMember);
         log.debug("savedMember : {}", savedMember);
         return savedMember.getId();

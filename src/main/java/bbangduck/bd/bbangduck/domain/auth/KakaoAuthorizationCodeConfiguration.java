@@ -11,6 +11,11 @@ import org.springframework.util.MultiValueMap;
 
 import java.net.URI;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 카카오 로그인 요청 시 인증 토큰 조회 요청, 카카오 회원 정보 요청 시 필요한 Body, Header 에 대한 정보를 반환하기 위한 설정
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -18,9 +23,9 @@ public class KakaoAuthorizationCodeConfiguration {
 
     private final KakaoLoginProperties kakaoLoginProperties;
 
-    private URI kakaoGetTokenUri = URI.create("https://kauth.kakao.com/oauth/token");
+    private final URI kakaoGetTokenUri = URI.create("https://kauth.kakao.com/oauth/token");
 
-    private URI kakaoGetUserInfoUri = URI.create("https://kapi.kakao.com/v2/user/me");
+    private final URI kakaoGetUserInfoUri = URI.create("https://kapi.kakao.com/v2/user/me");
 
     public URI getKakaoGetTokenUri() {
         return this.kakaoGetTokenUri;
@@ -30,7 +35,7 @@ public class KakaoAuthorizationCodeConfiguration {
         return this.kakaoGetUserInfoUri;
     }
 
-    public MultiValueMap<String, String> getAccessTokenReqeustBody(String authorizationCode) {
+    public MultiValueMap<String, String> getAccessTokenRequestBody(String authorizationCode) {
         LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grant_type", "authorization_code");
         formData.add("client_id", kakaoLoginProperties.getRestApiKey());
@@ -48,7 +53,7 @@ public class KakaoAuthorizationCodeConfiguration {
         return formData;
     }
 
-    public MultiValueMap<String, String> getUserInfoRequestHeaher(String accessToken) {
+    public MultiValueMap<String, String> getUserInfoRequestHeader(String accessToken) {
         LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         formData.add("Authorization", "Bearer " + accessToken);

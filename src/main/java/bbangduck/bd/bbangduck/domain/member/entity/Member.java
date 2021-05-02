@@ -13,6 +13,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원 Entity <br>
+ * Database 의 회원 테이블과 연결
+ */
 @Entity
 @Getter
 @Builder
@@ -34,11 +40,11 @@ public class Member extends BaseEntityDateTime {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @Default
-    private List<SocialAccount> socialAccountList = new ArrayList<>();
+    private List<SocialAccount> socialAccounts = new ArrayList<>();
 
     private String nickname;
 
-    private String simpleIntroduction;
+    private String description;
 
     private int reviewCount;
 
@@ -73,38 +79,19 @@ public class Member extends BaseEntityDateTime {
 //                ", profileImage=" + profileImage +
 //                ", socialAccountList=" + socialAccountList +
                 ", nickname='" + nickname + '\'' +
-                ", simpleIntroduction='" + simpleIntroduction + '\'' +
+                ", simpleIntroduction='" + description + '\'' +
                 ", reviewCount=" + reviewCount +
 //                ", refreshInfo=" + refreshInfo +
                 ", roles=" + roles +
                 '}';
     }
 
-    public static Member signUp(MemberSignUpDto signUpDto, JwtSecurityProperties jwtSecurityProperties) {
-        Member member = Member.builder()
-                .email(signUpDto.getEmail())
-                .password(signUpDto.getPassword())
-                .profileImage(null)
-                .nickname(signUpDto.getNickname())
-                .simpleIntroduction(null)
-                .reviewCount(0)
-                .refreshInfo(RefreshInfo.init(jwtSecurityProperties))
-                .roles(Set.of(MemberRole.USER))
-                .build();
-
-        SocialAccount socialAccount = SocialAccount.builder()
-                .socialId(signUpDto.getSocialId())
-                .socialType(signUpDto.getSocialType())
-                .member(member)
-                .build();
-
-        member.socialAccountList.add(socialAccount);
-
-        return member;
-    }
-
     public List<String> getRoleNameList() {
         return this.roles.stream().map(MemberRole::getRoleName).collect(Collectors.toList());
     }
 
+    public void addSocialAccount(SocialAccount socialAccount) {
+        this.socialAccounts.add(socialAccount);
+        socialAccount.setMember(this);
+    }
 }

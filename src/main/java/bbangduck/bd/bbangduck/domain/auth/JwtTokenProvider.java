@@ -18,6 +18,13 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원 인증에 대한 처리를 JWT Token 을 통해 하기 위해 구현된 Provider <br>
+ * 토큰 생성, Request Header 의 Token 정보 조회, 토큰 유효성 검증, JWT Token 을 통한 인증 정보 반환, <br>
+ * JWT Token 내의 Email 반환 등의 로직을 담고 있다.
+ */
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {

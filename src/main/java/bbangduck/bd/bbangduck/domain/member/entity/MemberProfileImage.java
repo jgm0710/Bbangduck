@@ -7,6 +7,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원 프로필 이미지 Entity
+ * Database 의 회원 프로필 이미지 테이블과 연결
+ */
 @Entity
 @Getter
 @Builder
@@ -19,20 +25,12 @@ public class MemberProfileImage {
     @Column(name = "member_profile_image_id")
     private Long id;
 
-    private String fileName;
-
-    private String fileStoragePath;
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     private String fileDownloadUrl;
 
     private String fileThumbnailDownloadUrl;
-
-    private String fileType;
-
-    private String fileSize;
-
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
 
 }

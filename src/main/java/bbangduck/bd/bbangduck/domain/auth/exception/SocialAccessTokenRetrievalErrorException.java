@@ -2,19 +2,18 @@ package bbangduck.bd.bbangduck.domain.auth.exception;
 
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import bbangduck.bd.bbangduck.domain.auth.dto.SocialUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.SocialAuthFailResponseAdaptor;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 소셜 API 를 통한 Access Token 요청 중, Authorization Code 를 통한 Access Token 응답에 실패한 경우 발생할 예외
+ */
 public class SocialAccessTokenRetrievalErrorException extends SocialAuthFailException {
-
     public SocialAccessTokenRetrievalErrorException(SocialType socialType) {
         super(
                 ResponseStatus.SOCIAL_ACCESS_TOKEN_RETRIEVAL_ERROR,
-                SocialUserInfoDto.builder()
-                        .socialId(null)
-                        .email(null)
-                        .nickname(null)
-                        .socialType(socialType)
-                        .build()
+                SocialAuthFailResponseAdaptor.exchangeOnlySocialType(socialType)
         );
     }
 }

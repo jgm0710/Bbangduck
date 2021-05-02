@@ -8,9 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoUserInfoDto implements SocialUserInfoInterface {
@@ -18,6 +15,26 @@ public class KakaoUserInfoDto implements SocialUserInfoInterface {
 
     @JsonProperty("kakao_account")
     private KakaoAccountDto kakaoAccount;
+
+    @Builder
+    public KakaoUserInfoDto(String id, String profileNeedsAgreement, String nickname, String thumbnailImageUrl, String profileImageUrl, boolean emailNeedsAgreement, boolean isEmailValid, boolean isEmailVerified, String email) {
+        this.id = id;
+        this.kakaoAccount = KakaoAccountDto.builder()
+                .profileNeedsAgreement(profileNeedsAgreement)
+                .nickname(nickname)
+                .profileImageUrl(profileImageUrl)
+                .thumbnailImageUrl(thumbnailImageUrl)
+                .emailNeedsAgreement(emailNeedsAgreement)
+                .isEmailValid(isEmailValid)
+                .isEmailVerified(isEmailVerified)
+                .email(email)
+                .build();
+    }
+
+    @Override
+    public String getId() {
+        return null;
+    }
 
     @Override
     public SocialType getSocialType() {
@@ -31,6 +48,6 @@ public class KakaoUserInfoDto implements SocialUserInfoInterface {
 
     @Override
     public String getNickname() {
-        return kakaoAccount.getProfile().getNickname();
+        return kakaoAccount.getNickname();
     }
 }

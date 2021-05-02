@@ -2,34 +2,31 @@ package bbangduck.bd.bbangduck.domain.member.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
-import bbangduck.bd.bbangduck.global.common.FileResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원의 상세 정보에 대한 응답 Body 를 담는 Dto
+ */
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberDetailDto {
 
     private Long memberId;
 
     private String email;
 
-    private FileResponseDto profileImage;
-
-    private List<SocialAccountResponseDto> socialAccountList;
-
     private String nickname;
 
-    private String simpleIntroduction;
+    private MemberProfileImageResponseDto profileImage;
+
+    private List<SocialAccountResponseDto> socialAccounts;
+
+    private String description;
 
     private int reviewCount;
 
@@ -37,36 +34,39 @@ public class MemberDetailDto {
 
     private LocalDateTime updateDate;
 
-    public static MemberDetailDto memberToDetail(Member member) {
+    @Builder
+    public MemberDetailDto(Long memberId, String email, MemberProfileImageResponseDto profileImage, List<SocialAccountResponseDto> socialAccounts, String nickname, String description, int reviewCount, LocalDateTime registerDate, LocalDateTime updateDate) {
+        this.memberId = memberId;
+        this.email = email;
+        this.profileImage = profileImage;
+        this.socialAccounts = socialAccounts;
+        this.nickname = nickname;
+        this.description = description;
+        this.reviewCount = reviewCount;
+        this.registerDate = registerDate;
+        this.updateDate = updateDate;
+    }
 
-        FileResponseDto profileImageResponseDto = null;
-        if (member.getProfileImage() != null) {
-            profileImageResponseDto = FileResponseDto.builder()
-                    .fileDownloadUrl(member.getProfileImage().getFileDownloadUrl())
-                    .fileThumbnailDownloadUrl(member.getProfileImage().getFileThumbnailDownloadUrl())
-                    .build();
-        }
-
-        List<SocialAccountResponseDto> socialAccountResponseDtos = new ArrayList<>();
-        for (SocialAccount socialAccount : member.getSocialAccountList()) {
-            socialAccountResponseDtos.add(SocialAccountResponseDto.builder()
-                    .socialAccountId(socialAccount.getId())
-                    .socialId(socialAccount.getSocialId())
-                    .socialType(socialAccount.getSocialType())
-                    .build());
-        }
-
+    public static MemberDetailDto convert(Member member) {
         return MemberDetailDto.builder()
                 .memberId(member.getId())
                 .email(member.getEmail())
-                .profileImage(profileImageResponseDto)
-                .socialAccountList(socialAccountResponseDtos)
+                .profileImage(MemberProfileImageResponseDto.convert(member.getProfileImage()))
+                .socialAccounts(convertSocialAccounts(member.getSocialAccounts()))
                 .nickname(member.getNickname())
-                .simpleIntroduction(member.getSimpleIntroduction())
+                .description(member.getDescription())
                 .reviewCount(member.getReviewCount())
                 .registerDate(member.getRegisterDate())
                 .updateDate(member.getUpdateDate())
                 .build();
+    }
+
+    private static List<SocialAccountResponseDto> convertSocialAccounts(List<SocialAccount> socialAccounts) {
+        List<SocialAccountResponseDto> socialAccountResponseDtos = new ArrayList<>();
+        for (SocialAccount socialAccount : socialAccounts) {
+            socialAccountResponseDtos.add(SocialAccountResponseDto.convert(socialAccount));
+        }
+        return socialAccountResponseDtos;
     }
 
 }

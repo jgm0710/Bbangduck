@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SocialUserInfoDto {
+public class SocialAuthFailResponseAdaptor {
 
     private String socialId;
 
@@ -20,12 +20,21 @@ public class SocialUserInfoDto {
 
     private SocialType socialType;
 
-    public static SocialUserInfoDto createSocialRegisterDto(SocialUserInfoInterface socialUserInfo) {
-        return SocialUserInfoDto.builder()
+    public static SocialAuthFailResponseAdaptor exchange(SocialUserInfoInterface socialUserInfo) {
+        return SocialAuthFailResponseAdaptor.builder()
                 .socialId(socialUserInfo.getId())
                 .email(socialUserInfo.getEmail())
                 .nickname(socialUserInfo.getNickname())
                 .socialType(socialUserInfo.getSocialType())
+                .build();
+    }
+
+    public static SocialAuthFailResponseAdaptor exchangeOnlySocialType(SocialType socialType) {
+        return SocialAuthFailResponseAdaptor.builder()
+                .socialId(null)
+                .email(null)
+                .nickname(null)
+                .socialType(socialType)
                 .build();
     }
 }

@@ -11,6 +11,11 @@ import java.util.Optional;
 import static bbangduck.bd.bbangduck.domain.member.entity.QSocialAccount.socialAccount;
 
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원에 대한 복잡한 쿼리를 구현하기 위한 Repository
+ */
 @Repository
 @RequiredArgsConstructor
 public class MemberQueryRepository {

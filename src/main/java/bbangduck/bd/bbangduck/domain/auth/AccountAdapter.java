@@ -10,6 +10,11 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 인증에 대한 회원 정보를 담기 위한 User 상속 Class
+ */
 public class AccountAdapter extends User {
 
     private Member member;

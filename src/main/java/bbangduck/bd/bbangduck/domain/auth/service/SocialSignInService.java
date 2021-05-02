@@ -17,6 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 소셜 로그인 요청 시 인가 토큰 발급, 인증 토큰 발급, 소셜 회원 정보 조회 등을 처리하기 위한 Service
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -46,7 +51,7 @@ public class SocialSignInService {
         if (state.equals(kakaoLoginProperties.getAuthorizeState())) {
             try {
                 RequestEntity<MultiValueMap<String, String>> requestEntity = new RequestEntity<>(
-                        kakaoConfiguration.getAccessTokenReqeustBody(authorizationCode),
+                        kakaoConfiguration.getAccessTokenRequestBody(authorizationCode),
                         kakaoConfiguration.getAccessTokenRequestHeader(),
                         HttpMethod.POST,
                         kakaoConfiguration.getKakaoGetTokenUri()
@@ -71,7 +76,7 @@ public class SocialSignInService {
     public KakaoUserInfoDto getUserInfoFromKakao(KakaoOauth2TokenDto kakaoOauth2TokenDto) {
         try {
             RequestEntity<Object> requestEntity = new RequestEntity<>(
-                    kakaoConfiguration.getUserInfoRequestHeaher(kakaoOauth2TokenDto.getAccessToken()),
+                    kakaoConfiguration.getUserInfoRequestHeader(kakaoOauth2TokenDto.getAccessToken()),
                     HttpMethod.POST,
                     kakaoConfiguration.getKakaoGetUserInfoUri()
             );

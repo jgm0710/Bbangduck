@@ -3,6 +3,11 @@ package bbangduck.bd.bbangduck.domain.member.entity;
 import lombok.RequiredArgsConstructor;
 
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원의 권한을 담는 Enum
+ */
 @RequiredArgsConstructor
 public enum MemberRole {
     USER("ROLE_USER", "일반 회원"),

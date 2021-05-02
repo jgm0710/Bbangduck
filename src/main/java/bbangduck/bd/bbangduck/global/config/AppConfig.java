@@ -21,6 +21,11 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * Application 전반에 걸쳐 의존성 주입을 통해 사용할 Class 들을 Bean 으로 등록하기 위해 구현한 Configuration Class
+ */
 @Configuration
 public class AppConfig {
 
