@@ -21,6 +21,11 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * TODO: 2021-05-02 회원 조회 기능 테스트
+     * 일반
+     * 회원을 찾을 수 없는 경우
+     */
     public Member getMember(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         log.debug("findMember : {}", findMember.toString());

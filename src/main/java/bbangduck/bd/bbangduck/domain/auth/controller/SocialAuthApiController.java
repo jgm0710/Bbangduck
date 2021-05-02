@@ -50,6 +50,7 @@ public class SocialAuthApiController {
             @RequestParam("state") String state
     ) {
 
+        // FIXME: 2021-05-02 인증 토큰 조회와 유저 정보 조회 로직을 하나의 메서드로 처리
         KakaoOauth2TokenDto kakaoOauth2TokenDto = socialSignInService.getTokensFromKakao(code, state);
         log.debug("kakaoOauth2TokenDto = " + kakaoOauth2TokenDto.toString());
 
@@ -72,4 +73,6 @@ public class SocialAuthApiController {
         return modelAndView;
 
     }
+
+    // TODO: 2021-05-02 네이버 로그인 기능 구현
 }

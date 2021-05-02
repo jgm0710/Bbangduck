@@ -54,6 +54,7 @@ public class JwtTokenProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
+        // TODO: 2021-05-02 Database 를 거치지 않고 인증 Authentication 을 넘겨주도록 처리
         UserDetails userDetails = accountService.loadUserByUsername(this.getEmail(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }

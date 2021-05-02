@@ -8,4 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberApiController {
+
+    // TODO: 2021-05-02 회원 조회 기능 구현
+    // TODO: 2021-05-02 회원 수정 기능 구현
+    // TODO: 2021-05-02 회원 프로필 이미지 수정 기능 구현
+    // TODO: 2021-05-02 회원 프로필 이미지 및 썸네일 이미지 다운로드 기능 구현
+
+    // TODO: 2021-05-02 회원 목록 조회 기능 구현(관리자)
 }

@@ -56,4 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         ;
 
     }
+
+    // TODO: 2021-05-02 인증 실패 핸들러 구현
+    // TODO: 2021-05-02 인가 실패 핸들러 구현
 }

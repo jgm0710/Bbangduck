@@ -51,4 +51,9 @@ public class AuthApiController {
 
         return ResponseEntity.created(uri).body(new ResponseDto<>(ResponseStatus.MEMBER_SIGN_UP_SUCCESS, memberSignUpResponseDto));
     }
+
+    // TODO: 2021-05-02 자체 로그인 기능 구현 시 로그인 요청 처리 메서드 등록
+    // TODO: 2021-05-02 회원 탈퇴 기능 구현
+    // TODO: 2021-05-02 회원 활동 금지 기능 구현
+    // TODO: 2021-05-02 로그이웃 기능 구현 
 }

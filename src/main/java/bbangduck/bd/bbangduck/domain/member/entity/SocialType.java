@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
  *
  * 회원에 등록된 Social 인증 정보가 어떤 소셜 인증을 통해 생성되었는지를 명시하기 위한 Enum
  */
+// FIXME: 2021-05-02 Getter, Builder 를 롬복을 사용하지 않고 구현
 @Getter
 @RequiredArgsConstructor
 public enum SocialType {

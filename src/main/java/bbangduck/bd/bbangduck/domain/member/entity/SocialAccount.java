@@ -13,6 +13,7 @@ import javax.persistence.*;
  *
  * 회원에 등록된 Social 인증 정보를 담을 Entity
  */
+// FIXME: 2021-05-02 Getter, Builder 를 롬복을 사용하지 않고 구현
 @Entity
 @Getter
 @Builder
