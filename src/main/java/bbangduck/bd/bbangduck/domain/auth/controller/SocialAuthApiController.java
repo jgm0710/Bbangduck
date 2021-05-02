@@ -1,5 +1,9 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
+import bbangduck.bd.bbangduck.domain.auth.dto.KakaoOauth2TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.KakaoUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.SocialUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.exception.KakaoAuthFailException;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
 import bbangduck.bd.bbangduck.domain.member.dto.TokenDto;
@@ -7,10 +11,6 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.domain.auth.dto.SocialUserInfoDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.KakaoOauth2TokenDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.KakaoUserInfoDto;
-import bbangduck.bd.bbangduck.domain.auth.exception.KakaoAuthFailException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

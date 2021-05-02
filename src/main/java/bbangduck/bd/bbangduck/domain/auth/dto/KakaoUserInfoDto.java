@@ -17,7 +17,7 @@ public class KakaoUserInfoDto implements SocialUserInfoInterface {
     private String id;
 
     @JsonProperty("kakao_account")
-    private KakaoAccount kakaoAccount;
+    private KakaoAccountDto kakaoAccount;
 
     @Override
     public SocialType getSocialType() {

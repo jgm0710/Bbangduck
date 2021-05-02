@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KakaoAccount {
+public class KakaoAccountDto {
     @JsonProperty("profile_needs_agreement")
     private String profileNeedsAgreement;
     @JsonProperty("profile")
-    private KakaoProfile profile;
+    private KakaoProfileDto profile;
     @JsonProperty("email_needs_agreement")
     private boolean emailNeedsAgreement;
     @JsonProperty("is_email_valid")

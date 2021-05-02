@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KakaoProfile {
+public class KakaoProfileDto {
     private String nickname;
     @JsonProperty("thumbnail_image_url")
     private String thumbnailImageUrl;
