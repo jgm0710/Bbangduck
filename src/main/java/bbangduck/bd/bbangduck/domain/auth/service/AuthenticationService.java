@@ -3,8 +3,11 @@ package bbangduck.bd.bbangduck.domain.auth.service;
 import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
+import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -48,9 +51,29 @@ public class AuthenticationService {
 
     @Transactional
     public Long signUp(Member signUpMember) {
+        checkDuplicate(signUpMember);
         Member savedMember = memberRepository.save(signUpMember);
         log.debug("savedMember : {}", savedMember);
         return savedMember.getId();
+    }
+
+    private void checkDuplicate(Member signUpMember) {
+        checkDuplicateEmails(signUpMember.getEmail());
+        checkDuplicateNickname(signUpMember.getNickname());
+    }
+
+    private void checkDuplicateNickname(String nickname) {
+        Member findByNickname = memberRepository.findByNickname(nickname).orElse(null);
+        if (findByNickname != null) {
+            throw new MemberNicknameDuplicateException(ResponseStatus.MEMBER_NICKNAME_DUPLICATE);
+        }
+    }
+
+    private void checkDuplicateEmails(String email) {
+        Member findByEmail = memberRepository.findByEmail(email).orElse(null);
+        if (findByEmail != null) {
+            throw new MemberEmailDuplicateException(ResponseStatus.MEMBER_EMAIL_DUPLICATE);
+        }
     }
 
 }

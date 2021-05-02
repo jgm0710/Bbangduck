@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.auth.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
+import bbangduck.bd.bbangduck.domain.member.controller.MemberValidator;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpResponseDto;
@@ -12,6 +13,7 @@ import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +40,18 @@ public class AuthApiController {
 
     private final JwtSecurityProperties jwtSecurityProperties;
 
+    private final MemberValidator memberValidator;
 
+    //TODO: 2021-05-02 기능 테스트
+    //TODO: 2021-05-02 Validation Error Test
+    //TODO: 2021-05-02 Email, Nickname 중복 테스트
     @PostMapping("/sign-up")
     public ResponseEntity<ResponseDto<MemberSignUpResponseDto>> signUp(
-            @RequestBody @Valid MemberSignUpDto memberSignUpDto
+            @RequestBody @Valid MemberSignUpDto memberSignUpDto,
+            Errors errors
     ) {
+        // TODO: 2021-05-02 회원가입 Custom Validator 구현 및 발생하는 Exception 처리 기능 구현
+        memberValidator.validateSignUp(memberSignUpDto, errors);
         Long savedMemberId = authenticationService.signUp(memberSignUpDto.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate()));
         Member savedMember = memberService.getMember(savedMemberId);
         TokenDto tokenDto = authenticationService.signIn(savedMemberId);

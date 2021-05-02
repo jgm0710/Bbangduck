@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.global.common;
 
 import bbangduck.bd.bbangduck.domain.auth.exception.SocialAuthFailException;
+import bbangduck.bd.bbangduck.global.common.exception.ValidationHasErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import static bbangduck.bd.bbangduck.global.common.ModelAndViewObjectName.*;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * 모든 Service 게층에서 발생하는 Exception 을 한 곳에서 처리하기 위한 ExceptionHandler
  */
 @ControllerAdvice
@@ -51,4 +52,13 @@ public class ExceptionHandlerController {
     }
 
     // TODO: 2021-05-02 Custom Validation Error Handler 추가
+    @ExceptionHandler(ValidationHasErrorException.class)
+    public ResponseEntity<ResponseDto<List<ObjectError>>> validationHasErrorExceptionHandling(ValidationHasErrorException exception) {
+        List<ObjectError> allErrors = exception.getErrors().getAllErrors();
+        log.error("Validation Error 발생!!");
+        allErrors.forEach(objectError -> log.error(allErrors.toString()));
+        return ResponseEntity.badRequest().body(new ResponseDto<>(exception.getStatus(), allErrors, exception.getMessage()));
+    }
+
+    // TODO: 2021-05-02 BindingResult 처리 ExceptionHandler 추가
 }

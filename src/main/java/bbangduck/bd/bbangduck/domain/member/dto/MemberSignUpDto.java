@@ -59,4 +59,24 @@ public class MemberSignUpDto {
 
         return member;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public SocialType getSocialType() {
+        return socialType;
+    }
+
+    public String getSocialId() {
+        return socialId;
+    }
 }

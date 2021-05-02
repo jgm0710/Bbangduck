@@ -14,6 +14,7 @@ public class TokenDto {
 
     private Long memberId;
 
+    // TODO: 2021-05-02 JWT Token 을 Header, Payload, Signature 로 쪼개서 달라는 요구 있음
     private String accessToken;
 
     private long accessTokenValidSecond;
