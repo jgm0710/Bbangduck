@@ -47,6 +47,7 @@ public class SocialSignInService {
                 "&state=" + state;
     }
 
+    // TODO: 2021-05-03 Mockito 를 통한 테스트 필요
     public KakaoOauth2TokenDto getTokensFromKakao(String authorizationCode, String state) {
         if (state.equals(kakaoLoginProperties.getAuthorizeState())) {
             try {
@@ -73,6 +74,7 @@ public class SocialSignInService {
         }
     }
 
+    // TODO: 2021-05-03 Mockito 를 통한 테스트 필요
     public KakaoUserInfoDto getUserInfoFromKakao(KakaoOauth2TokenDto kakaoOauth2TokenDto) {
         try {
             RequestEntity<Object> requestEntity = new RequestEntity<>(

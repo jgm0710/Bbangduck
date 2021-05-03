@@ -1,9 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -15,10 +12,7 @@ import javax.persistence.*;
  */
 // FIXME: 2021-05-02 Getter, Builder 를 롬복을 사용하지 않고 구현
 @Entity
-@Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberProfileImage {
 
     @Id
@@ -34,4 +28,32 @@ public class MemberProfileImage {
 
     private String fileThumbnailDownloadUrl;
 
+
+    @Builder
+    protected MemberProfileImage(Long id, Member member, String fileDownloadUrl, String fileThumbnailDownloadUrl) {
+        this.id = id;
+        this.member = member;
+        this.fileDownloadUrl = fileDownloadUrl;
+        this.fileThumbnailDownloadUrl = fileThumbnailDownloadUrl;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public String getFileDownloadUrl() {
+        return fileDownloadUrl;
+    }
+
+    public String getFileThumbnailDownloadUrl() {
+        return fileThumbnailDownloadUrl;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
 }

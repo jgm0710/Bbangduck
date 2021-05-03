@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.global.common;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 /**
@@ -8,6 +9,7 @@ import lombok.*;
  * API 요청 시 응답 값으로 HttpStatus 와 별개로 응답을 구분하기 위한 Status,
  * 응답 Body 에 담을 Data, 응답에 대한 간단한 Message 를 담기 위한 Dto
  */
+@JsonSerialize
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseDto<T> {
 

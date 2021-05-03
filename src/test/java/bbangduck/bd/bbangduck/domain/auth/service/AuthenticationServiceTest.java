@@ -4,8 +4,7 @@ import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
 import bbangduck.bd.bbangduck.member.BaseMemberServiceTest;
@@ -80,7 +79,7 @@ class AuthenticationServiceTest extends BaseMemberServiceTest {
         //when
 
         //then
-        assertThrows(MemberEmailDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate())));
+        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate())));
 
     }
 
@@ -108,7 +107,35 @@ class AuthenticationServiceTest extends BaseMemberServiceTest {
         //when
 
         //then
-        assertThrows(MemberNicknameDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate())));
+        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate())));
+
+    }
+
+    @Test
+    @DisplayName("회원가입 소셜 정보 중복 테스트")
+    public void signUp_SocialInfoDuplicate() {
+        //given
+        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+                .email("test@email.com")
+                .nickname("testNickname")
+                .password(null)
+                .socialType(SocialType.KAKAO)
+                .socialId("3213123")
+                .build();
+
+        MemberSignUpDto memberSignUpDto2 = MemberSignUpDto.builder()
+                .email("test2@email.com")
+                .nickname("testNickname2")
+                .password(null)
+                .socialType(SocialType.KAKAO)
+                .socialId("3213123")
+                .build();
+
+        authenticationService.signUp(memberSignUpDto.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate()));
+        //when
+
+        //then
+        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate())));
 
     }
 }

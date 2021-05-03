@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -9,7 +10,10 @@ import java.time.LocalDateTime;
  *
  * 로그인을 통한 인증 완료 시 응답할 Access Token, Refresh Token 의 정보를 담고 있는 Dto
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenDto {
 
     private Long memberId;
@@ -22,14 +26,5 @@ public class TokenDto {
     private String refreshToken;
 
     private LocalDateTime refreshTokenExpiredDate;
-
-    @Builder
-    public TokenDto(Long memberId, String accessToken, long accessTokenValidSecond, String refreshToken, LocalDateTime refreshTokenExpiredDate) {
-        this.memberId = memberId;
-        this.accessToken = accessToken;
-        this.accessTokenValidSecond = accessTokenValidSecond;
-        this.refreshToken = refreshToken;
-        this.refreshTokenExpiredDate = refreshTokenExpiredDate;
-    }
 
 }

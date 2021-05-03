@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 /**
@@ -8,7 +9,10 @@ import lombok.*;
  *
  * 회원 이미지 파일에 대한 정보를 응답 Body 에 담기 위해 사용하는 Dto
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MemberProfileImageResponseDto {
 
     private Long profileImageId;
@@ -16,13 +20,6 @@ public class MemberProfileImageResponseDto {
     private String profileImageUrl;
 
     private String profileImageThumbnailUrl;
-
-    @Builder
-    public MemberProfileImageResponseDto(Long profileImageId, String profileImageUrl, String profileImageThumbnailUrl) {
-        this.profileImageId = profileImageId;
-        this.profileImageUrl = profileImageUrl;
-        this.profileImageThumbnailUrl = profileImageThumbnailUrl;
-    }
 
     public static MemberProfileImageResponseDto convert(MemberProfileImage memberProfileImage) {
         if (memberProfileImage == null) {

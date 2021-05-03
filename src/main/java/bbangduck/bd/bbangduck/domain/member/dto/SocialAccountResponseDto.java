@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 /**
@@ -9,7 +10,10 @@ import lombok.*;
  *
  * 회원의 SocialType 을 응답하기 위한 Dto
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SocialAccountResponseDto {
 
     private Long socialAccountId;
@@ -17,13 +21,6 @@ public class SocialAccountResponseDto {
     private String socialId;
 
     private SocialType socialType;
-
-    @Builder
-    public SocialAccountResponseDto(Long socialAccountId, String socialId, SocialType socialType) {
-        this.socialAccountId = socialAccountId;
-        this.socialId = socialId;
-        this.socialType = socialType;
-    }
 
     public static SocialAccountResponseDto convert(SocialAccount socialAccount) {
         if (socialAccount == null) {

@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,10 @@ import java.util.List;
  *
  * 회원의 상세 정보에 대한 응답 Body 를 담는 Dto
  */
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MemberDetailDto {
 
     private Long memberId;
@@ -33,19 +37,6 @@ public class MemberDetailDto {
     private LocalDateTime registerDate;
 
     private LocalDateTime updateDate;
-
-    @Builder
-    public MemberDetailDto(Long memberId, String email, MemberProfileImageResponseDto profileImage, List<SocialAccountResponseDto> socialAccounts, String nickname, String description, int reviewCount, LocalDateTime registerDate, LocalDateTime updateDate) {
-        this.memberId = memberId;
-        this.email = email;
-        this.profileImage = profileImage;
-        this.socialAccounts = socialAccounts;
-        this.nickname = nickname;
-        this.description = description;
-        this.reviewCount = reviewCount;
-        this.registerDate = registerDate;
-        this.updateDate = updateDate;
-    }
 
     public static MemberDetailDto convert(Member member) {
         return MemberDetailDto.builder()
@@ -68,5 +59,4 @@ public class MemberDetailDto {
         }
         return socialAccountResponseDtos;
     }
-
 }

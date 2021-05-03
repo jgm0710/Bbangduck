@@ -1,9 +1,13 @@
 package bbangduck.bd.bbangduck.global.common;
 
 import bbangduck.bd.bbangduck.domain.auth.exception.SocialAuthFailException;
+import bbangduck.bd.bbangduck.global.common.exception.BadRequestException;
+import bbangduck.bd.bbangduck.global.common.exception.ConflictException;
+import bbangduck.bd.bbangduck.global.common.exception.NotFoundException;
 import bbangduck.bd.bbangduck.global.common.exception.ValidationHasErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,6 +44,37 @@ public class ExceptionHandlerController {
         return modelAndView;
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ResponseDto<Object>> conflictExceptionHandling(ConflictException exception) {
+        int exceptionStatus = exception.getStatus();
+        String exceptionMessage = exception.getMessage();
+        log.error("ConflictException 발생!!");
+        log.error(exceptionMessage);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+    }
+
+    // TODO: 2021-05-03 BadRequest Exception Handler 를 사용하는 테스트 코드 작성
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ResponseDto<Object>> badRequestExceptionHandling(BadRequestException exception) {
+        int exceptionStatus = exception.getStatus();
+        String exceptionMessage = exception.getMessage();
+        log.error("BadRequestException 발생!!");
+        log.error(exceptionMessage);
+
+        return ResponseEntity.badRequest().body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+    }
+
+    // TODO: 2021-05-03 NotFound Exception Handler 를 사용하는 테스트 코드 작성
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ResponseDto<Object>> NotFoundExceptionHandling(NotFoundException exception) {
+        int exceptionStatus = exception.getStatus();
+        String exceptionMessage = exception.getMessage();
+        log.error("NotFoundException 발생!!");
+        log.error(exceptionMessage);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+    }
     /**
      * 기본적으로 제공되는 Spring Validation 의 Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler
      */
@@ -51,7 +86,9 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(new ResponseDto<>(ResponseStatus.VALIDATION_ERROR, allErrors));
     }
 
-    // TODO: 2021-05-02 Custom Validation Error Handler 추가
+    /**
+     * Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler
+     */
     @ExceptionHandler(ValidationHasErrorException.class)
     public ResponseEntity<ResponseDto<List<ObjectError>>> validationHasErrorExceptionHandling(ValidationHasErrorException exception) {
         List<ObjectError> allErrors = exception.getErrors().getAllErrors();

@@ -12,6 +12,7 @@ import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,15 +43,11 @@ public class AuthApiController {
 
     private final MemberValidator memberValidator;
 
-    //TODO: 2021-05-02 기능 테스트
-    //TODO: 2021-05-02 Validation Error Test
-    //TODO: 2021-05-02 Email, Nickname 중복 테스트
-    @PostMapping("/sign-up")
+    @PostMapping(value = "/sign-up", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDto<MemberSignUpResponseDto>> signUp(
             @RequestBody @Valid MemberSignUpDto memberSignUpDto,
             Errors errors
     ) {
-        // TODO: 2021-05-02 회원가입 Custom Validator 구현 및 발생하는 Exception 처리 기능 구현
         memberValidator.validateSignUp(memberSignUpDto, errors);
         Long savedMemberId = authenticationService.signUp(memberSignUpDto.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate()));
         Member savedMember = memberService.getMember(savedMemberId);

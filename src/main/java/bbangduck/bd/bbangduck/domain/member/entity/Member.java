@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.Builder.Default;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,9 +22,6 @@ import java.util.stream.Collectors;
  */
 // FIXME: 2021-05-02 Getter, Builder 를 롬복을 사용하지 않고 구현
 @Entity
-@Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntityDateTime {
 
@@ -40,7 +38,6 @@ public class Member extends BaseEntityDateTime {
     private MemberProfileImage profileImage;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    @Default
     private List<SocialAccount> socialAccounts = new ArrayList<>();
 
     private String nickname;
@@ -52,11 +49,10 @@ public class Member extends BaseEntityDateTime {
     @Embedded
     private RefreshInfo refreshInfo;
 
-    @Default
     @ElementCollection(targetClass = MemberRole.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "member_role", joinColumns = @JoinColumn(name = "member_id"))
     @Enumerated(EnumType.STRING)
-    private Set<MemberRole> roles = new HashSet<>();
+    private Set<MemberRole> roles;
 
 
 //.id()
@@ -71,6 +67,62 @@ public class Member extends BaseEntityDateTime {
 //.roles()
 
 
+    @Builder
+    public Member(String email, String password, MemberProfileImage profileImage, String nickname, String description, int reviewCount,Set<MemberRole> roles, RefreshInfo refreshInfo) {
+        this.email = email;
+        this.password = password;
+        this.profileImage = profileImage;
+        this.nickname = nickname;
+        this.description = description;
+        this.reviewCount = reviewCount;
+        this.refreshInfo = refreshInfo;
+        this.roles = roles;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public MemberProfileImage getProfileImage() {
+        return profileImage;
+    }
+
+    public List<SocialAccount> getSocialAccounts() {
+        return socialAccounts;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public String getRefreshToken() {
+        return refreshInfo.getRefreshToken();
+    }
+
+    public LocalDateTime getRefreshTokenExpiredDate() {
+        return refreshInfo.getRefreshTokenExpiredDate();
+    }
+
+    public Set<MemberRole> getRoles() {
+        return roles;
+    }
+
     @Override
     public String toString() {
         return "Member{" +
@@ -80,7 +132,7 @@ public class Member extends BaseEntityDateTime {
 //                ", profileImage=" + profileImage +
 //                ", socialAccountList=" + socialAccountList +
                 ", nickname='" + nickname + '\'' +
-                ", simpleIntroduction='" + description + '\'' +
+                ", description='" + description + '\'' +
                 ", reviewCount=" + reviewCount +
 //                ", refreshInfo=" + refreshInfo +
                 ", roles=" + roles +
@@ -94,5 +146,9 @@ public class Member extends BaseEntityDateTime {
     public void addSocialAccount(SocialAccount socialAccount) {
         this.socialAccounts.add(socialAccount);
         socialAccount.setMember(this);
+    }
+
+    public SocialAccount getFirstSocialAccount() {
+        return socialAccounts.stream().findFirst().orElse(null);
     }
 }

@@ -1,19 +1,22 @@
 package bbangduck.bd.bbangduck.domain.auth.service;
 
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
 import bbangduck.bd.bbangduck.domain.member.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
+import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
-import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -32,15 +35,19 @@ public class AuthenticationService {
 
     private final JwtSecurityProperties jwtSecurityProperties;
 
+    private final MemberQueryRepository memberQueryRepository;
+
     public TokenDto signIn(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        String jwtToken = jwtTokenProvider.createToken(findMember.getEmail(), findMember.getRoleNameList());
+        String email = findMember.getEmail();
+        List<String> roleNameList = findMember.getRoleNameList();
 
+        String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
         TokenDto tokenDto = TokenDto.builder()
                 .accessToken(jwtToken)
                 .accessTokenValidSecond(jwtSecurityProperties.getTokenValidSecond())
-                .refreshToken(findMember.getRefreshInfo().getRefreshToken())
-                .refreshTokenExpiredDate(findMember.getRefreshInfo().getRefreshTokenExpiredDate())
+                .refreshToken(findMember.getRefreshToken())
+                .refreshTokenExpiredDate(findMember.getRefreshTokenExpiredDate())
                 .build();
 
         log.debug("Sign in by memberId");
@@ -51,28 +58,44 @@ public class AuthenticationService {
 
     @Transactional
     public Long signUp(Member signUpMember) {
-        checkDuplicate(signUpMember);
+        checkSignUpDuplicate(signUpMember);
         Member savedMember = memberRepository.save(signUpMember);
         log.debug("savedMember : {}", savedMember);
         return savedMember.getId();
     }
 
-    private void checkDuplicate(Member signUpMember) {
-        checkDuplicateEmails(signUpMember.getEmail());
-        checkDuplicateNickname(signUpMember.getNickname());
+    private void checkSignUpDuplicate(Member signUpMember) {
+        String signUpMemberEmail = signUpMember.getEmail();
+        String signUpMemberNickname = signUpMember.getNickname();
+        SocialAccount signUpMemberSocialAccount = signUpMember.getFirstSocialAccount();
+
+        checkDuplicateEmails(signUpMemberEmail);
+        checkDuplicateNickname(signUpMemberNickname);
+        checkDuplicateSocialInfo(signUpMemberSocialAccount);
     }
 
     private void checkDuplicateNickname(String nickname) {
-        Member findByNickname = memberRepository.findByNickname(nickname).orElse(null);
-        if (findByNickname != null) {
-            throw new MemberNicknameDuplicateException(ResponseStatus.MEMBER_NICKNAME_DUPLICATE);
+        if (memberRepository.findByNickname(nickname).isPresent()) {
+            throw new MemberDuplicateException(ResponseStatus.MEMBER_NICKNAME_DUPLICATE);
         }
     }
 
     private void checkDuplicateEmails(String email) {
-        Member findByEmail = memberRepository.findByEmail(email).orElse(null);
-        if (findByEmail != null) {
-            throw new MemberEmailDuplicateException(ResponseStatus.MEMBER_EMAIL_DUPLICATE);
+        if (memberRepository.findByEmail(email).isPresent()) {
+            throw new MemberDuplicateException(ResponseStatus.MEMBER_EMAIL_DUPLICATE);
+        }
+    }
+
+    private void checkDuplicateSocialInfo(SocialAccount socialAccount) {
+        if (socialAccount == null) {
+            return;
+        }
+
+        SocialType socialType = socialAccount.getSocialType();
+        String socialId = socialAccount.getSocialId();
+
+        if (memberQueryRepository.findBySocialTypeAndSocialId(socialType, socialId).isPresent()) {
+            throw new MemberDuplicateException(ResponseStatus.MEMBER_SOCIAL_INFO_DUPLICATE);
         }
     }
 

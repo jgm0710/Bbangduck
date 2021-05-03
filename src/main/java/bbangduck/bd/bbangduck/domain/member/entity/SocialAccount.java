@@ -1,10 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -15,10 +12,7 @@ import javax.persistence.*;
  */
 // FIXME: 2021-05-02 Getter, Builder 를 롬복을 사용하지 않고 구현
 @Entity
-@Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SocialAccount extends BaseEntityDateTime {
 
     @Id
@@ -33,6 +27,27 @@ public class SocialAccount extends BaseEntityDateTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @Builder
+    protected SocialAccount(Long id, String socialId, SocialType socialType, Member member) {
+        this.id = id;
+        this.socialId = socialId;
+        this.socialType = socialType;
+        this.member = member;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getSocialId() {
+        return socialId;
+    }
+
+    public SocialType getSocialType() {
+        return socialType;
+    }
+
 
     public void setMember(Member member) {
         this.member = member;

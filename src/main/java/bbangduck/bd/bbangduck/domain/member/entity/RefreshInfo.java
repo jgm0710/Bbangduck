@@ -3,6 +3,8 @@ package bbangduck.bd.bbangduck.domain.member.entity;
 import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
 import lombok.*;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import java.time.LocalDateTime;
@@ -15,9 +17,7 @@ import java.util.UUID;
  */
 // FIXME: 2021-05-02 Getter, Builder 를 롬복을 사용하지 않고 구현
 @Embeddable
-@Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Access(AccessType.FIELD)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshInfo {
 
@@ -30,5 +30,19 @@ public class RefreshInfo {
                 .refreshToken(UUID.randomUUID().toString())
                 .refreshTokenExpiredDate(LocalDateTime.now().plusDays(refreshTokenExpiredDate))
                 .build();
+    }
+
+    @Builder
+    public RefreshInfo(String refreshToken, LocalDateTime refreshTokenExpiredDate) {
+        this.refreshToken = refreshToken;
+        this.refreshTokenExpiredDate = refreshTokenExpiredDate;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public LocalDateTime getRefreshTokenExpiredDate() {
+        return refreshTokenExpiredDate;
     }
 }
