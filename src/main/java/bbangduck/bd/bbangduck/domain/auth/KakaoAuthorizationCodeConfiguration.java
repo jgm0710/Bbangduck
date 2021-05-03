@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.auth;
 
-import bbangduck.bd.bbangduck.global.config.properties.KakaoLoginProperties;
+import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +21,7 @@ import java.net.URI;
 @Slf4j
 public class KakaoAuthorizationCodeConfiguration {
 
-    private final KakaoLoginProperties kakaoLoginProperties;
+    private final KakaoSignInProperties kakaoSignInProperties;
 
     private final URI kakaoGetTokenUri = URI.create("https://kauth.kakao.com/oauth/token");
 
@@ -38,10 +38,10 @@ public class KakaoAuthorizationCodeConfiguration {
     public MultiValueMap<String, String> getAccessTokenRequestBody(String authorizationCode) {
         LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grant_type", "authorization_code");
-        formData.add("client_id", kakaoLoginProperties.getRestApiKey());
-        formData.add("redirect_uri", kakaoLoginProperties.getRedirectUri());
+        formData.add("client_id", kakaoSignInProperties.getRestApiKey());
+        formData.add("redirect_uri", kakaoSignInProperties.getRedirectUri());
         formData.add("code", authorizationCode);
-        formData.add("client_secret", kakaoLoginProperties.getClientSecret());
+        formData.add("client_secret", kakaoSignInProperties.getClientSecret());
 
         return formData;
     }

@@ -2,7 +2,7 @@ package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.KakaoAuthorizationCodeConfiguration;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import bbangduck.bd.bbangduck.global.config.properties.KakaoLoginProperties;
+import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
 import bbangduck.bd.bbangduck.domain.auth.exception.SocialAccessTokenRetrievalErrorException;
 import bbangduck.bd.bbangduck.domain.auth.exception.SocialSignInStateMismatchException;
 import bbangduck.bd.bbangduck.domain.auth.exception.SocialUserInfoRetrievalErrorException;
@@ -29,15 +29,15 @@ public class SocialSignInService {
 
     private final KakaoAuthorizationCodeConfiguration kakaoConfiguration;
 
-    private final KakaoLoginProperties kakaoLoginProperties;
+    private final KakaoSignInProperties kakaoSignInProperties;
 
     private final RestTemplate restTemplate;
 
     public String getKakaoAuthorizationUrl() {
-        String clientId = kakaoLoginProperties.getRestApiKey();
-        String redirectUri = kakaoLoginProperties.getRedirectUri();
-        String state = kakaoLoginProperties.getAuthorizeState();
-        String scope = kakaoLoginProperties.getScope();
+        String clientId = kakaoSignInProperties.getRestApiKey();
+        String redirectUri = kakaoSignInProperties.getRedirectUri();
+        String state = kakaoSignInProperties.getAuthorizeState();
+        String scope = kakaoSignInProperties.getScope();
 
         return "https://kauth.kakao.com/oauth/authorize?" +
                 "client_id=" + clientId +
@@ -47,9 +47,18 @@ public class SocialSignInService {
                 "&state=" + state;
     }
 
+    public KakaoUserInfoDto connectKakao(String authorizationCode, String state) {
+        KakaoOauth2TokenDto kakaoOauth2Token = getTokensFromKakao(authorizationCode, state);
+        log.debug("kakaoOauth2Token = " + kakaoOauth2Token.toString());
+        KakaoUserInfoDto kakaoUserInfoDto = getUserInfoFromKakao(kakaoOauth2Token);
+        log.debug("kakaoUserInfoDto = " + kakaoUserInfoDto);
+
+        return kakaoUserInfoDto;
+    }
+
     // TODO: 2021-05-03 Mockito 를 통한 테스트 필요
-    public KakaoOauth2TokenDto getTokensFromKakao(String authorizationCode, String state) {
-        if (state.equals(kakaoLoginProperties.getAuthorizeState())) {
+    private KakaoOauth2TokenDto getTokensFromKakao(String authorizationCode, String state) {
+        if (state.equals(kakaoSignInProperties.getAuthorizeState())) {
             try {
                 RequestEntity<MultiValueMap<String, String>> requestEntity = new RequestEntity<>(
                         kakaoConfiguration.getAccessTokenRequestBody(authorizationCode),
@@ -75,7 +84,7 @@ public class SocialSignInService {
     }
 
     // TODO: 2021-05-03 Mockito 를 통한 테스트 필요
-    public KakaoUserInfoDto getUserInfoFromKakao(KakaoOauth2TokenDto kakaoOauth2TokenDto) {
+    private KakaoUserInfoDto getUserInfoFromKakao(KakaoOauth2TokenDto kakaoOauth2TokenDto) {
         try {
             RequestEntity<Object> requestEntity = new RequestEntity<>(
                     kakaoConfiguration.getUserInfoRequestHeader(kakaoOauth2TokenDto.getAccessToken()),

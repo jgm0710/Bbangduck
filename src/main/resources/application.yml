@@ -25,7 +25,7 @@ logging:
     org.springframework.security: debug #spring security에 대해 어떤 메세지가 출력이 되는지 확인
 
 kakao:
-  login:
+  sign-in:
     properties:
       native-app-key: 51a703abe9cf14386623caad48d40827
       rest-api-key: d053f45a470a5203cc53bdfb65b69c03
@@ -36,8 +36,9 @@ kakao:
       authorize-state: bbangduck7
       scope: profile account_email
 
-security-jwt:
-  jwt-token-header: X-AUTH-TOKEN
-  refresh-token-expired-date: 14
-  secret-key: bbangduck-jwt-secret-key
-  token-valid-second: 30000
+security:
+  jwt:
+    jwt-token-header: X-AUTH-TOKEN
+    refresh-token-expired-date: 14
+    secret-key: bbangduck-jwt-secret-key
+    token-valid-second: 30000

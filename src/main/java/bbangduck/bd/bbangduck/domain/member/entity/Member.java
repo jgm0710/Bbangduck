@@ -1,15 +1,11 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
-import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
 import lombok.*;
-import lombok.Builder.Default;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

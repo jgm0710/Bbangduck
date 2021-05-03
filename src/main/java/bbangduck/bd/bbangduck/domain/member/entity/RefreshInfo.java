@@ -1,12 +1,10 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
-import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
 import lombok.*;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

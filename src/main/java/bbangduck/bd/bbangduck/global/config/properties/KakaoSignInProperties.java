@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "kakao.login.properties")
-public class KakaoLoginProperties {
+@ConfigurationProperties(prefix = "kakao.sign-in.properties")
+public class KakaoSignInProperties {
 
     private String nativeAppKey;
 

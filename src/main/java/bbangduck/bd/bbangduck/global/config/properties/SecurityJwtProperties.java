@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
  * JwtTokenProvider 구현 시 필요한 Properties 를 application.yml 에서 관리하기 위해 필요한 ConfigurationProperties
  */
 @Component
-@ConfigurationProperties("security-jwt")
+@ConfigurationProperties("security.jwt")
 @Getter
 @Setter
-public class JwtSecurityProperties {
+public class SecurityJwtProperties {
 
     private long tokenValidSecond;
     private String secretKey;

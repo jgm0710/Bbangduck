@@ -10,7 +10,7 @@ import bbangduck.bd.bbangduck.domain.member.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
-import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
+import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +39,7 @@ public class AuthApiController {
 
     private final MemberService memberService;
 
-    private final JwtSecurityProperties jwtSecurityProperties;
+    private final SecurityJwtProperties securityJwtProperties;
 
     private final MemberValidator memberValidator;
 
@@ -49,7 +49,7 @@ public class AuthApiController {
             Errors errors
     ) {
         memberValidator.validateSignUp(memberSignUpDto, errors);
-        Long savedMemberId = authenticationService.signUp(memberSignUpDto.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate()));
+        Long savedMemberId = authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
         Member savedMember = memberService.getMember(savedMemberId);
         TokenDto tokenDto = authenticationService.signIn(savedMemberId);
         MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.convert(savedMember, tokenDto);

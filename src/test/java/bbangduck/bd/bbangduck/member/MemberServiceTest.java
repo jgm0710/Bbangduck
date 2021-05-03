@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 @Transactional
-class MemberServiceTest extends BaseMemberServiceTest {
+class MemberServiceTest extends BaseJGMServiceTest {
 
     @Autowired
     MemberService memberService;

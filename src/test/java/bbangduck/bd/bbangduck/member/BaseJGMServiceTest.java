@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 
 @Transactional
 @Disabled
-public class BaseMemberServiceTest extends BaseTest {
+public class BaseJGMServiceTest extends BaseTest {
     @Autowired
     protected MemberRepository memberRepository;
 }

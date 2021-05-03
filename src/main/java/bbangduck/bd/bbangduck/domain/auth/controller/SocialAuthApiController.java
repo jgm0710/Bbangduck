@@ -40,25 +40,19 @@ public class SocialAuthApiController {
     private final AuthenticationService authenticationService;
 
     @GetMapping("/api/auth/kakao/sign-in")
-    public void kakaoLoginRedirect(HttpServletResponse response) throws IOException {
+    public void kakaoSignInRedirect(HttpServletResponse response) throws IOException {
         response.sendRedirect(socialSignInService.getKakaoAuthorizationUrl());
     }
 
     @GetMapping("/api/auth/kakao/sign-in/callback")
-    public ModelAndView kakaoLoginCallback(
+    public ModelAndView kakaoSignInCallback(
             @RequestParam("code") String code,
             @RequestParam("state") String state
     ) {
+        KakaoUserInfoDto kakaoUserInfo = socialSignInService.connectKakao(code, state);
 
-        // FIXME: 2021-05-02 인증 토큰 조회와 유저 정보 조회 로직을 하나의 메서드로 처리
-        KakaoOauth2TokenDto kakaoOauth2TokenDto = socialSignInService.getTokensFromKakao(code, state);
-        log.debug("kakaoOauth2TokenDto = " + kakaoOauth2TokenDto.toString());
-
-        KakaoUserInfoDto kakaoUserInfoDto = socialSignInService.getUserInfoFromKakao(kakaoOauth2TokenDto);
-        log.debug("kakaoUserInfoDto = " + kakaoUserInfoDto);
-
-        Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfoDto.getId())
-                .orElseThrow(() -> new KakaoAuthFailException(SocialAuthFailResponseAdaptor.exchange(kakaoUserInfoDto)));
+        Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfo.getId())
+                .orElseThrow(() -> new KakaoAuthFailException(SocialAuthFailResponseAdaptor.exchange(kakaoUserInfo)));
 
         TokenDto tokenDto = authenticationService.signIn(findMember.getId());
 

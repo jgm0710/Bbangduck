@@ -1,7 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.*;
-import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
 import lombok.*;
 
 import javax.validation.constraints.Email;

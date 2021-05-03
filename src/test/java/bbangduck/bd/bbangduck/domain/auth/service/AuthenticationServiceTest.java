@@ -6,8 +6,8 @@ import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
-import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
-import bbangduck.bd.bbangduck.member.BaseMemberServiceTest;
+import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
+import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +17,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class AuthenticationServiceTest extends BaseMemberServiceTest {
+class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Autowired
     AuthenticationService authenticationService;
 
     @Autowired
-    JwtSecurityProperties jwtSecurityProperties;
+    SecurityJwtProperties securityJwtProperties;
 
     @Autowired
     MemberService memberService;
@@ -41,7 +41,7 @@ class AuthenticationServiceTest extends BaseMemberServiceTest {
                 .build();
 
         //when
-        Long signMemberId = authenticationService.signUp(memberSignUpDto.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate()));
+        Long signMemberId = authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
 
         //then
         Member findMember = memberRepository.findById(signMemberId).orElseThrow();
@@ -75,11 +75,11 @@ class AuthenticationServiceTest extends BaseMemberServiceTest {
                 .socialId("3213123")
                 .build();
 
-        authenticationService.signUp(memberSignUpDto.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate()));
+        authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
         //when
 
         //then
-        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate())));
+        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(securityJwtProperties.getRefreshTokenExpiredDate())));
 
     }
 
@@ -103,11 +103,11 @@ class AuthenticationServiceTest extends BaseMemberServiceTest {
                 .socialId("3213123")
                 .build();
 
-        authenticationService.signUp(memberSignUpDto.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate()));
+        authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
         //when
 
         //then
-        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate())));
+        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(securityJwtProperties.getRefreshTokenExpiredDate())));
 
     }
 
@@ -131,11 +131,11 @@ class AuthenticationServiceTest extends BaseMemberServiceTest {
                 .socialId("3213123")
                 .build();
 
-        authenticationService.signUp(memberSignUpDto.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate()));
+        authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
         //when
 
         //then
-        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(jwtSecurityProperties.getRefreshTokenExpiredDate())));
+        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(securityJwtProperties.getRefreshTokenExpiredDate())));
 
     }
 }

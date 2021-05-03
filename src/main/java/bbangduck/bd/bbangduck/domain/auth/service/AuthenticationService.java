@@ -10,7 +10,7 @@ import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
+import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class AuthenticationService {
 
     private final MemberRepository memberRepository;
 
-    private final JwtSecurityProperties jwtSecurityProperties;
+    private final SecurityJwtProperties securityJwtProperties;
 
     private final MemberQueryRepository memberQueryRepository;
 
@@ -45,7 +45,7 @@ public class AuthenticationService {
         String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
         TokenDto tokenDto = TokenDto.builder()
                 .accessToken(jwtToken)
-                .accessTokenValidSecond(jwtSecurityProperties.getTokenValidSecond())
+                .accessTokenValidSecond(securityJwtProperties.getTokenValidSecond())
                 .refreshToken(findMember.getRefreshToken())
                 .refreshTokenExpiredDate(findMember.getRefreshTokenExpiredDate())
                 .build();
