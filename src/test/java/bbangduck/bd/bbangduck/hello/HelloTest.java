@@ -48,6 +48,30 @@ class HelloTest {
         //then
         Hello findHello = em.find(Hello.class, helloId);
         assertEquals(hello.getId(), findHello.getId());
+
+
+    }
+
+    @Test
+    @DisplayName("accessToken slicing test")
+    public void slicingTest() {
+        //given
+        String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIwMTQ2MTQ5LCJleHAiOjE2MjAxNzYxNDl9.tuRVCyu8zJOZfF58Hvyi_zckBvQaXAkXW18Gt6x9JHI";
+        //when
+
+        //then
+        int i = accessToken.indexOf('.');
+        System.out.println("i = " + i);
+        String header = accessToken.substring(0,i);
+        accessToken = accessToken.substring(i + 1);
+        int i1 = accessToken.indexOf('.');
+        String payload = accessToken.substring(0, i1);
+        String signature = accessToken.substring(i1 + 1);
+        System.out.println("header = " + header);
+        System.out.println("payload = " + payload);
+        System.out.println("signature = " + signature);
+
+
     }
 
     @Test

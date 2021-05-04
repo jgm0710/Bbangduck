@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.auth.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 
@@ -11,20 +12,46 @@ import java.time.LocalDateTime;
  * 로그인을 통한 인증 완료 시 응답할 Access Token, Refresh Token 의 정보를 담고 있는 Dto
  */
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class TokenDto {
 
     private Long memberId;
 
-    // TODO: 2021-05-02 JWT Token 을 Header, Payload, Signature 로 쪼개서 달라는 요구 있음
-    private String accessToken;
+    private AccessJwtTokenSlicingDto accessToken;
 
     private long accessTokenValidSecond;
 
     private String refreshToken;
 
     private LocalDateTime refreshTokenExpiredDate;
+
+    @Builder
+    public TokenDto(Long memberId, String accessToken, long accessTokenValidSecond, String refreshToken, LocalDateTime refreshTokenExpiredDate) {
+        this.memberId = memberId;
+        this.accessToken = new AccessJwtTokenSlicingDto(accessToken);
+        this.accessTokenValidSecond = accessTokenValidSecond;
+        this.refreshToken = refreshToken;
+        this.refreshTokenExpiredDate = refreshTokenExpiredDate;
+    }
+
+    @Data
+    static class AccessJwtTokenSlicingDto {
+        private String header;
+        private String payload;
+        private String signature;
+
+        public AccessJwtTokenSlicingDto(String accessToken) {
+            int i = accessToken.indexOf('.');
+            String header = accessToken.substring(0,i);
+            accessToken = accessToken.substring(i + 1);
+            int i1 = accessToken.indexOf('.');
+            String payload = accessToken.substring(0, i1);
+            String signature = accessToken.substring(i1 + 1);
+
+            this.header = header;
+            this.payload = payload;
+            this.signature = signature;
+        }
+    }
 
 }
