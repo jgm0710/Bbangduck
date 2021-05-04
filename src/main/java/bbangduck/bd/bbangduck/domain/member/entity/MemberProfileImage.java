@@ -10,7 +10,6 @@ import javax.persistence.*;
  * 회원 프로필 이미지 Entity
  * Database 의 회원 프로필 이미지 테이블과 연결
  */
-// FIXME: 2021-05-02 Getter, Builder 를 롬복을 사용하지 않고 구현
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberProfileImage {

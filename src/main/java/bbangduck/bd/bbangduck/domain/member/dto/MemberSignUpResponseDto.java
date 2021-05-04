@@ -1,11 +1,8 @@
 package bbangduck.bd.bbangduck.domain.member.dto;
 
+import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 작성자 : 정구민 <br><br>

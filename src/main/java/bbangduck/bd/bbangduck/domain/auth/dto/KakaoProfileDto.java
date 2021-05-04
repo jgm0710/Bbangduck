@@ -23,11 +23,12 @@ public class KakaoProfileDto {
         return nickname;
     }
 
-    public String getThumbnailImageUrl() {
-        return thumbnailImageUrl;
-    }
-
-    public String getProfileImageUrl() {
-        return profileImageUrl;
+    @Override
+    public String toString() {
+        return "KakaoProfileDto{" +
+                "nickname='" + nickname + '\'' +
+                ", thumbnailImageUrl='" + thumbnailImageUrl + '\'' +
+                ", profileImageUrl='" + profileImageUrl + '\'' +
+                '}';
     }
 }

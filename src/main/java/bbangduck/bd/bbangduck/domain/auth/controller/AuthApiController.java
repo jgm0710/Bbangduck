@@ -6,7 +6,7 @@ import bbangduck.bd.bbangduck.domain.member.controller.MemberValidator;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpResponseDto;
-import bbangduck.bd.bbangduck.domain.member.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;

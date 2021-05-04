@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
  * 회원 Entity <br>
  * Database 의 회원 테이블과 연결
  */
-// FIXME: 2021-05-02 Getter, Builder 를 롬복을 사용하지 않고 구현
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntityDateTime {

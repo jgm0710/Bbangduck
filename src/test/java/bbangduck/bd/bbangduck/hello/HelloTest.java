@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -45,7 +48,6 @@ class HelloTest {
         //then
         Hello findHello = em.find(Hello.class, helloId);
         assertEquals(hello.getId(), findHello.getId());
-
     }
 
     @Test

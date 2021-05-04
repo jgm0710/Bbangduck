@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.member.dto;
+package bbangduck.bd.bbangduck.domain.auth.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;

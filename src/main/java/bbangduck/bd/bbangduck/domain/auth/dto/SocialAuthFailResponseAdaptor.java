@@ -22,7 +22,7 @@ public class SocialAuthFailResponseAdaptor {
 
     public static SocialAuthFailResponseAdaptor exchange(SocialUserInfoInterface socialUserInfo) {
         return SocialAuthFailResponseAdaptor.builder()
-                .socialId(socialUserInfo.getId())
+                .socialId(socialUserInfo.getSocialId())
                 .email(socialUserInfo.getEmail())
                 .nickname(socialUserInfo.getNickname())
                 .socialType(socialUserInfo.getSocialType())

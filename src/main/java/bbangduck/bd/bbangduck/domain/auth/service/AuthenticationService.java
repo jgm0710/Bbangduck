@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
-import bbangduck.bd.bbangduck.domain.member.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
@@ -44,6 +44,7 @@ public class AuthenticationService {
 
         String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
         TokenDto tokenDto = TokenDto.builder()
+                .memberId(memberId)
                 .accessToken(jwtToken)
                 .accessTokenValidSecond(securityJwtProperties.getTokenValidSecond())
                 .refreshToken(findMember.getRefreshToken())

@@ -1,12 +1,11 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
-import bbangduck.bd.bbangduck.domain.auth.dto.KakaoOauth2TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.KakaoUserInfoDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.SocialAuthFailResponseAdaptor;
 import bbangduck.bd.bbangduck.domain.auth.exception.KakaoAuthFailException;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
-import bbangduck.bd.bbangduck.domain.member.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
@@ -51,7 +50,7 @@ public class SocialAuthApiController {
     ) {
         KakaoUserInfoDto kakaoUserInfo = socialSignInService.connectKakao(code, state);
 
-        Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfo.getId())
+        Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfo.getSocialId())
                 .orElseThrow(() -> new KakaoAuthFailException(SocialAuthFailResponseAdaptor.exchange(kakaoUserInfo)));
 
         TokenDto tokenDto = authenticationService.signIn(findMember.getId());

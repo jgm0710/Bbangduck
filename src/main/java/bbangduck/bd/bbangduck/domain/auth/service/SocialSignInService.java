@@ -50,14 +50,14 @@ public class SocialSignInService {
     public KakaoUserInfoDto connectKakao(String authorizationCode, String state) {
         KakaoOauth2TokenDto kakaoOauth2Token = getTokensFromKakao(authorizationCode, state);
         log.debug("kakaoOauth2Token = " + kakaoOauth2Token.toString());
-        KakaoUserInfoDto kakaoUserInfoDto = getUserInfoFromKakao(kakaoOauth2Token);
-        log.debug("kakaoUserInfoDto = " + kakaoUserInfoDto);
+        KakaoUserInfoDto kakaoUserInfo = getUserInfoFromKakao(kakaoOauth2Token);
+        log.debug("kakaoUserInfo = " + kakaoUserInfo.toString());
 
-        return kakaoUserInfoDto;
+        return kakaoUserInfo;
     }
 
     // TODO: 2021-05-03 Mockito 를 통한 테스트 필요
-    private KakaoOauth2TokenDto getTokensFromKakao(String authorizationCode, String state) {
+    public KakaoOauth2TokenDto getTokensFromKakao(String authorizationCode, String state) {
         if (state.equals(kakaoSignInProperties.getAuthorizeState())) {
             try {
                 RequestEntity<MultiValueMap<String, String>> requestEntity = new RequestEntity<>(
@@ -84,7 +84,7 @@ public class SocialSignInService {
     }
 
     // TODO: 2021-05-03 Mockito 를 통한 테스트 필요
-    private KakaoUserInfoDto getUserInfoFromKakao(KakaoOauth2TokenDto kakaoOauth2TokenDto) {
+    public KakaoUserInfoDto getUserInfoFromKakao(KakaoOauth2TokenDto kakaoOauth2TokenDto) {
         try {
             RequestEntity<Object> requestEntity = new RequestEntity<>(
                     kakaoConfiguration.getUserInfoRequestHeader(kakaoOauth2TokenDto.getAccessToken()),

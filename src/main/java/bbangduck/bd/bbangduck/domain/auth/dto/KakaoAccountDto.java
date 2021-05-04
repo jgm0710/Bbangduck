@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class KakaoAccountDto {
     @JsonProperty("profile_needs_agreement")
-    private String profileNeedsAgreement;
+    private boolean profileNeedsAgreement;
     @JsonProperty("profile")
     private KakaoProfileDto profile;
     @JsonProperty("email_needs_agreement")
@@ -18,7 +18,7 @@ public class KakaoAccountDto {
     private String email;
 
     @Builder
-    public KakaoAccountDto(String profileNeedsAgreement, String nickname, String thumbnailImageUrl, String profileImageUrl, boolean emailNeedsAgreement, boolean isEmailValid, boolean isEmailVerified, String email) {
+    public KakaoAccountDto(boolean profileNeedsAgreement, String nickname, String thumbnailImageUrl, String profileImageUrl, boolean emailNeedsAgreement, boolean isEmailValid, boolean isEmailVerified, String email) {
         this.profileNeedsAgreement = profileNeedsAgreement;
         this.profile = KakaoProfileDto.builder()
                 .nickname(nickname)
@@ -37,5 +37,17 @@ public class KakaoAccountDto {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String toString() {
+        return "KakaoAccountDto{" +
+                "profileNeedsAgreement='" + profileNeedsAgreement + '\'' +
+                ", profile=" + profile +
+                ", emailNeedsAgreement=" + emailNeedsAgreement +
+                ", isEmailValid=" + isEmailValid +
+                ", isEmailVerified=" + isEmailVerified +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
