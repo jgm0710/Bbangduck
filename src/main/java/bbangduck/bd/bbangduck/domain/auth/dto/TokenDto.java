@@ -34,6 +34,10 @@ public class TokenDto {
         this.refreshTokenExpiredDate = refreshTokenExpiredDate;
     }
 
+    public String getTotalAccessToken() {
+        return this.accessToken.getHeader() + "." + this.accessToken.getPayload() + "." + this.accessToken.getSignature();
+    }
+
     @Data
     static class AccessJwtTokenSlicingDto {
         private String header;

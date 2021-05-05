@@ -20,8 +20,12 @@ public class AccountAdapter extends User {
     private Member member;
 
     public AccountAdapter(Member member) {
-        super(member.getEmail(), member.getPassword(), getMemberAuthorities(member.getRoles()));
+        super(member.getEmail(), getMemberPassword(member.getPassword()), getMemberAuthorities(member.getRoles()));
         this.member = member;
+    }
+
+    private static String getMemberPassword(String password) {
+        return password == null ? "" : password;
     }
 
     private static Collection<? extends GrantedAuthority> getMemberAuthorities(Set<MemberRole> roles) {

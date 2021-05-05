@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.global.common;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 public enum ResponseStatus {
 
     MEMBER_SIGN_UP_SUCCESS(2001, " 회원가입에 성공했습니다.", "회원가입에 성공했을 경우"),
+    GET_MEMBER_PROFILE_SUCCESS(2002, "회원 조회에 성공했습니다.", "회원 프로필 조회에 성공했을 경우"),
 
     KAKAO_SIGN_IN_SUCCESS(2101, "카카오 로그인에 성공했습니다.", "카카오 API 를 통한 로그인이 성공했을 경우"),
 
@@ -27,7 +29,9 @@ public enum ResponseStatus {
     SOCIAL_ACCESS_TOKEN_RETRIEVAL_ERROR(4120, "소셜에서 받아온 인가 토큰을 통한 인증 토큰 발급에 실패하였습니다.", "소셜 API 를 통해 받아온 인가 토큰을 통한 인증 토큰 발급이 실패한 경우"),
     SOCIAL_USER_INFO_RETRIEVAL_ERROR(4121, "소셜에서 받아온 인증 토큰을 통한 소셜 회원 정보 조회에 실패하였습니다.", "소셜  API 를 통해 받아온 인증 토큰을 통한 소셜 회원 정보 조회에 실패한 경우"),
     SOCIAL_SIGN_IN_STATE_MISMATCH(4122, "소셜 인가 토큰 요청 시 기입한 state 값이 변형되었습니다.", "소셜 API 를 통한 인가 토큰 요청 시 CSRF 방지를 위해 기입한 state 값이 변형된 경우"),
-    VALIDATION_ERROR(4500, "요청 시 기입 사항이 해당 요청의 규칙에 맞게 기입되지 않았습니다.","API 요청 시 요청 Body 에 기입해야 할 부분이 해당 요청의 Validation 규칙에 맞지 않는 경우")
+    VALIDATION_ERROR(4500, "요청 시 기입 사항이 해당 요청의 규칙에 맞게 기입되지 않았습니다.", "API 요청 시 요청 Body 에 기입해야 할 부분이 해당 요청의 Validation 규칙에 맞지 않는 경우"),
+
+    UNAUTHORIZED(401, "인증되지 않은 사용자가 리소스에 접근하였습니다. 인증 토큰을 다시 확인해 주세요.", "인증이 필요한 리소스 요청 시 헤더에 기입된 인증 토큰이 유효하지 않은 경우")
     ;
 
     private final int status;

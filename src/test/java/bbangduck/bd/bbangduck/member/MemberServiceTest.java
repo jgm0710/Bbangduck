@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.member;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 class MemberServiceTest extends BaseJGMServiceTest {
@@ -38,9 +41,20 @@ class MemberServiceTest extends BaseJGMServiceTest {
         System.out.println("findMember = " + findMember.toString());
 
         //then
-        Assertions.assertEquals(findMember.getId(), member.getId());
-        Assertions.assertEquals(findMember.getEmail(), member.getEmail());
-        Assertions.assertEquals(findMember.getNickname(), member.getNickname());
+        assertEquals(findMember.getId(), member.getId());
+        assertEquals(findMember.getEmail(), member.getEmail());
+        assertEquals(findMember.getNickname(), member.getNickname());
+    }
+
+    @Test
+    @DisplayName("회원 조회 시 회원을 찾을 수 없는 경우")
+    public void getMember_NotFound() {
+        //given
+
+        //when
+
+        //then
+        assertThrows(MemberNotFoundException.class, () -> memberService.getMember(10000L));
     }
 
 }

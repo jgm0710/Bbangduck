@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,14 +18,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * 인증에 대한 Configuration Class
  */
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final AuthenticationEntryPointImpl authenticationEntryPoint;
 
 
     // TODO: 2021-05-02 필요시 주석 해제, 필요 없을 경우 아래 삭제
@@ -51,6 +55,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .anyRequest().permitAll()   //모든 요청 허용
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
         ;

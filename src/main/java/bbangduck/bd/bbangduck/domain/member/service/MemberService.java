@@ -31,4 +31,6 @@ public class MemberService {
         log.debug("findMember : {}", findMember.toString());
         return findMember;
     }
+
+    // TODO: 21. 5. 5. 회원 정보 수정 기능 구현
 }

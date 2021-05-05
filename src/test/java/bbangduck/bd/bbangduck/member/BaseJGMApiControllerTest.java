@@ -27,4 +27,5 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         REFRESH_TOKEN_EXPIRED_DATE = securityJwtProperties.getRefreshTokenExpiredDate();
         memberRepository.deleteAll();
     }
+
 }
