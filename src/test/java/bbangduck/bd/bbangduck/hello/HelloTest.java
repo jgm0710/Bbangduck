@@ -16,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static bbangduck.bd.bbangduck.domain.hello.QHello.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest

@@ -24,6 +24,10 @@ public class AccountAdapter extends User {
         this.member = member;
     }
 
+    public Member getMember() {
+        return member;
+    }
+
     private static String getMemberPassword(String password) {
         return password == null ? "" : password;
     }

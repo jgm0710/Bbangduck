@@ -146,4 +146,8 @@ public class Member extends BaseEntityDateTime {
     public SocialAccount getFirstSocialAccount() {
         return socialAccounts.stream().findFirst().orElse(null);
     }
+
+    public void withdrawal() {
+        this.roles = Set.of(MemberRole.WITHDRAWAL);
+    }
 }

@@ -30,6 +30,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
 
+    private final AccessDeniedHandlerImpl accessDeniedHandler;
+
 
     // TODO: 2021-05-02 필요시 주석 해제, 필요 없을 경우 아래 삭제
 //    @Bean
@@ -57,7 +59,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()   //모든 요청 허용
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint)
+                .authenticationEntryPoint(authenticationEntryPoint) //custom authenticationEntryPoint 등록
+                .accessDeniedHandler(accessDeniedHandler)   //custom accessDeniedHandler 등록
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
         ;

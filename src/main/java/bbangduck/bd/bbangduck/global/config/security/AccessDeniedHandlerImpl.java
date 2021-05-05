@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -20,28 +20,24 @@ import java.io.IOException;
 /**
  * 작성자 : 정구민 <br><br>
  *
- * API 요청 시 인증이 실패할 경우 해당 결과가 AuthenticationEntryPoint 를 통해 관리되는데,
+ * API 요청 시 회원에 대한 인증은 완료되었지만, 해당 API 리소스에 대한 접근 권한을 인가받지 못한 회원이
+ * 리소스에 접근하는 경우 AccessDeniedHandler 를 통해 관리된다.
  * 이에 대한 응답 status code, message 등을 Custom 하게 관리하기 위해 구현한 구현체
  */
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
+public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
     private final ObjectMapper objectMapper;
 
-    // TODO: 21. 5. 5. 인증 실패 테스트 작성
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        log.error("인증 실패 Error 발생!!");
-        log.error("message : "+authException.getMessage());
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        try (ServletOutputStream os = response.getOutputStream()){
-            objectMapper.writeValue(os, new ResponseDto<>(ResponseStatus.UNAUTHORIZED, null));
+        try (ServletOutputStream os = response.getOutputStream()) {
+            objectMapper.writeValue(os,new ResponseDto<>(ResponseStatus.FORBIDDEN, null));
             os.flush();
         }
     }
-
-
 }

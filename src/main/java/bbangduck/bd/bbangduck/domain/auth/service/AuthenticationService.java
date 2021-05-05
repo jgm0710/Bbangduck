@@ -65,6 +65,12 @@ public class AuthenticationService {
         return savedMember.getId();
     }
 
+    @Transactional
+    public void withdrawal(Long memberId) {
+        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        findMember.withdrawal();
+    }
+
     private void checkSignUpDuplicate(Member signUpMember) {
         String signUpMemberEmail = signUpMember.getEmail();
         String signUpMemberNickname = signUpMember.getNickname();

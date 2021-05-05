@@ -16,13 +16,13 @@ import lombok.*;
 @NoArgsConstructor
 public class MemberSignUpResponseDto {
 
-    private MemberDetailDto memberInfo;
+    private MyProfileResponseDto memberInfo;
 
     private TokenDto tokenDto;
 
     public static MemberSignUpResponseDto convert(Member savedMember, TokenDto tokenDto) {
         return MemberSignUpResponseDto.builder()
-                .memberInfo(MemberDetailDto.convert(savedMember))
+                .memberInfo(MyProfileResponseDto.convert(savedMember))
                 .tokenDto(tokenDto)
                 .build();
     }

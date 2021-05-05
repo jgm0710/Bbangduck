@@ -7,6 +7,12 @@ import bbangduck.bd.bbangduck.global.common.exception.ValidationHasErrorExceptio
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원과 관련된 요청 시 요청 Body 를 통해 들어오는 값에 대한 유효성 검증을
+ * 기본 Validation 외에도 진행해야 할 경우를 위해 구현한 Custom Validator
+ */
 @Component
 public class MemberValidator {
 

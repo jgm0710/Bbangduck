@@ -2,7 +2,6 @@ package bbangduck.bd.bbangduck.domain.member.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,7 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberDetailDto {
+public class MyProfileResponseDto {
 
     private Long memberId;
 
@@ -38,8 +37,8 @@ public class MemberDetailDto {
 
     private LocalDateTime updateDate;
 
-    public static MemberDetailDto convert(Member member) {
-        return MemberDetailDto.builder()
+    public static MyProfileResponseDto convert(Member member) {
+        return MyProfileResponseDto.builder()
                 .memberId(member.getId())
                 .email(member.getEmail())
                 .profileImage(MemberProfileImageResponseDto.convert(member.getProfileImage()))
