@@ -16,8 +16,6 @@ import lombok.*;
 @NoArgsConstructor
 public class SocialAccountResponseDto {
 
-    private Long socialAccountId;
-
     private String socialId;
 
     private SocialType socialType;
@@ -28,7 +26,6 @@ public class SocialAccountResponseDto {
         }
 
         return SocialAccountResponseDto.builder()
-                .socialAccountId(socialAccount.getId())
                 .socialId(socialAccount.getSocialId())
                 .socialType(socialAccount.getSocialType())
                 .build();

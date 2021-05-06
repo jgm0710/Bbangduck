@@ -9,12 +9,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static bbangduck.bd.bbangduck.global.common.ModelAndViewObjectName.*;
@@ -28,6 +31,8 @@ import static bbangduck.bd.bbangduck.global.common.ModelAndViewObjectName.*;
 @RequiredArgsConstructor
 @Slf4j
 public class ExceptionHandlerController {
+
+    private ObjectError objectError;
 
     /**
      * 소셜 인증 실패와 관련된 예외를 처리하기 위한 ExceptionHandler
@@ -90,11 +95,36 @@ public class ExceptionHandlerController {
      * Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler
      */
     @ExceptionHandler(ValidationHasErrorException.class)
-    public ResponseEntity<ResponseDto<List<ObjectError>>> validationHasErrorExceptionHandling(ValidationHasErrorException exception) {
-        List<ObjectError> allErrors = exception.getErrors().getAllErrors();
+    public ResponseEntity<ResponseDto<List<ErrorsResponseDto>>> validationHasErrorExceptionHandling(ValidationHasErrorException exception) {
+        Errors errors = exception.getErrors();
+        List<ObjectError> globalErrors = errors.getGlobalErrors();
+        List<FieldError> fieldErrors = errors.getFieldErrors();
+
+        List<ErrorsResponseDto> errorsResponseDtos = new ArrayList<>();
+
+        globalErrors.forEach(globalError -> {
+            ErrorsResponseDto errorsResponseDto = ErrorsResponseDto.builder()
+                    .objectName(globalError.getObjectName())
+                    .code(globalError.getCode())
+                    .defaultMessage(globalError.getDefaultMessage())
+                    .field(null)
+                    .build();
+            errorsResponseDtos.add(errorsResponseDto);
+        });
+
+        fieldErrors.forEach(fieldError -> {
+            ErrorsResponseDto errorsResponseDto = ErrorsResponseDto.builder()
+                    .objectName(fieldError.getObjectName())
+                    .code(fieldError.getCode())
+                    .defaultMessage(fieldError.getDefaultMessage())
+                    .field(fieldError.getField())
+                    .build();
+            errorsResponseDtos.add(errorsResponseDto);
+        });
+
         log.error("Validation Error 발생!!");
-        allErrors.forEach(objectError -> log.error(allErrors.toString()));
-        return ResponseEntity.badRequest().body(new ResponseDto<>(exception.getStatus(), allErrors, exception.getMessage()));
+
+        return ResponseEntity.badRequest().body(new ResponseDto<>(exception.getStatus(), errorsResponseDtos, exception.getMessage()));
     }
 
     // TODO: 2021-05-02 BindingResult 처리 ExceptionHandler 추가

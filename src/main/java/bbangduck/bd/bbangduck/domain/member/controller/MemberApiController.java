@@ -37,7 +37,7 @@ public class MemberApiController {
             @PathVariable Long memberId,
             @CurrentUser Member currentMember
     ) {
-        log.debug("currentMember : "+currentMember.toString());
+        log.debug("currentMember : {}",currentMember.toString());
         Member findMember = memberService.getMember(memberId);
         MyProfileResponseDto myProfileResponseDto = MyProfileResponseDto.convert(findMember);
         // TODO: 2021-05-05 다른 회원의 프로필을 조회할 경우에 대한 처리 추가

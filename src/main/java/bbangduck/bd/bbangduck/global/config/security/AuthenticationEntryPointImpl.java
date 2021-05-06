@@ -19,7 +19,7 @@ import java.io.IOException;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * API 요청 시 인증이 실패할 경우 해당 결과가 AuthenticationEntryPoint 를 통해 관리되는데,
  * 이에 대한 응답 status code, message 등을 Custom 하게 관리하기 위해 구현한 구현체
  */
@@ -30,14 +30,13 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
 
-    // TODO: 21. 5. 5. 인증 실패 테스트 작성
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         log.error("인증 실패 Error 발생!!");
-        log.error("message : "+authException.getMessage());
+        log.error("message : {}", authException.getMessage());
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        try (ServletOutputStream os = response.getOutputStream()){
+        try (ServletOutputStream os = response.getOutputStream()) {
             objectMapper.writeValue(os, new ResponseDto<>(ResponseStatus.UNAUTHORIZED, null));
             os.flush();
         }

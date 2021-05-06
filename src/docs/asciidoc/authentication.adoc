@@ -1,0 +1,78 @@
+= Custom Vocabulary API Guide
+정구민;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+:docinfo: shared-head
+
+[[overview]]
+= 개요
+== link:/docs/index.html[home]
+== 오류 코드
+
+|===
+| 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
+
+| <<resources-sign-up>>
+| 회원가입 시 기입한 Email 이 기존 회원의 Email 과 중복되는 경우
+| 409
+| 4003
+| 해당 Email 을 사용하는 회원이 이미 존재합니다.
+
+| <<resources-sign-up>>
+| 회원가입 시 기입한 Nickname 이 기존 회원의 Nickname 과 중복되는 경우
+| 409
+| 4004
+| 해당 Nickname 을 사용하는 회원이 이미 존재합니다.
+
+| <<resources-sign-up>>
+| 회원가입 시 기입한 Social 인증 정보를 통해 이미 가입한 회원이 존재하는 경우
+| 409
+| 4005
+| 해당 소셜 회원은 이미 가입된 회원입니다.
+
+| <<resources-sign-up-empty>>
+| 회원가입 시 API 스펙에 맞지 않게 요청을 한 경우
+| 400
+| 4002
+| 회원가입 시 기입사항을 올바르게 기입하지 않았습니다.
+
+
+|===
+
+== 히스토리
+
+히스토리는 문서의 변경이력을 표시합니다.
+
+* <<resources-sign-up>> 기능 구현
+    ** 2021-05-06
+
+[[resources]]
+= 회원 인증 관리 리소스
+
+[[resources-sign-up]]
+== 회원가입
+
+[[resources-sign-up-success]]
+=== 회원가입 성공
+
+* 회원가입은 `/api/auth/sign-up` 의 형태로 요청합니다.
+* 요청에 필요한 Body 는 json 타입으로 기입합니다.
+* Email, Nickname 은 모든 회원가입에 대해서 항상 기입해야 합니다.
+* 비밀번호의 경우 Social 인증을 통한 로그인 시 기입하지 않습니다.
+* Social 인증을 통한 회원가입이 아닌 경우 비밀번호를 기입합니다.
+    ** 다만 Social 회원이 아닌 경우에 대한 기능 구현은 아직 계획에 없으므로 해당 문서는 변경될 수 있습니다.
+
+operation::sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-sign-up-empty]]
+=== 회원가입 실패
+
+* 회원가입 시 기입해야 할 사항을 모두 입력하지 않았을 경우에 대한 응답입니다.
+
+operation::sign-up-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']

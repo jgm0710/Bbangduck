@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDateTime;
 
@@ -34,6 +34,7 @@ public class TokenDto {
         this.refreshTokenExpiredDate = refreshTokenExpiredDate;
     }
 
+    @JsonIgnore
     public String getTotalAccessToken() {
         return this.accessToken.getHeader() + "." + this.accessToken.getPayload() + "." + this.accessToken.getSignature();
     }

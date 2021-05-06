@@ -47,7 +47,6 @@
 | `200 OK`
 | 요청을 성공적으로 처리함
 
-
 | `201 Created`
 | 새 리소스를 성공적으로 생성함.
 응답의 `Location` 헤더에 해당 리소스의 URI가 담겨있다.
@@ -67,6 +66,9 @@
 
 | `404 Not Found`
 | 요청한 리소스가 없음.
+
+| `401 Conflict`
+| 요청된 리소스가 현재 서버의 상태와 충돌될 경우.
 |===
 
 == 히스토리
@@ -82,4 +84,5 @@
 리소스를 사용할 수 있습니다.
 
 == link:/docs/index.html[0. home]
+== link:/docs/authentication.html[1. 회원 인증 관리]
 == link:/docs/hello.html[Test Resource]

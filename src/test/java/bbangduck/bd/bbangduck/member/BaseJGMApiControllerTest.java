@@ -22,6 +22,10 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
     protected static int REFRESH_TOKEN_EXPIRED_DATE;
 
+    protected static String STATUS_DESCRIPTION = "요청에 대해 HttpStatus 외에 별도로 응답 상태를 구분하기 위한 상태 값";
+
+    protected static String MESSAGE_DESCRIPTION = "요청에 따른 응답에 대한 간단한 Message";
+
     @BeforeEach
     public void setUp() {
         REFRESH_TOKEN_EXPIRED_DATE = securityJwtProperties.getRefreshTokenExpiredDate();

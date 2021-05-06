@@ -49,14 +49,13 @@ public class SocialSignInService {
 
     public KakaoUserInfoDto connectKakao(String authorizationCode, String state) {
         KakaoOauth2TokenDto kakaoOauth2Token = getTokensFromKakao(authorizationCode, state);
-        log.debug("kakaoOauth2Token = " + kakaoOauth2Token.toString());
+        log.debug("kakaoOauth2Token = {}", kakaoOauth2Token.toString());
         KakaoUserInfoDto kakaoUserInfo = getUserInfoFromKakao(kakaoOauth2Token);
-        log.debug("kakaoUserInfo = " + kakaoUserInfo.toString());
+        log.debug("kakaoUserInfo = {}", kakaoUserInfo.toString());
 
         return kakaoUserInfo;
     }
 
-    // TODO: 2021-05-03 Mockito 를 통한 테스트 필요
     public KakaoOauth2TokenDto getTokensFromKakao(String authorizationCode, String state) {
         if (state.equals(kakaoSignInProperties.getAuthorizeState())) {
             try {
@@ -83,7 +82,6 @@ public class SocialSignInService {
         }
     }
 
-    // TODO: 2021-05-03 Mockito 를 통한 테스트 필요
     public KakaoUserInfoDto getUserInfoFromKakao(KakaoOauth2TokenDto kakaoOauth2TokenDto) {
         try {
             RequestEntity<Object> requestEntity = new RequestEntity<>(

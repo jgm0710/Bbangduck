@@ -7,7 +7,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// TODO: 2021-05-02 회원을 넘기는 것이 아닌 회원 ID 만 넘기도록 처리
 /**
  * 작성자 : 정구민 <br><br>
  *

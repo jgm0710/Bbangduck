@@ -12,6 +12,7 @@ import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -33,6 +34,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
+@Slf4j
 public class AuthApiController {
 
     private final AuthenticationService authenticationService;
@@ -54,6 +56,8 @@ public class AuthApiController {
         TokenDto tokenDto = authenticationService.signIn(savedMemberId);
         MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.convert(savedMember, tokenDto);
         URI uri = linkTo(MemberApiController.class).slash(savedMemberId).toUri();
+        log.info("회원가입 완료!!");
+        log.info("회원가입 기입 정보 : {}", memberSignUpDto);
 
         return ResponseEntity.created(uri).body(new ResponseDto<>(ResponseStatus.MEMBER_SIGN_UP_SUCCESS, memberSignUpResponseDto));
     }
