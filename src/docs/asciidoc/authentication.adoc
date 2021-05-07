@@ -21,25 +21,25 @@
 | <<resources-sign-up>>
 | 회원가입 시 기입한 Email 이 기존 회원의 Email 과 중복되는 경우
 | 409
-| 4003
+| 2403
 | 해당 Email 을 사용하는 회원이 이미 존재합니다.
 
 | <<resources-sign-up>>
 | 회원가입 시 기입한 Nickname 이 기존 회원의 Nickname 과 중복되는 경우
 | 409
-| 4004
+| 2404
 | 해당 Nickname 을 사용하는 회원이 이미 존재합니다.
 
 | <<resources-sign-up>>
 | 회원가입 시 기입한 Social 인증 정보를 통해 이미 가입한 회원이 존재하는 경우
 | 409
-| 4005
+| 2405
 | 해당 소셜 회원은 이미 가입된 회원입니다.
 
 | <<resources-sign-up-empty>>
 | 회원가입 시 API 스펙에 맞지 않게 요청을 한 경우
 | 400
-| 4002
+| 2402
 | 회원가입 시 기입사항을 올바르게 기입하지 않았습니다.
 
 
@@ -89,7 +89,7 @@ operation::sign-up-empty[snippets='request-headers,request-fields,response-field
 === 카카오 계정으로 가입된 회원의 로그인 성공
 
 * 카카오 계정을 통해 인증된 회원이 회원가입이 되어있는 회원일 경우 인증 토큰을 발급합니다.
-    ** 이 때의 status 값은 `2101` 입니다.
+    ** 이 때의 status 값은 `1221` 입니다.
 * 인증 토큰의 경우 Header, Payload, Signature 쪼개어 응답합니다.
 * 해당 응답은 페이지를 응답합니다.
 ** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.
@@ -100,7 +100,7 @@ operation::member-kakao-sign-up-callback[snippets='curl-request,http-response']
 === 카카오 계정으로 가입되지 않은 비회원 로그인 실패
 
 * 카카오 계정을 통해 인증된 회원이 회원가입이 되어있지 않은 회원일 경우 카카오 인증을 통해 넘어온 회원의 정보를 응답합니다.
-** 이 때의 status 값은 `4101` 입니다.
+** 이 때의 status 값은 `1421` 입니다.
 * 응답되는 Data 는 SocialId, Email, Nickname, SocialType 에 대한 정보가 응답됩니다.
 * 해당 응답은 페이지를 응답합니다.
 ** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.

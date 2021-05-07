@@ -9,5 +9,4 @@ public class BbangduckApplication {
     public static void main(String[] args) {
         SpringApplication.run(BbangduckApplication.class, args);
     }
-
 }
