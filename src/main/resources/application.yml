@@ -16,6 +16,11 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: false
+  servlet:
+    multipart:
+      file-size-threshold: 2KB
+      max-file-size: 100MB
+      max-request-size: 115MB
 
 logging:
   level:
@@ -36,9 +41,16 @@ kakao:
       authorize-state: bbangduck7
       scope: profile account_email
 
+
 security:
   jwt:
     jwt-token-header: X-AUTH-TOKEN
     refresh-token-expired-date: 14
     secret-key: bbangduck-jwt-secret-key
     token-valid-second: 30000
+file:
+  storage:
+    original-image-width: 1080
+    original-image-height: 720
+    thumbnail-image-width: 300
+    thumbnail-image-height: 300

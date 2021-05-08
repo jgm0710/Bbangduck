@@ -10,3 +10,8 @@ spring:
   jpa:
     properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
+
+file:
+  storage:
+    upload-path: C:\Users\jgm\Desktop\project\upload\bbangduck
+    thumbnail-prefix: s_
