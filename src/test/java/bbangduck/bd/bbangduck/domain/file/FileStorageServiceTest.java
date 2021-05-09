@@ -33,17 +33,11 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @Autowired
     FileStorageRepository fileStorageRepository;
 
-    protected String imageFileClassPath = "/static/test/puppy.jpg";
-
-    protected String zipFileClassPath = "/static/test/category.zip";
-
-    String htmlFileClassPath = "/static/test/category.html";
-
     @Test
     @DisplayName("파일 저장 테스트")
     public void storeFileTest() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file",imageFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", IMAGE_FILE_CLASS_PATH);
 
         //when
         Long storedFileId = fileStorageService.uploadFile(multipartFile);
@@ -72,7 +66,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @Test
     @DisplayName("파일 저장 시 파일명을 알 수 없는 경우")
     public void storeFile_FileNameIsBlank() throws Exception {
-        ClassPathResource classPathResource = new ClassPathResource(imageFileClassPath);
+        ClassPathResource classPathResource = new ClassPathResource(IMAGE_FILE_CLASS_PATH);
         File file = classPathResource.getFile();
         FileInputStream fileInputStream = new FileInputStream(file);
         MockMultipartFile multipartFile = new MockMultipartFile("file", fileInputStream);
@@ -87,7 +81,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("zip 파일을 업로드할 경우")
     public void storeZipFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", zipFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", ZIP_FILE_CLASS_PATH);
 
         //when
 
@@ -99,7 +93,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("html 파일을 업로드 할 경우")
     public void storeHtmlFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", htmlFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", HTML_FILE_CLASS_PATH);
         //when
         Long storedFileId = fileStorageService.uploadFile(multipartFile);
 
@@ -128,7 +122,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("이미지 파일 업로드")
     public void storeImageFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", imageFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", IMAGE_FILE_CLASS_PATH);
 
         //when
         Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
@@ -158,7 +152,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("이미지 파일 업로드 시 파일이 이미지 파일이 아닌 경우")
     public void storeImageFile_NotImageFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", htmlFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", HTML_FILE_CLASS_PATH);
         //when
 
         //then
@@ -171,7 +165,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("파일 다운로드 테스트")
     public void loadStoredFileAsResource() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", imageFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", IMAGE_FILE_CLASS_PATH);
 
         Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
 
@@ -188,7 +182,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("파일 썸네일 이미지 다운로드 테스트")
     public void loadThumbnailOfStoredImageFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", imageFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", IMAGE_FILE_CLASS_PATH);
 
         Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
 
@@ -207,7 +201,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("파일 썸네일 이미지 다운로드 시 해당 파일이 이미지 파일이 아닌 경우")
     public void loadThumbnailOfStoredImageFile_NotImageFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", htmlFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", HTML_FILE_CLASS_PATH);
 
         Long storedFileId = fileStorageService.uploadFile(multipartFile);
 
@@ -223,7 +217,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("실제 파일이 존재하지 않는 경우 파일 다운로드 테스트")
     public void loadStoredFileAsResource_NotExistFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", imageFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", IMAGE_FILE_CLASS_PATH);
 
         Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
         FileStorage storedFile = fileStorageService.getStoredFile(storedFileId);
@@ -248,7 +242,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("파일 삭제 테스트")
     public void deleteFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", imageFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", IMAGE_FILE_CLASS_PATH);
         Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
         FileStorage storedFile = fileStorageService.getStoredFile(storedFileId);
         String fileName = storedFile.getFileName();
@@ -271,7 +265,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     public void delete_DeletedFile() throws Exception {
         //given
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", imageFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", IMAGE_FILE_CLASS_PATH);
         Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
         FileStorage storedFile = fileStorageService.getStoredFile(storedFileId);
         String fileName = storedFile.getFileName();
@@ -288,7 +282,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
     @DisplayName("실제 존재하지 않는 파일을 삭제하는 경우 테스트")
     public void deleteFile_NotExistFile() throws Exception {
         //given
-        MockMultipartFile multipartFile = createMockMultipartFile("file", imageFileClassPath);
+        MockMultipartFile multipartFile = createMockMultipartFile("file", IMAGE_FILE_CLASS_PATH);
         Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
         FileStorage storedFile = fileStorageService.getStoredFile(storedFileId);
         String fileName = storedFile.getFileName();

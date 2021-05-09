@@ -51,4 +51,14 @@ public class SocialAccount extends BaseEntityDateTime {
     public void setMember(Member member) {
         this.member = member;
     }
+
+    @Override
+    public String toString() {
+        return "SocialAccount{" +
+                "id=" + id +
+                ", socialId='" + socialId + '\'' +
+                ", socialType=" + socialType +
+//                ", member=" + member +
+                '}';
+    }
 }

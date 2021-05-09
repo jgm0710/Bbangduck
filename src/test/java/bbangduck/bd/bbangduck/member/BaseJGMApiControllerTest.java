@@ -3,10 +3,16 @@ package bbangduck.bd.bbangduck.member;
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
+import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mock.web.MockMultipartFile;
+
+import java.io.IOException;
+import java.net.URLConnection;
 
 @Disabled
 public class BaseJGMApiControllerTest extends BaseControllerTest {
@@ -26,10 +32,26 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
     protected static String MESSAGE_DESCRIPTION = "요청에 따른 응답에 대한 간단한 Message";
 
+    protected final String IMAGE_FILE_CLASS_PATH = "/static/test/puppy.jpg";
+
+    protected final String ZIP_FILE_CLASS_PATH = "/static/test/category.zip";
+
+    protected final String HTML_FILE_CLASS_PATH = "/static/test/category.html";
+
+    protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
+
     @BeforeEach
     public void setUp() {
         REFRESH_TOKEN_EXPIRED_DATE = securityJwtProperties.getRefreshTokenExpiredDate();
         memberRepository.deleteAll();
+    }
+
+    protected MockMultipartFile createMockMultipartFile(String paramName, String path) throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource(path);
+        String filename = classPathResource.getFilename();
+        String contentType = URLConnection.guessContentTypeFromName(filename);
+
+        return new MockMultipartFile(paramName, filename, contentType, classPathResource.getInputStream());
     }
 
 }

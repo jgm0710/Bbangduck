@@ -14,23 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AuthenticationServiceTest extends BaseJGMServiceTest {
 
-    @Autowired
-    AuthenticationService authenticationService;
-
-    @Autowired
-    SecurityJwtProperties securityJwtProperties;
-
-    @Autowired
-    MemberService memberService;
-
     @Test
-    @DisplayName("회원가입")
-    public void signUp() {
+    @DisplayName("소셜 회원가입")
+    public void signUp_Social() {
         //given
         MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
                 .email("test@email.com")
@@ -53,6 +43,31 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         SocialAccount findSocialAccount = socialAccounts.stream().filter(socialAccount -> socialAccount.getSocialId().equals(memberSignUpDto.getSocialId())).findFirst().orElseThrow();
         assertEquals(memberSignUpDto.getSocialId(), findSocialAccount.getSocialId());
         assertEquals(memberSignUpDto.getSocialType(), findSocialAccount.getSocialType());
+    }
+
+    @Test
+    @DisplayName("일반 회원가입")
+    public void signUp_Normal() {
+        //given
+        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+                .email("test@email.com")
+                .nickname("testNickname")
+                .password("test")
+                .socialType(null)
+                .socialId(null)
+                .build();
+
+        //when
+        Long signMemberId = authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+
+        //then
+        Member findMember = memberRepository.findById(signMemberId).orElseThrow();
+
+        assertEquals(memberSignUpDto.getEmail(), findMember.getEmail());
+        assertEquals(memberSignUpDto.getNickname(), findMember.getNickname());
+        assertEquals(memberSignUpDto.getPassword(), findMember.getPassword());
+        List<SocialAccount> socialAccounts = findMember.getSocialAccounts();
+        assertTrue(socialAccounts.isEmpty());
     }
 
     @Test

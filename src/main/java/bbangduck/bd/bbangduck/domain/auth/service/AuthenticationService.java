@@ -94,7 +94,7 @@ public class AuthenticationService {
     }
 
     private void checkDuplicateSocialInfo(SocialAccount socialAccount) {
-        if (socialAccount == null) {
+        if (socialAccount == null || socialAccount.getSocialId() == null || socialAccount.getSocialId().isBlank() || socialAccount.getSocialType() == null) {
             return;
         }
 

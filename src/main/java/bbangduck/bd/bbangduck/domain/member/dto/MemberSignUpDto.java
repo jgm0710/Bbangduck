@@ -12,6 +12,9 @@ import java.util.Set;
  *
  * 회원 가입 요청 시 요청 Body 의 데이터를 담기 위한 Dto
  */
+@Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberSignUpDto {
 
@@ -28,15 +31,6 @@ public class MemberSignUpDto {
 
     private String socialId;
 
-    @Builder
-    public MemberSignUpDto(String email, String nickname, String password, SocialType socialType, String socialId) {
-        this.email = email;
-        this.nickname = nickname;
-        this.password = password;
-        this.socialType = socialType;
-        this.socialId = socialId;
-    }
-
     public Member signUp(int refreshTokenExpiredDate) {
         Member member = Member.builder()
                 .email(this.email)
@@ -49,33 +43,15 @@ public class MemberSignUpDto {
                 .roles(Set.of(MemberRole.USER))
                 .build();
 
-        SocialAccount socialAccount = SocialAccount.builder()
-                .socialId(this.socialId)
-                .socialType(this.socialType)
-                .build();
+        if (socialId != null && !socialId.isBlank() && socialType != null) {
+            SocialAccount socialAccount = SocialAccount.builder()
+                    .socialId(this.socialId)
+                    .socialType(this.socialType)
+                    .build();
 
-        member.addSocialAccount(socialAccount);
+            member.addSocialAccount(socialAccount);
+        }
 
         return member;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public SocialType getSocialType() {
-        return socialType;
-    }
-
-    public String getSocialId() {
-        return socialId;
     }
 }
