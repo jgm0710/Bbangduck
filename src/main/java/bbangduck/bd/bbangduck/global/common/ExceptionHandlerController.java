@@ -80,6 +80,9 @@ public class ExceptionHandlerController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
     }
+
+    // TODO: 2021-05-09 InternalServerError Exception Handler 구현
+
     /**
      * 기본적으로 제공되는 Spring Validation 의 Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler
      */
