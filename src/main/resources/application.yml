@@ -54,3 +54,4 @@ file:
     original-image-height: 720
     thumbnail-image-width: 300
     thumbnail-image-height: 300
+    file-cache-second: 60

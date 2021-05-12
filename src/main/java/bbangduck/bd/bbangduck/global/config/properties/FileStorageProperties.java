@@ -19,6 +19,16 @@ public class FileStorageProperties {
 
     private int thumbnailImageHeight;
 
+    private long fileCacheSecond;
+
+    public long getFileCacheSecond() {
+        return fileCacheSecond;
+    }
+
+    public void setFileCacheSecond(long fileCacheSecond) {
+        this.fileCacheSecond = fileCacheSecond;
+    }
+
     public String getUploadPath() {
         return uploadPath;
     }

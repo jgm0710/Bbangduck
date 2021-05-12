@@ -1,0 +1,164 @@
+= Custom Vocabulary API Guide
+정구민;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+:docinfo: shared-head
+
+[[overview]]
+= 개요
+== link:/docs/index.html[home]
+== 오류 코드
+
+|===
+| 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
+| <<resources-upload-image-file>>
+| 인증이 필요한 리소스 요청 시 헤더에 기입된 인증 토큰이 유효하지 않은 경우
+| 401
+| 1401
+| 인증되지 않은 사용자가 리소스에 접근했습니다.
+인증 토큰을 다시 확인해 주세요.
+
+| <<resources-upload-image-file>>
+| 인증은 되었으나 해당 리소스에 대한 접근 권한을 인가받지 못한 사용자일 경우
+| 403
+| 1403
+| 해당 리소스에 접근할 수 없는 회원입니다.
+
+| <<resources-upload-image-file>>
+| 이미지 파일이 아닌 다른 종류의 파일을 업로드 할 경우
+| 400
+| 3406
+| 이미지 파일만 업로드가 가능합니다.
+업로드 파일을 다시 확인해 주시요.
+
+| <<resources-download-file>> / <<resources-display-thumbnail>>
+| 파일을 조회할 때, 데이터베이스에 해당 파일에 대한 정보가 존재하지 않을 경우
+| 404
+| 3407
+| 요청한 파일은 저장되지 않은 파일입니다.
+
+| <<resources-download-file>> / <<resources-display-thumbnail>>
+| 요청된 파일에 대한 정보가 데이터베이스에 저장되어 있으나, 알 수 없는 이유로 실제 파일이 존재하지 않는 경우
+| 500
+| 3408
+| 요청한 파일이 알 수 없는 이유로 실제 존재하지 않습니다.
+
+| <<resources-display-thumbnail>>
+| 썸네일 이미지 요청 시 해당 파일이 이미지 파일이 아닌 경우
+| 400
+| 3410
+| 해당 파일은 이미지 파일이 아니므로, 썸네일 이미지 다운로드 요청이 불가능합니다.
+|===
+
+== 히스토리
+
+히스토리는 문서의 변경이력을 표시합니다.
+
+2021-05-12:::
+* <<resources-upload-image-file>> 기능 구현
+* <<resources-download-file>> 기능 구현
+* <<resources-display-thumbnail>> 기능 구현
+
+[[resources-file-storage]]
+= 파일 관리 리소스
+
+[[resources-upload-image-file]]
+== 이미지 파일 업로드
+
+* `POST` `/api/files/images`
+* 해당 요청은 이미지 파일이 아닌 파일은 업로드가 불가능합니다.
+** 이미지 파일 업로드 시 원본 파일과 썸네일 이미지 파일이 생성되어 저장됩니다.
+*** 이미지의 크기는 설정 파일을 통해 관리합니다. (추후 변경이 가능하도록)
+* `files` 라는 이름으로 파일 업로드를 요청합니다.
+* 파일 업로드의 경우 인증이 필요합니다.
+** 인증되지 않은 사용자 및 탈퇴한 사용자, 활동이 금지된 사용자는 해당 리소스에 접근이 불가능합니다.
+
+[[resources-upload-image-file-success]]
+=== 이미지 파일 업로드 성공
+
+* 업로드 완료 시 응답으로 fileId, fileName, fileDownloadUrl, fileThumbnailDownloadUrl 을 응답합니다.
+** fileId, fileName 은 회원 프로필, 댓글 사진 등록, 테마 사진 등록 등에 필요한 정보입니다.
+** 다운로드 URL 은 편의를 위해 함께 응답합니다.
+
+operation::upload-image-file-success[snippets='request-headers,request-parts,response-fields,curl-request,http-response']
+
+[[resources-download-file]]
+== 파일 다운로드
+
+* `GET` `/api/files/{fileName}`
+* 파일 다운로드 리소스는 별도의 인증을 필요로 하지 않습니다.
+
+[[resources-download-file-success]]
+=== 파일 다운로드 성공
+
+* 파일 다운로드 성공 시 응답 Body 에는 해당 파일을 응답합니다.
+* 응답 헤더에는 Cache-Control 를 통한 파일 캐시 정보와 파일 다운로드 재 요청 시 파일을 다시 다운로드 받지 않도록 하기 위한 Etag 검증 해더를 함께 응답합니다.
+* 이후 파일 다운로드를 다시 요청할 경우  `If-None-Match` 헤더를 통해 Etag 값을 요청 헤더에 실어서 요청합니다.
+
+operation::download-file-success[snippets='response-headers,curl-request,http-response']
+
+[[resources-download-file-if-none-match]]
+=== 파일 다운로드 재요청 (수정 X)
+
+* 파일 다운로드 재요청 시 요청 헤더를 통해 들어온 `If-None-Match` 의 Etag 값을 통해 파일의 수정 여부를 검증합니다.
+* 파일이 수정되지 않았다면, `304 Not Modified` 상태 코드와 Etag, Cache-control 값 등을 응답합니다.
+* 실제 파일은 다운로드 되지 않습니다.
+
+
+operation::download-file-if-none-match[snippets='request-headers,response-headers,curl-request,http-response']
+
+[[resources-download-file-if-match]]
+=== 파일 다운로드 재요청 (수정 O)
+
+* 파일 다운로드 재요청 시 요청 헤더를 통해 들어온 `If-None-Match` 의 Etag 값을 통해 파일의 수정 여부를 검증합니다.
+* 파일이 수정되었다면, 파일을 다시 다운로드 받습니다.
+* 다시 응답으로 재발급된 `Etag` 를 통해서 파일 수정 여부를 검증할 수 있습니다.
+
+operation::download-file-if-match[snippets='request-headers,response-headers,curl-request,http-response']
+
+[[resources-display-thumbnail]]
+== 이미지 파일 썸네일 다운로드
+
+* `GET` `/api/files/images/thumbnails/{fileName}`
+* 이미지 파일 썸네일 다운로드 리소스는 별도의 인증을 필요로 하지 않습니다.
+* 해당 파일이 이미지 파일이 아닌 경우 썸네일을 다운로드 받을 수 없습니다.
+* 전체적인 흐름은 <<resources-download-file>> 와 같습니다.
+
+[[resources-display-thumbnail-success]]
+=== 이미지 파일 썸네일 다운로드 성공
+
+* <<resources-download-file-success>> 과 같은 방식으로 동작합니다.
+
+operation::display-thumbnail-success[snippets='response-headers,curl-request,http-response']
+
+[[resources-display-thumbnail-if-none-match]]
+=== 이미지 파일 썸네일 다운로드 재요청(수정 X)
+
+* <<resources-download-file-if-none-match>> 과 같은 방식으로 동작합니다.
+
+operation::display-thumbnail-if-none-match[snippets='request-headers,response-headers,curl-request,http-response']
+
+[[resources-display-thumbnail-if-match]]
+=== 이미지 파일 썸네일 다운로드 재요청(수정 O)
+
+* <<resources-download-file-if-match>> 과 같은 방식으로 동작합니다.
+
+operation::display-thumbnail-if-match[snippets='request-headers,response-headers,curl-request,http-response']
+
+[[resources-delete-file]]
+== 파일 삭제
+
+* 파일 삭제의 경우 다른 회원이 업로드 한 파일은 삭제할 수 없도록 권한 등에 대한 검증이 필요합니다.
+* 따라서 각 파일에 대한 삭제는 각 도메인별 파일 삭제 기능을 통해 진행합니다.
+
+
+
+
+
+

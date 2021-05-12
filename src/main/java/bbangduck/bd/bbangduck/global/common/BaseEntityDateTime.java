@@ -21,10 +21,10 @@ import java.time.LocalDateTime;
 public abstract class BaseEntityDateTime {
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    protected LocalDateTime registerDate;
 
     @UpdateTimestamp
-    private LocalDateTime updateDate;
+    protected LocalDateTime updateDate;
 
 
     public LocalDateTime getRegisterDate() {

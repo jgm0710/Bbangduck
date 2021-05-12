@@ -1,10 +1,7 @@
 package bbangduck.bd.bbangduck.global.common;
 
 import bbangduck.bd.bbangduck.domain.auth.exception.SocialAuthFailException;
-import bbangduck.bd.bbangduck.global.common.exception.BadRequestException;
-import bbangduck.bd.bbangduck.global.common.exception.ConflictException;
-import bbangduck.bd.bbangduck.global.common.exception.NotFoundException;
-import bbangduck.bd.bbangduck.global.common.exception.ValidationHasErrorException;
+import bbangduck.bd.bbangduck.global.common.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -72,7 +69,7 @@ public class ExceptionHandlerController {
 
     // TODO: 2021-05-03 NotFound Exception Handler 를 사용하는 테스트 코드 작성
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ResponseDto<Object>> NotFoundExceptionHandling(NotFoundException exception) {
+    public ResponseEntity<ResponseDto<Object>> notFoundExceptionHandling(NotFoundException exception) {
         int exceptionStatus = exception.getStatus();
         String exceptionMessage = exception.getMessage();
         log.error("NotFoundException 발생!!");
@@ -82,6 +79,15 @@ public class ExceptionHandlerController {
     }
 
     // TODO: 2021-05-09 InternalServerError Exception Handler 구현
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ResponseEntity<ResponseDto<Object>> internalServerErrorExceptionHandling(InternalServerErrorException exception) {
+        int exceptionStatus = exception.getStatus();
+        String exceptionMessage = exception.getMessage();
+        log.error("InternalServerErrorException 발생!!");
+        log.error(exceptionMessage);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+    }
 
     /**
      * 기본적으로 제공되는 Spring Validation 의 Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler

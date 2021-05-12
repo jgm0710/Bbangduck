@@ -49,6 +49,7 @@ public class FileStorageService {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadPath()).toAbsolutePath().normalize();
     }
 
+    @Transactional
     public Long uploadImageFile(MultipartFile file) {
         log.info("Try store image file");
         if (!isImageType(file.getContentType())) {
@@ -95,7 +96,7 @@ public class FileStorageService {
         } catch (Exception e) {
             log.error("Could not store file");
             e.printStackTrace();
-            throw new FileActualStorageFailUnknownException(ResponseStatus.COULD_NOT_STORE_FILE, ResponseStatus.MEMBER_NOT_FOUND.getMessage() + " File Name : " + fileStoredName);
+            throw new FileActualStorageFailUnknownException(ResponseStatus.COULD_NOT_STORE_FILE, ResponseStatus.COULD_NOT_STORE_FILE.getMessage() + " File Name : " + fileStoredName);
         }
     }
 
@@ -130,8 +131,8 @@ public class FileStorageService {
     public void deleteFile(String fileName) {
         log.info("Try delete file");
         FileStorage storedFile = getStoredFile(fileName);
-        deleteActualFile(storedFile);
         fileStorageRepository.delete(storedFile);
+        deleteActualFile(storedFile);
     }
 
     public void deleteActualFile(FileStorage storedFile) {

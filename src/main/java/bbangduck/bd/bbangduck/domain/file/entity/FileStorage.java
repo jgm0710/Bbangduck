@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -89,4 +90,5 @@ public class FileStorage extends BaseEntityDateTime {
                 ", size=" + size +
                 '}';
     }
+
 }

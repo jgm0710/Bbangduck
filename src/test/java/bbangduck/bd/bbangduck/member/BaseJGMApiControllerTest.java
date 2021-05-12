@@ -2,8 +2,10 @@ package bbangduck.bd.bbangduck.member;
 
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
+import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -26,7 +28,15 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     @Autowired
     protected SecurityJwtProperties securityJwtProperties;
 
+    @Autowired
+    protected FileStorageService fileStorageService;
+
+    @Autowired
+    protected FileStorageProperties fileStorageProperties;
+
     protected static int REFRESH_TOKEN_EXPIRED_DATE;
+
+    protected static String JWT_TOKEN_HEADER_DESCRIPTION = "리소스 접근 시 회원 인증을 위해 필요한 JWT 토큰 인증 헤더";
 
     protected static String STATUS_DESCRIPTION = "요청에 대해 HttpStatus 외에 별도로 응답 상태를 구분하기 위한 상태 값";
 

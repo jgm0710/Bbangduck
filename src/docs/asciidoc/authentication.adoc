@@ -49,18 +49,15 @@
 
 히스토리는 문서의 변경이력을 표시합니다.
 
+2021-05-06:::
 * <<resources-sign-up>> 기능 구현
 * <<resources-kakao-sign-in>> 기능 구현
-** 2021-05-06
 
-[[resources]]
+[[resources-auth]]
 = 회원 인증 관리 리소스
 
 [[resources-sign-up]]
 == 회원가입
-
-[[resources-sign-up-success]]
-=== 회원가입 성공
 
 * `POST` `/api/auth/sign-up`
 * 요청에 필요한 Body 는 json 타입으로 기입합니다.
@@ -68,6 +65,9 @@
 * 비밀번호의 경우 Social 인증을 통한 로그인 시 기입하지 않습니다.
 * Social 인증을 통한 회원가입이 아닌 경우 비밀번호를 기입합니다.
 ** 다만 Social 회원이 아닌 경우에 대한 기능 구현은 아직 계획에 없으므로 해당 문서는 변경될 수 있습니다.
+
+[[resources-sign-up-success]]
+=== 회원가입 성공
 
 operation::sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
@@ -89,7 +89,7 @@ operation::sign-up-empty[snippets='request-headers,request-fields,response-field
 === 카카오 계정으로 가입된 회원의 로그인 성공
 
 * 카카오 계정을 통해 인증된 회원이 회원가입이 되어있는 회원일 경우 인증 토큰을 발급합니다.
-    ** 이 때의 status 값은 `1221` 입니다.
+** 이 때의 status 값은 `1221` 입니다.
 * 인증 토큰의 경우 Header, Payload, Signature 쪼개어 응답합니다.
 * 해당 응답은 페이지를 응답합니다.
 ** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.
