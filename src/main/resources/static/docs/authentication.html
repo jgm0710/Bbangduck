@@ -443,7 +443,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_히스토리">히스토리</a></li>
 </ul>
 </li>
-<li><a href="#resources">회원 인증 관리 리소스</a>
+<li><a href="#resources-auth">회원 인증 관리 리소스</a>
 <ul class="sectlevel1">
 <li><a href="#resources-sign-up">회원가입</a>
 <ul class="sectlevel2">
@@ -555,6 +555,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>히스토리는 문서의 변경이력을 표시합니다.</p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">2021-05-06</dt>
+<dd>
 <div class="ulist">
 <ul>
 <li>
@@ -562,24 +566,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li>
 <p><a href="#resources-kakao-sign-in">카카오 로그인</a> 기능 구현</p>
-<div class="ulist">
-<ul>
-<li>
-<p>2021-05-06</p>
 </li>
 </ul>
 </div>
-</li>
-</ul>
+</dd>
+</dl>
 </div>
 </div>
 </div>
-<h1 id="resources" class="sect0"><a class="link" href="#resources">회원 인증 관리 리소스</a></h1>
+<h1 id="resources-auth" class="sect0"><a class="link" href="#resources-auth">회원 인증 관리 리소스</a></h1>
 <div class="sect1">
 <h2 id="resources-sign-up"><a class="link" href="#resources-sign-up">회원가입</a></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="resources-sign-up-success"><a class="link" href="#resources-sign-up-success">회원가입 성공</a></h3>
 <div class="ulist">
 <ul>
 <li>
@@ -606,6 +604,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
+<div class="sect2">
+<h3 id="resources-sign-up-success"><a class="link" href="#resources-sign-up-success">회원가입 성공</a></h3>
 <div class="sect3">
 <h4 id="resources-sign-up-success_request_headers"><a class="link" href="#resources-sign-up-success_request_headers">Request headers</a></h4>
 <table class="tableblock frame-all grid-all spread">
@@ -808,7 +808,7 @@ Social 인증을 통해 회원가입을 하는 경우 별도의 비밀번호를 
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: http://localhost:8080/api/members/10
+Location: http://localhost:8080/api/members/15
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -822,7 +822,7 @@ Content-Length: 1023
   "status" : 2201,
   "data" : {
     "memberInfo" : {
-      "memberId" : 10,
+      "memberId" : 15,
       "email" : "test@email.com",
       "nickname" : "testNickname",
       "profileImage" : null,
@@ -832,19 +832,19 @@ Content-Length: 1023
       } ],
       "description" : null,
       "reviewCount" : 0,
-      "registerDate" : "2021-05-09T20:09:04.2186028",
-      "updateDate" : "2021-05-09T20:09:04.2186028"
+      "registerDate" : "2021-05-12T23:13:10.5910021",
+      "updateDate" : "2021-05-12T23:13:10.5910021"
     },
     "tokenDto" : {
-      "memberId" : 10,
+      "memberId" : 15,
       "accessToken" : {
         "header" : "eyJhbGciOiJIUzI1NiJ9",
-        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjA1NTg1NDQsImV4cCI6MTYyMDU4ODU0NH0",
-        "signature" : "sFUr79-AmrjSUybJODc9yI2rX-jho060PlbpsCDRtaY"
+        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjA4Mjg3OTAsImV4cCI6MTYyMDg1ODc5MH0",
+        "signature" : "plg_1NJJ4GXpV9wT9dd55cra20IRUbzV4dZWS80E9Ds"
       },
       "accessTokenValidSecond" : 30000,
-      "refreshToken" : "4109de90-9a72-4497-86c0-7bf6c356f195",
-      "refreshTokenExpiredDate" : "2021-05-23T20:09:04.2136168"
+      "refreshToken" : "400a638f-c211-4136-b12b-e4f5577fccd1",
+      "refreshTokenExpiredDate" : "2021-05-26T23:13:10.5860162"
     }
   },
   "message" : " 회원가입에 성공했습니다."
@@ -1119,7 +1119,7 @@ Content-Length: 1019
 
     let status = 1221;
     let message = decodeURIComponent("\uCE74\uCE74\uC624 \uB85C\uADF8\uC778\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4.");
-    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIwNTU4NTM4LCJleHAiOjE2MjA1ODg1Mzh9","signature":"W_H2z6BgpP7PtGU6-ZkU1XJRdA3Kj7K1sHNb0-HpZoo"},"accessTokenValidSecond":30000,"refreshToken":"7ae8f2e7-ab88-4ad1-a66f-da846dddc7c6","refreshTokenExpiredDate":"2021-05-23T20:08:58.335343"};
+    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIwODI4NzgzLCJleHAiOjE2MjA4NTg3ODN9","signature":"jUtm0-KYkIm9cwBJU4Q-910fPP7_FGPeHnaAWinRyzA"},"accessTokenValidSecond":30000,"refreshToken":"e5a4b13c-3a78-4a4e-879c-d489c99e5b5c","refreshTokenExpiredDate":"2021-05-26T23:13:03.553872"};
     callSnsSignIn();
 
     function callSnsSignIn() {
@@ -1221,7 +1221,7 @@ Content-Length: 804
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-08 00:54:22 KST
+Last updated 2021-05-12 21:42:46 KST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
