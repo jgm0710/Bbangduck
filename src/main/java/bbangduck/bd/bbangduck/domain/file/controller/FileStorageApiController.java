@@ -57,7 +57,7 @@ public class FileStorageApiController {
                         return UploadedImageFileResponseDto.convert(storedFile);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
-                        throw new EncodingUnknownException(ResponseStatus.COULD_NOT_STORE_FILE);
+                        throw new EncodingUnknownException(ResponseStatus.URL_ENCODE_ERROR);
                     }
                 }).collect(Collectors.toList());
 

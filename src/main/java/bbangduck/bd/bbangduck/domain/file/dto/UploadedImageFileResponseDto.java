@@ -15,6 +15,13 @@ import java.nio.charset.StandardCharsets;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 업로드된 파일에 대한 정보를 담을 Dto
+ * 파일 정보를 통해 fileDownloadUrl, thumbnailDownloadUrl 정보를 담음
+ */
 @Data
 @Builder
 @AllArgsConstructor

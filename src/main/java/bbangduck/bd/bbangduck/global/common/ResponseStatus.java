@@ -72,6 +72,7 @@ public enum ResponseStatus {
      */
     VALIDATION_ERROR(99411, "요청 시 기입 사항이 해당 요청의 규칙에 맞게 기입되지 않았습니다.", "API 요청 시 요청 Body 에 기입해야 할 부분이 해당 요청의 Validation 규칙에 맞지 않는 경우"),
     MD5_ENCODE_ERROR(99412, "알 수 없는 이유로 MD5 형식의 인코딩에 실패하였습니다.", "Etag 에 사용되는 MD5 인코더를 통한 문자열 인코딩 시 알 수 없는 이유로 예외가 발생한 경우"),
+    URL_ENCODE_ERROR(99413, "알 수 없는 이유로 URL 인코딩에 실패하였습니다.", "URLEncoder 를 통한 인코딩 시 알 수 없는 이유로 예외가 발생한 경우"),
 
     ;
 
