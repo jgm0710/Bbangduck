@@ -9,11 +9,7 @@ import bbangduck.bd.bbangduck.global.common.exception.InternalServerErrorExcepti
  * 실제 저장된 파일을 삭제할 경우 알 수 없는 이유로 인해 실패했을 때 발생할 예외
  */
 public class ActualStoredFileDeleteFailUnknownException extends InternalServerErrorException {
-    public ActualStoredFileDeleteFailUnknownException(ResponseStatus responseStatus) {
-        super(responseStatus);
-    }
-
-    public ActualStoredFileDeleteFailUnknownException(ResponseStatus responseStatus, String message) {
-        super(responseStatus, message);
+    public ActualStoredFileDeleteFailUnknownException() {
+        super(ResponseStatus.FILE_DELETE_FAIL_FOR_UNKNOWN_REASON);
     }
 }

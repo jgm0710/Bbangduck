@@ -31,6 +31,9 @@ public class BaseJGMServiceTest extends BaseTest {
     @Autowired
     protected MemberService memberService;
 
+    @Autowired
+    protected EntityManager em;
+
     protected final String IMAGE_FILE_CLASS_PATH = "/static/test/puppy.jpg";
 
     protected final String ZIP_FILE_CLASS_PATH = "/static/test/category.zip";

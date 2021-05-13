@@ -9,11 +9,7 @@ import bbangduck.bd.bbangduck.global.common.exception.NotFoundException;
  * fileName 이나 fileId 를 통해 Database 에 저장된 파일에 대한 정보를 찾을 수 없는 경우 발생할 예외
  */
 public class StoredFileNotFoundException extends NotFoundException {
-    public StoredFileNotFoundException(ResponseStatus responseStatus) {
-        super(responseStatus);
-    }
-
-    public StoredFileNotFoundException(ResponseStatus responseStatus, String message) {
-        super(responseStatus, message);
+    public StoredFileNotFoundException() {
+        super(ResponseStatus.STORED_FILE_NOT_FOUND_IN_DATABASE);
     }
 }

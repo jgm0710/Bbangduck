@@ -56,11 +56,13 @@ public class FileStorageApiController {
                     try {
                         return UploadedImageFileResponseDto.convert(storedFile);
                     } catch (UnsupportedEncodingException e) {
+                        log.error("URL Encoding Error 발생");
                         e.printStackTrace();
                         throw new EncodingUnknownException(ResponseStatus.URL_ENCODE_ERROR);
                     }
                 }).collect(Collectors.toList());
 
+        log.info("Upload image file success");
         return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.UPLOAD_IMAGE_FILE_SUCCESS, uploadedImageFileResponseDtos));
     }
 
@@ -110,6 +112,7 @@ public class FileStorageApiController {
             String lastModifiedString = lastModified.format(DateTimeFormatter.ISO_DATE_TIME);
             String encode = MD5Utils.encode(lastModifiedString);
 
+            log.info("File download success");
             return ResponseEntity.ok()
                     .contentType(parseContentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
@@ -117,6 +120,7 @@ public class FileStorageApiController {
                     .eTag(encode)
                     .body(resource);
         } catch (Exception e) {
+            log.error("MD5 Encoding error 발생");
             e.printStackTrace();
             throw new EncodingUnknownException(ResponseStatus.MD5_ENCODE_ERROR);
         }

@@ -2,6 +2,8 @@ package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
 import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenExpiredException;
+import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -37,8 +40,10 @@ public class AuthenticationService {
 
     private final MemberQueryRepository memberQueryRepository;
 
+    @Transactional
     public TokenDto signIn(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        findMember.refresh(securityJwtProperties.getRefreshTokenExpiredDate());
         String email = findMember.getEmail();
         List<String> roleNameList = findMember.getRoleNameList();
 
@@ -54,6 +59,33 @@ public class AuthenticationService {
         log.debug("Sign in by memberId");
         log.debug(tokenDto.toString());
 
+        log.info("Sign in success");
+
+        return tokenDto;
+    }
+
+    public TokenDto refresh(String refreshToken) {
+        Member findMember = memberQueryRepository.findByRefreshToken(refreshToken).orElseThrow(RefreshTokenNotFoundException::new);
+
+        LocalDateTime refreshTokenExpiredDate = findMember.getRefreshTokenExpiredDate();
+        if (refreshTokenExpiredDate.isBefore(LocalDateTime.now())) {
+            throw new RefreshTokenExpiredException();
+        }
+
+        String email = findMember.getEmail();
+        List<String> roleNameList = findMember.getRoleNameList();
+
+        String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
+        TokenDto tokenDto = TokenDto.builder()
+                .memberId(findMember.getId())
+                .accessToken(jwtToken)
+                .accessTokenValidSecond(securityJwtProperties.getTokenValidSecond())
+                .refreshToken(findMember.getRefreshToken())
+                .refreshTokenExpiredDate(findMember.getRefreshTokenExpiredDate())
+                .build();
+
+        log.info("Refresh sign in success");
+
         return tokenDto;
     }
 
@@ -65,6 +97,7 @@ public class AuthenticationService {
         return savedMember.getId();
     }
 
+    // TODO: 2021-05-13 회원탈퇴 기능 테스트
     @Transactional
     public void withdrawal(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);

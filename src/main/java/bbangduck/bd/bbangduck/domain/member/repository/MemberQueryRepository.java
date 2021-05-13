@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.QMember;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+
+import static bbangduck.bd.bbangduck.domain.member.entity.QMember.*;
 import static bbangduck.bd.bbangduck.domain.member.entity.QSocialAccount.socialAccount;
 
 
@@ -33,5 +36,13 @@ public class MemberQueryRepository {
                 ).fetchFirst();
 
         return Optional.ofNullable(member);
+    }
+
+    public Optional<Member> findByRefreshToken(String refreshToken) {
+        Member member = queryFactory
+                .selectFrom(QMember.member)
+                .where(QMember.member.refreshInfo.refreshToken.eq(refreshToken))
+                .fetchFirst();
+        return Optional.of(member);
     }
 }

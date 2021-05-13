@@ -56,7 +56,6 @@ public class ExceptionHandlerController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
     }
 
-    // TODO: 2021-05-03 BadRequest Exception Handler 를 사용하는 테스트 코드 작성
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ResponseDto<Object>> badRequestExceptionHandling(BadRequestException exception) {
         int exceptionStatus = exception.getStatus();
@@ -67,7 +66,6 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
     }
 
-    // TODO: 2021-05-03 NotFound Exception Handler 를 사용하는 테스트 코드 작성
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ResponseDto<Object>> notFoundExceptionHandling(NotFoundException exception) {
         int exceptionStatus = exception.getStatus();
@@ -78,7 +76,6 @@ public class ExceptionHandlerController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
     }
 
-    // TODO: 2021-05-09 InternalServerError Exception Handler 구현
     @ExceptionHandler(InternalServerErrorException.class)
     public ResponseEntity<ResponseDto<Object>> internalServerErrorExceptionHandling(InternalServerErrorException exception) {
         int exceptionStatus = exception.getStatus();
@@ -88,6 +85,8 @@ public class ExceptionHandlerController {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
     }
+
+    // TODO: 2021-05-13 UnauthorizedExceptionHandler 구현
 
     /**
      * 기본적으로 제공되는 Spring Validation 의 Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler

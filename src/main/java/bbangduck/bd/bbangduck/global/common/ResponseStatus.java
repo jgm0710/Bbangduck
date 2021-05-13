@@ -22,6 +22,7 @@ public enum ResponseStatus {
      * 시작 코드 1
      */
     KAKAO_SIGN_IN_SUCCESS(1221, "카카오 로그인에 성공했습니다.", "카카오 API 를 통한 로그인이 성공했을 경우"),
+    REFRESH_SIGN_IN_SUCCESS(1222, "Refresh Token 을 통한 Access Token 재발급에 성공했습니다.", "Refresh Token 을 통한 Access Token 재발급에 성공했을 경우"),
 
     UNAUTHORIZED(1401, "인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.", "인증이 필요한 리소스 요청 시 헤더에 기입된 인증 토큰이 유효하지 않은 경우"),
     FORBIDDEN(1403, "해당 리소스에 접근할 수 없는 회원입니다.", "인증은 되었으나 해당 리소스에 대한 접근 권한을 인가받지 못한 사용자일 경우"),
@@ -31,6 +32,11 @@ public enum ResponseStatus {
     SOCIAL_SIGN_IN_STATE_MISMATCH(1413, "소셜 인가 토큰 요청 시 기입한 state 값이 변형되었습니다.", "소셜 API 를 통한 인가 토큰 요청 시 CSRF 방지를 위해 기입한 state 값이 변형된 경우"),
 
     KAKAO_USER_NOT_FOUND(1421, "해당 카카오 계정으로 가입된 회원이 존재하지 않습니다.", "카카오 로그인 시점에 해당 카카오 계정으로 회원가입을 진행하지 않은 회원인 경우"),
+
+    REFRESH_NOT_VALID(1431, "Access Token 재발급에 필요한 Refresh Token 을 기입해 주세요.", "Access Token 재발급 요청 시 필요한 Refresh Token 을 기입하지 않은 경우"),
+    REFRESH_TOKEN_NOT_FOUND(1432, "해당 Refresh Token 을 통한 Access Token 재발급이 불가능합니다.", "요청을 통해 들어온 Refresh Token 을 통한 회원 조회에 실패했을 경우"),
+    REFRESH_TOKEN_EXPIRED(1433, "Refresh Token 의 유효기간이 만료되었습니다.", "Access Token 재발급 요청 시 Refresh Token 의 유효기간이 만료된 경우"),
+
 
     /**
      * 회원 관련 응답 코드
@@ -54,7 +60,7 @@ public enum ResponseStatus {
 //    DELETE_FILE_SUCCESS(3202, "파일 삭제에 성공했습니다.", "파일 삭제에 성공한 경우"),
 
     DENIED_FILE_EXTENSION(3401, "업로드를 요청한 파일의 파일 확장자는 업로드 거부 대상입니다.", "파일 업로드 시 실행 파일 등을 업로드하는 경우"),
-    ORIGINAL_FILE_IS_BLANK(3402, "업로드를 요청한 파일의 파일명을 알 수 없습니다. 다시 확인해 주세요.", "업로드를 시도한 파일의 원본 파일명이 NULL 인 경우"),
+    ORIGINAL_FILE_NAME_IS_BLANK(3402, "업로드를 요청한 파일의 파일명을 알 수 없습니다. 다시 확인해 주세요.", "업로드를 시도한 파일의 원본 파일명이 NULL 인 경우"),
     FILE_NAME_CONTAINS_WRONG_PATH(3403, "업로드를 요청한 파일의 이름에 잘 못된 경로가 포함되어 있어 업로드에 실패했습니다.", "업로드를 시도한 파일의 파일명이 .. 등을 포함한 경우"),
     COULD_NOT_STORE_FILE(3404, "업로드를 요청한 파일을 저장하는데 실패했습니다. 다시 시도해 주세요.", "알 수 없는 이유로 업로드 요청된 파일 저장에 실패한 경우"),
     COULD_NOT_CREATE_DIRECTORY(3405, "업로드 된 파일이 저장 될 디렉토리를 만들 수 없습니다.", "알 수 없는 이유로 설정된 파일 경로에 디렉토리를 생성할 수 없을 경우"),

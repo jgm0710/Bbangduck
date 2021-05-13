@@ -3,7 +3,6 @@ package bbangduck.bd.bbangduck.domain.file.service;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.file.exception.*;
 import bbangduck.bd.bbangduck.domain.file.repository.FileStorageRepository;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnailator;
@@ -54,7 +53,7 @@ public class FileStorageService {
         log.info("Try store image file");
         if (!isImageType(file.getContentType())) {
             log.error("File is not image file, so file upload fail");
-            throw new FileUploadBadRequestException(ResponseStatus.UPLOAD_NOT_IMAGE_FILE);
+            throw new UploadFileNotImageFileException();
         }
 
         log.info("Try store image file");
@@ -73,7 +72,7 @@ public class FileStorageService {
         try {
             if (fileStoredName.contains("..")) {
                 log.error("File name contains \"..\"");
-                throw new FileUploadBadRequestException(ResponseStatus.FILE_NAME_CONTAINS_WRONG_PATH, ResponseStatus.FILE_NAME_CONTAINS_WRONG_PATH.getMessage() + " File Name : " + fileStoredName);
+                throw new FileNameContainsWrongPathException(fileStoredName);
             }
 
             if (isImageType(file.getContentType())) {
@@ -96,7 +95,7 @@ public class FileStorageService {
         } catch (Exception e) {
             log.error("Could not store file");
             e.printStackTrace();
-            throw new FileActualStorageFailUnknownException(ResponseStatus.COULD_NOT_STORE_FILE, ResponseStatus.COULD_NOT_STORE_FILE.getMessage() + " File Name : " + fileStoredName);
+            throw new CouldNotStoreFileUnknownException(fileStoredName);
         }
     }
 
@@ -119,7 +118,7 @@ public class FileStorageService {
 
         if (!isImageType(storedFile.getFileType())) {
             log.error("Thumbnails of non-image files cannot be downloaded");
-            throw new StoredFileDownloadBadRequestException(ResponseStatus.DOWNLOAD_THUMBNAIL_OF_NON_IMAGE_FILE);
+            throw new DownloadThumbnailOfNonImageFileException();
         }
 
         String thumbnailPrefix = fileStorageProperties.getThumbnailPrefix();
@@ -152,21 +151,21 @@ public class FileStorageService {
         } catch (IOException e) {
             log.error("File delete fail for unknown reason");
             e.printStackTrace();
-            throw new ActualStoredFileDeleteFailUnknownException(ResponseStatus.FILE_DELETE_FAIL_FOR_UNKNOWN_REASON);
+            throw new ActualStoredFileDeleteFailUnknownException();
         }
     }
 
     public FileStorage getStoredFile(String fileName) {
         return fileStorageRepository.findByFileName(fileName).orElseThrow(() -> {
             log.error("File lookup through the file name failed");
-            throw new StoredFileNotFoundException(ResponseStatus.STORED_FILE_NOT_FOUND_IN_DATABASE);
+            throw new StoredFileNotFoundException();
         });
     }
 
     public FileStorage getStoredFile(Long fileId) {
         return fileStorageRepository.findById(fileId).orElseThrow(() ->{
             log.error("File lookup through the file id failed");
-            throw new StoredFileNotFoundException(ResponseStatus.STORED_FILE_NOT_FOUND_IN_DATABASE);
+            throw new StoredFileNotFoundException();
         });
     }
 
@@ -182,12 +181,12 @@ public class FileStorageService {
                 return urlResource;
             } else {
                 log.error("The requested file does not actually exist, File name : {}, Upload path : {}", fileName, uploadPath);
-                throw new ActualStoredFileDownloadFailUnknownException(ResponseStatus.STORED_FILE_NOT_EXIST);
+                throw new ActualStoredFileNotExistException();
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
             log.error("An unknown error occurred while converting the file to a resource");
-            throw new ActualStoredFileDownloadFailUnknownException(ResponseStatus.FILE_DOWNLOAD_FAIL_FOR_UNKNOWN_REASON);
+            throw new FileDownloadFailForUnknownReasonException();
         }
     }
 
@@ -247,7 +246,7 @@ public class FileStorageService {
         } catch (Exception e) {
             log.error("Could not create today directory");
             e.printStackTrace();
-            throw new FileActualStorageFailUnknownException(ResponseStatus.COULD_NOT_CREATE_DIRECTORY);
+            throw new CouldNotCreateDirectoryUnknownException();
         }
         return finalFileStorageLocation;
     }
@@ -256,7 +255,7 @@ public class FileStorageService {
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || originalFilename.isBlank()) {
             log.error("Original file name is blank");
-            throw new FileUploadBadRequestException(ResponseStatus.ORIGINAL_FILE_IS_BLANK);
+            throw new OriginalFileNameIsBlankException();
         }
         return originalFilename;
     }
@@ -268,7 +267,7 @@ public class FileStorageService {
                 DENIED_FILE_EXTENSION) {
             if (lowFileName.endsWith(dfe)) {
                 log.error("File extension is denied extension");
-                throw new FileUploadBadRequestException(ResponseStatus.DENIED_FILE_EXTENSION);
+                throw new DeniedFileExtensionException();
             }
         }
     }

@@ -1,5 +1,7 @@
 package bbangduck.bd.bbangduck.member;
 
+import bbangduck.bd.bbangduck.domain.auth.dto.OnlyRefreshTokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -406,6 +408,54 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                         )
                 ))
         ;
+
+    }
+
+    @Test
+    @DisplayName("Refresh 성공")
+    public void refresh_Success() throws Exception {
+        //given
+        MemberSignUpDto memberSignUpDto = createMemberSignUpDto();
+        Long signUpMemberId = authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+
+        TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
+        OnlyRefreshTokenDto onlyRefreshTokenDto = new OnlyRefreshTokenDto(tokenDto.getRefreshToken());
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(onlyRefreshTokenDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.REFRESH_SIGN_IN_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.REFRESH_SIGN_IN_SUCCESS.getMessage()))
+        ;
+    }
+
+    @Test
+    @DisplayName("Refresh 토큰을 통한 회원 조회 실패")
+    public void refresh_NotFound() {
+        //given
+
+        //when
+
+        //then
+
+    }
+
+    @Test
+    @DisplayName("Refresh 토큰의 유효 기간이 만료된 경우")
+    public void refresh_Expired() {
+        //given
+
+        //when
+
+        //then
 
     }
 
