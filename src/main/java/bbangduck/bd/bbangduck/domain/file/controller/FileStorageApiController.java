@@ -2,11 +2,12 @@ package bbangduck.bd.bbangduck.domain.file.controller;
 
 import bbangduck.bd.bbangduck.domain.file.dto.UploadedImageFileResponseDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
+import bbangduck.bd.bbangduck.global.common.exception.MD5EncodingUnknownException;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.global.common.MD5Utils;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.global.common.exception.EncodingUnknownException;
+import bbangduck.bd.bbangduck.global.common.exception.URLEncodingUnknownException;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +59,7 @@ public class FileStorageApiController {
                     } catch (UnsupportedEncodingException e) {
                         log.error("URL Encoding Error 발생");
                         e.printStackTrace();
-                        throw new EncodingUnknownException(ResponseStatus.URL_ENCODE_ERROR);
+                        throw new URLEncodingUnknownException();
                     }
                 }).collect(Collectors.toList());
 
@@ -122,7 +123,7 @@ public class FileStorageApiController {
         } catch (Exception e) {
             log.error("MD5 Encoding error 발생");
             e.printStackTrace();
-            throw new EncodingUnknownException(ResponseStatus.MD5_ENCODE_ERROR);
+            throw new MD5EncodingUnknownException();
         }
     }
 

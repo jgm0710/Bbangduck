@@ -3,13 +3,21 @@ package bbangduck.bd.bbangduck.member;
 import bbangduck.bd.bbangduck.domain.auth.dto.OnlyRefreshTokenDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.entity.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -439,23 +447,61 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
     @Test
     @DisplayName("Refresh 토큰을 통한 회원 조회 실패")
-    public void refresh_NotFound() {
+    public void refresh_NotFound() throws Exception {
         //given
 
+        OnlyRefreshTokenDto onlyRefreshTokenDto = new OnlyRefreshTokenDto("fjewiofndsklfnldska");
+
         //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(onlyRefreshTokenDto))
+        ).andDo(print());
 
         //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.REFRESH_TOKEN_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.REFRESH_TOKEN_NOT_FOUND.getMessage()))
+        ;
 
     }
 
     @Test
     @DisplayName("Refresh 토큰의 유효 기간이 만료된 경우")
-    public void refresh_Expired() {
+    public void refresh_Expired() throws Exception {
         //given
+        RefreshInfo refreshInfo = RefreshInfo.builder()
+                .refreshToken(UUID.randomUUID().toString())
+                .refreshTokenExpiredDate(LocalDateTime.now().minusDays(1))
+                .build();
+
+        Member member = Member.builder()
+                .email("test@email.com")
+                .nickname("test")
+                .password("test")
+                .refreshInfo(refreshInfo)
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        Long signUpMemberId = authenticationService.signUp(member);
+        OnlyRefreshTokenDto onlyRefreshTokenDto = new OnlyRefreshTokenDto(refreshInfo.getRefreshToken());
 
         //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(onlyRefreshTokenDto))
+        ).andDo(print());
 
         //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.REFRESH_TOKEN_EXPIRED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.REFRESH_TOKEN_EXPIRED.getMessage()));
 
     }
 

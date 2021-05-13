@@ -43,6 +43,6 @@ public class MemberQueryRepository {
                 .selectFrom(QMember.member)
                 .where(QMember.member.refreshInfo.refreshToken.eq(refreshToken))
                 .fetchFirst();
-        return Optional.of(member);
+        return Optional.ofNullable(member);
     }
 }

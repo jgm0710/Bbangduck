@@ -36,6 +36,9 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     @Autowired
     protected FileStorageProperties fileStorageProperties;
 
+    @Autowired
+    protected MemberService memberService;
+
     protected static int REFRESH_TOKEN_EXPIRED_DATE;
 
     protected static String JWT_TOKEN_HEADER_DESCRIPTION = "리소스 접근 시 회원 인증을 위해 필요한 JWT 토큰 인증 헤더";

@@ -1,10 +1,7 @@
 package bbangduck.bd.bbangduck.domain.file;
 
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.file.exception.FileUploadBadRequestException;
-import bbangduck.bd.bbangduck.domain.file.exception.StoredFileDownloadBadRequestException;
-import bbangduck.bd.bbangduck.domain.file.exception.ActualStoredFileDownloadFailUnknownException;
-import bbangduck.bd.bbangduck.domain.file.exception.StoredFileNotFoundException;
+import bbangduck.bd.bbangduck.domain.file.exception.*;
 import bbangduck.bd.bbangduck.domain.file.repository.FileStorageRepository;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
@@ -74,7 +71,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(FileUploadBadRequestException.class, () -> fileStorageService.uploadFile(multipartFile));
+        assertThrows(OriginalFileNameIsBlankException.class, () -> fileStorageService.uploadFile(multipartFile));
     }
 
     @Test
@@ -86,7 +83,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(FileUploadBadRequestException.class, () -> fileStorageService.uploadFile(multipartFile));
+        assertThrows(DeniedFileExtensionException.class, () -> fileStorageService.uploadFile(multipartFile));
     }
 
     @Test
@@ -156,7 +153,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(FileUploadBadRequestException.class, () -> fileStorageService.uploadImageFile(multipartFile));
+        assertThrows(UploadFileNotImageFileException.class, () -> fileStorageService.uploadImageFile(multipartFile));
 
 
     }
@@ -209,7 +206,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
 
         //then
         FileStorage storedFile = fileStorageService.getStoredFile(storedFileId);
-        assertThrows(StoredFileDownloadBadRequestException.class, () -> fileStorageService.loadThumbnailOfStoredImageFile(storedFile.getFileName()));
+        assertThrows(DownloadThumbnailOfNonImageFileException.class, () -> fileStorageService.loadThumbnailOfStoredImageFile(storedFile.getFileName()));
 
     }
 
@@ -235,7 +232,7 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(ActualStoredFileDownloadFailUnknownException.class, () ->fileStorageService.loadStoredFileAsResource(storedFile.getFileName()));
+        assertThrows(ActualStoredFileNotExistException.class, () ->fileStorageService.loadStoredFileAsResource(storedFile.getFileName()));
     }
 
     @Test
@@ -255,9 +252,9 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
         assertThrows(StoredFileNotFoundException.class, () -> fileStorageService.getStoredFile(fileName));
         assertThrows(StoredFileNotFoundException.class, () -> fileStorageService.loadStoredFileAsResource(fileName));
         assertThrows(StoredFileNotFoundException.class, () -> fileStorageService.loadThumbnailOfStoredImageFile(fileName));
-        assertThrows(ActualStoredFileDownloadFailUnknownException.class, () -> fileStorageService.getResource(storedFile.getFileName(), storedFile.getUploadPathString()));
+        assertThrows(ActualStoredFileNotExistException.class, () -> fileStorageService.getResource(storedFile.getFileName(), storedFile.getUploadPathString()));
         String thumbnailPrefix = fileStorageProperties.getThumbnailPrefix();
-        assertThrows(ActualStoredFileDownloadFailUnknownException.class, () -> fileStorageService.getResource(storedFile.getThumbnailImageFileName(thumbnailPrefix), storedFile.getUploadPathString()));
+        assertThrows(ActualStoredFileNotExistException.class, () -> fileStorageService.getResource(storedFile.getThumbnailImageFileName(thumbnailPrefix), storedFile.getUploadPathString()));
     }
 
     @Test
@@ -296,9 +293,9 @@ class FileStorageServiceTest extends BaseJGMServiceTest {
         assertThrows(StoredFileNotFoundException.class, () -> fileStorageService.getStoredFile(fileName));
         assertThrows(StoredFileNotFoundException.class, () -> fileStorageService.loadStoredFileAsResource(fileName));
         assertThrows(StoredFileNotFoundException.class, () -> fileStorageService.loadThumbnailOfStoredImageFile(fileName));
-        assertThrows(ActualStoredFileDownloadFailUnknownException.class, () -> fileStorageService.getResource(storedFile.getFileName(), storedFile.getUploadPathString()));
+        assertThrows(ActualStoredFileNotExistException.class, () -> fileStorageService.getResource(storedFile.getFileName(), storedFile.getUploadPathString()));
         String thumbnailPrefix = fileStorageProperties.getThumbnailPrefix();
-        assertThrows(ActualStoredFileDownloadFailUnknownException.class, () -> fileStorageService.getResource(storedFile.getThumbnailImageFileName(thumbnailPrefix), storedFile.getUploadPathString()));
+        assertThrows(ActualStoredFileNotExistException.class, () -> fileStorageService.getResource(storedFile.getThumbnailImageFileName(thumbnailPrefix), storedFile.getUploadPathString()));
 
     }
 }

@@ -87,6 +87,15 @@ public class ExceptionHandlerController {
     }
 
     // TODO: 2021-05-13 UnauthorizedExceptionHandler 구현
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ResponseDto<Object>> unauthorizedExceptionHandling(UnauthorizedException exception) {
+        int exceptionStatus = exception.getStatus();
+        String exceptionMessage = exception.getMessage();
+        log.error("UnauthorizedException 발생!!");
+        log.error(exceptionMessage);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+    }
 
     /**
      * 기본적으로 제공되는 Spring Validation 의 Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler
