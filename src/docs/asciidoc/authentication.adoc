@@ -36,7 +36,7 @@
 | 2405
 | 해당 소셜 회원은 이미 가입된 회원입니다.
 
-| <<resources-sign-up-empty>>
+| <<resources-social-sign-up-empty>>
 | 회원가입 시 API 스펙에 맞지 않게 요청을 한 경우
 | 400
 | 2402
@@ -53,30 +53,31 @@
 * <<resources-sign-up>> 기능 구현
 * <<resources-kakao-sign-in>> 기능 구현
 
+2021-5-15:::
+* <<resources-sign-up>>
+** 소셜 회원가입 요청 분리
+** 추후 일반회원 가입 구현 시 일반 회원가입 요청 추가
+
 [[resources-auth]]
 = 회원 인증 관리 리소스
 
 [[resources-sign-up]]
 == 회원가입
 
-* `POST` `/api/auth/sign-up`
+* `POST` `/api/auth/social/sign-up`
 * 요청에 필요한 Body 는 json 타입으로 기입합니다.
-* Email, Nickname 은 모든 회원가입에 대해서 항상 기입해야 합니다.
-* 비밀번호의 경우 Social 인증을 통한 로그인 시 기입하지 않습니다.
-* Social 인증을 통한 회원가입이 아닌 경우 비밀번호를 기입합니다.
-** 다만 Social 회원이 아닌 경우에 대한 기능 구현은 아직 계획에 없으므로 해당 문서는 변경될 수 있습니다.
 
-[[resources-sign-up-success]]
-=== 회원가입 성공
+[[resources-social-sign-up-success]]
+=== 소셜 회원가입 성공
 
-operation::sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::social-sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
-[[resources-sign-up-empty]]
-=== 회원가입 실패
+[[resources-social-sign-up-empty]]
+=== 소셜 회원가입 실패
 
 * 회원가입 시 기입해야 할 사항을 모두 입력하지 않았을 경우에 대한 응답입니다.
 
-operation::sign-up-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::social-sign-up-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 [[resources-kakao-sign-in]]
 == 카카오 로그인

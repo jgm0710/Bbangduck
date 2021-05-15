@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,17 +24,24 @@ public class MemberProfileImage {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String fileDownloadUrl;
+    private Long fileId;
 
-    private String fileThumbnailDownloadUrl;
-
+    private String fileName;
 
     @Builder
-    protected MemberProfileImage(Long id, Member member, String fileDownloadUrl, String fileThumbnailDownloadUrl) {
+    protected MemberProfileImage(Long id, Member member, Long fileId, String fileName) {
         this.id = id;
         this.member = member;
-        this.fileDownloadUrl = fileDownloadUrl;
-        this.fileThumbnailDownloadUrl = fileThumbnailDownloadUrl;
+        this.fileId = fileId;
+        this.fileName = fileName;
+    }
+
+    public static MemberProfileImage create(MemberProfileImageDto profileImageDto) {
+        return MemberProfileImage.builder()
+                .member(null)
+                .fileId(profileImageDto.getFileId())
+                .fileName(profileImageDto.getFileName())
+                .build();
     }
 
     public Long getId() {
@@ -44,15 +52,25 @@ public class MemberProfileImage {
         return member;
     }
 
-    public String getFileDownloadUrl() {
-        return fileDownloadUrl;
+    public Long getFileId() {
+        return fileId;
     }
 
-    public String getFileThumbnailDownloadUrl() {
-        return fileThumbnailDownloadUrl;
+    public String getFileName() {
+        return fileName;
     }
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    @Override
+    public String toString() {
+        return "MemberProfileImage{" +
+                "id=" + id +
+//                ", member=" + member +
+                ", fileId=" + fileId +
+                ", fileName='" + fileName + '\'' +
+                '}';
     }
 }

@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.member.service;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,10 @@ public class MemberService {
         return findMember;
     }
 
-    // TODO: 21. 5. 5. 회원 정보 수정 기능 구현
+    @Transactional
+    public void updateMember(Long memberId, MemberUpdateDto updateDto) {
+        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        findMember.updateProfile(updateDto);
+    }
+
 }

@@ -1,21 +1,19 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.KakaoAuthorizationCodeConfiguration;
-import bbangduck.bd.bbangduck.domain.auth.dto.KakaoUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.KakaoUserInfoDto;
 import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.web.client.RestTemplate;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -82,15 +80,14 @@ class SocialAuthApiControllerTest extends BaseJGMApiControllerTest {
         String socialId = "1698118160";
         String nickname = "정구민";
 
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email(email)
                 .nickname(nickname)
-                .password(null)
                 .socialType(SocialType.KAKAO)
                 .socialId(socialId)
                 .build();
 
-        authenticationService.signUp(memberSignUpDto.signUp(REFRESH_TOKEN_EXPIRED_DATE));
+        authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         KakaoUserInfoDto kakaoUserInfo = KakaoUserInfoDto.builder()
                 .id(socialId)

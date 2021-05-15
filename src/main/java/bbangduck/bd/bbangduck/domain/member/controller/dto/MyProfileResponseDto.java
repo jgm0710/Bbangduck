@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.member.dto;
+package bbangduck.bd.bbangduck.domain.member.controller.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
@@ -33,6 +33,8 @@ public class MyProfileResponseDto {
 
     private int reviewCount;
 
+    private boolean roomEscapeRecordVisible;
+
     private LocalDateTime registerDate;
 
     private LocalDateTime updateDate;
@@ -46,6 +48,7 @@ public class MyProfileResponseDto {
                 .nickname(member.getNickname())
                 .description(member.getDescription())
                 .reviewCount(member.getReviewCount())
+                .roomEscapeRecordVisible(member.isRoomEscapeRecordVisible())
                 .registerDate(member.getRegisterDate())
                 .updateDate(member.getUpdateDate())
                 .build();

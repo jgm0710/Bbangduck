@@ -3,7 +3,7 @@ package bbangduck.bd.bbangduck.member;
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -69,11 +69,10 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return new MockMultipartFile(paramName, filename, contentType, classPathResource.getInputStream());
     }
 
-    protected MemberSignUpDto createMemberSignUpDto() {
-        return MemberSignUpDto.builder()
+    protected MemberSocialSignUpRequestDto createMemberSignUpDto() {
+        return MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("testNickname")
-                .password("")
                 .socialType(SocialType.KAKAO)
                 .socialId("3123213")
                 .build();

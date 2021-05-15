@@ -1,9 +1,10 @@
 package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
-import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenExpiredException;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenNotFoundException;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
@@ -35,6 +36,15 @@ public class AuthenticationService {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final MemberRepository memberRepository;
+
+    @Transactional
+    public Long signUp(MemberSignUpDto signUpDto) {
+        Member signUpMember = Member.signUp(signUpDto, securityJwtProperties.getRefreshTokenExpiredDate());
+        checkSignUpDuplicate(signUpMember);
+        Member savedMember = memberRepository.save(signUpMember);
+        log.debug("savedMember : {}", savedMember);
+        return savedMember.getId();
+    }
 
     private final SecurityJwtProperties securityJwtProperties;
 
@@ -87,14 +97,6 @@ public class AuthenticationService {
         log.info("Refresh sign in success");
 
         return tokenDto;
-    }
-
-    @Transactional
-    public Long signUp(Member signUpMember) {
-        checkSignUpDuplicate(signUpMember);
-        Member savedMember = memberRepository.save(signUpMember);
-        log.debug("savedMember : {}", savedMember);
-        return savedMember.getId();
     }
 
     // TODO: 2021-05-13 회원탈퇴 기능 테스트

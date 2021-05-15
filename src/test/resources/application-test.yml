@@ -14,4 +14,3 @@ spring:
 file:
   storage:
     upload-path: C:\Users\jgm\Desktop\project\upload\bbangduck
-    thumbnail-prefix: s_

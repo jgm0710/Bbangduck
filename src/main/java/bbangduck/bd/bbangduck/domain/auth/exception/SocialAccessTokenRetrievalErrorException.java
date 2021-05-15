@@ -2,7 +2,7 @@ package bbangduck.bd.bbangduck.domain.auth.exception;
 
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import bbangduck.bd.bbangduck.domain.auth.dto.SocialAuthFailResponseAdaptor;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.SocialAuthFailResponseAdaptorDto;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -13,7 +13,7 @@ public class SocialAccessTokenRetrievalErrorException extends SocialAuthFailExce
     public SocialAccessTokenRetrievalErrorException(SocialType socialType) {
         super(
                 ResponseStatus.SOCIAL_ACCESS_TOKEN_RETRIEVAL_ERROR,
-                SocialAuthFailResponseAdaptor.exchangeOnlySocialType(socialType)
+                SocialAuthFailResponseAdaptorDto.exchangeOnlySocialType(socialType)
         );
     }
 }

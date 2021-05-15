@@ -1,5 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
+import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberUpdateDto;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.*;
 
@@ -30,7 +32,7 @@ public class Member extends BaseEntityDateTime {
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "member")
-    private MemberProfileImage profileImage;
+    private MemberProfileImage profileImage = null;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<SocialAccount> socialAccounts = new ArrayList<>();
@@ -40,6 +42,9 @@ public class Member extends BaseEntityDateTime {
     private String description;
 
     private int reviewCount;
+
+    // TODO: 2021-05-13 방탈출 공개 여부 코드에 반영
+    private boolean roomEscapeRecordVisible;
 
     @Embedded
     private RefreshInfo refreshInfo;
@@ -63,15 +68,47 @@ public class Member extends BaseEntityDateTime {
 
 
     @Builder
-    public Member(String email, String password, MemberProfileImage profileImage, String nickname, String description, int reviewCount,Set<MemberRole> roles, RefreshInfo refreshInfo) {
+    public Member(String email, String password, String nickname, String description, int reviewCount,Set<MemberRole> roles, boolean roomEscapeRecordVisible, RefreshInfo refreshInfo) {
         this.email = email;
         this.password = password;
-        this.profileImage = profileImage;
         this.nickname = nickname;
         this.description = description;
         this.reviewCount = reviewCount;
+        this.roomEscapeRecordVisible = roomEscapeRecordVisible;
         this.refreshInfo = refreshInfo;
         this.roles = roles;
+    }
+
+    public static Member signUp(MemberSignUpDto signUpServiceDto, int refreshTokenExpiredDate) {
+        Member member = Member.builder()
+                .email(signUpServiceDto.getEmail())
+                .nickname(signUpServiceDto.getNickname())
+                .password(signUpServiceDto.getPassword())
+                .description(null)
+                .reviewCount(0)
+                .roomEscapeRecordVisible(true)
+                .refreshInfo(RefreshInfo.init(refreshTokenExpiredDate))
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        String socialId = signUpServiceDto.getSocialId();
+        SocialType socialType = signUpServiceDto.getSocialType();
+
+        if (socialId != null && !socialId.isBlank() && socialType != null) {
+            SocialAccount socialAccount = SocialAccount.builder()
+                    .socialId(signUpServiceDto.getSocialId())
+                    .socialType(signUpServiceDto.getSocialType())
+                    .build();
+
+            member.addSocialAccount(socialAccount);
+        }
+
+        return member;
+    }
+
+    public void setProfileImage(MemberProfileImage profileImage) {
+        this.profileImage = profileImage;
+        profileImage.setMember(this);
     }
 
     public Long getId() {
@@ -125,13 +162,20 @@ public class Member extends BaseEntityDateTime {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
 //                ", profileImage=" + profileImage +
-//                ", socialAccountList=" + socialAccountList +
+//                ", socialAccounts=" + socialAccounts +
                 ", nickname='" + nickname + '\'' +
                 ", description='" + description + '\'' +
                 ", reviewCount=" + reviewCount +
-//                ", refreshInfo=" + refreshInfo +
+                ", roomEscapeRecordVisible=" + roomEscapeRecordVisible +
+                ", refreshInfo=" + refreshInfo +
                 ", roles=" + roles +
+                ", registerDate=" + registerDate +
+                ", updateDate=" + updateDate +
                 '}';
+    }
+
+    public boolean isRoomEscapeRecordVisible() {
+        return roomEscapeRecordVisible;
     }
 
     public List<String> getRoleNameList() {
@@ -153,5 +197,12 @@ public class Member extends BaseEntityDateTime {
 
     public void refresh(int refreshTokenExpiredDate) {
         this.refreshInfo = RefreshInfo.init(refreshTokenExpiredDate);
+    }
+
+    public void updateProfile(MemberUpdateDto modifyDto) {
+        this.nickname = modifyDto.getNickname();
+        this.description = modifyDto.getDescription();
+        MemberProfileImage newProfileImage = MemberProfileImage.create(modifyDto.getProfileImageDto());
+        setProfileImage(newProfileImage);
     }
 }
