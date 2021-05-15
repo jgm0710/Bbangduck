@@ -56,3 +56,4 @@ file:
     thumbnail-image-height: 300
     file-cache-second: 60
     thumbnail-prefix: s_
+    upload-path: C:\bbangduck\upload
