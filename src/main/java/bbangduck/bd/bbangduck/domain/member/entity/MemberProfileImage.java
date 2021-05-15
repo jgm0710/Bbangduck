@@ -24,22 +24,22 @@ public class MemberProfileImage {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private Long fileId;
+    private Long fileStorageId;
 
     private String fileName;
 
     @Builder
-    protected MemberProfileImage(Long id, Member member, Long fileId, String fileName) {
+    protected MemberProfileImage(Long id, Member member, Long fileStorageId, String fileName) {
         this.id = id;
         this.member = member;
-        this.fileId = fileId;
+        this.fileStorageId = fileStorageId;
         this.fileName = fileName;
     }
 
     public static MemberProfileImage create(MemberProfileImageDto profileImageDto) {
         return MemberProfileImage.builder()
                 .member(null)
-                .fileId(profileImageDto.getFileId())
+                .fileStorageId(profileImageDto.getFileStorageId())
                 .fileName(profileImageDto.getFileName())
                 .build();
     }
@@ -52,8 +52,8 @@ public class MemberProfileImage {
         return member;
     }
 
-    public Long getFileId() {
-        return fileId;
+    public Long getFileStorageId() {
+        return fileStorageId;
     }
 
     public String getFileName() {
@@ -69,7 +69,7 @@ public class MemberProfileImage {
         return "MemberProfileImage{" +
                 "id=" + id +
 //                ", member=" + member +
-                ", fileId=" + fileId +
+                ", fileId=" + fileStorageId +
                 ", fileName='" + fileName + '\'' +
                 '}';
     }

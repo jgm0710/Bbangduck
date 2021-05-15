@@ -16,13 +16,16 @@ public class MemberUpdateDto {
 
     private String description;
 
+    private boolean roomEscapeRecordsOpenYN;
+
     private MemberProfileImageDto profileImageDto;
 
 
     @Builder
-    public MemberUpdateDto(String nickname, String description, MemberProfileImageDto profileImageDto) {
+    public MemberUpdateDto(String nickname, String description,boolean roomEscapeRecordsOpenYN, MemberProfileImageDto profileImageDto) {
         this.nickname = nickname;
         this.description = description;
+        this.roomEscapeRecordsOpenYN = roomEscapeRecordsOpenYN;
         this.profileImageDto = profileImageDto;
     }
 
@@ -36,5 +39,9 @@ public class MemberUpdateDto {
 
     public MemberProfileImageDto getProfileImageDto() {
         return profileImageDto;
+    }
+
+    public boolean isRoomEscapeRecordsOpenYN() {
+        return roomEscapeRecordsOpenYN;
     }
 }

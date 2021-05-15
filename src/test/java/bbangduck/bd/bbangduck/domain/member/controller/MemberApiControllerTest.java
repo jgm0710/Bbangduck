@@ -189,7 +189,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadedFileId);
 
         MemberProfileImageRequestDto memberProfileImageRequestDto = MemberProfileImageRequestDto.builder()
-                .fileId(storedFile.getId())
+                .fileStorageId(storedFile.getId())
                 .fileName(storedFile.getFileName())
                 .build();
 

@@ -48,6 +48,13 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         SocialAccount findSocialAccount = socialAccounts.stream().filter(socialAccount -> socialAccount.getSocialId().equals(memberSocialSignUpRequestDto.getSocialId())).findFirst().orElseThrow();
         assertEquals(memberSocialSignUpRequestDto.getSocialId(), findSocialAccount.getSocialId());
         assertEquals(memberSocialSignUpRequestDto.getSocialType(), findSocialAccount.getSocialType());
+        assertTrue(findMember.isRoomEscapeRecordsOpenYN(), "회원가입 시 방탈출 공개 여부는 기본적으로 true 여야 한다.");
+        MemberProfileImage profileImage = findMember.getProfileImage();
+        assertNull(profileImage, "회원가입 시 프로필 이미지 정보는 null 이어야 한다.");
+        assertNull(findMember.getDescription(), "회원가입 시 자기소개는 null 이어야 한다.");
+        assertNotNull(findMember.getRefreshToken(), "회원가입 시 Refresh Token 도 저장되어 있어야 한다.");
+        assertNotNull(findMember.getRefreshTokenExpiredDate());
+
     }
 
     @Test

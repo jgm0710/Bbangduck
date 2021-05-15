@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberProfileImageRequestDto {
 
-    private Long fileId;
+    private Long fileStorageId;
 
     private String fileName;
 
     public MemberProfileImageDto toServiceDto() {
         return MemberProfileImageDto.builder()
-                .fileId(fileId)
+                .fileStorageId(fileStorageId)
                 .fileName(fileName)
                 .build();
     }

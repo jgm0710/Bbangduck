@@ -90,7 +90,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
         assertEquals(updateDto.getDescription(), modifiedMember.getDescription());
 
         MemberProfileImage profileImage = modifiedMember.getProfileImage();
-        assertEquals(updateDto.getProfileImageId(), profileImage.getFileId());
+        assertEquals(updateDto.getProfileImageId(), profileImage.getFileStorageId());
         assertEquals(updateDto.getProfileImageName(), profileImage.getFileName());
     }
 

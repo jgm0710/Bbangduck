@@ -39,6 +39,8 @@ public class MyProfileResponseDto {
 
     private LocalDateTime updateDate;
 
+    // TODO: 2021-05-15 자기 프로필 응답 손보기
+    // TODO: 2021-05-15 다른 회원의 프로필 조회 응답 Dto 구현
     public static MyProfileResponseDto convert(Member member) {
         return MyProfileResponseDto.builder()
                 .memberId(member.getId())
@@ -47,8 +49,7 @@ public class MyProfileResponseDto {
                 .socialAccounts(convertSocialAccounts(member.getSocialAccounts()))
                 .nickname(member.getNickname())
                 .description(member.getDescription())
-                .reviewCount(member.getReviewCount())
-                .roomEscapeRecordVisible(member.isRoomEscapeRecordVisible())
+                .roomEscapeRecordVisible(member.isRoomEscapeRecordsOpenYN())
                 .registerDate(member.getRegisterDate())
                 .updateDate(member.getUpdateDate())
                 .build();

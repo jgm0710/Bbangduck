@@ -41,10 +41,7 @@ public class Member extends BaseEntityDateTime {
 
     private String description;
 
-    private int reviewCount;
-
-    // TODO: 2021-05-13 방탈출 공개 여부 코드에 반영
-    private boolean roomEscapeRecordVisible;
+    private boolean roomEscapeRecordsOpenYN;
 
     @Embedded
     private RefreshInfo refreshInfo;
@@ -68,13 +65,12 @@ public class Member extends BaseEntityDateTime {
 
 
     @Builder
-    public Member(String email, String password, String nickname, String description, int reviewCount,Set<MemberRole> roles, boolean roomEscapeRecordVisible, RefreshInfo refreshInfo) {
+    public Member(String email, String password, String nickname, String description, Set<MemberRole> roles, boolean roomEscapeRecordsOpenYN, RefreshInfo refreshInfo) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.description = description;
-        this.reviewCount = reviewCount;
-        this.roomEscapeRecordVisible = roomEscapeRecordVisible;
+        this.roomEscapeRecordsOpenYN = roomEscapeRecordsOpenYN;
         this.refreshInfo = refreshInfo;
         this.roles = roles;
     }
@@ -85,8 +81,7 @@ public class Member extends BaseEntityDateTime {
                 .nickname(signUpServiceDto.getNickname())
                 .password(signUpServiceDto.getPassword())
                 .description(null)
-                .reviewCount(0)
-                .roomEscapeRecordVisible(true)
+                .roomEscapeRecordsOpenYN(true)
                 .refreshInfo(RefreshInfo.init(refreshTokenExpiredDate))
                 .roles(Set.of(MemberRole.USER))
                 .build();
@@ -139,10 +134,6 @@ public class Member extends BaseEntityDateTime {
         return description;
     }
 
-    public int getReviewCount() {
-        return reviewCount;
-    }
-
     public String getRefreshToken() {
         return refreshInfo.getRefreshToken();
     }
@@ -165,8 +156,7 @@ public class Member extends BaseEntityDateTime {
 //                ", socialAccounts=" + socialAccounts +
                 ", nickname='" + nickname + '\'' +
                 ", description='" + description + '\'' +
-                ", reviewCount=" + reviewCount +
-                ", roomEscapeRecordVisible=" + roomEscapeRecordVisible +
+                ", roomEscapeRecordsOpenYN=" + roomEscapeRecordsOpenYN +
                 ", refreshInfo=" + refreshInfo +
                 ", roles=" + roles +
                 ", registerDate=" + registerDate +
@@ -174,8 +164,8 @@ public class Member extends BaseEntityDateTime {
                 '}';
     }
 
-    public boolean isRoomEscapeRecordVisible() {
-        return roomEscapeRecordVisible;
+    public boolean isRoomEscapeRecordsOpenYN() {
+        return roomEscapeRecordsOpenYN;
     }
 
     public List<String> getRoleNameList() {
@@ -202,6 +192,7 @@ public class Member extends BaseEntityDateTime {
     public void updateProfile(MemberUpdateDto modifyDto) {
         this.nickname = modifyDto.getNickname();
         this.description = modifyDto.getDescription();
+        this.roomEscapeRecordsOpenYN = modifyDto.isRoomEscapeRecordsOpenYN();
         MemberProfileImage newProfileImage = MemberProfileImage.create(modifyDto.getProfileImageDto());
         setProfileImage(newProfileImage);
     }

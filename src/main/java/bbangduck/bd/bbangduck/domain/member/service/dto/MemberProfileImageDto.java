@@ -12,18 +12,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberProfileImageDto {
 
-    private Long fileId;
+    private Long fileStorageId;
 
     private String fileName;
 
     @Builder
-    public MemberProfileImageDto(Long fileId, String fileName) {
-        this.fileId = fileId;
+    public MemberProfileImageDto(Long fileStorageId, String fileName) {
+        this.fileStorageId = fileStorageId;
         this.fileName = fileName;
     }
 
-    public Long getFileId() {
-        return fileId;
+    public Long getFileStorageId() {
+        return fileStorageId;
     }
 
     public String getFileName() {

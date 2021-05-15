@@ -26,12 +26,12 @@ public class MemberUpdateProfileRequestDto {
     private String description;
 
     @NotNull(message = "방탈출 공개 여부를 지정해 주세요.")
-    private boolean roomEscapeRecordVisible;
+    private boolean roomEscapeRecordsOpenYN;
 
     private MemberProfileImageRequestDto profileImage;
 
     public Long getProfileImageId() {
-        return profileImage.getFileId();
+        return profileImage.getFileStorageId();
     }
 
     public String getProfileImageName() {
@@ -42,6 +42,7 @@ public class MemberUpdateProfileRequestDto {
         return MemberUpdateDto.builder()
                 .nickname(this.nickname)
                 .description(this.description)
+                .roomEscapeRecordsOpenYN(roomEscapeRecordsOpenYN)
                 .profileImageDto(profileImage.toServiceDto())
                 .build();
     }
