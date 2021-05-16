@@ -129,6 +129,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         //then
         assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSignUpDto2.signUp(securityJwtProperties.getRefreshTokenExpiredDate())));
 
+
     }
 
     @Test
