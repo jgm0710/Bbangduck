@@ -20,7 +20,7 @@ public class MemberProfileImage {
     @Column(name = "member_profile_image_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

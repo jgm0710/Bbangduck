@@ -21,7 +21,6 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URLConnection;
 
-@Transactional
 @Disabled
 public class BaseJGMServiceTest extends BaseTest {
     @Autowired
@@ -75,6 +74,8 @@ public class BaseJGMServiceTest extends BaseTest {
                 .nickname("홍길동")
                 .description("새로 적는 자기 소개")
                 .profileImage(new MemberProfileImageRequestDto(fileId, fileName))
+                .roomEscapeRecordsOpenYN(false)
                 .build();
     }
+
 }

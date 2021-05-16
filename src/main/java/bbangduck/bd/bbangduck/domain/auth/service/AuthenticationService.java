@@ -8,11 +8,9 @@ import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberDuplicateException;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.exception.*;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -111,20 +109,20 @@ public class AuthenticationService {
         String signUpMemberNickname = signUpMember.getNickname();
         SocialAccount signUpMemberSocialAccount = signUpMember.getFirstSocialAccount();
 
-        checkDuplicateEmails(signUpMemberEmail);
+        checkDuplicateEmail(signUpMemberEmail);
         checkDuplicateNickname(signUpMemberNickname);
         checkDuplicateSocialInfo(signUpMemberSocialAccount);
     }
 
     private void checkDuplicateNickname(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()) {
-            throw new MemberDuplicateException(ResponseStatus.MEMBER_NICKNAME_DUPLICATE);
+            throw new MemberNicknameDuplicateException(nickname);
         }
     }
 
-    private void checkDuplicateEmails(String email) {
+    private void checkDuplicateEmail(String email) {
         if (memberRepository.findByEmail(email).isPresent()) {
-            throw new MemberDuplicateException(ResponseStatus.MEMBER_EMAIL_DUPLICATE);
+            throw new MemberEmailDuplicateException(email);
         }
     }
 
@@ -137,7 +135,7 @@ public class AuthenticationService {
         String socialId = socialAccount.getSocialId();
 
         if (memberQueryRepository.findBySocialTypeAndSocialId(socialType, socialId).isPresent()) {
-            throw new MemberDuplicateException(ResponseStatus.MEMBER_SOCIAL_INFO_DUPLICATE);
+            throw new MemberSocialInfoDuplicateException(socialType, socialId);
         }
     }
 

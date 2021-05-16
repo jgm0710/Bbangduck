@@ -8,6 +8,9 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberSocialInfoDuplicateException;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -131,9 +134,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_EMAIL_DUPLICATE.getMessage()))
-                .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_EMAIL_DUPLICATE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(new MemberEmailDuplicateException(memberSocialSignUpRequestDto2.getEmail()).getMessage()))
         ;
 
     }
@@ -170,9 +173,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_NICKNAME_DUPLICATE.getMessage()))
-                .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_NICKNAME_DUPLICATE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(new MemberNicknameDuplicateException(memberSocialSignUpRequestDto2.getNickname()).getMessage()))
         ;
 
     }
@@ -212,7 +215,8 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_SOCIAL_INFO_DUPLICATE.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_SOCIAL_INFO_DUPLICATE.getMessage()))
+                .andExpect(jsonPath("message")
+                        .value(new MemberSocialInfoDuplicateException(memberSocialSignUpRequestDto2.getSocialType(), memberSocialSignUpRequestDto2.getSocialId()).getMessage()))
         ;
 
     }

@@ -20,7 +20,7 @@ public class ReviewPerceivedThemeGenre {
     @Column(name = "review_perceived_theme_genre_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     private Review review;
 

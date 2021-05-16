@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -79,6 +80,9 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
         em.flush();
 
+        Member savedMember = memberService.getMember(savedMemberId);
+        assertTrue(savedMember.isRoomEscapeRecordsOpenYN(), "회원가입 기본 방탈출 기록 공개는 true");
+
         //when
         memberService.updateMember(savedMemberId, updateDto.toServiceDto());
         em.flush();
@@ -92,6 +96,8 @@ class MemberServiceTest extends BaseJGMServiceTest {
         MemberProfileImage profileImage = modifiedMember.getProfileImage();
         assertEquals(updateDto.getProfileImageId(), profileImage.getFileStorageId());
         assertEquals(updateDto.getProfileImageName(), profileImage.getFileName());
+        assertEquals(updateDto.isRoomEscapeRecordsOpenYN(), modifiedMember.isRoomEscapeRecordsOpenYN());
+
     }
 
     @Test
@@ -110,6 +116,28 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
         //then
         assertThrows(MemberNotFoundException.class, () -> memberService.updateMember(100000L, modifyDto.toServiceDto()));
+
+    }
+
+    @Test
+    @DisplayName("회원 프로필 수정 시 다른 회원의 닉네임과 중복되는 경우")
+    public void updateMember_NicknameDuplicate() throws Exception {
+        //given
+
+        //when
+
+        //then
+
+    }
+
+    @Test
+    @DisplayName("회원 프로필 수정 시 닉네임을 변경하지 않은 경우")
+    public void updateMember_NicknameNotUpdate() throws Exception {
+        //given
+
+        //when
+
+        //then
 
     }
 

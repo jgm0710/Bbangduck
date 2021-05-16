@@ -24,11 +24,11 @@ public class Review {
     @Column(name = "review_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
@@ -58,4 +58,63 @@ public class Review {
 
     private String problemConfigurationSatisfaction;
 
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Theme getTheme() {
+        return theme;
+    }
+
+    public ReviewType getReviewType() {
+        return reviewType;
+    }
+
+    public LocalTime getClearTime() {
+        return clearTime;
+    }
+
+    public int getHintUsageCount() {
+        return hintUsageCount;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public List<ReviewImage> getReviewImages() {
+        return reviewImages;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getPerceivedDifficulty() {
+        return perceivedDifficulty;
+    }
+
+    public String getPerceivedHorrorGrade() {
+        return perceivedHorrorGrade;
+    }
+
+    public String getPerceivedActivity() {
+        return perceivedActivity;
+    }
+
+    public String getScenarioSatisfaction() {
+        return scenarioSatisfaction;
+    }
+
+    public String getInteriorSatisfaction() {
+        return interiorSatisfaction;
+    }
+
+    public String getProblemConfigurationSatisfaction() {
+        return problemConfigurationSatisfaction;
+    }
 }

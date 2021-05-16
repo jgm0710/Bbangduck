@@ -1,26 +1,29 @@
 package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenExpiredException;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenNotFoundException;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.*;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberSocialInfoDuplicateException;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest extends BaseJGMServiceTest {
@@ -40,7 +43,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         Long signMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         //then
-        Member findMember = memberRepository.findById(signMemberId).orElseThrow();
+        Member findMember = memberService.getMember(signMemberId);
 
         assertEquals(memberSocialSignUpRequestDto.getEmail(), findMember.getEmail());
         assertEquals(memberSocialSignUpRequestDto.getNickname(), findMember.getNickname());
@@ -72,7 +75,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         Long signMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         //then
-        Member findMember = memberRepository.findById(signMemberId).orElseThrow();
+        Member findMember = memberService.getMember(signMemberId);
 
         assertEquals(memberSocialSignUpRequestDto.getEmail(), findMember.getEmail());
         assertEquals(memberSocialSignUpRequestDto.getNickname(), findMember.getNickname());
@@ -102,7 +105,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSocialSignUpRequestDto2.toServiceDto()));
+        assertThrows(MemberEmailDuplicateException.class, () -> authenticationService.signUp(memberSocialSignUpRequestDto2.toServiceDto()));
 
     }
 
@@ -128,7 +131,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSocialSignUpRequestDto2.toServiceDto()));
+        assertThrows(MemberNicknameDuplicateException.class, () -> authenticationService.signUp(memberSocialSignUpRequestDto2.toServiceDto()));
 
     }
 
@@ -154,7 +157,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(MemberDuplicateException.class, () -> authenticationService.signUp(memberSocialSignUpRequestDto2.toServiceDto()));
+        assertThrows(MemberSocialInfoDuplicateException.class, () -> authenticationService.signUp(memberSocialSignUpRequestDto2.toServiceDto()));
 
     }
 
@@ -178,7 +181,8 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         //then
         System.out.println("refreshedTokenDto = " + refreshedTokenDto);
         assertEquals(tokenDto.getRefreshToken(), refreshedTokenDto.getRefreshToken());
-        assertEquals(tokenDto.getRefreshTokenExpiredDate(), refreshedTokenDto.getRefreshTokenExpiredDate());
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd/hh/mm/ss");
+        assertEquals(tokenDto.getRefreshTokenExpiredDate().format(dateTimeFormatter), refreshedTokenDto.getRefreshTokenExpiredDate().format(dateTimeFormatter));
         assertEquals(tokenDto.getAccessTokenValidSecond(), refreshedTokenDto.getAccessTokenValidSecond());
     }
 
@@ -194,6 +198,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     }
 
+    @Transactional
     @Test
     @DisplayName("Refresh Token 의 유효기간이 만료됐을 경우")
     public void refresh_Expired(@Mock MemberSignUpDto memberSignUpDto) {
@@ -222,6 +227,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     }
 
+    @Transactional
     @Test
     @DisplayName("로그인 Refresh Token 갱신 테스트")
     public void signIn_refreshToken_refresh(@Mock MemberSignUpDto memberSignUpDto) {

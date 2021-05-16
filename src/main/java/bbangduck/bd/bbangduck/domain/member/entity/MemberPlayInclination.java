@@ -21,7 +21,7 @@ public class MemberPlayInclination extends BaseEntityDateTime {
     @Column(name = "member_play_inclination_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

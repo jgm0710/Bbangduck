@@ -3,15 +3,19 @@ package bbangduck.bd.bbangduck.domain.member.repository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.QMember;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.review.entity.QReview;
+import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
 import static bbangduck.bd.bbangduck.domain.member.entity.QMember.*;
 import static bbangduck.bd.bbangduck.domain.member.entity.QSocialAccount.socialAccount;
+import static bbangduck.bd.bbangduck.domain.review.entity.QReview.*;
 
 
 /**
@@ -44,5 +48,23 @@ public class MemberQueryRepository {
                 .where(QMember.member.refreshInfo.refreshToken.eq(refreshToken))
                 .fetchFirst();
         return Optional.ofNullable(member);
+    }
+
+    public void test(Long memberId, Long reviewId) {
+        Review review = queryFactory
+                .select(QReview.review)
+                .from(QReview.review)
+                .join(member).fetchJoin()
+                .where(QReview.review.id.eq(reviewId))
+                .fetchFirst();
+
+        queryFactory
+                .selectFrom(QReview.review)
+                .where(QReview.review.member.id.eq(memberId));
+
+        Member member = review.getMember();
+        member.getId();
+        member.getNickname();
+        member.getEmail();
     }
 }

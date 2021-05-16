@@ -7,6 +7,7 @@ import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberProfileImageReq
 import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileRequestDto;
 import bbangduck.bd.bbangduck.domain.member.controller.dto.MyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -219,8 +220,18 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
         MvcResult mvcResult = perform.andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        MyProfileResponseDto myProfileResponseDto = objectMapper.readValue(contentAsString, MyProfileResponseDto.class);
+        ResponseDto responseDto = objectMapper.readValue(contentAsString, ResponseDto.class);
+        String responseData = objectMapper.writeValueAsString(responseDto.getData());
+        MyProfileResponseDto myProfileResponseDto = objectMapper.readValue(responseData, MyProfileResponseDto.class);
         System.out.println("myProfileResponseDto = " + myProfileResponseDto);
+
+        String profileImageUrl = myProfileResponseDto.getProfileImage().getProfileImageUrl();
+
+        mockMvc.perform(
+                get(profileImageUrl)
+        ).andDo(print())
+                .andExpect(status().isOk())
+        ;
     }
 
     @Test

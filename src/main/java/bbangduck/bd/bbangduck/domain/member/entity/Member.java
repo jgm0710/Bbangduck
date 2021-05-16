@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.entity;
 
 import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.*;
 
@@ -31,7 +32,7 @@ public class Member extends BaseEntityDateTime {
 
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "member")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "member", fetch = FetchType.LAZY)
     private MemberProfileImage profileImage = null;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -195,5 +196,9 @@ public class Member extends BaseEntityDateTime {
         this.roomEscapeRecordsOpenYN = modifyDto.isRoomEscapeRecordsOpenYN();
         MemberProfileImage newProfileImage = MemberProfileImage.create(modifyDto.getProfileImageDto());
         setProfileImage(newProfileImage);
+    }
+
+    public void loadSocialAccounts() {
+        this.socialAccounts.forEach(socialAccount -> {});
     }
 }
