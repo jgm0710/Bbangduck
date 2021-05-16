@@ -28,13 +28,11 @@ public class MemberService {
 
     public Member getMember(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        findMember.loadSocialAccounts();
         log.debug("findMember : {}", findMember);
 
         return findMember;
     }
 
-    // TODO: 2021-05-16 닉네임 중복 체크
     @Transactional
     public void updateMember(Long memberId, MemberUpdateDto updateDto) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);

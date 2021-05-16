@@ -5,20 +5,20 @@ import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileRe
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
+import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
 class MemberServiceTest extends BaseJGMServiceTest {
 
     @Autowired
@@ -66,7 +66,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
     @DisplayName("회원 프로필 수정 테스트")
     public void updateMember() throws Exception {
         //given
-        MemberSocialSignUpRequestDto signUpDto = createMemberSignUpDto();
+        MemberSocialSignUpRequestDto signUpDto = createMemberSignUpRequestDto();
 
         Long savedMemberId = authenticationService.signUp(signUpDto.toServiceDto());
 
@@ -76,7 +76,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
         Long fileId = storedFile.getId();
         String fileName = storedFile.getFileName();
-        MemberUpdateProfileRequestDto updateDto = createMemberModifyDto(fileId, fileName);
+        MemberUpdateProfileRequestDto updateDto = createMemberUpdateRequestDto(fileId, fileName);
 
         em.flush();
 
@@ -110,7 +110,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
         Long fileId = storedFile.getId();
         String fileName = storedFile.getFileName();
-        MemberUpdateProfileRequestDto modifyDto = createMemberModifyDto(fileId, fileName);
+        MemberUpdateProfileRequestDto modifyDto = createMemberUpdateRequestDto(fileId, fileName);
 
         //when
 
@@ -121,23 +121,54 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 프로필 수정 시 다른 회원의 닉네임과 중복되는 경우")
-    public void updateMember_NicknameDuplicate() throws Exception {
+    public void updateMember_NicknameDuplicate() {
         //given
+        MemberSocialSignUpRequestDto memberSignUpDto = createMemberSignUpRequestDto();
+        Long signUpMemberId = authenticationService.signUp(memberSignUpDto.toServiceDto());
+
+        String nickname = "홍길동2";
+        memberSignUpDto.setNickname(nickname);
+        memberSignUpDto.setEmail("test2@email.com");
+        memberSignUpDto.setSocialId("3123123");
+        memberSignUpDto.setSocialType(SocialType.KAKAO);
+        authenticationService.signUp(memberSignUpDto.toServiceDto());
+
+
+        MemberUpdateProfileRequestDto memberUpdateRequestDto = createMemberUpdateRequestDto(null,null);
+        memberUpdateRequestDto.setNickname(nickname);
 
         //when
 
         //then
+        assertThrows(MemberNicknameDuplicateException.class, () -> memberService.updateMember(signUpMemberId, memberUpdateRequestDto.toServiceDto()));
 
     }
 
     @Test
     @DisplayName("회원 프로필 수정 시 닉네임을 변경하지 않은 경우")
-    public void updateMember_NicknameNotUpdate() throws Exception {
+    public void updateMember_NicknameNotUpdate() {
         //given
+        MemberSocialSignUpRequestDto memberSignUpDto = createMemberSignUpRequestDto();
+        Long savedMemberId1 = authenticationService.signUp(memberSignUpDto.toServiceDto());
+
+        String nickname = "홍길동2";
+        memberSignUpDto.setNickname(nickname);
+        memberSignUpDto.setEmail("test2@email.com");
+        memberSignUpDto.setSocialId("3123123");
+        memberSignUpDto.setSocialType(SocialType.KAKAO);
+        Long savedMemberId2 = authenticationService.signUp(memberSignUpDto.toServiceDto());
+
+
+        MemberUpdateProfileRequestDto memberUpdateRequestDto = createMemberUpdateRequestDto(null,null);
+        memberUpdateRequestDto.setNickname(nickname);
 
         //when
+        memberService.updateMember(savedMemberId2, memberUpdateRequestDto.toServiceDto());
 
         //then
+        Member findMember = memberService.getMember(savedMemberId2);
+        assertEquals(memberUpdateRequestDto.getNickname(), findMember.getNickname());
+        assertEquals(memberUpdateRequestDto.getDescription(), findMember.getDescription());
 
     }
 

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URLConnection;
 
 @Disabled
+@Transactional
 public class BaseJGMServiceTest extends BaseTest {
     @Autowired
     protected MemberRepository memberRepository;
@@ -60,7 +61,7 @@ public class BaseJGMServiceTest extends BaseTest {
         return new MockMultipartFile(paramName, filename, contentType, classPathResource.getInputStream());
     }
 
-    protected MemberSocialSignUpRequestDto createMemberSignUpDto() {
+    protected MemberSocialSignUpRequestDto createMemberSignUpRequestDto() {
         return MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("test")
@@ -69,7 +70,7 @@ public class BaseJGMServiceTest extends BaseTest {
                 .build();
     }
 
-    protected MemberUpdateProfileRequestDto createMemberModifyDto(Long fileId, String fileName) {
+    protected MemberUpdateProfileRequestDto createMemberUpdateRequestDto(Long fileId, String fileName) {
         return MemberUpdateProfileRequestDto.builder()
                 .nickname("홍길동")
                 .description("새로 적는 자기 소개")
