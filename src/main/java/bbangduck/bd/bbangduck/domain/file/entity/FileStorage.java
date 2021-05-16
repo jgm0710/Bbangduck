@@ -23,7 +23,7 @@ public class FileStorage extends BaseEntityDateTime {
     @Column(name = "file_id")
     private Long id;
 
-    @Column(length = 1000, unique = true)
+    @Column(length = 1000)
     private String fileName;
 
     @Column(length = 1000)

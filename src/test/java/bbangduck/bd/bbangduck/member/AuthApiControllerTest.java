@@ -51,7 +51,6 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                 .socialId("321312")
                 .build();
 
-
         //when
         ResultActions perform = mockMvc.perform(
                 post("/api/auth/social/sign-up")
