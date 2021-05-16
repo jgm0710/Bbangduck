@@ -57,10 +57,11 @@ public class MemberApiController {
      * 회원을 찾을 수 없는 경우
      * 다른 회원의 프로필을 수정하는 경우
      * 닉네임, 자기소개 1000자 이상, 프로필 이미지 정보 제대로 기입 x
+     * 닉네임 중복
      */
     @PutMapping("/{memberId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<MyProfileResponseDto>> updateProfile(
+    public ResponseEntity<ResponseDto<Object>> updateProfile(
             @PathVariable Long memberId,
             @RequestBody @Valid MemberUpdateProfileRequestDto memberUpdateProfileRequestDto,
             Errors errors,
@@ -72,10 +73,8 @@ public class MemberApiController {
         memberValidator.validateUpdateProfile(memberUpdateProfileRequestDto, errors);
 
         memberService.updateMember(memberId, memberUpdateProfileRequestDto.toServiceDto());
-        Member modifiedMember = memberService.getMember(memberId);
-        MyProfileResponseDto myProfileResponseDto = MyProfileResponseDto.convert(modifiedMember);
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.MEMBER_MODIFY_PROFILE_SUCCESS, myProfileResponseDto));
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.MEMBER_MODIFY_PROFILE_SUCCESS,null));
     }
     // TODO: 2021-05-06 S3 를 통한 파일 업로드 기능 구현
     // TODO: 2021-05-02 회원 프로필 이미지 수정 기능 구현 -> 회원 수정 시 한번에 처리

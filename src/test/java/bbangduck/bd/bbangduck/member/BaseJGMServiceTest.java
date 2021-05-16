@@ -1,11 +1,10 @@
 package bbangduck.bd.bbangduck.member;
 
 import bbangduck.bd.bbangduck.common.BaseTest;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileRequestDto;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberProfileImageRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -74,7 +73,8 @@ public class BaseJGMServiceTest extends BaseTest {
         return MemberUpdateProfileRequestDto.builder()
                 .nickname("홍길동")
                 .description("새로 적는 자기 소개")
-                .profileImage(new MemberProfileImageRequestDto(fileId, fileName))
+                .fileStorageId(fileId)
+                .fileName(fileName)
                 .roomEscapeRecordsOpenYN(false)
                 .build();
     }

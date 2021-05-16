@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -372,7 +371,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("Refresh 성공")
     public void refresh_Success() throws Exception {
         //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSignUpDto();
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);

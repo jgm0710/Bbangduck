@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.controller.dto;
 
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberUpdateDto;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -28,22 +29,21 @@ public class MemberUpdateProfileRequestDto {
     @NotNull(message = "방탈출 공개 여부를 지정해 주세요.")
     private boolean roomEscapeRecordsOpenYN;
 
-    private MemberProfileImageRequestDto profileImage;
+    private Long fileStorageId;
 
-    public Long getProfileImageId() {
-        return profileImage.getFileStorageId();
-    }
-
-    public String getProfileImageName() {
-        return profileImage.getFileName();
-    }
+    private String fileName;
 
     public MemberUpdateDto toServiceDto() {
+        MemberProfileImageDto profileImageDto = MemberProfileImageDto.builder()
+                .fileStorageId(fileStorageId)
+                .fileName(fileName)
+                .build();
+
         return MemberUpdateDto.builder()
-                .nickname(this.nickname)
-                .description(this.description)
+                .nickname(nickname)
+                .description(description)
                 .roomEscapeRecordsOpenYN(roomEscapeRecordsOpenYN)
-                .profileImageDto(profileImage.toServiceDto())
+                .profileImageDto(profileImageDto)
                 .build();
     }
 }

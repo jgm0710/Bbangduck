@@ -16,11 +16,11 @@ import org.springframework.validation.Errors;
 public class MemberValidator {
 
     public void validateUpdateProfile(MemberUpdateProfileRequestDto memberUpdateProfileRequestDto, Errors errors) {
-        Long profileImageId = memberUpdateProfileRequestDto.getProfileImageId();
-        String profileImageName = memberUpdateProfileRequestDto.getProfileImageName();
+        Long fileStorageId = memberUpdateProfileRequestDto.getFileStorageId();
+        String fileName = memberUpdateProfileRequestDto.getFileName();
 
-        boolean profileImageIdExists = profileImageIdExists(profileImageId);
-        boolean profileImageNameExists = profileImageNameExists(profileImageName);
+        boolean profileImageIdExists = profileImageIdExists(fileStorageId);
+        boolean profileImageNameExists = profileImageNameExists(fileName);
 
         if (profileImageIdExists) {
             if (!profileImageNameExists) {

@@ -4,6 +4,7 @@ import bbangduck.bd.bbangduck.common.BaseControllerTest;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -69,12 +70,21 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return new MockMultipartFile(paramName, filename, contentType, classPathResource.getInputStream());
     }
 
-    protected MemberSocialSignUpRequestDto createMemberSignUpDto() {
+    protected MemberSocialSignUpRequestDto createMemberSocialSignUpRequestDto() {
         return MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("testNickname")
                 .socialType(SocialType.KAKAO)
                 .socialId("3123213")
+                .build();
+    }
+
+    protected MemberUpdateProfileRequestDto createMemberUpdateProfileRequestDto(Long fileId, String fileName) {
+        return MemberUpdateProfileRequestDto.builder()
+                .nickname("홍길동")
+                .description("소설 속 인물")
+                .fileStorageId(fileId)
+                .fileName(fileName)
                 .build();
     }
 
