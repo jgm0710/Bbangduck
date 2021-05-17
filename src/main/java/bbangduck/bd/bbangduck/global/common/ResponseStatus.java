@@ -54,6 +54,8 @@ public enum ResponseStatus {
     UPDATE_DIFFERENT_MEMBER_PROFILE(2406, "다른 회원의 프로필은 수정할 수 없습니다.", "프로필 수정 요청 시 다른 회원의 프로필 수정을 요청하는 경우"),
     UPDATE_PROFILE_NOT_VALID(2407, "프로필 수정 시 기입사항을 올바르게 기입하지 않았습니다.", "프로필 수정 시 기입사항을 규칙에 맞게 기입하지 않은 경우"),
 
+    MEMBER_UPDATE_PROFILE_IMAGE_NOT_VALID(2408, "회원 프로필 이미지 수정 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원 프로필 이미지 수정 시 필요한 기입 사항을 올바르게 기입하지 않은 경우"),
+
     /**
      * 파일 관련 응답 코드
      * 시작 코드 3

@@ -36,11 +36,11 @@ public class MemberProfileImage {
         this.fileName = fileName;
     }
 
-    public static MemberProfileImage create(MemberProfileImageDto profileImageDto) {
+    public static MemberProfileImage create(MemberProfileImageDto memberProfileImageDto) {
         return MemberProfileImage.builder()
                 .member(null)
-                .fileStorageId(profileImageDto.getFileStorageId())
-                .fileName(profileImageDto.getFileName())
+                .fileStorageId(memberProfileImageDto.getFileStorageId())
+                .fileName(memberProfileImageDto.getFileName())
                 .build();
     }
 

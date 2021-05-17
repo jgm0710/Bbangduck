@@ -1,10 +1,13 @@
 package bbangduck.bd.bbangduck.domain.member.service;
 
+import bbangduck.bd.bbangduck.domain.file.repository.FileStorageRepository;
+import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,8 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final FileStorageService fileStorageService;
 
     public Member getMember(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
@@ -49,4 +54,16 @@ public class MemberService {
         }
     }
 
+    // TODO: 21. 5. 17. 프로필 이미지 업데이트 테스트
+    /**
+     * 잘 변경 되는지
+     * 기존 프로필 이미지는 사라지는지
+     *
+     */
+    @Transactional
+    public void updateProfileImage(Long memberId, MemberProfileImageDto memberProfileImageDto) {
+        Member findMember = getMember(memberId);
+        findMember.isChangeProfileImage(memberProfileImageDto);
+        findMember.updateProfileImage(memberProfileImageDto);
+    }
 }

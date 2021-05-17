@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
 import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberUpdateDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
@@ -200,5 +201,15 @@ public class Member extends BaseEntityDateTime {
 
     public void loadSocialAccounts() {
         this.socialAccounts.forEach(socialAccount -> {});
+    }
+
+    public void updateProfileImage(MemberProfileImageDto memberProfileImageDto) {
+        MemberProfileImage memberProfileImage = MemberProfileImage.create(memberProfileImageDto);
+        setProfileImage(memberProfileImage);
+    }
+
+    public boolean isChangeProfileImage(MemberProfileImageDto memberProfileImageDto) {
+
+        return false;
     }
 }
