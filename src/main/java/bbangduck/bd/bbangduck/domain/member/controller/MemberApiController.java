@@ -68,13 +68,6 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS, null));
     }
 
-    private void ifUpdateDifferentMemberThrows(Long memberId, Member currentMember) {
-        if (!currentMember.getId().equals(memberId)) {
-            throw new UpdateDifferentMemberException();
-        }
-    }
-
-    // TODO: 21. 5. 17. 프로필 이미지 삭제 api 구현
     @DeleteMapping("/{memberId}/profiles/images")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> deleteProfileImage(
@@ -85,12 +78,10 @@ public class MemberApiController {
 
         memberService.deleteProfileImage(memberId);
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS, null));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS, null));
     }
 
 
-    // TODO: 21. 5. 17. 회원 닉네임 수정
-    // TODO: 2021-05-19 test
     @PutMapping("/{memberId}/nicknames")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> updateNickname(
@@ -107,9 +98,7 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_UPDATE_NICKNAME_SUCCESS, null));
     }
 
-    // TODO: 21. 5. 17. 회원 자기 소개 수정
-    // TODO: 2021-05-19 test
-    @PutMapping("/{memberId}/description")
+    @PutMapping("/{memberId}/descriptions")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> updateDescription(
             @PathVariable Long memberId,
@@ -126,7 +115,8 @@ public class MemberApiController {
     }
 
     // TODO: 21. 5. 17. 방탈출 기록 공개 여부 수정
-    @PutMapping("/{memberId}/room-escape/recodes/open")
+    // TODO: 2021-05-19 test
+    @PutMapping("/{memberId}/room-escape/recodes/open-yn")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> toggleRoomEscapeRecodesOpen(
             @PathVariable Long memberId,
@@ -141,4 +131,12 @@ public class MemberApiController {
 
 
     // TODO: 2021-05-02 회원 목록 조회 기능 구현(관리자)
+
+
+
+    private void ifUpdateDifferentMemberThrows(Long memberId, Member currentMember) {
+        if (!currentMember.getId().equals(memberId)) {
+            throw new UpdateDifferentMemberException();
+        }
+    }
 }

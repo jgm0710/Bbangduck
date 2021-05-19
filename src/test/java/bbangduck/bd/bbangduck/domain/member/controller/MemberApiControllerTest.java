@@ -3,8 +3,13 @@ package bbangduck.bd.bbangduck.domain.member.controller;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
+import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateDescriptionRequestDto;
+import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateNicknameRequestDto;
 import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileImageRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -174,6 +178,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
+    // TODO: 2021-05-19 문서화
     @Test
     @DisplayName("회원 프로필 이미지 수정")
     public void updateProfileImage() throws Exception {
@@ -273,4 +278,551 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getMessage()));
 
     }
+
+    // TODO: 2021-05-19 문서화
+    @Test
+    @DisplayName("회원 프로필 이미지 수정 - 기존에 프로필 이미지가 있었던 경우")
+    public void updateProfileImage_ExistProfileImage() throws Exception {
+        //given
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
+
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        MockMultipartFile files2 = createMockMultipartFile("files", IMAGE_FILE2_CLASS_PATH);
+        Long uploadId = fileStorageService.uploadImageFile(files2);
+        FileStorage storedFile2 = fileStorageService.getStoredFile(uploadId);
+        MemberProfileImageDto memberProfileImageDto2 = new MemberProfileImageDto(storedFile2.getId(), storedFile2.getFileName());
+        memberService.updateProfileImage(signUpId, memberProfileImageDto2);
+
+        MemberUpdateProfileImageRequestDto memberUpdateProfileImageRequestDto = new MemberUpdateProfileImageRequestDto(storedFile.getId(), storedFile.getFileName());
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/profiles/images")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateProfileImageRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS.getMessage()))
+        ;
+
+    }
+
+    // TODO: 2021-05-19 문서화
+    @Test
+    @DisplayName("회원 프로필 이미지 수정 - 파일 정보를 기입하지 않은 경우")
+    public void updateProfileImage_FileInfoEmpty() throws Exception {
+        //given
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
+
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        MemberUpdateProfileImageRequestDto memberUpdateProfileImageRequestDto = new MemberUpdateProfileImageRequestDto(null, "");
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/profiles/images")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateProfileImageRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0]").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_NOT_VALID.getMessage()))
+        ;
+
+    }
+
+    // TODO: 2021-05-19 문서화
+    @Test
+    @DisplayName("회원 프로필 이미지 삭제")
+    public void deleteProfileImage() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadId);
+        MemberProfileImageDto memberProfileImageDto = new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName());
+
+        memberService.updateProfileImage(signUpId, memberProfileImageDto);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/members/" + signUpId + "/profiles/images")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 프로필 이미지 삭제 - 다른 회원의 프로필 이미지 삭제")
+    public void deleteProfileImage_DifferentMember() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadId);
+        MemberProfileImageDto memberProfileImageDto = new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName());
+
+        memberService.updateProfileImage(signUpId, memberProfileImageDto);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/members/" + 10000L + "/profiles/images")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 프로필 이미지 삭제 - 인증되지 않은 경우")
+    public void deleteProfileImage_Unauthorized() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadId);
+        MemberProfileImageDto memberProfileImageDto = new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName());
+
+        memberService.updateProfileImage(signUpId, memberProfileImageDto);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/members/" + signUpId + "/profiles/images")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 프로필 이미지 삭제 - 해당 회원의 프로필 이미지가 원래 없는 경우")
+    public void deleteProfileImage_ProfileImageNotExist() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/members/" + signUpId + "/profiles/images")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+        ).andDo(print());
+
+
+        //then
+        MemberProfileImageNotFoundException memberProfileImageNotFoundException = new MemberProfileImageNotFoundException();
+        perform
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("status").value(memberProfileImageNotFoundException.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(memberProfileImageNotFoundException.getMessage()));
+
+    }
+
+    // TODO: 2021-05-19 문서화
+    @Test
+    @DisplayName("회원 닉네임 변경")
+    public void updateNicknameTest() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        String newNickname = "newUpdateNickname";
+        MemberUpdateNicknameRequestDto memberUpdateNicknameRequestDto = new MemberUpdateNicknameRequestDto(newNickname);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/nicknames")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_SUCCESS.getMessage()))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("회원 닉네임 수정 - 인증되지 않은 경우")
+    public void updateNickname_Unauthorized() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        String newNickname = "newUpdateNickname";
+        MemberUpdateNicknameRequestDto memberUpdateNicknameRequestDto = new MemberUpdateNicknameRequestDto(newNickname);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/nicknames")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+    // TODO: 2021-05-19 문서화
+    @Test
+    @DisplayName("회원 닉네임 변경 - 닉네임을 기입하지 않은 경우")
+    public void updateNickname_NicknameEmpty() throws Exception {
+          //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        String newNickname = "";
+        MemberUpdateNicknameRequestDto memberUpdateNicknameRequestDto = new MemberUpdateNicknameRequestDto(newNickname);
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/nicknames")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_NOT_VALID.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 닉네임 변경 - 다른 회원의 닉네임을 변경하는 경우")
+    public void updateNickname_DifferentMember() throws Exception {
+          //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        String newNickname = "newUpdateNickname";
+        MemberUpdateNicknameRequestDto memberUpdateNicknameRequestDto = new MemberUpdateNicknameRequestDto(newNickname);
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + 10000L + "/nicknames")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 닉네임 수정 - 다른 회원의 Nickname 과 중복되는 경우")
+    public void updateNickname_NicknameDuplicate() throws Exception {
+          //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        String newNickname = "newUpdateNickname";
+
+        memberSocialSignUpRequestDto.setEmail("test2@email.com");
+        memberSocialSignUpRequestDto.setNickname(newNickname);
+        memberSocialSignUpRequestDto.setSocialId("332211");
+        authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        MemberUpdateNicknameRequestDto memberUpdateNicknameRequestDto = new MemberUpdateNicknameRequestDto(newNickname);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/nicknames")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_NICKNAME_DUPLICATE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(new MemberNicknameDuplicateException(newNickname).getMessage()));
+
+    }
+
+    // TODO: 2021-05-19 문서화
+    @Test
+    @DisplayName("회원 자기소개 수정")
+    public void updateDescriptionTest() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        memberService.updateDescription(signUpId, "첫 자기 소개 등록");
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        MemberUpdateDescriptionRequestDto memberUpdateDescriptionRequestDto = new MemberUpdateDescriptionRequestDto("변경할 자기소개");
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/descriptions")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateDescriptionRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS.getMessage()));
+
+    }
+
+    // TODO: 2021-05-19 문서화
+    @Test
+    @DisplayName("회원 자기소개 수정 - 자기소개를 기입하지 않은 경우")
+    public void updateDescription_Empty() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        memberService.updateDescription(signUpId, "첫 자기 소개 등록");
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        MemberUpdateDescriptionRequestDto memberUpdateDescriptionRequestDto = new MemberUpdateDescriptionRequestDto(null);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/descriptions")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateDescriptionRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_NOT_VALID.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 자기소개 수정 - 인증되지 않은 경우")
+    public void updateDescription_Unauthorized() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        memberService.updateDescription(signUpId, "첫 자기 소개 등록");
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        MemberUpdateDescriptionRequestDto memberUpdateDescriptionRequestDto = new MemberUpdateDescriptionRequestDto("변경할 자기소개");
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/descriptions")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateDescriptionRequestDto))
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 자기소개 수정 - 다른 회원의 자기소개 수정")
+    public void updateDescription_DifferentMember() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        memberService.updateDescription(signUpId, "첫 자기 소개 등록");
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        MemberUpdateDescriptionRequestDto memberUpdateDescriptionRequestDto = new MemberUpdateDescriptionRequestDto("변경할 자기소개");
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + 10000L + "/descriptions")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateDescriptionRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getMessage()));
+
+    }
+
+    // TODO: 2021-05-20 문서화
+    @Test
+    @DisplayName("회원 방탈출 기록 공개 여부 변경")
+    public void toggleRoomEscapeRecodesOpenTest() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/room-escape/recodes/open-yn")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 방탈출 기록 공개 여부 변경 - 다른 회원의 방탈출 기록 공개 여부 변경")
+    public void toggleRoomEscapeRecodesOpen_DifferentMember() throws Exception {
+          //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + 10000L + "/room-escape/recodes/open-yn")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_DIFFERENT_MEMBER_PROFILE.getMessage()));
+    }
+
+    @Test
+    @DisplayName("회원 방탈출 기록 공개 여부 변경 - 인증되지 않았을 경우")
+    public void toggleRoomEscapeRecodesOpen_Unauthorized() throws Exception {
+          //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/members/" + signUpId + "/room-escape/recodes/open-yn")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+
 }
