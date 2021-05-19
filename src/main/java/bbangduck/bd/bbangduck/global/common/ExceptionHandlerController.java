@@ -35,74 +35,84 @@ public class ExceptionHandlerController {
      * 소셜 인증 실패와 관련된 예외를 처리하기 위한 ExceptionHandler
      */
     @ExceptionHandler(SocialAuthFailException.class)
-    public ModelAndView socialAuthFailExceptionHandling(SocialAuthFailException exception) {
+    public ModelAndView socialAuthFailExceptionHandling(SocialAuthFailException ex) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName(exception.getViewName());
-        modelAndView.addObject(STATUS, exception.getStatus());
-        modelAndView.addObject(MESSAGE, exception.getMessage());
-        modelAndView.addObject(DATA, exception.getBody());
-        log.info(exception.toString());
+        modelAndView.setViewName(ex.getViewName());
+        modelAndView.addObject(STATUS, ex.getStatus());
+        modelAndView.addObject(MESSAGE, ex.getMessage());
+        modelAndView.addObject(DATA, ex.getBody());
+        log.info(ex.toString());
 
         return modelAndView;
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ResponseDto<Object>> conflictExceptionHandling(ConflictException exception) {
-        int exceptionStatus = exception.getStatus();
-        String exceptionMessage = exception.getMessage();
+    public ResponseEntity<ResponseDto<Object>> conflictExceptionHandling(ConflictException ex) {
+        int status = ex.getStatus();
+        String message = ex.getMessage();
         log.error("ConflictException 발생!!");
-        log.error(exceptionMessage);
+        log.error(message);
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto<>(status, null, message));
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ResponseDto<Object>> badRequestExceptionHandling(BadRequestException exception) {
-        int exceptionStatus = exception.getStatus();
-        String exceptionMessage = exception.getMessage();
+    public ResponseEntity<ResponseDto<Object>> badRequestExceptionHandling(BadRequestException ex) {
+        int status = ex.getStatus();
+        String message = ex.getMessage();
         log.error("BadRequestException 발생!!");
-        log.error(exceptionMessage);
+        log.error(message);
 
-        return ResponseEntity.badRequest().body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+        return ResponseEntity.badRequest().body(new ResponseDto<>(status, null, message));
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ResponseDto<Object>> notFoundExceptionHandling(NotFoundException exception) {
-        int exceptionStatus = exception.getStatus();
-        String exceptionMessage = exception.getMessage();
+    public ResponseEntity<ResponseDto<Object>> notFoundExceptionHandling(NotFoundException ex) {
+        int status = ex.getStatus();
+        String message = ex.getMessage();
         log.error("NotFoundException 발생!!");
-        log.error(exceptionMessage);
+        log.error(message);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto<>(status, null, message));
     }
 
     @ExceptionHandler(InternalServerErrorException.class)
-    public ResponseEntity<ResponseDto<Object>> internalServerErrorExceptionHandling(InternalServerErrorException exception) {
-        int exceptionStatus = exception.getStatus();
-        String exceptionMessage = exception.getMessage();
+    public ResponseEntity<ResponseDto<Object>> internalServerErrorExceptionHandling(InternalServerErrorException ex) {
+        int status = ex.getStatus();
+        String message = ex.getMessage();
         log.error("InternalServerErrorException 발생!!");
-        log.error(exceptionMessage);
+        log.error(message);
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto<>(status, null, message));
     }
 
     // TODO: 2021-05-13 UnauthorizedExceptionHandler 구현
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ResponseDto<Object>> unauthorizedExceptionHandling(UnauthorizedException exception) {
-        int exceptionStatus = exception.getStatus();
-        String exceptionMessage = exception.getMessage();
+    public ResponseEntity<ResponseDto<Object>> unauthorizedExceptionHandling(UnauthorizedException ex) {
+        int status = ex.getStatus();
+        String message = ex.getMessage();
         log.error("UnauthorizedException 발생!!");
-        log.error(exceptionMessage);
+        log.error(message);
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto<>(exceptionStatus, null, exceptionMessage));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto<>(status, null, message));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ResponseDto<Object>> forbiddenExceptionHandling(ForbiddenException ex) {
+        int status = ex.getStatus();
+        String message = ex.getMessage();
+        log.error("ForbiddenException 발생!!");
+        log.error(message);
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseDto<>(status, null, message));
     }
 
     /**
      * 기본적으로 제공되는 Spring Validation 의 Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseDto<List<ObjectError>>> methodArgumentNotValidExceptionHandling(MethodArgumentNotValidException exception) {
-        List<ObjectError> allErrors = exception.getBindingResult().getAllErrors();
+    public ResponseEntity<ResponseDto<List<ObjectError>>> methodArgumentNotValidExceptionHandling(MethodArgumentNotValidException ex) {
+        List<ObjectError> allErrors = ex.getBindingResult().getAllErrors();
         log.error("Validation Error 발생!");
         allErrors.forEach(objectError -> log.error(allErrors.toString()));
         return ResponseEntity.badRequest().body(new ResponseDto<>(ResponseStatus.VALIDATION_ERROR, allErrors));
@@ -112,8 +122,8 @@ public class ExceptionHandlerController {
      * Errors 를 통해 발생하는 Validation Exception 을 처리하기 위한 ExceptionHandler
      */
     @ExceptionHandler(ValidationHasErrorException.class)
-    public ResponseEntity<ResponseDto<List<ErrorsResponseDto>>> validationHasErrorExceptionHandling(ValidationHasErrorException exception) {
-        Errors errors = exception.getErrors();
+    public ResponseEntity<ResponseDto<List<ErrorsResponseDto>>> validationHasErrorExceptionHandling(ValidationHasErrorException ex) {
+        Errors errors = ex.getErrors();
         List<ObjectError> globalErrors = errors.getGlobalErrors();
         List<FieldError> fieldErrors = errors.getFieldErrors();
 
@@ -141,7 +151,7 @@ public class ExceptionHandlerController {
 
         log.error("Validation Error 발생!!");
 
-        return ResponseEntity.badRequest().body(new ResponseDto<>(exception.getStatus(), errorsResponseDtos, exception.getMessage()));
+        return ResponseEntity.badRequest().body(new ResponseDto<>(ex.getStatus(), errorsResponseDtos, ex.getMessage()));
     }
 
     // TODO: 2021-05-02 BindingResult 처리 ExceptionHandler 추가

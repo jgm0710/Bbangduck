@@ -1,9 +1,8 @@
 package bbangduck.bd.bbangduck.domain.member.service;
 
-import bbangduck.bd.bbangduck.domain.file.repository.FileStorageRepository;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
@@ -14,11 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * 회원 관리를 위한 Service
  */
 @Service
@@ -38,16 +35,6 @@ public class MemberService {
         return findMember;
     }
 
-    @Transactional
-    public void updateMember(Long memberId, MemberUpdateDto updateDto) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        String updateNickname = updateDto.getNickname();
-        if (!findMember.getNickname().equals(updateNickname)) {
-            checkDuplicateNickname(updateNickname);
-        }
-        findMember.updateProfile(updateDto);
-    }
-
     private void checkDuplicateNickname(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()) {
             throw new MemberNicknameDuplicateException(nickname);
@@ -55,15 +42,27 @@ public class MemberService {
     }
 
     // TODO: 21. 5. 17. 프로필 이미지 업데이트 테스트
+
     /**
-     * 잘 변경 되는지
-     * 기존 프로필 이미지는 사라지는지
-     *
+     * 없었을경우 잘 생성되는지
+     * 있었을 경우 잘 변경되는지
+     * 변경될 경우 기존 파일은 잘 삭제되는지
+     * 회원을 찾을 수 없는 경우
      */
     @Transactional
     public void updateProfileImage(Long memberId, MemberProfileImageDto memberProfileImageDto) {
         Member findMember = getMember(memberId);
-        findMember.isChangeProfileImage(memberProfileImageDto);
-        findMember.updateProfileImage(memberProfileImageDto);
+        MemberProfileImage memberProfileImage = findMember.getProfileImage();
+        if (memberProfileImage == null) {
+            findMember.createProfileImage(memberProfileImageDto);
+        } else {
+            Long oldFileStorageId = memberProfileImage.getFileStorageId();
+            Long newFileStorageId = memberProfileImageDto.getFileStorageId();
+
+            if (!oldFileStorageId.equals(newFileStorageId)) {
+                fileStorageService.deleteFile(oldFileStorageId);
+                findMember.updateProfileImage(memberProfileImageDto);
+            }
+        }
     }
 }

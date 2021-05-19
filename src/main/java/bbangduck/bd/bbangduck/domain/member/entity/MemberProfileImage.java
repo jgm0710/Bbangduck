@@ -24,8 +24,10 @@ public class MemberProfileImage {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(unique = true)
     private Long fileStorageId;
 
+    @Column(length = 1000)
     private String fileName;
 
     @Builder
@@ -72,5 +74,10 @@ public class MemberProfileImage {
                 ", fileId=" + fileStorageId +
                 ", fileName='" + fileName + '\'' +
                 '}';
+    }
+
+    public void update(MemberProfileImageDto memberProfileImageDto) {
+        this.fileStorageId = memberProfileImageDto.getFileStorageId();
+        this.fileName = memberProfileImageDto.getFileName();
     }
 }

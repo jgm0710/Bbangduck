@@ -1,17 +1,15 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignUpResponseDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.OnlyRefreshTokenRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
-import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
-import bbangduck.bd.bbangduck.domain.member.controller.MemberValidator;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignUpResponseDto;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
-import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
+import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +39,6 @@ public class AuthApiController {
     private final AuthenticationService authenticationService;
 
     private final MemberService memberService;
-
-    private final MemberValidator memberValidator;
 
     @PostMapping(value = "/social/sign-up")
     public ResponseEntity<ResponseDto<MemberSignUpResponseDto>> signUp(

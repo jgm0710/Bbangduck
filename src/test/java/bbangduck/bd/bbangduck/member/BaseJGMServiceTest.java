@@ -41,6 +41,8 @@ public class BaseJGMServiceTest extends BaseTest {
     @Autowired
     protected FileStorageService fileStorageService;
 
+    protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
+
     protected final String IMAGE_FILE_CLASS_PATH = "/static/test/puppy.jpg";
 
     protected final String ZIP_FILE_CLASS_PATH = "/static/test/category.zip";

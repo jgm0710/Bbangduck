@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.member;
 
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
+import bbangduck.bd.bbangduck.domain.file.exception.StoredFileNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -9,6 +10,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,112 +65,116 @@ class MemberServiceTest extends BaseJGMServiceTest {
     }
 
     @Test
-    @DisplayName("회원 프로필 수정 테스트")
-    public void updateMember() throws Exception {
+    @DisplayName("회원 프로필 이미지 변경 - 기존에 프로필 이미지가 없었을 경우")
+    public void updateProfileImage_ProfileImageNotExist() throws Exception {
         //given
-        MemberSocialSignUpRequestDto signUpDto = createMemberSignUpRequestDto();
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member savedMember = memberService.getMember(signUpId);
+        assertNull(savedMember.getProfileImage(), "처음 회원가입 한 회원의 프로필 이미지는 null 이어야 한다.");
 
-        Long savedMemberId = authenticationService.signUp(signUpDto.toServiceDto());
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadedFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadedFileId);
 
-        MockMultipartFile multipartFile = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
-        Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
-        FileStorage storedFile = fileStorageService.getStoredFile(storedFileId);
-
-        Long fileId = storedFile.getId();
-        String fileName = storedFile.getFileName();
-        MemberUpdateProfileRequestDto updateDto = createMemberUpdateRequestDto(fileId, fileName);
-
-        em.flush();
-
-        Member savedMember = memberService.getMember(savedMemberId);
-        assertTrue(savedMember.isRoomEscapeRecordsOpenYN(), "회원가입 기본 방탈출 기록 공개는 true");
+        MemberProfileImageDto memberProfileImageDto = MemberProfileImageDto.builder()
+                .fileStorageId(storedFile.getId())
+                .fileName(storedFile.getFileName())
+                .build();
 
         //when
-        memberService.updateMember(savedMemberId, updateDto.toServiceDto());
+        memberService.updateProfileImage(signUpId, memberProfileImageDto);
+
+        em.flush();
+        em.clear();
+        //then
+        Member findMember = memberService.getMember(signUpId);
+
+        assertNotNull(findMember.getProfileImage(), "프로필 이미지 변경 이후 프로필 이미지는 null 이 아니어야 한다.");
+        MemberProfileImage memberProfileImage = findMember.getProfileImage();
+        assertEquals(storedFile.getId(), memberProfileImage.getFileStorageId());
+        assertEquals(storedFile.getFileName(), memberProfileImage.getFileName());
+
+    }
+
+    @Test
+    @DisplayName("회원 프로필 이미지 변경 - 기존 프로필 이미지가 있었을 경우")
+    @Transactional
+    public void updateProfileImage_ProfileImageExist() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member savedMember = memberService.getMember(signUpId);
+        assertNull(savedMember.getProfileImage(), "처음 회원가입 한 회원의 프로필 이미지는 null 이어야 한다.");
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadedFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadedFileId);
+
+        MemberProfileImageDto memberProfileImageDto = MemberProfileImageDto.builder()
+                .fileStorageId(storedFile.getId())
+                .fileName(storedFile.getFileName())
+                .build();
+
+        //when
+        memberService.updateProfileImage(signUpId, memberProfileImageDto);
+
+        em.flush();
+        em.clear();
+        //then
+        Member findMember = memberService.getMember(signUpId);
+
+        assertNotNull(findMember.getProfileImage(), "프로필 이미지 변경 이후 프로필 이미지는 null 이 아니어야 한다.");
+        MemberProfileImage memberProfileImage = findMember.getProfileImage();
+        assertEquals(storedFile.getId(), memberProfileImage.getFileStorageId());
+        assertEquals(storedFile.getFileName(), memberProfileImage.getFileName());
+
+        em.flush();
+        em.clear();
+
+        //given
+        MockMultipartFile files2 = createMockMultipartFile("files", IMAGE_FILE2_CLASS_PATH);
+        Long uploadedFileId2 = fileStorageService.uploadImageFile(files2);
+        FileStorage storedFile2 = fileStorageService.getStoredFile(uploadedFileId2);
+
+        assertNotEquals(storedFile.getId(), storedFile2.getId());
+
+        MemberProfileImageDto memberProfileImageDto2 = new MemberProfileImageDto(storedFile2.getId(), storedFile2.getFileName());
+
+        //when
+        memberService.updateProfileImage(signUpId, memberProfileImageDto2);
         em.flush();
         em.clear();
 
         //then
-        Member modifiedMember = memberService.getMember(savedMemberId);
-        assertEquals(updateDto.getNickname(), modifiedMember.getNickname());
-        assertEquals(updateDto.getDescription(), modifiedMember.getDescription());
+        assertThrows(StoredFileNotFoundException.class, () -> fileStorageService.getStoredFile(storedFile.getId()));
 
-        MemberProfileImage profileImage = modifiedMember.getProfileImage();
-        assertEquals(updateDto.getFileStorageId(), profileImage.getFileStorageId());
-        assertEquals(updateDto.getFileName(), profileImage.getFileName());
-        assertEquals(updateDto.isRoomEscapeRecordsOpenYN(), modifiedMember.isRoomEscapeRecordsOpenYN());
+        Member findMember2 = memberService.getMember(signUpId);
+        MemberProfileImage memberProfileImage2 = findMember2.getProfileImage();
 
-    }
+        assertEquals(memberProfileImage.getId(), memberProfileImage2.getId());
+        assertNotEquals(memberProfileImage.getFileStorageId(), memberProfileImage2.getFileStorageId());
+        assertNotEquals(memberProfileImage.getFileName(), memberProfileImage2.getFileName());
 
-    @Test
-    @DisplayName("회원 프로필 수정 시 회원을 찾을 수 없는 경우")
-    public void updateMember_NotFound() throws Exception {
-        //given
-        MockMultipartFile multipartFile = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
-        Long storedFileId = fileStorageService.uploadImageFile(multipartFile);
-        FileStorage storedFile = fileStorageService.getStoredFile(storedFileId);
-
-        Long fileId = storedFile.getId();
-        String fileName = storedFile.getFileName();
-        MemberUpdateProfileRequestDto modifyDto = createMemberUpdateRequestDto(fileId, fileName);
-
-        //when
-
-        //then
-        assertThrows(MemberNotFoundException.class, () -> memberService.updateMember(100000L, modifyDto.toServiceDto()));
+        assertEquals(storedFile2.getId(), memberProfileImage2.getFileStorageId());
+        assertEquals(storedFile2.getFileName(), memberProfileImage2.getFileName());
 
     }
 
     @Test
-    @DisplayName("회원 프로필 수정 시 다른 회원의 닉네임과 중복되는 경우")
-    public void updateMember_NicknameDuplicate() {
+    @DisplayName("프로필 이미지 수정 시 회원을 찾을 수 없는 경우")
+    public void updateProfileImage_MemberNotFound() throws Exception {
         //given
-        MemberSocialSignUpRequestDto memberSignUpDto = createMemberSignUpRequestDto();
-        Long signUpMemberId = authenticationService.signUp(memberSignUpDto.toServiceDto());
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadedFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadedFileId);
 
-        String nickname = "홍길동2";
-        memberSignUpDto.setNickname(nickname);
-        memberSignUpDto.setEmail("test2@email.com");
-        memberSignUpDto.setSocialId("3123123");
-        memberSignUpDto.setSocialType(SocialType.KAKAO);
-        authenticationService.signUp(memberSignUpDto.toServiceDto());
-
-
-        MemberUpdateProfileRequestDto memberUpdateRequestDto = createMemberUpdateRequestDto(null,null);
-        memberUpdateRequestDto.setNickname(nickname);
+        MemberProfileImageDto memberProfileImageDto = new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName());
 
         //when
 
         //then
-        assertThrows(MemberNicknameDuplicateException.class, () -> memberService.updateMember(signUpMemberId, memberUpdateRequestDto.toServiceDto()));
-
-    }
-
-    @Test
-    @DisplayName("회원 프로필 수정 시 닉네임을 변경하지 않은 경우")
-    public void updateMember_NicknameNotUpdate() {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpDto = createMemberSignUpRequestDto();
-        Long savedMemberId1 = authenticationService.signUp(memberSignUpDto.toServiceDto());
-
-        String nickname = "홍길동2";
-        memberSignUpDto.setNickname(nickname);
-        memberSignUpDto.setEmail("test2@email.com");
-        memberSignUpDto.setSocialId("3123123");
-        memberSignUpDto.setSocialType(SocialType.KAKAO);
-        Long savedMemberId2 = authenticationService.signUp(memberSignUpDto.toServiceDto());
-
-
-        MemberUpdateProfileRequestDto memberUpdateRequestDto = createMemberUpdateRequestDto(null,null);
-        memberUpdateRequestDto.setNickname(nickname);
-
-        //when
-        memberService.updateMember(savedMemberId2, memberUpdateRequestDto.toServiceDto());
-
-        //then
-        Member findMember = memberService.getMember(savedMemberId2);
-        assertEquals(memberUpdateRequestDto.getNickname(), findMember.getNickname());
-        assertEquals(memberUpdateRequestDto.getDescription(), findMember.getDescription());
+        assertThrows(MemberNotFoundException.class, () -> memberService.updateProfileImage(10000L, memberProfileImageDto));
 
     }
 

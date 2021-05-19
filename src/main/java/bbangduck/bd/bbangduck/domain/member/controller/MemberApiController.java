@@ -9,9 +9,9 @@ import bbangduck.bd.bbangduck.domain.member.exception.UpdateDifferentMemberExcep
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.global.common.ThrowUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
@@ -35,8 +35,6 @@ public class MemberApiController {
 
     private final MemberService memberService;
 
-    private final MemberValidator memberValidator;
-
     // TODO: 2021-05-06 프로필 조회에 방탈출 현황, 성향, 배지 등의 정보 추가로 응답하도록 구현
     // TODO: 2021-05-06 리뷰에 대한 구현이 끝난 뒤 추가 구현
     @GetMapping("/{memberId}")
@@ -55,9 +53,15 @@ public class MemberApiController {
     }
 
     // TODO: 21. 5. 17. 프로필 이미지 수정 api 구현
+    // TODO: 2021-05-19 Test
+    /**
+     * 일반 테스트
+     * 회원을 찾을 수 없는 경우
+     * 다른 회원의 프로필 이미지를 변경하는 경우
+     */
     @PutMapping("/{memberId}/profiles/images")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity updateProfileImage(
+    public ResponseEntity<ResponseDto<Object>> updateProfileImage(
             @PathVariable Long memberId,
             @RequestBody @Valid MemberUpdateProfileImageRequestDto requestDto,
             Errors errors,
@@ -69,43 +73,17 @@ public class MemberApiController {
         }
 
         memberService.updateProfileImage(memberId, requestDto.toServiceDto());
-        return null;
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS, null));
     }
 
     // TODO: 21. 5. 17. 프로필 이미지 삭제 api 구현
+
 
     // TODO: 21. 5. 17. 회원 닉네임 수정
 
     // TODO: 21. 5. 17. 회원 자기 소개 수정
 
     // TODO: 21. 5. 17. 방탈출 기록 공개 여부 수정
-
-    // TODO: 2021-05-02 회원 수정 기능 구현
-    // TODO: 2021-05-13 회원 프로필 수정 기능 테스트
-    /**
-     * 기능 테스트
-     * 회원을 찾을 수 없는 경우
-     * 다른 회원의 프로필을 수정하는 경우
-     * 닉네임, 자기소개 1000자 이상, 프로필 이미지 정보 제대로 기입 x
-     * 닉네임 중복
-     */
-    @PutMapping("/{memberId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> updateProfile(
-            @PathVariable Long memberId,
-            @RequestBody @Valid MemberUpdateProfileRequestDto memberUpdateProfileRequestDto,
-            Errors errors,
-            @CurrentUser Member currentMember
-    ) {
-        if (!currentMember.getId().equals(memberId)) {
-            throw new UpdateDifferentMemberException();
-        }
-        memberValidator.validateUpdateProfile(memberUpdateProfileRequestDto, errors);
-
-        memberService.updateMember(memberId, memberUpdateProfileRequestDto.toServiceDto());
-
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.MEMBER_MODIFY_PROFILE_SUCCESS,null));
-    }
 
     // TODO: 21. 5. 17. 회원 프로필 사진 삭제 기능 구현
 

@@ -134,6 +134,14 @@ public class FileStorageService {
         deleteActualFile(storedFile);
     }
 
+    @Transactional
+    public void deleteFile(Long fileStorageId) {
+        log.info("Try delete file");
+        FileStorage storedFile = getStoredFile(fileStorageId);
+        fileStorageRepository.delete(storedFile);
+        deleteActualFile(storedFile);
+    }
+
     public void deleteActualFile(FileStorage storedFile) {
         try {
             Path fileStoredPath = storedFile.getFileStoredPath();

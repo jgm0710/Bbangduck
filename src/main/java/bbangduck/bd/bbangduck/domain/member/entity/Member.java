@@ -191,25 +191,12 @@ public class Member extends BaseEntityDateTime {
         this.refreshInfo = RefreshInfo.init(refreshTokenExpiredDate);
     }
 
-    public void updateProfile(MemberUpdateDto modifyDto) {
-        this.nickname = modifyDto.getNickname();
-        this.description = modifyDto.getDescription();
-        this.roomEscapeRecordsOpenYN = modifyDto.isRoomEscapeRecordsOpenYN();
-        MemberProfileImage newProfileImage = MemberProfileImage.create(modifyDto.getProfileImageDto());
-        setProfileImage(newProfileImage);
-    }
-
-    public void loadSocialAccounts() {
-        this.socialAccounts.forEach(socialAccount -> {});
-    }
-
     public void updateProfileImage(MemberProfileImageDto memberProfileImageDto) {
-        MemberProfileImage memberProfileImage = MemberProfileImage.create(memberProfileImageDto);
-        setProfileImage(memberProfileImage);
+        this.profileImage.update(memberProfileImageDto);
     }
 
-    public boolean isChangeProfileImage(MemberProfileImageDto memberProfileImageDto) {
-
-        return false;
+    public void createProfileImage(MemberProfileImageDto memberProfileImageDto) {
+        MemberProfileImage newProfileImage = MemberProfileImage.create(memberProfileImageDto);
+        setProfileImage(newProfileImage);
     }
 }
