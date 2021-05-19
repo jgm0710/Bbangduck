@@ -43,8 +43,13 @@ public enum ResponseStatus {
      * 시작 코드 2
      */
     MEMBER_SIGN_UP_SUCCESS(2201, " 회원가입에 성공했습니다.", "회원가입에 성공했을 경우"),
-    GET_MEMBER_PROFILE_SUCCESS(2202, "회원 조회에 성공했습니다.", "회원 프로필 조회에 성공했을 경우"),
-    MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS(2203, "회원 프로필 이미지 변경에 성공했습니다.", "회원 프로필 이미지 요청이 성공했을 경우"),
+    MEMBER_GET_PROFILE_SUCCESS(2202, "회원 조회에 성공했습니다.", "회원 프로필 조회에 성공했을 경우"),
+    MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS(2203, "회원 프로필 이미지 변경에 성공했습니다.", "회원 프로필 이미지 변경 요청이 성공했을 경우"),
+    MEMBER_DELETE_PROFILE_IMAGE_SUCCESS(2204, "회원 프로필 이미지 삭제에 성공했습니다.", "회원 프로필 이미지 삭제 요청에 성공했을 경우"),
+    MEMBER_UPDATE_NICKNAME_SUCCESS(2205, "회원 Nickname 변경에 성공했습니다.", "회원 Nickname 변경에 성공한 경우"),
+    MEMBER_UPDATE_DESCRIPTION_SUCCESS(2206, "회원 자기소개 변경에 성공했습니다.", "회원 자기소개 변경에 성공한 경우"),
+    MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS(2207, "회원 방탈출 기록 공개 여부 변경에 성공했습니다.", "회원 방탈출 기록 공개 여부 변경에 성공한 경우"),
+
 
     MEMBER_NOT_FOUND(2401, "해당 회원이 존재하지 않습니다.", "해당 조건으로 조회된 회원이 존재하지 않는 경우"),
     MEMBER_SIGN_UP_NOT_VALID(2402, "회원가입 시 기입사항을 올바르게 기입하지 않았습니다.", "회원가입 시 기입사항을 규칙에 맞게 기입하지 않은 경우"),
@@ -52,8 +57,11 @@ public enum ResponseStatus {
     MEMBER_NICKNAME_DUPLICATE(2404, "해당 Nickname 을 사용하는 회원이 이미 존재합니다.", "회원가입, 회원 정보 수정 시 기존 사용자와 중복되는 Nickname 저장을 시도하는 경우"),
     MEMBER_SOCIAL_INFO_DUPLICATE(2405, "해당 소셜 회원은 이미 가입된 회원입니다.", "소셜 회원가입 시 기입한 소셜 정보를 통해 가입한 회원이 이미 존재하는 경우"),
     UPDATE_DIFFERENT_MEMBER_PROFILE(2406, "다른 회원의 프로필은 수정할 수 없습니다.", "프로필 수정 요청 시 다른 회원의 프로필 수정을 요청하는 경우"),
-
     MEMBER_UPDATE_PROFILE_IMAGE_NOT_VALID(2408, "회원 프로필 이미지 수정 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원 프로필 이미지 수정 시 필요한 기입 사항을 올바르게 기입하지 않은 경우"),
+    MEMBER_UPDATE_NICKNAME_NOT_VALID(2409, "회원 Nickname 변경 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원 Nickname 변경 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    MEMBER_UPDATE_DESCRIPTION_NOT_VALID(2410, "회원 자기소개 변경 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원의 자기소개 내용 변경 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    MEMBER_PROFILE_IMAGE_NOT_FOUND(2411, "회원의 프로필 이미지가 존재하지 않습니다.", "회원 프로필 이미지 삭제 등의 요청에서 회원 프로필 이미지 요청에 실패한 경우"),
+
 
     /**
      * 파일 관련 응답 코드

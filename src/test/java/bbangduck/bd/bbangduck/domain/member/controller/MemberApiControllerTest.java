@@ -4,7 +4,6 @@ import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpReque
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileImageRequestDto;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;

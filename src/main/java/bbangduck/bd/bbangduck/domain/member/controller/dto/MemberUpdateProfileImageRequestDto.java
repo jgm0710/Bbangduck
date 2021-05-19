@@ -10,6 +10,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 // TODO: 21. 5. 17. 주석
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 프로필 이미지 수정 요청 Body 를 담을 Request Dto
+ */
 @Data
 @Builder
 @AllArgsConstructor

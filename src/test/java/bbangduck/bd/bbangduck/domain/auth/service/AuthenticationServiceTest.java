@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest extends BaseJGMServiceTest {
 
+    @Transactional
     @Test
     @DisplayName("소셜 회원가입")
     public void signUp_Social() {
@@ -60,6 +61,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     }
 
+    @Transactional
     @Test
     @DisplayName("일반 회원가입")
     public void signUp_Normal() {

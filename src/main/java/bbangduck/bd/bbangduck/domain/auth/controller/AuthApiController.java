@@ -51,8 +51,6 @@ public class AuthApiController {
         TokenDto tokenDto = authenticationService.signIn(savedMemberId);
         MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.convert(savedMember, tokenDto);
         URI uri = linkTo(MemberApiController.class).slash(savedMemberId).toUri();
-        log.info("회원가입 완료!!");
-        log.info("회원가입 기입 정보 : {}", memberSocialSignUpRequestDto);
 
         return ResponseEntity.created(uri).body(new ResponseDto<>(ResponseStatus.MEMBER_SIGN_UP_SUCCESS, memberSignUpResponseDto));
     }

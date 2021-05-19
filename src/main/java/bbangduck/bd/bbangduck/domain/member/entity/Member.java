@@ -1,11 +1,12 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
 import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
-import bbangduck.bd.bbangduck.domain.member.service.dto.MemberUpdateDto;
-import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -198,5 +199,22 @@ public class Member extends BaseEntityDateTime {
     public void createProfileImage(MemberProfileImageDto memberProfileImageDto) {
         MemberProfileImage newProfileImage = MemberProfileImage.create(memberProfileImageDto);
         setProfileImage(newProfileImage);
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void toggleRoomEscapeRecodesOpenYN() {
+        this.roomEscapeRecordsOpenYN = !this.roomEscapeRecordsOpenYN;
+    }
+
+    public void deleteProfileImage(MemberProfileImageRepository memberProfileImageRepository) {
+        memberProfileImageRepository.delete(profileImage);
+        profileImage = null;
     }
 }

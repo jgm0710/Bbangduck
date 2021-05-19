@@ -80,4 +80,5 @@ public class MemberProfileImage {
         this.fileStorageId = memberProfileImageDto.getFileStorageId();
         this.fileName = memberProfileImageDto.getFileName();
     }
+
 }

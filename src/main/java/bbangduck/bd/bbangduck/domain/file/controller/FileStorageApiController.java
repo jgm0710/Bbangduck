@@ -58,7 +58,6 @@ public class FileStorageApiController {
                     return UploadedImageFileResponseDto.convert(storedFile);
                 }).collect(Collectors.toList());
 
-        log.info("Upload image file success");
         return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.UPLOAD_IMAGE_FILE_SUCCESS, uploadedImageFileResponseDtos));
     }
 
@@ -108,7 +107,6 @@ public class FileStorageApiController {
             String lastModifiedString = lastModified.format(DateTimeFormatter.ISO_DATE_TIME);
             String encode = MD5Utils.encode(lastModifiedString);
 
-            log.info("File download success");
             return ResponseEntity.ok()
                     .contentType(parseContentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)

@@ -5,9 +5,10 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
-import bbangduck.bd.bbangduck.domain.member.service.dto.MemberUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final MemberProfileImageRepository memberProfileImageRepository;
+
     private final FileStorageService fileStorageService;
 
     public Member getMember(Long memberId) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        log.debug("findMember : {}", findMember);
-
-        return findMember;
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     }
 
     private void checkDuplicateNickname(String nickname) {
@@ -41,18 +41,11 @@ public class MemberService {
         }
     }
 
-    // TODO: 21. 5. 17. 프로필 이미지 업데이트 테스트
-
-    /**
-     * 없었을경우 잘 생성되는지
-     * 있었을 경우 잘 변경되는지
-     * 변경될 경우 기존 파일은 잘 삭제되는지
-     * 회원을 찾을 수 없는 경우
-     */
     @Transactional
     public void updateProfileImage(Long memberId, MemberProfileImageDto memberProfileImageDto) {
         Member findMember = getMember(memberId);
         MemberProfileImage memberProfileImage = findMember.getProfileImage();
+
         if (memberProfileImage == null) {
             findMember.createProfileImage(memberProfileImageDto);
         } else {
@@ -64,5 +57,38 @@ public class MemberService {
                 findMember.updateProfileImage(memberProfileImageDto);
             }
         }
+    }
+
+    @Transactional
+    public void deleteProfileImage(Long memberId) {
+        Member findMember = getMember(memberId);
+        MemberProfileImage profileImage = findMember.getProfileImage();
+        if (profileImage == null) {
+            throw new MemberProfileImageNotFoundException();
+        } else {
+            findMember.deleteProfileImage(memberProfileImageRepository);
+            fileStorageService.deleteFile(profileImage.getFileStorageId());
+        }
+    }
+
+    @Transactional
+    public void updateNickname(Long memberId, String nickname) {
+        Member findMember = getMember(memberId);
+        if (!findMember.getNickname().equals(nickname)) {
+            checkDuplicateNickname(nickname);
+        }
+        findMember.updateNickname(nickname);
+    }
+
+    @Transactional
+    public void updateDescription(Long memberId, String description) {
+        Member findMember = getMember(memberId);
+        findMember.updateDescription(description);
+    }
+
+    @Transactional
+    public void toggleRoomEscapeRecodesOpenYN(Long memberId) {
+        Member findMember = getMember(memberId);
+        findMember.toggleRoomEscapeRecodesOpenYN();
     }
 }

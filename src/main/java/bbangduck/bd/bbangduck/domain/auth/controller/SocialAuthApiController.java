@@ -61,7 +61,6 @@ public class SocialAuthApiController {
         modelAndView.addObject(MESSAGE, ResponseStatus.KAKAO_SIGN_IN_SUCCESS.getMessage());
         modelAndView.addObject(DATA, tokenDto);
 
-        log.info("카카오 로그인에 성공했습니다. 회원 ID : {}", findMember.getId());
 
         return modelAndView;
 

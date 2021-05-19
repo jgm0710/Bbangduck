@@ -67,8 +67,6 @@ public class AuthenticationService {
         log.debug("Sign in by memberId");
         log.debug(tokenDto.toString());
 
-        log.info("Sign in success");
-
         return tokenDto;
     }
 
@@ -92,7 +90,6 @@ public class AuthenticationService {
                 .refreshTokenExpiredDate(findMember.getRefreshTokenExpiredDate())
                 .build();
 
-        log.info("Refresh sign in success");
 
         return tokenDto;
     }
