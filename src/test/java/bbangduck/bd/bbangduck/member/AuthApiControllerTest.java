@@ -438,7 +438,6 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-14 테스트 다시 확인
     @Transactional
     @Test
     @DisplayName("Refresh 토큰의 유효 기간이 만료된 경우")

@@ -42,6 +42,17 @@
 | 2402
 | 회원가입 시 기입사항을 올바르게 기입하지 않았습니다.
 
+| <<resources-refresh-sign-in>>
+| Refresh Token 을 통한 회원 조회에 실패했을 경우
+| 401
+| 1432
+| 해당 Refresh Token 을 통한 Access Token 재발급이 불가능합니다.
+
+| <<resources-refresh-sign-in>>
+| Refresh Token 의 유효기간이 만료된 경우
+| 401
+| 1433
+| Refresh Token 의 유효기간이 만료되었습니다.
 
 |===
 
@@ -57,6 +68,9 @@
 * <<resources-sign-up>>
 ** 소셜 회원가입 요청 분리
 ** 추후 일반회원 가입 구현 시 일반 회원가입 요청 추가
+
+2021-05-20:::
+* <<resources-refresh-sign-in>> 기능 구현
 
 [[resources-auth]]
 = 회원 인증 관리 리소스
@@ -119,3 +133,15 @@ operation::no-member-kakao-sign-up-callback[snippets='curl-request,http-response
 [[resources-refresh-sign-in]]
 == Refresh 로그인
 
+* `POST` `/api/auth/refresh`
+* Refresh Token 을 통해 Access Token 을 재발급 받습니다.
+* 응답되는 Access Token 은 Header, payload, signature 로 나누어 응답합니다.
+* 해당 요청에 사용되는 Refresh Token 은 로그인 시점에 응답됩니다.
+* 해당 요청 시 Refresh Token 의 기간이 만료되었다면 로그인에 실패합니다.
+
+[[resources-refresh-sign-in-success]]
+=== Refresh 로그인 성공
+
+* 응답 HttpStatus : `200 OK`
+
+operation::refresh-sign-in-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
