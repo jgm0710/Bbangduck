@@ -21,8 +21,6 @@ public abstract class StatusException extends RuntimeException{
         this.status = responseStatus.getStatus();
     }
 
-    // TODO: 2021-05-02 필요에 따라 status 와 message 를 받는 생성자 추가
-
     public int getStatus() {
         return status;
     }

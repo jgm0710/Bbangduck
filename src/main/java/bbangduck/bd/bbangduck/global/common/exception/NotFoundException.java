@@ -16,5 +16,4 @@ public abstract class NotFoundException extends StatusException {
         super(responseStatus, message);
     }
 
-    // TODO: 2021-05-02 필요에 따라 status 와 message 를 받는 생성자 추가
 }

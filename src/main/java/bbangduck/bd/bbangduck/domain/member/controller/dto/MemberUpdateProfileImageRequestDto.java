@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-// TODO: 21. 5. 17. 주석
 /**
  * 작성자 : 정구민 <br><br>
  *

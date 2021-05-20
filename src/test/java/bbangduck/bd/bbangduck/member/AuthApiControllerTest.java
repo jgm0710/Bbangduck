@@ -477,7 +477,6 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-20 문서화
     @Test
     @DisplayName("회원 탈퇴")
     public void withdrawal() throws Exception {
@@ -590,7 +589,6 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-21 문서화
     @Test
     @DisplayName("로그아웃")
     public void signOut() throws Exception {

@@ -88,7 +88,6 @@ public class ExceptionHandlerController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto<>(status, null, message));
     }
 
-    // TODO: 2021-05-13 UnauthorizedExceptionHandler 구현
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ResponseDto<Object>> unauthorizedExceptionHandling(UnauthorizedException ex) {
         int status = ex.getStatus();

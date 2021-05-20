@@ -32,14 +32,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AccessDeniedHandlerImpl accessDeniedHandler;
 
-
-    // TODO: 2021-05-02 필요시 주석 해제, 필요 없을 경우 아래 삭제
-//    @Bean
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
-
     /**
      * 정적 리소스에 대한 요청은 filter 적용을 무시하도록 설정
      */
@@ -66,7 +58,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         ;
 
     }
-
-    // TODO: 2021-05-02 인증 실패 핸들러 구현
-    // TODO: 2021-05-02 인가 실패 핸들러 구현
 }

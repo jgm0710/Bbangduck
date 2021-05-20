@@ -195,7 +195,6 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-12 파일 다운로드 문서화 and 캐싱 처리
     @Test
     @DisplayName("파일 다운로드 테스트")
     public void downloadFile() throws Exception {
