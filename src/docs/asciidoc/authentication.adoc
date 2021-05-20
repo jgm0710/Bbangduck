@@ -109,3 +109,8 @@ operation::member-kakao-sign-up-callback[snippets='curl-request,http-response']
 ** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.
 
 operation::no-member-kakao-sign-up-callback[snippets='curl-request,http-response']
+
+
+[[resources-refresh-sign-in]]
+== Refresh 로그인
+

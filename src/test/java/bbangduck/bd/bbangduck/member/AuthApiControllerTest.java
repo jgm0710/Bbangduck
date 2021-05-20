@@ -441,7 +441,29 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.REFRESH_SIGN_IN_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").exists())
                 .andExpect(jsonPath("message").value(ResponseStatus.REFRESH_SIGN_IN_SUCCESS.getMessage()))
+                .andDo(document(
+                        "refresh-sign-in-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정")
+                        ),
+                        requestFields(
+                                fieldWithPath("refreshToken").description("Access Token 을 재발급 받기 위해 필요한 Refresh Token 기입. +\n " +
+                                        "소셜 로그인(소셜 회원가입 포함) 시점에 Access Token 과 함께 발급되는 Refresh Token")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data.memberId").description("인증된 회원의 식별 ID"),
+                                fieldWithPath("data.accessToken.header").description("재발급된 Access Token 의 Header"),
+                                fieldWithPath("data.accessToken.payload").description("재발급된 Access Token 의 Payload"),
+                                fieldWithPath("data.accessToken.signature").description("재발급된 Access Token 의 Signature"),
+                                fieldWithPath("data.accessTokenValidSecond").description("재발급된 Access Token 의 만료까지 남은 시간(초)"),
+                                fieldWithPath("data.refreshToken").description("사용된 Refresh Token 다시 응답(Refresh Token 재발급을 위해서는 로그인을 다시 해야합니다.)"),
+                                fieldWithPath("data.refreshTokenExpiredDate").description("사용된 Refresh Token 의 만료 날짜"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
         ;
+
     }
 
     @Test
