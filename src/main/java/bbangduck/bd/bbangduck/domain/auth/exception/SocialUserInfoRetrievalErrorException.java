@@ -2,7 +2,7 @@ package bbangduck.bd.bbangduck.domain.auth.exception;
 
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import bbangduck.bd.bbangduck.domain.auth.dto.SocialAuthFailResponseAdaptor;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.SocialAuthFailResponseAdaptorDto;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -15,7 +15,7 @@ public class SocialUserInfoRetrievalErrorException extends SocialAuthFailExcepti
     public SocialUserInfoRetrievalErrorException(SocialType socialType) {
         super(
                 ResponseStatus.SOCIAL_USER_INFO_RETRIEVAL_ERROR,
-                SocialAuthFailResponseAdaptor.exchangeOnlySocialType(socialType)
+                SocialAuthFailResponseAdaptorDto.exchangeOnlySocialType(socialType)
         );
     }
 }

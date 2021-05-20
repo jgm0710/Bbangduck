@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.auth.dto;
+package bbangduck.bd.bbangduck.domain.auth.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  *
  * 로그인을 통한 인증 완료 시 응답할 Access Token, Refresh Token 의 정보를 담고 있는 Dto
  */
+// TODO: 2021-05-14 tokenResponseDto 구현
 @Data
 @NoArgsConstructor
 public class TokenDto {

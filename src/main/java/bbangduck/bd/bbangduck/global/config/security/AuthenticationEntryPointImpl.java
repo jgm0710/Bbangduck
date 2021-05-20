@@ -32,8 +32,8 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        log.error("인증 실패 Error 발생!!");
-        log.error("message : {}", authException.getMessage());
+        log.info("Authentication fail occurs.");
+        log.info("message : {}", authException.getMessage());
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         try (ServletOutputStream os = response.getOutputStream()) {

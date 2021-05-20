@@ -1,9 +1,9 @@
 package bbangduck.bd.bbangduck.member;
 
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -55,6 +55,14 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
     protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
 
+    protected String OBJECT_NAME_DESCRIPTION = "예외가 발생한 객체의 이름";
+
+    protected String CODE_DESCRIPTION = "예외 코드";
+
+    protected String DEFAULT_MESSAGE_DESCRIPTION = "발생한 예외에 대한 메세지";
+
+    protected String FIELD_DESCRIPTION = "예외가 발생한 필드의 이름";
+
     @BeforeEach
     public void setUp() {
         REFRESH_TOKEN_EXPIRED_DATE = securityJwtProperties.getRefreshTokenExpiredDate();
@@ -69,11 +77,10 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return new MockMultipartFile(paramName, filename, contentType, classPathResource.getInputStream());
     }
 
-    protected MemberSignUpDto createMemberSignUpDto() {
-        return MemberSignUpDto.builder()
+    protected MemberSocialSignUpRequestDto createMemberSocialSignUpRequestDto() {
+        return MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("testNickname")
-                .password("")
                 .socialType(SocialType.KAKAO)
                 .socialId("3123213")
                 .build();

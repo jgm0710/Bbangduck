@@ -50,19 +50,17 @@ public class FileStorageService {
 
     @Transactional
     public Long uploadImageFile(MultipartFile file) {
-        log.info("Try store image file");
-        if (!isImageType(file.getContentType())) {
-            log.error("File is not image file, so file upload fail");
+        String contentType = file.getContentType();
+        if (!isImageType(contentType)) {
+            log.error("File is not image file, so file upload fail. File content type : {}", contentType);
             throw new UploadFileNotImageFileException();
         }
 
-        log.info("Try store image file");
         return uploadFile(file);
     }
 
     @Transactional
     public Long uploadFile(MultipartFile file) {
-        log.info("Try store file");
         String originalFilename = getOriginalFileName(file);
         fileExtensionCheck(originalFilename);
 
@@ -72,6 +70,7 @@ public class FileStorageService {
         try {
             if (fileStoredName.contains("..")) {
                 log.error("File name contains \"..\"");
+                log.error("File name : {}",fileStoredName);
                 throw new FileNameContainsWrongPathException(fileStoredName);
             }
 
@@ -102,22 +101,20 @@ public class FileStorageService {
     private void storeFile(MultipartFile file, String fileStoredName, Path finalFileStorageLocation) throws IOException {
         Path targetLocation = finalFileStorageLocation.resolve(fileStoredName);
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        log.info("Store file success, it is not image file");
     }
 
     public Resource loadStoredFileAsResource(String fileName) {
-        log.info("Try download stored file");
         FileStorage storedFile = getStoredFile(fileName);
 
         return getResource(storedFile.getFileName(), storedFile.getUploadPathString());
     }
 
     public Resource loadThumbnailOfStoredImageFile(String fileName) {
-        log.info("Try download thumbnail of stored image file");
         FileStorage storedFile = getStoredFile(fileName);
+        String fileType = storedFile.getFileType();
 
-        if (!isImageType(storedFile.getFileType())) {
-            log.error("Thumbnails of non-image files cannot be downloaded");
+        if (!isImageType(fileType)) {
+            log.error("Thumbnails of non-image files cannot be downloaded. File type : {}",fileType);
             throw new DownloadThumbnailOfNonImageFileException();
         }
 
@@ -128,8 +125,14 @@ public class FileStorageService {
 
     @Transactional
     public void deleteFile(String fileName) {
-        log.info("Try delete file");
         FileStorage storedFile = getStoredFile(fileName);
+        fileStorageRepository.delete(storedFile);
+        deleteActualFile(storedFile);
+    }
+
+    @Transactional
+    public void deleteFile(Long fileStorageId) {
+        FileStorage storedFile = getStoredFile(fileStorageId);
         fileStorageRepository.delete(storedFile);
         deleteActualFile(storedFile);
     }
@@ -138,14 +141,11 @@ public class FileStorageService {
         try {
             Path fileStoredPath = storedFile.getFileStoredPath();
             Files.deleteIfExists(fileStoredPath);
-            log.info("Delete file success");
 
             if (isImageType(storedFile.getFileType())) {
-                log.info("Try delete thumbnail of image file");
                 String thumbnailPrefix = fileStorageProperties.getThumbnailPrefix();
                 Path thumbnailStoredPath = storedFile.getThumbnailStoredPath(thumbnailPrefix);
                 Files.deleteIfExists(thumbnailStoredPath);
-                log.info("Delete thumbnail of image file success");
             }
 
         } catch (IOException e) {
@@ -157,7 +157,7 @@ public class FileStorageService {
 
     public FileStorage getStoredFile(String fileName) {
         return fileStorageRepository.findByFileName(fileName).orElseThrow(() -> {
-            log.error("File lookup through the file name failed");
+            log.error("File lookup through the file name failed. File name : {}", fileName);
             throw new StoredFileNotFoundException();
         });
     }
@@ -177,7 +177,6 @@ public class FileStorageService {
             UrlResource urlResource = new UrlResource(fileStoredPath.toUri());
 
             if (urlResource.exists()) {
-                log.info("Succeeded in creating a resource from the file storage path");
                 return urlResource;
             } else {
                 log.error("The requested file does not actually exist, File name : {}, Upload path : {}", fileName, uploadPath);
@@ -200,7 +199,6 @@ public class FileStorageService {
         int width = fileStorageProperties.getThumbnailImageWidth();
         int height = fileStorageProperties.getThumbnailImageHeight();
         Thumbnailator.createThumbnail(file.getInputStream(), targetOutputStream, width, height);
-        log.info("Store thumbnail image success");
 
         targetOutputStream.close();
     }
@@ -213,19 +211,16 @@ public class FileStorageService {
         int width = fileStorageProperties.getOriginalImageWidth();
         int height = fileStorageProperties.getOriginalImageHeight();
         Thumbnailator.createThumbnail(file.getInputStream(), targetOutputStream, width, height);
-        log.info("Store original image success");
 
         targetOutputStream.close();
     }
 
     private boolean isImageType(String contentType) {
         if (contentType != null) {
-            boolean startsWith = contentType.startsWith("image");
-            log.info("File is image type : {}", startsWith);
-            return startsWith;
+            return contentType.startsWith("image");
         }
 
-        log.warn("Content type of file does not exist");
+        log.warn("Content type of file does not exist. Content type is null.");
         return false;
     }
 
@@ -239,9 +234,7 @@ public class FileStorageService {
 
         try {
             if (Files.notExists(finalFileStorageLocation)) {
-                log.info("Today directory does not exist in upload path");
                 Files.createDirectories(finalFileStorageLocation);
-                log.info("Create today directory");
             }
         } catch (Exception e) {
             log.error("Could not create today directory");
@@ -266,7 +259,7 @@ public class FileStorageService {
         for (String dfe :
                 DENIED_FILE_EXTENSION) {
             if (lowFileName.endsWith(dfe)) {
-                log.error("File extension is denied extension");
+                log.error("File extension is denied extension. Original file name : {}", originalFilename);
                 throw new DeniedFileExtensionException();
             }
         }

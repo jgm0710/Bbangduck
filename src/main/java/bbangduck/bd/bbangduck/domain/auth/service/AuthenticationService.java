@@ -1,17 +1,16 @@
 package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
-import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenExpiredException;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenNotFoundException;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberDuplicateException;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.exception.*;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +35,15 @@ public class AuthenticationService {
 
     private final MemberRepository memberRepository;
 
+    @Transactional
+    public Long signUp(MemberSignUpDto signUpDto) {
+        Member signUpMember = Member.signUp(signUpDto, securityJwtProperties.getRefreshTokenExpiredDate());
+        checkSignUpDuplicate(signUpMember);
+        Member savedMember = memberRepository.save(signUpMember);
+        log.debug("savedMember : {}", savedMember);
+        return savedMember.getId();
+    }
+
     private final SecurityJwtProperties securityJwtProperties;
 
     private final MemberQueryRepository memberQueryRepository;
@@ -58,8 +66,6 @@ public class AuthenticationService {
 
         log.debug("Sign in by memberId");
         log.debug(tokenDto.toString());
-
-        log.info("Sign in success");
 
         return tokenDto;
     }
@@ -84,17 +90,8 @@ public class AuthenticationService {
                 .refreshTokenExpiredDate(findMember.getRefreshTokenExpiredDate())
                 .build();
 
-        log.info("Refresh sign in success");
 
         return tokenDto;
-    }
-
-    @Transactional
-    public Long signUp(Member signUpMember) {
-        checkSignUpDuplicate(signUpMember);
-        Member savedMember = memberRepository.save(signUpMember);
-        log.debug("savedMember : {}", savedMember);
-        return savedMember.getId();
     }
 
     // TODO: 2021-05-13 회원탈퇴 기능 테스트
@@ -109,20 +106,20 @@ public class AuthenticationService {
         String signUpMemberNickname = signUpMember.getNickname();
         SocialAccount signUpMemberSocialAccount = signUpMember.getFirstSocialAccount();
 
-        checkDuplicateEmails(signUpMemberEmail);
+        checkDuplicateEmail(signUpMemberEmail);
         checkDuplicateNickname(signUpMemberNickname);
         checkDuplicateSocialInfo(signUpMemberSocialAccount);
     }
 
     private void checkDuplicateNickname(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()) {
-            throw new MemberDuplicateException(ResponseStatus.MEMBER_NICKNAME_DUPLICATE);
+            throw new MemberNicknameDuplicateException(nickname);
         }
     }
 
-    private void checkDuplicateEmails(String email) {
+    private void checkDuplicateEmail(String email) {
         if (memberRepository.findByEmail(email).isPresent()) {
-            throw new MemberDuplicateException(ResponseStatus.MEMBER_EMAIL_DUPLICATE);
+            throw new MemberEmailDuplicateException(email);
         }
     }
 
@@ -135,7 +132,7 @@ public class AuthenticationService {
         String socialId = socialAccount.getSocialId();
 
         if (memberQueryRepository.findBySocialTypeAndSocialId(socialType, socialId).isPresent()) {
-            throw new MemberDuplicateException(ResponseStatus.MEMBER_SOCIAL_INFO_DUPLICATE);
+            throw new MemberSocialInfoDuplicateException(socialType, socialId);
         }
     }
 

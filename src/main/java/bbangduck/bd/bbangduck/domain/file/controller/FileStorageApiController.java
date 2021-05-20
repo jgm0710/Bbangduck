@@ -45,6 +45,7 @@ public class FileStorageApiController {
 
     private final FileStorageProperties fileStorageProperties;
 
+    // TODO: 2021-05-13 포스트맨으로 파일 업로드를 통한 다운로드 테스트
     @PostMapping("/images")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<List<UploadedImageFileResponseDto>>> uploadImageFiles(
@@ -54,16 +55,9 @@ public class FileStorageApiController {
                 .map(file -> {
                     Long storedFileId = fileStorageService.uploadImageFile(file);
                     FileStorage storedFile = fileStorageService.getStoredFile(storedFileId);
-                    try {
-                        return UploadedImageFileResponseDto.convert(storedFile);
-                    } catch (UnsupportedEncodingException e) {
-                        log.error("URL Encoding Error 발생");
-                        e.printStackTrace();
-                        throw new URLEncodingUnknownException();
-                    }
+                    return UploadedImageFileResponseDto.convert(storedFile);
                 }).collect(Collectors.toList());
 
-        log.info("Upload image file success");
         return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.UPLOAD_IMAGE_FILE_SUCCESS, uploadedImageFileResponseDtos));
     }
 
@@ -113,7 +107,6 @@ public class FileStorageApiController {
             String lastModifiedString = lastModified.format(DateTimeFormatter.ISO_DATE_TIME);
             String encode = MD5Utils.encode(lastModifiedString);
 
-            log.info("File download success");
             return ResponseEntity.ok()
                     .contentType(parseContentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)

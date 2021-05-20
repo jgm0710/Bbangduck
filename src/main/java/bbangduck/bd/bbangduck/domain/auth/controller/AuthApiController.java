@@ -1,18 +1,15 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
-import bbangduck.bd.bbangduck.domain.auth.dto.OnlyRefreshTokenDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignUpResponseDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.OnlyRefreshTokenRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
-import bbangduck.bd.bbangduck.domain.member.controller.MemberValidator;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpResponseDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
-import bbangduck.bd.bbangduck.global.common.exception.ValidationHasErrorException;
-import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
+import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 
+import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 /**
@@ -39,23 +37,17 @@ public class AuthApiController {
 
     private final MemberService memberService;
 
-    private final SecurityJwtProperties securityJwtProperties;
-
-    private final MemberValidator memberValidator;
-
-    @PostMapping(value = "/sign-up")
+    @PostMapping(value = "/social/sign-up")
     public ResponseEntity<ResponseDto<MemberSignUpResponseDto>> signUp(
-            @RequestBody @Valid MemberSignUpDto memberSignUpDto,
+            @RequestBody @Valid MemberSocialSignUpRequestDto memberSocialSignUpRequestDto,
             Errors errors
     ) {
-        memberValidator.validateSignUp(memberSignUpDto, errors);
-        Long savedMemberId = authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+        hasErrorsThrow(ResponseStatus.MEMBER_SIGN_UP_NOT_VALID, errors);
+        Long savedMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
         Member savedMember = memberService.getMember(savedMemberId);
         TokenDto tokenDto = authenticationService.signIn(savedMemberId);
         MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.convert(savedMember, tokenDto);
         URI uri = linkTo(MemberApiController.class).slash(savedMemberId).toUri();
-        log.info("회원가입 완료!!");
-        log.info("회원가입 기입 정보 : {}", memberSignUpDto);
 
         return ResponseEntity.created(uri).body(new ResponseDto<>(ResponseStatus.MEMBER_SIGN_UP_SUCCESS, memberSignUpResponseDto));
     }
@@ -63,25 +55,18 @@ public class AuthApiController {
     // TODO: 2021-05-13 refresh 로그인 기능 구현
     @PostMapping("/refresh")
     public ResponseEntity<ResponseDto<TokenDto>> refresh(
-            @RequestBody @Valid OnlyRefreshTokenDto onlyRefreshTokenDto,
+            @RequestBody @Valid OnlyRefreshTokenRequestDto onlyRefreshTokenRequestDto,
             Errors errors
     ) {
-        hasErrorsThrow(errors, ResponseStatus.REFRESH_NOT_VALID);
-        TokenDto tokenDto = authenticationService.refresh(onlyRefreshTokenDto.getRefreshToken());
+        hasErrorsThrow(ResponseStatus.REFRESH_NOT_VALID, errors);
+        TokenDto tokenDto = authenticationService.refresh(onlyRefreshTokenRequestDto.getRefreshToken());
 
         log.info("Refresh sign in success");
         return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.REFRESH_SIGN_IN_SUCCESS, tokenDto));
     }
 
-
     // TODO: 2021-05-02 회원 탈퇴 기능 구현
     // TODO: 2021-05-02 자체 로그인 기능 구현 시 로그인 요청 처리 메서드 등록
     // TODO: 2021-05-02 회원 활동 금지 기능 구현
     // TODO: 2021-05-02 로그이웃 기능 구현
-
-    private void hasErrorsThrow(Errors errors, ResponseStatus responseStatus) {
-        if (errors.hasErrors()) {
-            throw new ValidationHasErrorException(responseStatus, errors);
-        }
-    }
 }

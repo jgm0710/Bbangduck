@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.auth.dto;
+package bbangduck.bd.bbangduck.domain.auth.service.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 

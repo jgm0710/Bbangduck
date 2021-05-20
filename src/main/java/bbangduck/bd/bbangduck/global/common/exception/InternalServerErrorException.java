@@ -9,7 +9,7 @@ import bbangduck.bd.bbangduck.global.common.ResponseStatus;
  * 아직 예측하지 못하는 예외가 발생 시 되도록 정해진 형식에 맞게 응답하기 위해 구현 <br>
  * InternalServerErrorException Handler 를 통해 500 응답을 하도록 하기 위해 구현
  */
-public class InternalServerErrorException extends StatusException{
+public abstract class InternalServerErrorException extends StatusException{
 
     public InternalServerErrorException(ResponseStatus responseStatus) {
         super(responseStatus);

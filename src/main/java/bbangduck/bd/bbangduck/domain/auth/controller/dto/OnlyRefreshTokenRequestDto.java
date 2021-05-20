@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.auth.dto;
+package bbangduck.bd.bbangduck.domain.auth.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OnlyRefreshTokenDto {
+public class OnlyRefreshTokenRequestDto {
 
     @NotBlank(message = "Refresh Token 을 기입해 주세요.")
     private String refreshToken;

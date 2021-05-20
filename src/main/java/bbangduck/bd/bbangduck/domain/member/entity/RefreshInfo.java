@@ -42,4 +42,12 @@ public class RefreshInfo {
     public LocalDateTime getRefreshTokenExpiredDate() {
         return refreshTokenExpiredDate;
     }
+
+    @Override
+    public String toString() {
+        return "RefreshInfo{" +
+                "refreshToken='" + refreshToken + '\'' +
+                ", refreshTokenExpiredDate=" + refreshTokenExpiredDate +
+                '}';
+    }
 }

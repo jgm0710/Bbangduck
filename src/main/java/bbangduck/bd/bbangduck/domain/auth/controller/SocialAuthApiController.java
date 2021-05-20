@@ -1,11 +1,11 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
-import bbangduck.bd.bbangduck.domain.auth.dto.KakaoUserInfoDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.SocialAuthFailResponseAdaptor;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.KakaoUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.SocialAuthFailResponseAdaptorDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.KakaoAuthFailException;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
-import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
@@ -51,7 +51,7 @@ public class SocialAuthApiController {
         KakaoUserInfoDto kakaoUserInfo = socialSignInService.connectKakao(code, state);
 
         Member findMember = memberQueryRepository.findBySocialTypeAndSocialId(SocialType.KAKAO, kakaoUserInfo.getSocialId())
-                .orElseThrow(() -> new KakaoAuthFailException(SocialAuthFailResponseAdaptor.exchange(kakaoUserInfo)));
+                .orElseThrow(() -> new KakaoAuthFailException(SocialAuthFailResponseAdaptorDto.exchange(kakaoUserInfo)));
 
         TokenDto tokenDto = authenticationService.signIn(findMember.getId());
 
@@ -61,7 +61,6 @@ public class SocialAuthApiController {
         modelAndView.addObject(MESSAGE, ResponseStatus.KAKAO_SIGN_IN_SUCCESS.getMessage());
         modelAndView.addObject(DATA, tokenDto);
 
-        log.info("카카오 로그인에 성공했습니다. 회원 ID : {}", findMember.getId());
 
         return modelAndView;
 
