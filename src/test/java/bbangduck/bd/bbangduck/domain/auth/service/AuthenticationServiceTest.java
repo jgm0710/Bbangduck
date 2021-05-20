@@ -8,6 +8,7 @@ import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.*;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberSocialInfoDuplicateException;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
 import org.junit.jupiter.api.DisplayName;
@@ -267,6 +268,46 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         assertNotEquals(refreshToken, findMember.getRefreshToken());
         assertNotEquals(refreshTokenExpiredDate, findMember.getRefreshTokenExpiredDate());
         assertEquals(tokenDto.getRefreshToken(), findMember.getRefreshToken());
+
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴")
+    public void withdrawal() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member savedMember = memberService.getMember(signUpId);
+
+        assertTrue(savedMember.getRoles().contains(MemberRole.USER));
+        assertFalse(savedMember.getRoles().contains(MemberRole.WITHDRAWAL));
+
+        //when
+        authenticationService.withdrawal(signUpId);
+
+        //then
+        Member findMember = memberService.getMember(signUpId);
+
+        assertTrue(findMember.getRoles().contains(MemberRole.WITHDRAWAL));
+        assertFalse(findMember.getRoles().contains(MemberRole.USER));
+
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 - 회원을 찾을 수 없는 경우")
+    public void withdrawal_MemberNotFound() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member savedMember = memberService.getMember(signUpId);
+
+        assertTrue(savedMember.getRoles().contains(MemberRole.USER));
+        assertFalse(savedMember.getRoles().contains(MemberRole.WITHDRAWAL));
+
+        //when
+
+        //then
+        assertThrows(MemberNotFoundException.class, () -> authenticationService.withdrawal(10000L));
 
     }
 

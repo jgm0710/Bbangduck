@@ -145,3 +145,19 @@ operation::no-member-kakao-sign-up-callback[snippets='curl-request,http-response
 * 응답 HttpStatus : `200 OK`
 
 operation::refresh-sign-in-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-withdrawal]]
+== 회원 탈퇴
+
+* `DELETE` `/api/auth/{memberId}/withdrawal`
+* 회원의 계정을 탈퇴합니다.
+* 인증된 사용자만 해당 리소스에 접근이 가능하고, 인증된 사용자는 다른 회원의 계정을 탈퇴할 수 없습니다.
+* 이미 계정이 탈퇴된 회원 또한 해당 리소스에 접근이 불가능합니다.
+
+[[resources-withdrawal-success]]
+=== 회원 탈퇴 성공
+
+* 응답 HttpStatus : `200 OK`
+
+operation::withdrawal-success[snippets='request-headers,response-fields,curl-request,http-response']
+

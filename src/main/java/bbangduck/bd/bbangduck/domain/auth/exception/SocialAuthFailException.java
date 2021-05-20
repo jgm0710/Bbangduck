@@ -31,8 +31,6 @@ public class SocialAuthFailException extends RuntimeException {
         this.viewName = "social-sign-in-result";
     }
 
-    // TODO: 2021-05-02 viewName 지정이 필요할 경우 생성자 추가
-
     public int getStatus() {
         return status;
     }

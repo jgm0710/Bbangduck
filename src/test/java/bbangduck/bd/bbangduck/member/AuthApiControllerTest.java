@@ -29,6 +29,7 @@ import java.util.UUID;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -473,6 +474,119 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.REFRESH_TOKEN_EXPIRED.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.REFRESH_TOKEN_EXPIRED.getMessage()));
+
+    }
+
+    // TODO: 2021-05-20 문서화
+    @Test
+    @DisplayName("회원 탈퇴")
+    public void withdrawal() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/auth/" + signUpId + "/withdrawal")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.WITHDRAWAL_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.WITHDRAWAL_SUCCESS.getMessage()))
+                .andDo(document(
+                        "withdrawal-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 - 탈퇴한 회원이 리소스 접근")
+    public void withdrawal_By_WithdrawalMember() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        authenticationService.withdrawal(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/auth/" + signUpId + "/withdrawal")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.FORBIDDEN.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.FORBIDDEN.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 - 인증되지 않음")
+    public void withdrawal_Unauthorized() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/auth/" + signUpId + "/withdrawal")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 - 다른 회원의 계정 탈퇴")
+    public void withdrawal_DifferentMember() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/auth/" + 100000L + "/withdrawal")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.WITHDRAWAL_DIFFERENT_MEMBER.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.WITHDRAWAL_DIFFERENT_MEMBER.getMessage()));
 
     }
 

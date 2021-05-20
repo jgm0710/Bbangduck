@@ -34,7 +34,6 @@ class SocialAuthApiControllerTest extends BaseJGMApiControllerTest {
     @Autowired
     KakaoSignInProperties kakaoSignInProperties;
 
-    // TODO: 2021-05-05 카카오 로그인 문서화 진행
     @Test
     @DisplayName("비회원 Kakao 로그인 콜백 테스트")
     public void Kakao_Callback_NoMember_Test() throws Exception {

@@ -1,9 +1,11 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
+import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignUpResponseDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.OnlyRefreshTokenRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.TokenResponseDto;
+import bbangduck.bd.bbangduck.domain.auth.exception.WithdrawalDifferentMember;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
@@ -14,6 +16,7 @@ import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +56,6 @@ public class AuthApiController {
         return ResponseEntity.created(uri).body(new ResponseDto<>(ResponseStatus.MEMBER_SIGN_UP_SUCCESS, memberSignUpResponseDto));
     }
 
-    // TODO: 2021-05-13 refresh 로그인 기능 구현
     @PostMapping("/refresh")
     public ResponseEntity<ResponseDto<TokenResponseDto>> refresh(
             @RequestBody @Valid OnlyRefreshTokenRequestDto onlyRefreshTokenRequestDto,
@@ -70,6 +72,22 @@ public class AuthApiController {
     }
 
     // TODO: 2021-05-02 회원 탈퇴 기능 구현
+    @DeleteMapping("/{memberId}/withdrawal")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity withdrawal(
+            @PathVariable Long memberId,
+            @CurrentUser Member currentMember
+    ) {
+        if (!currentMember.getId().equals(memberId)) {
+            throw new WithdrawalDifferentMember();
+        }
+
+        authenticationService.withdrawal(memberId);
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.WITHDRAWAL_SUCCESS, null));
+    }
+
+
     // TODO: 2021-05-02 자체 로그인 기능 구현 시 로그인 요청 처리 메서드 등록
     // TODO: 2021-05-02 회원 활동 금지 기능 구현
     // TODO: 2021-05-02 로그이웃 기능 구현

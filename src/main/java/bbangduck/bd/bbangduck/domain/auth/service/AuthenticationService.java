@@ -57,17 +57,13 @@ public class AuthenticationService {
         List<String> roleNameList = findMember.getRoleNameList();
 
         String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
-        TokenDto tokenDto = TokenDto.builder()
+
+        return TokenDto.builder()
                 .accessToken(jwtToken)
                 .accessTokenValidSecond(securityJwtProperties.getTokenValidSecond())
                 .refreshToken(findMember.getRefreshToken())
                 .refreshTokenExpiredDate(findMember.getRefreshTokenExpiredDate())
                 .build();
-
-        log.debug("Sign in by memberId");
-        log.debug(tokenDto.toString());
-
-        return tokenDto;
     }
 
     public TokenDto refresh(String refreshToken) {
@@ -82,18 +78,15 @@ public class AuthenticationService {
         List<String> roleNameList = findMember.getRoleNameList();
 
         String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
-        TokenDto tokenDto = TokenDto.builder()
+
+        return TokenDto.builder()
                 .accessToken(jwtToken)
                 .accessTokenValidSecond(securityJwtProperties.getTokenValidSecond())
                 .refreshToken(findMember.getRefreshToken())
                 .refreshTokenExpiredDate(findMember.getRefreshTokenExpiredDate())
                 .build();
-
-
-        return tokenDto;
     }
 
-    // TODO: 2021-05-13 회원탈퇴 기능 테스트
     @Transactional
     public void withdrawal(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
