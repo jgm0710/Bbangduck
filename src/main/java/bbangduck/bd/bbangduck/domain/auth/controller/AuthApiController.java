@@ -5,7 +5,8 @@ import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignUpResponseDto
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.OnlyRefreshTokenRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.TokenResponseDto;
-import bbangduck.bd.bbangduck.domain.auth.exception.WithdrawalDifferentMember;
+import bbangduck.bd.bbangduck.domain.auth.exception.SignOutDifferentMemberException;
+import bbangduck.bd.bbangduck.domain.auth.exception.WithdrawalDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
@@ -71,15 +72,14 @@ public class AuthApiController {
         return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.REFRESH_SIGN_IN_SUCCESS, tokenResponseDto));
     }
 
-    // TODO: 2021-05-02 회원 탈퇴 기능 구현
     @DeleteMapping("/{memberId}/withdrawal")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity withdrawal(
+    public ResponseEntity<ResponseDto<Object>> withdrawal(
             @PathVariable Long memberId,
             @CurrentUser Member currentMember
     ) {
         if (!currentMember.getId().equals(memberId)) {
-            throw new WithdrawalDifferentMember();
+            throw new WithdrawalDifferentMemberException();
         }
 
         authenticationService.withdrawal(memberId);
@@ -88,7 +88,24 @@ public class AuthApiController {
     }
 
 
+    @GetMapping("/{memberId}/sign-out")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<Object>> signOut(
+            @PathVariable Long memberId,
+            @CurrentUser Member currentMember
+    ) {
+        if (!currentMember.getId().equals(memberId)) {
+            throw new SignOutDifferentMemberException();
+        }
+
+        authenticationService.signOut(memberId);
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.SIGN_OUT_SUCCESS, null));
+    }
+
     // TODO: 2021-05-02 자체 로그인 기능 구현 시 로그인 요청 처리 메서드 등록
     // TODO: 2021-05-02 회원 활동 금지 기능 구현
-    // TODO: 2021-05-02 로그이웃 기능 구현
+
+
+
 }

@@ -18,6 +18,18 @@
 |===
 | 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
 
+| <<resources-withdrawal>> / <<resources-sign-out>>
+| 인증되지 않은 회원이 리소스에 접근하는 경우
+| 401
+| 1401
+| 인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.
+
+| <<resources-withdrawal>> / <<resources-sign-out>>
+| 탈퇴하거나 계정이 정지된 회원이 리소스에 접근하는 경우
+| 403
+| 1403
+| 해당 리소스에 접근할 수 없는 회원입니다.
+
 | <<resources-sign-up>>
 | 회원가입 시 기입한 Email 이 기존 회원의 Email 과 중복되는 경우
 | 409
@@ -54,6 +66,18 @@
 | 1433
 | Refresh Token 의 유효기간이 만료되었습니다.
 
+| <<resources-withdrawal>>
+| 다른 회원의 계정을 탈퇴하는 경우
+| 403
+| 1441
+| 자신의 계정만 탈퇴가 가능합니다.
+
+| <<resources-sign-out>>
+| 다른 회원을 로그아웃 하는 경우
+| 403
+| 1442
+| 자신의 계정만 로그아웃 할 수 있습니다.
+
 |===
 
 == 히스토리
@@ -72,6 +96,7 @@
 2021-05-20:::
 * <<resources-refresh-sign-in>> 기능 구현
 * <<resources-withdrawal>> 기능 구현
+* <<resources-sign-out>> 기능 구현
 
 [[resources-auth]]
 = 회원 인증 관리 리소스
@@ -161,4 +186,22 @@ operation::refresh-sign-in-success[snippets='request-headers,request-fields,resp
 * 응답 HttpStatus : `200 OK`
 
 operation::withdrawal-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+[[resources-sign-out]]
+== 로그아웃
+
+* `GET` `/api/auth/{memberId}/sign-out`
+* 회원을 로그아웃합니다.
+* 지정된 회원의 Refresh Token 을 삭제합니다.
+* 인증된 사용자만 해당 리소스에 접근이 가능하고, 인증된 사용자는 다른 회원을 로그아웃할 수 없습니다.
+* 로그아웃 시점에 회원의 Access Token, Refresh Token 은 프론트 단에서 삭제해 주시길 바랍니다.
+
+[[resources-sign-out-success]]
+=== 로그아웃 성공
+
+* 응답 HttpStatus : `200 OK`
+
+operation::sign-out-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+
 

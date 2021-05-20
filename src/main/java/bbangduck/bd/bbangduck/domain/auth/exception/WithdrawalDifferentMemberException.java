@@ -8,8 +8,8 @@ import bbangduck.bd.bbangduck.global.common.exception.ForbiddenException;
  *
  * 회원 탈퇴 요청 시 다른 회원의 계정 탈퇴를 요청하는 경우 발생할 예외
  */
-public class WithdrawalDifferentMember extends ForbiddenException {
-    public WithdrawalDifferentMember() {
+public class WithdrawalDifferentMemberException extends ForbiddenException {
+    public WithdrawalDifferentMemberException() {
         super(ResponseStatus.WITHDRAWAL_DIFFERENT_MEMBER);
     }
 }

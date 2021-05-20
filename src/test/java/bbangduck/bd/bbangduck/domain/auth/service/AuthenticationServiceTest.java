@@ -311,5 +311,41 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     }
 
+    @Test
+    @DisplayName("로그아웃 테스트")
+    public void signOut() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Member savedMember = memberService.getMember(signUpId);
+
+        assertNotNull(savedMember.getRefreshToken());
+        assertNotNull(savedMember.getRefreshTokenExpiredDate());
+
+        //when
+        authenticationService.signOut(signUpId);
+
+        //then
+        Member findMember = memberService.getMember(signUpId);
+        assertNull(findMember.getRefreshToken());
+        assertNull(findMember.getRefreshTokenExpiredDate());
+
+        assertThrows(RefreshTokenNotFoundException.class, () -> authenticationService.refresh(savedMember.getRefreshToken()));
+
+    }
+
+    @Test
+    @DisplayName("로그아웃 - 회원을 찾을 수 없는 경우")
+    public void signOut_MemberNotFound() throws Exception {
+        //given
+
+        //when
+
+        //then
+        assertThrows(MemberNotFoundException.class, () -> authenticationService.signOut(10000L));
+
+    }
+
 
 }

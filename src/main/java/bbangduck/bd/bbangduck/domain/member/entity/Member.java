@@ -138,11 +138,11 @@ public class Member extends BaseEntityDateTime {
     }
 
     public String getRefreshToken() {
-        return refreshInfo.getRefreshToken();
+        return refreshInfo == null ? null : refreshInfo.getRefreshToken();
     }
 
     public LocalDateTime getRefreshTokenExpiredDate() {
-        return refreshInfo.getRefreshTokenExpiredDate();
+        return refreshInfo == null ? null : refreshInfo.getRefreshTokenExpiredDate();
     }
 
     public Set<MemberRole> getRoles() {
@@ -216,5 +216,9 @@ public class Member extends BaseEntityDateTime {
     public void deleteProfileImage(MemberProfileImageRepository memberProfileImageRepository) {
         memberProfileImageRepository.delete(profileImage);
         profileImage = null;
+    }
+
+    public void signOut() {
+        this.refreshInfo = null;
     }
 }

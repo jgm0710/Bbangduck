@@ -50,7 +50,7 @@ public class AuthenticationService {
 
     @Transactional
     public TokenDto signIn(Long memberId) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        Member findMember = getMember(memberId);
         findMember.signIn(securityJwtProperties.getRefreshTokenExpiredDate());
 
         String email = findMember.getEmail();
@@ -89,8 +89,18 @@ public class AuthenticationService {
 
     @Transactional
     public void withdrawal(Long memberId) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        Member findMember = getMember(memberId);
         findMember.withdrawal();
+    }
+
+    @Transactional
+    public void signOut(Long memberId) {
+        Member findMember = getMember(memberId);
+        findMember.signOut();
+    }
+
+    private Member getMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     }
 
     private void checkSignUpDuplicate(Member signUpMember) {
@@ -127,5 +137,4 @@ public class AuthenticationService {
             throw new MemberSocialInfoDuplicateException(socialType, socialId);
         }
     }
-
 }

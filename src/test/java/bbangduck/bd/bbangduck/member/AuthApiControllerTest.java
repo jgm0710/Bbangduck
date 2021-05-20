@@ -26,11 +26,11 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
+import static bbangduck.bd.bbangduck.global.common.ResponseStatus.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -132,7 +132,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_EMAIL_DUPLICATE.getStatus()))
+                .andExpect(jsonPath("status").value(MEMBER_EMAIL_DUPLICATE.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(new MemberEmailDuplicateException(memberSocialSignUpRequestDto2.getEmail()).getMessage()))
         ;
@@ -171,7 +171,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_NICKNAME_DUPLICATE.getStatus()))
+                .andExpect(jsonPath("status").value(MEMBER_NICKNAME_DUPLICATE.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(new MemberNicknameDuplicateException(memberSocialSignUpRequestDto2.getNickname()).getMessage()))
         ;
@@ -211,7 +211,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_SOCIAL_INFO_DUPLICATE.getStatus()))
+                .andExpect(jsonPath("status").value(MEMBER_SOCIAL_INFO_DUPLICATE.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message")
                         .value(new MemberSocialInfoDuplicateException(memberSocialSignUpRequestDto2.getSocialType(), memberSocialSignUpRequestDto2.getSocialId()).getMessage()))
@@ -387,9 +387,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.REFRESH_SIGN_IN_SUCCESS.getStatus()))
+                .andExpect(jsonPath("status").value(REFRESH_SIGN_IN_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.REFRESH_SIGN_IN_SUCCESS.getMessage()))
+                .andExpect(jsonPath("message").value(REFRESH_SIGN_IN_SUCCESS.getMessage()))
                 .andDo(document(
                         "refresh-sign-in-success",
                         requestHeaders(
@@ -432,9 +432,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("status").value(ResponseStatus.REFRESH_TOKEN_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("status").value(REFRESH_TOKEN_NOT_FOUND.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.REFRESH_TOKEN_NOT_FOUND.getMessage()))
+                .andExpect(jsonPath("message").value(REFRESH_TOKEN_NOT_FOUND.getMessage()))
         ;
 
     }
@@ -471,9 +471,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("status").value(ResponseStatus.REFRESH_TOKEN_EXPIRED.getStatus()))
+                .andExpect(jsonPath("status").value(REFRESH_TOKEN_EXPIRED.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.REFRESH_TOKEN_EXPIRED.getMessage()));
+                .andExpect(jsonPath("message").value(REFRESH_TOKEN_EXPIRED.getMessage()));
 
     }
 
@@ -496,9 +496,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.WITHDRAWAL_SUCCESS.getStatus()))
+                .andExpect(jsonPath("status").value(WITHDRAWAL_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.WITHDRAWAL_SUCCESS.getMessage()))
+                .andExpect(jsonPath("message").value(WITHDRAWAL_SUCCESS.getMessage()))
                 .andDo(document(
                         "withdrawal-success",
                         requestHeaders(
@@ -534,9 +534,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("status").value(ResponseStatus.FORBIDDEN.getStatus()))
+                .andExpect(jsonPath("status").value(FORBIDDEN.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.FORBIDDEN.getMessage()));
+                .andExpect(jsonPath("message").value(FORBIDDEN.getMessage()));
 
     }
 
@@ -559,9 +559,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("status").value(UNAUTHORIZED.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+                .andExpect(jsonPath("message").value(UNAUTHORIZED.getMessage()));
 
     }
 
@@ -584,9 +584,135 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("status").value(ResponseStatus.WITHDRAWAL_DIFFERENT_MEMBER.getStatus()))
+                .andExpect(jsonPath("status").value(WITHDRAWAL_DIFFERENT_MEMBER.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.WITHDRAWAL_DIFFERENT_MEMBER.getMessage()));
+                .andExpect(jsonPath("message").value(WITHDRAWAL_DIFFERENT_MEMBER.getMessage()));
+
+    }
+
+    // TODO: 2021-05-21 문서화
+    @Test
+    @DisplayName("로그아웃")
+    public void signOut() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/auth/" + signUpId + "/sign-out")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(SIGN_OUT_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(SIGN_OUT_SUCCESS.getMessage()))
+                .andDo(document(
+                        "sign-out-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+        //given
+        String refreshToken = tokenDto.getRefreshToken();
+        OnlyRefreshTokenRequestDto onlyRefreshTokenRequestDto = new OnlyRefreshTokenRequestDto(refreshToken);
+
+        ResultActions perform2 = mockMvc.perform(
+                post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(onlyRefreshTokenRequestDto))
+        ).andDo(print());
+
+        perform2
+                .andExpect(status().isUnauthorized());
+
+    }
+
+    @Test
+    @DisplayName("로그아웃 - 인증되지 않은 회원이 로그아웃")
+    public void signOut_Unauthorized() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/auth/" + signUpId + "/sign-out")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(UNAUTHORIZED.getMessage()))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("로그아웃 - 탈퇴한 회원이 로그아웃")
+    public void signOut_WithdrawalMember() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        authenticationService.withdrawal(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/auth/" + signUpId + "/sign-out")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(FORBIDDEN.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(FORBIDDEN.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("로그아웃 - 다른 회원을 로그아웃")
+    public void signOut_DifferentMember() throws Exception {
+         //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/auth/" + 10000L + "/sign-out")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(SIGN_OUT_DIFFERENT_MEMBER.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(SIGN_OUT_DIFFERENT_MEMBER.getMessage()));
 
     }
 

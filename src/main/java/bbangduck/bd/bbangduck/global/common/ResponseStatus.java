@@ -24,6 +24,7 @@ public enum ResponseStatus {
     KAKAO_SIGN_IN_SUCCESS(1221, "카카오 로그인에 성공했습니다.", "카카오 API 를 통한 로그인이 성공했을 경우"),
     REFRESH_SIGN_IN_SUCCESS(1222, "Refresh Token 을 통한 Access Token 재발급에 성공했습니다.", "Refresh Token 을 통한 Access Token 재발급에 성공했을 경우"),
     WITHDRAWAL_SUCCESS(1223, "회원 탈퇴에 성공했습니다.", "회원 탈퇴에 성공한 경우"),
+    SIGN_OUT_SUCCESS(1224, "로그아웃에 성공했습니다.", "로그아웃에 성공한 경우"),
 
     UNAUTHORIZED(1401, "인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.", "인증이 필요한 리소스 요청 시 헤더에 기입된 인증 토큰이 유효하지 않은 경우"),
     FORBIDDEN(1403, "해당 리소스에 접근할 수 없는 회원입니다.", "인증은 되었으나 해당 리소스에 대한 접근 권한을 인가받지 못한 사용자일 경우"),
@@ -39,6 +40,7 @@ public enum ResponseStatus {
     REFRESH_TOKEN_EXPIRED(1433, "Refresh Token 의 유효기간이 만료되었습니다.", "Access Token 재발급 요청 시 Refresh Token 의 유효기간이 만료된 경우"),
 
     WITHDRAWAL_DIFFERENT_MEMBER(1441, "자신의 계정만 탈퇴가 가능합니다.", "회원 탈퇴 요청 시 자신이 아닌 다른 회원의 계정을 회원 탈퇴하는 경우"),
+    SIGN_OUT_DIFFERENT_MEMBER(1442, "자신의 계정만 로그아웃 할 수 있습니다.", "로그아웃 요청 시 다른 회원의 계정을 로그아웃하는 경우"),
 
 
     /**
