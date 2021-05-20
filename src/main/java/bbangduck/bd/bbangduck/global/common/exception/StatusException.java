@@ -7,7 +7,7 @@ import bbangduck.bd.bbangduck.global.common.ResponseStatus;
  *
  * ResponseDto 를 통해 HttpStatus 외에 상태값을 응답하기 위해 구현한 최상위 Exception
  */
-public class StatusException extends RuntimeException{
+public abstract class StatusException extends RuntimeException{
 
     private final int status;
 

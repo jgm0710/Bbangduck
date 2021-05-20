@@ -8,7 +8,7 @@ import bbangduck.bd.bbangduck.global.common.ResponseStatus;
  * AuthenticationEndPoint 에서 발생하는 Unauthorized 예외와는 별도로
  * Refresh 요청 등에서 인증이 거부될 경우 발생할 예외들의 최상위 예외
  */
-public class UnauthorizedException extends StatusException{
+public abstract class UnauthorizedException extends StatusException{
     public UnauthorizedException(ResponseStatus responseStatus) {
         super(responseStatus);
     }

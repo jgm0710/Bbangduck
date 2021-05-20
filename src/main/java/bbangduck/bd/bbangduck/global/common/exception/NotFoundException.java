@@ -7,7 +7,7 @@ import bbangduck.bd.bbangduck.global.common.ResponseStatus;
  *
  * 특정 조건을 통해 Entity 인스턴스를 조회할 수 없는 경우 발생할 예외들의 최상위 Exception
  */
-public class NotFoundException extends StatusException {
+public abstract class NotFoundException extends StatusException {
     public NotFoundException(ResponseStatus responseStatus) {
         super(responseStatus);
     }
