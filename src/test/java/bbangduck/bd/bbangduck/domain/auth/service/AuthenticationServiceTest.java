@@ -282,6 +282,9 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         assertTrue(savedMember.getRoles().contains(MemberRole.USER));
         assertFalse(savedMember.getRoles().contains(MemberRole.WITHDRAWAL));
 
+        assertNotNull(savedMember.getRefreshToken());
+        assertNotNull(savedMember.getRefreshTokenExpiredDate());
+
         //when
         authenticationService.withdrawal(signUpId);
 
@@ -290,6 +293,9 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
         assertTrue(findMember.getRoles().contains(MemberRole.WITHDRAWAL));
         assertFalse(findMember.getRoles().contains(MemberRole.USER));
+
+        assertNull(findMember.getRefreshToken());
+        assertNull(findMember.getRefreshTokenExpiredDate());
 
     }
 
