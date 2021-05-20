@@ -447,14 +447,40 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#resources-sign-up">회원가입</a>
 <ul class="sectlevel2">
-<li><a href="#resources-social-sign-up-success">소셜 회원가입 성공</a></li>
-<li><a href="#resources-social-sign-up-empty">소셜 회원가입 실패</a></li>
+<li><a href="#resources-social-sign-up-success">소셜 회원가입 성공</a>
+<ul class="sectlevel3">
+<li><a href="#resources-social-sign-up-success_request_headers">Request headers</a></li>
+<li><a href="#resources-social-sign-up-success_request_fields">Request fields</a></li>
+<li><a href="#resources-social-sign-up-success_response_fields">Response fields</a></li>
+<li><a href="#resources-social-sign-up-success_curl_request">Example request</a></li>
+<li><a href="#resources-social-sign-up-success_http_response">Example response</a></li>
+</ul>
+</li>
+<li><a href="#resources-social-sign-up-empty">소셜 회원가입 실패</a>
+<ul class="sectlevel3">
+<li><a href="#resources-social-sign-up-empty_request_headers">Request headers</a></li>
+<li><a href="#resources-social-sign-up-empty_request_fields">Request fields</a></li>
+<li><a href="#resources-social-sign-up-empty_response_fields">Response fields</a></li>
+<li><a href="#resources-social-sign-up-empty_curl_request">Example request</a></li>
+<li><a href="#resources-social-sign-up-empty_http_response">Example response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#resources-kakao-sign-in">카카오 로그인</a>
 <ul class="sectlevel2">
-<li><a href="#resources-member-kakao-sign-up-callback">카카오 계정으로 가입된 회원의 로그인 성공</a></li>
-<li><a href="#resources-no-member-kakao-sign-up-callbcak">카카오 계정으로 가입되지 않은 비회원 로그인 실패</a></li>
+<li><a href="#resources-member-kakao-sign-up-callback">카카오 계정으로 가입된 회원의 로그인 성공</a>
+<ul class="sectlevel3">
+<li><a href="#resources-member-kakao-sign-up-callback_curl_request">Example request</a></li>
+<li><a href="#resources-member-kakao-sign-up-callback_http_response">Example response</a></li>
+</ul>
+</li>
+<li><a href="#resources-no-member-kakao-sign-up-callbcak">카카오 계정으로 가입되지 않은 비회원 로그인 실패</a>
+<ul class="sectlevel3">
+<li><a href="#resources-no-member-kakao-sign-up-callbcak_curl_request">Example request</a></li>
+<li><a href="#resources-no-member-kakao-sign-up-callbcak_http_response">Example response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#resources-refresh-sign-in">Refresh 로그인</a></li>
@@ -608,8 +634,250 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>operation::social-sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']</p>
+<div class="sect3">
+<h4 id="resources-social-sign-up-success_request_headers"><a class="link" href="#resources-social-sign-up-success_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[application/json;charset=UTF-8] 로 지정</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-social-sign-up-success_request_fields"><a class="link" href="#resources-social-sign-up-success_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별에 필요한 Email 기입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 활동 시 필요한 Nickname 기입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>socialType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>socialId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Social 인증을 통해 회원가입을 진행하는 경우 해당 Social 매체 내에서 회원을 식별하기 위해 사용하는 ID 값을 기입<br>
+해당 SocialId 를 통해 회원을 식별합니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-social-sign-up-success_response_fields"><a class="link" href="#resources-social-sign-up-success_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청에 대해 HttpStatus 외에 별도로 응답 상태를 구분하기 위한 상태 값</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원의 식별 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원의 Email</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원의 Nickname</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.profileImage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원의 프로필 이미지 (null)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.socialAccounts[0].socialId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Social 인증을 통해 가입된 회원의 Social ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.socialAccounts[0].socialType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Social 인증을 통해 가입된 회원이 사용한 Social 매체</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.description</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">간략한 자기 소개 (null)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.reviewCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작성한 리뷰 수 (null)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.roomEscapeRecordVisible</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">방탈출 기록 공개 여부 (Default True)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.registerDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.memberInfo.updateDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 정보 최종 수정 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tokenInfo.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원의 식별 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tokenInfo.accessToken.header</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원에게 발급된 인증 JWT 토큰의 Header</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tokenInfo.accessToken.payload</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원에게 발급된 인증 JWT 토큰의 Payload</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tokenInfo.accessToken.signature</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원에게 발급된 인증 JWT 토큰의 Signature</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tokenInfo.accessTokenValidSecond</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">가입된 회원에게 발급된 인증 JWT 토큰이 만료되기까지 남은 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tokenInfo.refreshToken</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인증토큰 재발급 요청에 필요한 Refresh 토큰</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.tokenInfo.refreshTokenExpiredDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인증토큰 재발급 요청에 필요한 Refresh 토큰의 만료 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청에 따른 응답에 대한 간단한 Message</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-social-sign-up-success_curl_request"><a class="link" href="#resources-social-sign-up-success_curl_request">Example request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/social/sign-up' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{
+  "email" : "test@email.com",
+  "nickname" : "testNickname",
+  "socialType" : "KAKAO",
+  "socialId" : "321312"
+}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="resources-social-sign-up-success_http_response"><a class="link" href="#resources-social-sign-up-success_http_response">Example response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Location: http://localhost:8080/api/members/41
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 1066
+
+{
+  "status" : 2201,
+  "data" : {
+    "memberInfo" : {
+      "memberId" : 41,
+      "email" : "test@email.com",
+      "nickname" : "testNickname",
+      "profileImage" : null,
+      "socialAccounts" : [ {
+        "socialId" : "321312",
+        "socialType" : "KAKAO"
+      } ],
+      "description" : null,
+      "reviewCount" : 0,
+      "roomEscapeRecordVisible" : true,
+      "registerDate" : "2021-05-20T20:51:59.8900261",
+      "updateDate" : "2021-05-20T20:51:59.8990012"
+    },
+    "tokenInfo" : {
+      "memberId" : null,
+      "accessToken" : {
+        "header" : "eyJhbGciOiJIUzI1NiJ9",
+        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE1MTE1MTksImV4cCI6MTYyMTU0MTUxOX0",
+        "signature" : "tsSPzxkGaFW1U-jSOb5OvcuDezi8w1MaqnYnNUwU3XE"
+      },
+      "accessTokenValidSecond" : 30000,
+      "refreshToken" : "639be15e-7f68-4559-9338-e065ba869f3d",
+      "refreshTokenExpiredDate" : "2021-06-03T20:51:59.8970069"
+    }
+  },
+  "message" : " 회원가입에 성공했습니다."
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -624,8 +892,172 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>operation::social-sign-up-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']</p>
+<div class="sect3">
+<h4 id="resources-social-sign-up-empty_request_headers"><a class="link" href="#resources-social-sign-up-empty_request_headers">Request headers</a></h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Content-Type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[application/json;charset=UTF-8] 로 지정</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-social-sign-up-empty_request_fields"><a class="link" href="#resources-social-sign-up-empty_request_fields">Request fields</a></h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별에 필요한 Email 기입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 활동 시 필요한 Nickname 기입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>socialType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>socialId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Social 인증을 통해 회원가입을 진행하는 경우 해당 Social 매체 내에서 회원을 식별하기 위해 사용하는 ID 값을 기입<br>
+해당 SocialId 를 통해 회원을 식별합니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-social-sign-up-empty_response_fields"><a class="link" href="#resources-social-sign-up-empty_response_fields">Response fields</a></h4>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청에 대해 HttpStatus 외에 별도로 응답 상태를 구분하기 위한 상태 값</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[0].objectName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Validation Error 가 발생한 객체의 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[0].code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발생한 Error 에 대한 Code</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[0].defaultMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발생한 Error 에 대한 Message</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data[0].field</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">특정 Field 에서 Validation Error 가 발생한 경우 어떤 Field 에서 Error 가 발생했는지 명시</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청에 따른 응답에 대한 간단한 Message</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-social-sign-up-empty_curl_request"><a class="link" href="#resources-social-sign-up-empty_curl_request">Example request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/social/sign-up' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{
+  "email" : null,
+  "nickname" : null,
+  "socialType" : null,
+  "socialId" : null
+}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="resources-social-sign-up-empty_http_response"><a class="link" href="#resources-social-sign-up-empty_http_response">Example response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 824
+
+{
+  "status" : 2402,
+  "data" : [ {
+    "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotBlank",
+    "defaultMessage" : "Social ID 를 입력해 주세요.",
+    "field" : "socialId"
+  }, {
+    "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotBlank",
+    "defaultMessage" : "Nickname 을 입력해 주세요.",
+    "field" : "nickname"
+  }, {
+    "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotNull",
+    "defaultMessage" : "Social Type 을 입력해 주세요.",
+    "field" : "socialType"
+  }, {
+    "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotBlank",
+    "defaultMessage" : "Email 을 입력해 주세요.",
+    "field" : "email"
+  } ],
+  "message" : "회원가입 시 기입사항을 올바르게 기입하지 않았습니다."
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -679,8 +1111,56 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>operation::member-kakao-sign-up-callback[snippets='curl-request,http-response']</p>
+<div class="sect3">
+<h4 id="resources-member-kakao-sign-up-callback_curl_request"><a class="link" href="#resources-member-kakao-sign-up-callback_curl_request">Example request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/kakao/sign-in/callback?code=TOKBR_LhMB_i-oYgd5pLLrMEiyPKEw7YRfTbWGQKTuql0N8eVSoKdF9dny5EyDjQ99QPrwo9c5oAAAF5Muxy7A&amp;state=bbangduck7' -i -X GET</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="resources-member-kakao-sign-up-callback_http_response"><a class="link" href="#resources-member-kakao-sign-up-callback_http_response">Example response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Language: en
+Content-Type: text/html;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 986
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang="kr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;input type="text" value="" id="data"/&gt;
+&lt;/body&gt;
+&lt;script&gt;
+
+    let status = 1221;
+    let message = decodeURIComponent("\uCE74\uCE74\uC624 \uB85C\uADF8\uC778\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4.");
+    let data = {"memberId":null,"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxNTExNTExLCJleHAiOjE2MjE1NDE1MTF9.DsChqj57TYVDc4xWXs23UJ4HSjFCZj5LKNcmJVh9rNc","accessTokenValidSecond":30000,"refreshToken":"6f41e275-cd3f-4d8c-903d-8ba9ded42742","refreshTokenExpiredDate":"2021-06-03T20:51:51.1333532"};
+    callSnsSignIn();
+
+    function callSnsSignIn() {
+        console.log(status);
+        console.log(message);
+        console.log(data);
+        window.opener.postMessage({"status": status, "message": message, "data": data}, '*');
+        self.close();
+    }
+&lt;/script&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -712,8 +1192,56 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>operation::no-member-kakao-sign-up-callback[snippets='curl-request,http-response']</p>
+<div class="sect3">
+<h4 id="resources-no-member-kakao-sign-up-callbcak_curl_request"><a class="link" href="#resources-no-member-kakao-sign-up-callbcak_curl_request">Example request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/kakao/sign-in/callback?code=TOKBR_LhMB_i-oYgd5pLLrMEiyPKEw7YRfTbWGQKTuql0N8eVSoKdF9dny5EyDjQ99QPrwo9c5oAAAF5Muxy7A&amp;state=bbangduck7' -i -X GET</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="resources-no-member-kakao-sign-up-callbcak_http_response"><a class="link" href="#resources-no-member-kakao-sign-up-callbcak_http_response">Example response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Language: en
+Content-Type: text/html;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 804
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang="kr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;input type="text" value="" id="data"/&gt;
+&lt;/body&gt;
+&lt;script&gt;
+
+    let status = 1421;
+    let message = decodeURIComponent("\uD574\uB2F9 \uCE74\uCE74\uC624 \uACC4\uC815\uC73C\uB85C \uAC00\uC785\uB41C \uD68C\uC6D0\uC774 \uC874\uC7AC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.");
+    let data = {"socialId":"1698118160","email":"rnalrnal999@naver.com","nickname":"\uC815\uAD6C\uBBFC","socialType":"KAKAO"};
+    callSnsSignIn();
+
+    function callSnsSignIn() {
+        console.log(status);
+        console.log(message);
+        console.log(data);
+        window.opener.postMessage({"status": status, "message": message, "data": data}, '*');
+        self.close();
+    }
+&lt;/script&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -727,7 +1255,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-20 18:42:13 KST
+Last updated 2021-05-20 20:49:03 KST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
