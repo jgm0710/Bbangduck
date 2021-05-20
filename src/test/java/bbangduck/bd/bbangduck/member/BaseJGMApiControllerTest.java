@@ -55,6 +55,14 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
     protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
 
+    protected String OBJECT_NAME_DESCRIPTION = "예외가 발생한 객체의 이름";
+
+    protected String CODE_DESCRIPTION = "예외 코드";
+
+    protected String DEFAULT_MESSAGE_DESCRIPTION = "발생한 예외에 대한 메세지";
+
+    protected String FIELD_DESCRIPTION = "예외가 발생한 필드의 이름";
+
     @BeforeEach
     public void setUp() {
         REFRESH_TOKEN_EXPIRED_DATE = securityJwtProperties.getRefreshTokenExpiredDate();

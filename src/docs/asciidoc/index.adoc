@@ -67,7 +67,7 @@
 | `404 Not Found`
 | 요청한 리소스가 없음.
 
-| `401 Conflict`
+| `409 Conflict`
 | 요청된 리소스가 현재 서버의 상태와 충돌될 경우.
 |===
 
@@ -86,6 +86,13 @@
 ** 이미지 파일 업로드 기능 구현
 ** 파일 다운로드 기능 구현
 ** 이미지 파일 썸네일 다운로드 기능 구현
+2021-05-20 :::
+* link:/docs/member.html[회원 관리 (회원 프로필 관리)]
+* 회원 프로필 이미지 변경 기능 구현
+* 회원 프로필 이미지 삭제 기능 구현
+* 회원 닉네임 변경 기능 구현
+* 회원 자기소개 변경 기능 구현
+* 회원 방탈출 기록 공개 여부 변경 기능 구현
 
 [[resources]]
 = 리소스 리스트
@@ -97,5 +104,7 @@
 == link:/docs/authentication.html[1. 회원 인증 관리]
 
 == link:/docs/file-storage.html[2. 파일 관리]
+
+== link:/docs/member.html[3. 회원 관리 (회원 프로필 관리)]
 
 == link:/docs/hello.html[Test Resource]

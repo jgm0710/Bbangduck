@@ -10,15 +10,21 @@ import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.global.common.MD5Utils;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -207,6 +213,22 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS.getMessage()))
+                .andDo(document(
+                        "update-profile-image-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("fileStorageId").description("변경할 이미지 파일의 파일 저장소 ID"),
+                                fieldWithPath("fileName").description("변경할 이미지 파일의 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
         ;
 
     }
@@ -279,7 +301,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-19 문서화
     @Test
     @DisplayName("회원 프로필 이미지 수정 - 기존에 프로필 이미지가 있었던 경우")
     public void updateProfileImage_ExistProfileImage() throws Exception {
@@ -347,6 +368,25 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data[0]").exists())
                 .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_NOT_VALID.getMessage()))
+        .andDo(document(
+                "update-profile-image-file-info-empty",
+                requestHeaders(
+                        headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                        headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                ),
+                requestFields(
+                        fieldWithPath("fileStorageId").description("변경할 이미지 파일의 파일 저장소 ID"),
+                        fieldWithPath("fileName").description("변경할 이미지 파일의 이름")
+                ),
+                responseFields(
+                        fieldWithPath("status").description(STATUS_DESCRIPTION),
+                        fieldWithPath("data[0].objectName").description("예외가 발생한 대상 객체의 이름"),
+                        fieldWithPath("data[0].code").description("예외 코드"),
+                        fieldWithPath("data[0].defaultMessage").description("발생한 예외에 대한 메세지"),
+                        fieldWithPath("data[0].field").description("예외가 발생한 대상 필드의 이름"),
+                        fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                )
+        ))
         ;
 
     }
@@ -379,7 +419,19 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS.getMessage()));
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS.getMessage()))
+                .andDo(document(
+                        "delete-profile-image-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
 
     }
 
@@ -499,6 +551,21 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_SUCCESS.getMessage()))
+                .andDo(document(
+                        "update-nickname-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("nickname").description("변경할 Nickname")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
         ;
 
     }
@@ -533,6 +600,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
     }
 
     // TODO: 2021-05-19 문서화
+    // TODO: 2021-05-20 여기서부터 다시 진행
     @Test
     @DisplayName("회원 닉네임 변경 - 닉네임을 기입하지 않은 경우")
     public void updateNickname_NicknameEmpty() throws Exception {
@@ -558,7 +626,26 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_NOT_VALID.getMessage()));
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_NOT_VALID.getMessage()))
+                .andDo(document(
+                        "update-nickname-empty",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("nickname").description("변경할 Nickname")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data[0].objectName").description("예외가 발생한 객체의 이름"),
+                                fieldWithPath("data[0].code").description("예외 코드"),
+                                fieldWithPath("data[0].defaultMessage").description("발생한 예외에 대한 메세지"),
+                                fieldWithPath("data[0].field").description("예외가 발생한 필드의 이름"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
 
     }
 
@@ -639,7 +726,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
-        MemberUpdateDescriptionRequestDto memberUpdateDescriptionRequestDto = new MemberUpdateDescriptionRequestDto("변경할 자기소개");
+        MemberUpdateDescriptionRequestDto memberUpdateDescriptionRequestDto = new MemberUpdateDescriptionRequestDto("새로운 자기 소개 등록");
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -654,7 +741,23 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS.getMessage()));
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS.getMessage()))
+                .andDo(document(
+                        "update-description-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("description").description("변경할 자기소개 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
 
     }
 
@@ -685,7 +788,26 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_NOT_VALID.getMessage()));
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_NOT_VALID.getMessage()))
+                .andDo(document(
+                        "update-description-empty",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("description").description("변경할 자기소개 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
+                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
+                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
+                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
 
     }
 
@@ -771,7 +893,19 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS.getMessage()));
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS.getMessage()))
+                .andDo(document(
+                        "toggle-room-escape-recodes-open-yn-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
 
     }
 
