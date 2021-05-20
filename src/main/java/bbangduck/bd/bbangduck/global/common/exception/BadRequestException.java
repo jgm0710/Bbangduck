@@ -9,7 +9,7 @@ import bbangduck.bd.bbangduck.global.common.ResponseStatus;
  * Client BadRequest 예외들을 관리하기 위한 최상위 Exception
  * Exception Handler 를 통해 한 번에 처리
  */
-public class BadRequestException extends StatusException{
+public abstract class BadRequestException extends StatusException{
     public BadRequestException(ResponseStatus responseStatus) {
         super(responseStatus);
     }

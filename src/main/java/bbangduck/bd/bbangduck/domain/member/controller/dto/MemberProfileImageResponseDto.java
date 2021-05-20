@@ -1,8 +1,10 @@
-package bbangduck.bd.bbangduck.domain.member.dto;
+package bbangduck.bd.bbangduck.domain.member.controller.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+
+import static bbangduck.bd.bbangduck.global.common.LinkToUtils.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -26,10 +28,14 @@ public class MemberProfileImageResponseDto {
             return null;
         }
 
+        String fileName = memberProfileImage.getFileName();
+        String profileImageUrl = linkToFileDownload(fileName);
+        String profileImageThumbnailUrl = linkToImageFileThumbnailDownload(fileName);
+
         return MemberProfileImageResponseDto.builder()
                 .profileImageId(memberProfileImage.getId())
-                .profileImageUrl(memberProfileImage.getFileDownloadUrl())
-                .profileImageThumbnailUrl(memberProfileImage.getFileThumbnailDownloadUrl())
+                .profileImageUrl(profileImageUrl)
+                .profileImageThumbnailUrl(profileImageThumbnailUrl)
                 .build();
     }
 

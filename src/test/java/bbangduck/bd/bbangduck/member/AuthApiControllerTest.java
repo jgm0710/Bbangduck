@@ -1,19 +1,26 @@
 package bbangduck.bd.bbangduck.member;
 
-import bbangduck.bd.bbangduck.domain.auth.dto.OnlyRefreshTokenDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.OnlyRefreshTokenRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
+import bbangduck.bd.bbangduck.domain.member.exception.MemberSocialInfoDuplicateException;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -27,6 +34,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ExtendWith(MockitoExtension.class)
 class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
     // TODO: 2021-05-06 회원가입 문서화 진행
@@ -34,35 +42,32 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("소셜 회원가입 테스트")
     public void signUpTest() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("testNickname")
-                .password("")
-                .socialType(SocialType.KAKAO)
-                .socialId("3123213")
-                .build();
 
+                .socialType(SocialType.KAKAO)
+                .socialId("321312")
+                .build();
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto))
         ).andDo(print());
 
         //then
         perform
                 .andExpect(status().isCreated())
                 .andDo(document(
-                        "sign-up-success",
+                        "social-sign-up-success",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 로 지정")
                         ),
                         requestFields(
                                 fieldWithPath("email").description("회원 식별에 필요한 Email 기입"),
                                 fieldWithPath("nickname").description("회원 활동 시 필요한 Nickname 기입"),
-                                fieldWithPath("password").description("로그인 시점에 필요한 비밀번호 기입 + \n" +
-                                        "Social 인증을 통해 회원가입을 하는 경우 별도의 비밀번호를 기입하지 않습니다."),
                                 fieldWithPath("socialType").description("Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시"),
                                 fieldWithPath("socialId").description("Social 인증을 통해 회원가입을 진행하는 경우 해당 Social 매체 내에서 회원을 식별하기 위해 사용하는 ID 값을 기입 + \n" +
                                         "해당 SocialId 를 통해 회원을 식별합니다.")
@@ -77,6 +82,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.memberInfo.socialAccounts[0].socialType").description("Social 인증을 통해 가입된 회원이 사용한 Social 매체"),
                                 fieldWithPath("data.memberInfo.description").description("간략한 자기 소개 (null)"),
                                 fieldWithPath("data.memberInfo.reviewCount").description("작성한 리뷰 수 (null)"),
+                                fieldWithPath("data.memberInfo.roomEscapeRecordVisible").description("방탈출 기록 공개 여부 (Default True)"),
                                 fieldWithPath("data.memberInfo.registerDate").description("가입 날짜"),
                                 fieldWithPath("data.memberInfo.updateDate").description("회원 정보 최종 수정 날짜"),
                                 fieldWithPath("data.tokenDto.memberId").description("가입된 회원의 식별 ID"),
@@ -97,39 +103,38 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("회원가입 이메일 중복 테스트")
     public void signUp_EmailDuplicate() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("testNickname")
-                .password("")
+
                 .socialType(SocialType.KAKAO)
-                .socialId("3123213")
+                .socialId("321312")
                 .build();
 
-        authenticationService.signUp(memberSignUpDto.signUp(REFRESH_TOKEN_EXPIRED_DATE));
+        authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
 
-        MemberSignUpDto memberSignUpDto2 = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto2 = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("testNickname2")
-                .password("")
                 .socialType(SocialType.KAKAO)
-                .socialId("31233131213")
+                .socialId("321312")
                 .build();
 
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto2))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto2))
         ).andDo(print());
 
         //then
         perform
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_EMAIL_DUPLICATE.getMessage()))
-                .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_EMAIL_DUPLICATE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(new MemberEmailDuplicateException(memberSocialSignUpRequestDto2.getEmail()).getMessage()))
         ;
 
     }
@@ -138,38 +143,37 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("회원가입 닉네임 중복 테스트")
     public void signUp_NicknameDuplicate() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("testNickname")
-                .password("")
+
                 .socialType(SocialType.KAKAO)
-                .socialId("3123213")
+                .socialId("321312")
                 .build();
 
-        authenticationService.signUp(memberSignUpDto.signUp(REFRESH_TOKEN_EXPIRED_DATE));
+        authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
 
-        MemberSignUpDto memberSignUpDto2 = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto2 = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com2")
                 .nickname("testNickname")
-                .password("")
                 .socialType(SocialType.KAKAO)
-                .socialId("312331312213")
+                .socialId("312331312")
                 .build();
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto2))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto2))
         ).andDo(print());
 
         //then
         perform
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_NICKNAME_DUPLICATE.getMessage()))
-                .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_NICKNAME_DUPLICATE.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(new MemberNicknameDuplicateException(memberSocialSignUpRequestDto2.getNickname()).getMessage()))
         ;
 
     }
@@ -178,30 +182,30 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("소셜 회원가입 시 소셜 정보 중복 테스트")
     public void signUp_SocialInfoDuplicate() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("testNickname")
-                .password("")
+
                 .socialType(SocialType.KAKAO)
-                .socialId("3123213")
+                .socialId("321312")
                 .build();
 
-        authenticationService.signUp(memberSignUpDto.signUp(REFRESH_TOKEN_EXPIRED_DATE));
+        authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
 
-        MemberSignUpDto memberSignUpDto2 = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto2 = MemberSocialSignUpRequestDto.builder()
                 .email("test2@email.com")
                 .nickname("testNickname2")
-                .password("")
+
                 .socialType(SocialType.KAKAO)
-                .socialId("3123213")
+                .socialId("321312")
                 .build();
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto2))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto2))
         ).andDo(print());
 
         //then
@@ -209,7 +213,8 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_SOCIAL_INFO_DUPLICATE.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_SOCIAL_INFO_DUPLICATE.getMessage()))
+                .andExpect(jsonPath("message")
+                        .value(new MemberSocialInfoDuplicateException(memberSocialSignUpRequestDto2.getSocialType(), memberSocialSignUpRequestDto2.getSocialId()).getMessage()))
         ;
 
     }
@@ -218,26 +223,26 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("소셜 회원가입 시 이메일을 기입하지 않은 경우")
     public void signUpTest_EmailEmpty() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email("")
                 .nickname("testNickname")
-                .password("")
+
                 .socialType(SocialType.KAKAO)
-                .socialId("3123213")
+                .socialId("321312")
                 .build();
 
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto))
         ).andDo(print());
 
         //then
         perform
                 .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("data[0].code").value("NotBlank"))
+                .andExpect(jsonPath("data[0].code").value("NotBlank"))
         ;
     }
 
@@ -245,20 +250,20 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("소셜 회원가입 시 닉네임을 기입하지 않은 경우")
     public void signUpTest_NicknameEmpty() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("")
-                .password("")
+
                 .socialType(SocialType.KAKAO)
-                .socialId("321321321")
+                .socialId("321312")
                 .build();
 
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto))
         ).andDo(print());
 
         //then
@@ -272,26 +277,26 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("소셜 회원가입 시 소셜 ID 를 기입하지 않은 경우")
     public void signUpTest_SocialIdEmpty() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("test")
-                .password("")
+
                 .socialType(SocialType.KAKAO)
-                .socialId("")
+                .socialId(null)
                 .build();
 
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto))
         ).andDo(print());
 
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("data[0].code").value("WrongSocialInfo"))
+                .andExpect(jsonPath("data[0].code").value("NotBlank"))
         ;
     }
 
@@ -299,80 +304,25 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("소셜 회원가입 시 소셜 타입을 기입하지 않은 경우")
     public void signUpTest_SocialTypeEmpty() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("test")
-                .password("")
                 .socialType(null)
-                .socialId("321321321")
+                .socialId("321312")
                 .build();
 
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto))
         ).andDo(print());
 
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("data[0].code").value("WrongSocialInfo"))
-        ;
-    }
-
-    @Test
-    @DisplayName("일반 회원가입 시 비밀번호 기입하지 않은 경우")
-    public void signUpTest_PasswordEmpty() throws Exception {
-        //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
-                .email("test@email.com")
-                .nickname("test")
-                .password(null)
-                .socialType(null)
-                .socialId(null)
-                .build();
-
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto))
-        ).andDo(print());
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("data[0].code").value("BlankPassword"))
-        ;
-    }
-
-    @Test
-    @DisplayName("소셜 회원가입 시 비밀번호를 기입한 경우")
-    public void signUpTest_NoPasswordRequired() throws Exception {
-        //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
-                .email("test@email.com")
-                .nickname("testNickname")
-                .password("test")
-                .socialType(SocialType.KAKAO)
-                .socialId("3123213")
-                .build();
-
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto))
-        ).andDo(print());
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("data[0].code").value("NoPasswordRequired"))
+                .andExpect(jsonPath("data[0].code").value("NotNull"))
         ;
     }
 
@@ -380,28 +330,26 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("회원가입 시 아무런 사항도 기입하지 않은 경우")
     public void signUp_Empty() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder().build();
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = MemberSocialSignUpRequestDto.builder().build();
 
         //when
         ResultActions perform = mockMvc.perform(
-                post("/api/auth/sign-up")
+                post("/api/auth/social/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberSignUpDto))
+                        .content(objectMapper.writeValueAsString(memberSocialSignUpRequestDto))
         ).andDo(print());
 
         //then
         perform
                 .andExpect(status().isBadRequest())
                 .andDo(document(
-                        "sign-up-empty",
+                        "social-sign-up-empty",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 로 지정")
                         ),
                         requestFields(
                                 fieldWithPath("email").description("회원 식별에 필요한 Email 기입"),
                                 fieldWithPath("nickname").description("회원 활동 시 필요한 Nickname 기입"),
-                                fieldWithPath("password").description("로그인 시점에 필요한 비밀번호 기입 + \n" +
-                                        "Social 인증을 통해 회원가입을 하는 경우 별도의 비밀번호를 기입하지 않습니다."),
                                 fieldWithPath("socialType").description("Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시"),
                                 fieldWithPath("socialId").description("Social 인증을 통해 회원가입을 진행하는 경우 해당 Social 매체 내에서 회원을 식별하기 위해 사용하는 ID 값을 기입 + \n" +
                                         "해당 SocialId 를 통해 회원을 식별합니다.")
@@ -423,17 +371,17 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     @DisplayName("Refresh 성공")
     public void refresh_Success() throws Exception {
         //given
-        MemberSignUpDto memberSignUpDto = createMemberSignUpDto();
-        Long signUpMemberId = authenticationService.signUp(memberSignUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
-        OnlyRefreshTokenDto onlyRefreshTokenDto = new OnlyRefreshTokenDto(tokenDto.getRefreshToken());
+        OnlyRefreshTokenRequestDto onlyRefreshTokenRequestDto = new OnlyRefreshTokenRequestDto(tokenDto.getRefreshToken());
 
         //when
         ResultActions perform = mockMvc.perform(
                 post("/api/auth/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(onlyRefreshTokenDto))
+                        .content(objectMapper.writeValueAsString(onlyRefreshTokenRequestDto))
         ).andDo(print());
 
         //then
@@ -450,13 +398,13 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
     public void refresh_NotFound() throws Exception {
         //given
 
-        OnlyRefreshTokenDto onlyRefreshTokenDto = new OnlyRefreshTokenDto("fjewiofndsklfnldska");
+        OnlyRefreshTokenRequestDto onlyRefreshTokenRequestDto = new OnlyRefreshTokenRequestDto("fjewiofndsklfnldska");
 
         //when
         ResultActions perform = mockMvc.perform(
                 post("/api/auth/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(onlyRefreshTokenDto))
+                        .content(objectMapper.writeValueAsString(onlyRefreshTokenRequestDto))
         ).andDo(print());
 
         //then
@@ -469,9 +417,11 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
+    // TODO: 2021-05-14 테스트 다시 확인
+    @Transactional
     @Test
     @DisplayName("Refresh 토큰의 유효 기간이 만료된 경우")
-    public void refresh_Expired() throws Exception {
+    public void refresh_Expired(@Mock MemberSignUpDto memberSignUpDto) throws Exception {
         //given
         RefreshInfo refreshInfo = RefreshInfo.builder()
                 .refreshToken(UUID.randomUUID().toString())
@@ -486,14 +436,15 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                 .roles(Set.of(MemberRole.USER))
                 .build();
 
-        Long signUpMemberId = authenticationService.signUp(member);
-        OnlyRefreshTokenDto onlyRefreshTokenDto = new OnlyRefreshTokenDto(refreshInfo.getRefreshToken());
+        memberRepository.save(member);
+
+        OnlyRefreshTokenRequestDto onlyRefreshTokenRequestDto = new OnlyRefreshTokenRequestDto(refreshInfo.getRefreshToken());
 
         //when
         ResultActions perform = mockMvc.perform(
                 post("/api/auth/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(onlyRefreshTokenDto))
+                        .content(objectMapper.writeValueAsString(onlyRefreshTokenRequestDto))
         ).andDo(print());
 
         //then

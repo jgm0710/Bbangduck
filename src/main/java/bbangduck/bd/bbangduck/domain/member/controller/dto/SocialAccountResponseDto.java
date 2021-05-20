@@ -1,8 +1,7 @@
-package bbangduck.bd.bbangduck.domain.member.dto;
+package bbangduck.bd.bbangduck.domain.member.controller.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 /**

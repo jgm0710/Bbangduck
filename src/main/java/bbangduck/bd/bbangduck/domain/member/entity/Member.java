@@ -1,7 +1,12 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
+import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -29,8 +34,8 @@ public class Member extends BaseEntityDateTime {
 
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "member")
-    private MemberProfileImage profileImage;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "member", fetch = FetchType.LAZY)
+    private MemberProfileImage profileImage = null;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<SocialAccount> socialAccounts = new ArrayList<>();
@@ -39,7 +44,7 @@ public class Member extends BaseEntityDateTime {
 
     private String description;
 
-    private int reviewCount;
+    private boolean roomEscapeRecordsOpenYN;
 
     @Embedded
     private RefreshInfo refreshInfo;
@@ -63,15 +68,45 @@ public class Member extends BaseEntityDateTime {
 
 
     @Builder
-    public Member(String email, String password, MemberProfileImage profileImage, String nickname, String description, int reviewCount,Set<MemberRole> roles, RefreshInfo refreshInfo) {
+    public Member(String email, String password, String nickname, String description, Set<MemberRole> roles, boolean roomEscapeRecordsOpenYN, RefreshInfo refreshInfo) {
         this.email = email;
         this.password = password;
-        this.profileImage = profileImage;
         this.nickname = nickname;
         this.description = description;
-        this.reviewCount = reviewCount;
+        this.roomEscapeRecordsOpenYN = roomEscapeRecordsOpenYN;
         this.refreshInfo = refreshInfo;
         this.roles = roles;
+    }
+
+    public static Member signUp(MemberSignUpDto signUpServiceDto, int refreshTokenExpiredDate) {
+        Member member = Member.builder()
+                .email(signUpServiceDto.getEmail())
+                .nickname(signUpServiceDto.getNickname())
+                .password(signUpServiceDto.getPassword())
+                .description(null)
+                .roomEscapeRecordsOpenYN(true)
+                .refreshInfo(RefreshInfo.init(refreshTokenExpiredDate))
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        String socialId = signUpServiceDto.getSocialId();
+        SocialType socialType = signUpServiceDto.getSocialType();
+
+        if (socialId != null && !socialId.isBlank() && socialType != null) {
+            SocialAccount socialAccount = SocialAccount.builder()
+                    .socialId(signUpServiceDto.getSocialId())
+                    .socialType(signUpServiceDto.getSocialType())
+                    .build();
+
+            member.addSocialAccount(socialAccount);
+        }
+
+        return member;
+    }
+
+    public void setProfileImage(MemberProfileImage profileImage) {
+        this.profileImage = profileImage;
+        profileImage.setMember(this);
     }
 
     public Long getId() {
@@ -102,10 +137,6 @@ public class Member extends BaseEntityDateTime {
         return description;
     }
 
-    public int getReviewCount() {
-        return reviewCount;
-    }
-
     public String getRefreshToken() {
         return refreshInfo.getRefreshToken();
     }
@@ -125,13 +156,19 @@ public class Member extends BaseEntityDateTime {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
 //                ", profileImage=" + profileImage +
-//                ", socialAccountList=" + socialAccountList +
+//                ", socialAccounts=" + socialAccounts +
                 ", nickname='" + nickname + '\'' +
                 ", description='" + description + '\'' +
-                ", reviewCount=" + reviewCount +
-//                ", refreshInfo=" + refreshInfo +
+                ", roomEscapeRecordsOpenYN=" + roomEscapeRecordsOpenYN +
+                ", refreshInfo=" + refreshInfo +
                 ", roles=" + roles +
+                ", registerDate=" + registerDate +
+                ", updateDate=" + updateDate +
                 '}';
+    }
+
+    public boolean isRoomEscapeRecordsOpenYN() {
+        return roomEscapeRecordsOpenYN;
     }
 
     public List<String> getRoleNameList() {
@@ -153,5 +190,31 @@ public class Member extends BaseEntityDateTime {
 
     public void refresh(int refreshTokenExpiredDate) {
         this.refreshInfo = RefreshInfo.init(refreshTokenExpiredDate);
+    }
+
+    public void updateProfileImage(MemberProfileImageDto memberProfileImageDto) {
+        this.profileImage.update(memberProfileImageDto);
+    }
+
+    public void createProfileImage(MemberProfileImageDto memberProfileImageDto) {
+        MemberProfileImage newProfileImage = MemberProfileImage.create(memberProfileImageDto);
+        setProfileImage(newProfileImage);
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void toggleRoomEscapeRecodesOpenYN() {
+        this.roomEscapeRecordsOpenYN = !this.roomEscapeRecordsOpenYN;
+    }
+
+    public void deleteProfileImage(MemberProfileImageRepository memberProfileImageRepository) {
+        memberProfileImageRepository.delete(profileImage);
+        profileImage = null;
     }
 }

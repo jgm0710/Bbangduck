@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
+import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,21 +20,30 @@ public class MemberProfileImage {
     @Column(name = "member_profile_image_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String fileDownloadUrl;
+    @Column(unique = true)
+    private Long fileStorageId;
 
-    private String fileThumbnailDownloadUrl;
-
+    @Column(length = 1000)
+    private String fileName;
 
     @Builder
-    protected MemberProfileImage(Long id, Member member, String fileDownloadUrl, String fileThumbnailDownloadUrl) {
+    protected MemberProfileImage(Long id, Member member, Long fileStorageId, String fileName) {
         this.id = id;
         this.member = member;
-        this.fileDownloadUrl = fileDownloadUrl;
-        this.fileThumbnailDownloadUrl = fileThumbnailDownloadUrl;
+        this.fileStorageId = fileStorageId;
+        this.fileName = fileName;
+    }
+
+    public static MemberProfileImage create(MemberProfileImageDto memberProfileImageDto) {
+        return MemberProfileImage.builder()
+                .member(null)
+                .fileStorageId(memberProfileImageDto.getFileStorageId())
+                .fileName(memberProfileImageDto.getFileName())
+                .build();
     }
 
     public Long getId() {
@@ -44,15 +54,31 @@ public class MemberProfileImage {
         return member;
     }
 
-    public String getFileDownloadUrl() {
-        return fileDownloadUrl;
+    public Long getFileStorageId() {
+        return fileStorageId;
     }
 
-    public String getFileThumbnailDownloadUrl() {
-        return fileThumbnailDownloadUrl;
+    public String getFileName() {
+        return fileName;
     }
 
     public void setMember(Member member) {
         this.member = member;
     }
+
+    @Override
+    public String toString() {
+        return "MemberProfileImage{" +
+                "id=" + id +
+//                ", member=" + member +
+                ", fileId=" + fileStorageId +
+                ", fileName='" + fileName + '\'' +
+                '}';
+    }
+
+    public void update(MemberProfileImageDto memberProfileImageDto) {
+        this.fileStorageId = memberProfileImageDto.getFileStorageId();
+        this.fileName = memberProfileImageDto.getFileName();
+    }
+
 }

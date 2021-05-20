@@ -1,16 +1,19 @@
-package bbangduck.bd.bbangduck.domain.auth.dto;
+package bbangduck.bd.bbangduck.domain.auth.controller.dto;
 
+import bbangduck.bd.bbangduck.domain.auth.service.dto.SocialUserInfoInterface;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.IOException;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SocialAuthFailResponseAdaptor {
+public class SocialAuthFailResponseAdaptorDto {
 
     private String socialId;
 
@@ -20,8 +23,8 @@ public class SocialAuthFailResponseAdaptor {
 
     private SocialType socialType;
 
-    public static SocialAuthFailResponseAdaptor exchange(SocialUserInfoInterface socialUserInfo) {
-        return SocialAuthFailResponseAdaptor.builder()
+    public static SocialAuthFailResponseAdaptorDto exchange(SocialUserInfoInterface socialUserInfo) {
+        return SocialAuthFailResponseAdaptorDto.builder()
                 .socialId(socialUserInfo.getSocialId())
                 .email(socialUserInfo.getEmail())
                 .nickname(socialUserInfo.getNickname())
@@ -29,8 +32,8 @@ public class SocialAuthFailResponseAdaptor {
                 .build();
     }
 
-    public static SocialAuthFailResponseAdaptor exchangeOnlySocialType(SocialType socialType) {
-        return SocialAuthFailResponseAdaptor.builder()
+    public static SocialAuthFailResponseAdaptorDto exchangeOnlySocialType(SocialType socialType) {
+        return SocialAuthFailResponseAdaptorDto.builder()
                 .socialId(null)
                 .email(null)
                 .nickname(null)

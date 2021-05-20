@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.file.controller;
 
-import bbangduck.bd.bbangduck.domain.auth.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.member.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.global.common.MD5Utils;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
@@ -40,15 +40,15 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
         MockMultipartFile multipartFile1 = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         MockMultipartFile multipartFile2 = createMockMultipartFile("files", IMAGE_FILE2_CLASS_PATH);
 
-        MemberSignUpDto signUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto signUpDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("test")
-                .password("test")
+
                 .socialType(null)
                 .socialId(null)
                 .build();
 
-        Long signUpMemberId = authenticationService.signUp(signUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+        Long signUpMemberId = authenticationService.signUp(signUpDto.toServiceDto());
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
 
 
@@ -96,15 +96,15 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
         MockMultipartFile multipartFile1 = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         MockMultipartFile multipartFile2 = createMockMultipartFile("files", IMAGE_FILE2_CLASS_PATH);
 
-        MemberSignUpDto signUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto signUpDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("test")
-                .password("test")
+
                 .socialType(null)
                 .socialId(null)
                 .build();
 
-        Long signUpMemberId = authenticationService.signUp(signUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+        Long signUpMemberId = authenticationService.signUp(signUpDto.toServiceDto());
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
 
 
@@ -132,15 +132,15 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
         MockMultipartFile multipartFile1 = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         MockMultipartFile multipartFile2 = createMockMultipartFile("files", IMAGE_FILE2_CLASS_PATH);
 
-        MemberSignUpDto signUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto signUpDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("test")
-                .password("test")
+
                 .socialType(null)
                 .socialId(null)
                 .build();
 
-        Long signUpMemberId = authenticationService.signUp(signUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+        Long signUpMemberId = authenticationService.signUp(signUpDto.toServiceDto());
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
         authenticationService.withdrawal(signUpMemberId);
 
@@ -167,15 +167,15 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
         //given
         MockMultipartFile multipartFile1 = createMockMultipartFile("files", HTML_FILE_CLASS_PATH);
 
-        MemberSignUpDto signUpDto = MemberSignUpDto.builder()
+        MemberSocialSignUpRequestDto signUpDto = MemberSocialSignUpRequestDto.builder()
                 .email("test@email.com")
                 .nickname("test")
-                .password("test")
+
                 .socialType(null)
                 .socialId(null)
                 .build();
 
-        Long signUpMemberId = authenticationService.signUp(signUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+        Long signUpMemberId = authenticationService.signUp(signUpDto.toServiceDto());
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
 
 
@@ -502,12 +502,12 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
 //        MemberSignUpDto signUpDto = MemberSignUpDto.builder()
 //                .email("test@email.com")
 //                .nickname("test")
-//                .password("test")
+//
 //                .socialType(null)
 //                .socialId(null)
 //                .build();
 //
-//        Long signUpMemberId = authenticationService.signUp(signUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+//        Long signUpMemberId = authenticationService.signUp(signUpDto.toServiceDto());
 //        TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
 //
 //        //when
@@ -543,12 +543,12 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
 //        MemberSignUpDto signUpDto = MemberSignUpDto.builder()
 //                .email("test@email.com")
 //                .nickname("test")
-//                .password("test")
+//
 //                .socialType(null)
 //                .socialId(null)
 //                .build();
 //
-//        Long signUpMemberId = authenticationService.signUp(signUpDto.signUp(securityJwtProperties.getRefreshTokenExpiredDate()));
+//        Long signUpMemberId = authenticationService.signUp(signUpDto.toServiceDto());
 //        TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
 //
 //        //when
