@@ -69,11 +69,14 @@
 [[resources-sign-up-success]]
 === 회원가입 성공
 
+* 응답 HttpStatus : `201 Created`
+
 operation::sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 [[resources-sign-up-empty]]
 === 회원가입 실패
 
+* 응답 HttpStatus : `400 Bad Request`
 * 회원가입 시 기입해야 할 사항을 모두 입력하지 않았을 경우에 대한 응답입니다.
 
 operation::sign-up-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']

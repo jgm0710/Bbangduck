@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
-    // TODO: 2021-05-06 회원가입 문서화 진행
     @Test
     @DisplayName("소셜 회원가입 테스트")
     public void signUpTest() throws Exception {
