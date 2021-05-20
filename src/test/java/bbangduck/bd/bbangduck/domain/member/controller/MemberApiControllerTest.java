@@ -45,7 +45,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Long signUpMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
-        String totalAccessToken = tokenDto.getTotalAccessToken();
+        String totalAccessToken = tokenDto.getAccessToken();
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -72,7 +72,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Long signUpMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
-        String totalAccessToken = tokenDto.getTotalAccessToken();
+        String totalAccessToken = tokenDto.getAccessToken();
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -103,7 +103,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Long signUpMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
-        String totalAccessToken = tokenDto.getTotalAccessToken();
+        String totalAccessToken = tokenDto.getAccessToken();
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -136,7 +136,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Long signUpMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
-        String totalAccessToken = tokenDto.getTotalAccessToken();
+        String totalAccessToken = tokenDto.getAccessToken();
 
         authenticationService.withdrawal(signUpMemberId);
 
@@ -170,7 +170,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Long signUpMemberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
-        String totalAccessToken = tokenDto.getTotalAccessToken();
+        String totalAccessToken = tokenDto.getAccessToken();
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -202,7 +202,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/profiles/images")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateProfileImageRequestDto))
         ).andDo(print());
@@ -250,7 +250,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/profiles/images")
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateProfileImageRequestDto))
         ).andDo(print());
@@ -287,7 +287,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUp2Id + "/profiles/images")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateProfileImageRequestDto))
         ).andDo(print());
@@ -324,7 +324,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/profiles/images")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateProfileImageRequestDto))
         ).andDo(print());
@@ -357,7 +357,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/profiles/images")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateProfileImageRequestDto))
         ).andDo(print());
@@ -411,7 +411,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 delete("/api/members/" + signUpId + "/profiles/images")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
         //then
@@ -454,7 +454,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 delete("/api/members/" + 10000L + "/profiles/images")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
 
@@ -486,7 +486,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 delete("/api/members/" + signUpId + "/profiles/images")
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
         //then
@@ -510,7 +510,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 delete("/api/members/" + signUpId + "/profiles/images")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
 
@@ -540,7 +540,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/nicknames")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
         ).andDo(print());
@@ -585,7 +585,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/nicknames")
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
         ).andDo(print());
@@ -615,7 +615,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/nicknames")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
         ).andDo(print());
@@ -663,7 +663,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + 10000L + "/nicknames")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
         ).andDo(print());
@@ -699,7 +699,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/nicknames")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateNicknameRequestDto))
         ).andDo(print());
@@ -731,7 +731,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/descriptions")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateDescriptionRequestDto))
         ).andDo(print());
@@ -778,7 +778,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/descriptions")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateDescriptionRequestDto))
         ).andDo(print());
@@ -827,7 +827,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/descriptions")
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateDescriptionRequestDto))
         ).andDo(print());
@@ -858,7 +858,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + 10000L + "/descriptions")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateDescriptionRequestDto))
         ).andDo(print());
@@ -885,7 +885,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/room-escape/recodes/open-yn")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
         //then
@@ -921,7 +921,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + 10000L + "/room-escape/recodes/open-yn")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
 
@@ -945,7 +945,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 put("/api/members/" + signUpId + "/room-escape/recodes/open-yn")
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
 

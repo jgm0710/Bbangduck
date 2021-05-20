@@ -3,17 +3,13 @@ package bbangduck.bd.bbangduck.domain.member.repository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.QMember;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
-import bbangduck.bd.bbangduck.domain.review.entity.QReview;
-import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static bbangduck.bd.bbangduck.domain.member.entity.QMember.member;
 import static bbangduck.bd.bbangduck.domain.member.entity.QSocialAccount.socialAccount;
-import static bbangduck.bd.bbangduck.domain.review.entity.QReview.*;
 
 
 /**

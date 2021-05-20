@@ -19,12 +19,12 @@ public class MemberSignUpResponseDto {
 
     private MyProfileResponseDto memberInfo;
 
-    private TokenDto tokenDto;
+    private TokenResponseDto tokenInfo;
 
     public static MemberSignUpResponseDto convert(Member savedMember, TokenDto tokenDto) {
         return MemberSignUpResponseDto.builder()
                 .memberInfo(MyProfileResponseDto.convert(savedMember))
-                .tokenDto(tokenDto)
+                .tokenInfo(TokenResponseDto.convert(tokenDto))
                 .build();
     }
 }

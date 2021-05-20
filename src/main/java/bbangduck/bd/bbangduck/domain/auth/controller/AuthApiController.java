@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.auth.controller;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignUpResponseDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.OnlyRefreshTokenRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.TokenResponseDto;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
@@ -54,15 +55,18 @@ public class AuthApiController {
 
     // TODO: 2021-05-13 refresh 로그인 기능 구현
     @PostMapping("/refresh")
-    public ResponseEntity<ResponseDto<TokenDto>> refresh(
+    public ResponseEntity<ResponseDto<TokenResponseDto>> refresh(
             @RequestBody @Valid OnlyRefreshTokenRequestDto onlyRefreshTokenRequestDto,
             Errors errors
     ) {
         hasErrorsThrow(ResponseStatus.REFRESH_NOT_VALID, errors);
-        TokenDto tokenDto = authenticationService.refresh(onlyRefreshTokenRequestDto.getRefreshToken());
+
+        String refreshToken = onlyRefreshTokenRequestDto.getRefreshToken();
+        TokenDto tokenDto = authenticationService.refresh(refreshToken);
+        TokenResponseDto tokenResponseDto = TokenResponseDto.convert(tokenDto);
 
         log.info("Refresh sign in success");
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.REFRESH_SIGN_IN_SUCCESS, tokenDto));
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.REFRESH_SIGN_IN_SUCCESS, tokenResponseDto));
     }
 
     // TODO: 2021-05-02 회원 탈퇴 기능 구현

@@ -57,7 +57,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
                 multipart("/api/files/images")
                         .file(multipartFile1)
                         .file(multipartFile2)
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
         //then
@@ -113,7 +113,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
                 multipart("/api/files/images")
                         .file(multipartFile1)
                         .file(multipartFile2)
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
         //then
@@ -149,7 +149,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
                 multipart("/api/files/images")
                         .file(multipartFile1)
                         .file(multipartFile2)
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
         //then
@@ -183,7 +183,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
         ResultActions perform = mockMvc.perform(
                 multipart("/api/files/images")
                         .file(multipartFile1)
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
         ).andDo(print());
 
         //then
@@ -513,7 +513,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
 //        //when
 //        ResultActions perform = mockMvc.perform(
 //                delete("/api/files/" + storedFile.getFileName())
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
 //        ).andDo(print());
 //
 //        //then
@@ -554,7 +554,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
 //        //when
 //        ResultActions perform = mockMvc.perform(
 //                delete("/api/files/" + storedFile.getFileName())
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getTotalAccessToken())
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
 //        ).andDo(print());
 //
 //        //then

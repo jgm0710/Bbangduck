@@ -84,13 +84,13 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.memberInfo.roomEscapeRecordVisible").description("방탈출 기록 공개 여부 (Default True)"),
                                 fieldWithPath("data.memberInfo.registerDate").description("가입 날짜"),
                                 fieldWithPath("data.memberInfo.updateDate").description("회원 정보 최종 수정 날짜"),
-                                fieldWithPath("data.tokenDto.memberId").description("가입된 회원의 식별 ID"),
-                                fieldWithPath("data.tokenDto.accessToken.header").description("가입된 회원에게 발급된 인증 JWT 토큰의 Header"),
-                                fieldWithPath("data.tokenDto.accessToken.payload").description("가입된 회원에게 발급된 인증 JWT 토큰의 Payload"),
-                                fieldWithPath("data.tokenDto.accessToken.signature").description("가입된 회원에게 발급된 인증 JWT 토큰의 Signature"),
-                                fieldWithPath("data.tokenDto.accessTokenValidSecond").description("가입된 회원에게 발급된 인증 JWT 토큰이 만료되기까지 남은 시간"),
-                                fieldWithPath("data.tokenDto.refreshToken").description("인증토큰 재발급 요청에 필요한 Refresh 토큰"),
-                                fieldWithPath("data.tokenDto.refreshTokenExpiredDate").description("인증토큰 재발급 요청에 필요한 Refresh 토큰의 만료 날짜"),
+                                fieldWithPath("data.tokenInfo.memberId").description("가입된 회원의 식별 ID"),
+                                fieldWithPath("data.tokenInfo.accessToken.header").description("가입된 회원에게 발급된 인증 JWT 토큰의 Header"),
+                                fieldWithPath("data.tokenInfo.accessToken.payload").description("가입된 회원에게 발급된 인증 JWT 토큰의 Payload"),
+                                fieldWithPath("data.tokenInfo.accessToken.signature").description("가입된 회원에게 발급된 인증 JWT 토큰의 Signature"),
+                                fieldWithPath("data.tokenInfo.accessTokenValidSecond").description("가입된 회원에게 발급된 인증 JWT 토큰이 만료되기까지 남은 시간"),
+                                fieldWithPath("data.tokenInfo.refreshToken").description("인증토큰 재발급 요청에 필요한 Refresh 토큰"),
+                                fieldWithPath("data.tokenInfo.refreshTokenExpiredDate").description("인증토큰 재발급 요청에 필요한 Refresh 토큰의 만료 날짜"),
                                 fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))

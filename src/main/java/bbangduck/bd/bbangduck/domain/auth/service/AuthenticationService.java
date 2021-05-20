@@ -51,13 +51,13 @@ public class AuthenticationService {
     @Transactional
     public TokenDto signIn(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        findMember.refresh(securityJwtProperties.getRefreshTokenExpiredDate());
+        findMember.signIn(securityJwtProperties.getRefreshTokenExpiredDate());
+
         String email = findMember.getEmail();
         List<String> roleNameList = findMember.getRoleNameList();
 
         String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
         TokenDto tokenDto = TokenDto.builder()
-                .memberId(memberId)
                 .accessToken(jwtToken)
                 .accessTokenValidSecond(securityJwtProperties.getTokenValidSecond())
                 .refreshToken(findMember.getRefreshToken())
@@ -83,7 +83,6 @@ public class AuthenticationService {
 
         String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
         TokenDto tokenDto = TokenDto.builder()
-                .memberId(findMember.getId())
                 .accessToken(jwtToken)
                 .accessTokenValidSecond(securityJwtProperties.getTokenValidSecond())
                 .refreshToken(findMember.getRefreshToken())

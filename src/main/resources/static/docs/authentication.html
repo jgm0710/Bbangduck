@@ -447,8 +447,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#resources-sign-up">회원가입</a>
 <ul class="sectlevel2">
-<li><a href="#resources-sign-up-success">회원가입 성공</a></li>
-<li><a href="#resources-sign-up-empty">회원가입 실패</a></li>
+<li><a href="#resources-social-sign-up-success">소셜 회원가입 성공</a></li>
+<li><a href="#resources-social-sign-up-empty">소셜 회원가입 실패</a></li>
 </ul>
 </li>
 <li><a href="#resources-kakao-sign-in">카카오 로그인</a>
@@ -457,6 +457,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#resources-no-member-kakao-sign-up-callbcak">카카오 계정으로 가입되지 않은 비회원 로그인 실패</a></li>
 </ul>
 </li>
+<li><a href="#resources-refresh-sign-in">Refresh 로그인</a></li>
 </ul>
 </li>
 </ul>
@@ -513,7 +514,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 소셜 회원은 이미 가입된 회원입니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#resources-sign-up-empty">회원가입 실패</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#resources-social-sign-up-empty">소셜 회원가입 실패</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시 API 스펙에 맞지 않게 요청을 한 경우</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2402</p></td>
@@ -544,6 +545,26 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 </dd>
+<dt class="hdlist1">2021-5-15</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#resources-sign-up">회원가입</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>소셜 회원가입 요청 분리</p>
+</li>
+<li>
+<p>추후 일반회원 가입 구현 시 일반 회원가입 요청 추가</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</dd>
 </dl>
 </div>
 </div>
@@ -555,7 +576,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p><code>POST</code> <code>/api/auth/sign-up</code></p>
+<p><code>POST</code> <code>/api/auth/social/sign-up</code></p>
 </li>
 <li>
 <p>요청에 필요한 Body 는 json 타입으로 기입합니다.</p>
@@ -579,22 +600,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 <div class="sect2">
-<h3 id="resources-sign-up-success"><a class="link" href="#resources-sign-up-success">회원가입 성공</a></h3>
+<h3 id="resources-social-sign-up-success"><a class="link" href="#resources-social-sign-up-success">소셜 회원가입 성공</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>응답 HttpStatus : <code>201 Created</code></p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p>operation::sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']</p>
+<p>operation::social-sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="resources-sign-up-empty"><a class="link" href="#resources-sign-up-empty">회원가입 실패</a></h3>
+<h3 id="resources-social-sign-up-empty"><a class="link" href="#resources-social-sign-up-empty">소셜 회원가입 실패</a></h3>
 <div class="ulist">
 <ul>
+<li>
+<p>응답 HttpStatus : <code>400 Bad Request</code></p>
+</li>
 <li>
 <p>회원가입 시 기입해야 할 사항을 모두 입력하지 않았을 경우에 대한 응답입니다.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>operation::sign-up-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']</p>
+<p>operation::social-sign-up-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']</p>
 </div>
 </div>
 </div>
@@ -687,10 +718,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="resources-refresh-sign-in"><a class="link" href="#resources-refresh-sign-in">Refresh 로그인</a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-16 19:37:31 KST
+Last updated 2021-05-20 18:42:13 KST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">

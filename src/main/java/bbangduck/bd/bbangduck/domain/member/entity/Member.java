@@ -188,7 +188,7 @@ public class Member extends BaseEntityDateTime {
         this.roles = Set.of(MemberRole.WITHDRAWAL);
     }
 
-    public void refresh(int refreshTokenExpiredDate) {
+    public void signIn(int refreshTokenExpiredDate) {
         this.refreshInfo = RefreshInfo.init(refreshTokenExpiredDate);
     }
 
