@@ -71,6 +71,7 @@
 
 2021-05-20:::
 * <<resources-refresh-sign-in>> 기능 구현
+* <<resources-withdrawal>> 기능 구현
 
 [[resources-auth]]
 = 회원 인증 관리 리소스
