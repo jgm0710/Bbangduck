@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
+import bbangduck.bd.bbangduck.domain.auth.controller.dto.TokenResponseDto;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.KakaoUserInfoDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.SocialAuthFailResponseAdaptorDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.KakaoAuthFailException;
@@ -54,12 +55,13 @@ public class SocialAuthApiController {
                 .orElseThrow(() -> new KakaoAuthFailException(SocialAuthFailResponseAdaptorDto.exchange(kakaoUserInfo)));
 
         TokenDto tokenDto = authenticationService.signIn(findMember.getId());
+        TokenResponseDto tokenResponseDto = TokenResponseDto.convert(tokenDto);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("social-sign-in-result");
         modelAndView.addObject(STATUS, ResponseStatus.KAKAO_SIGN_IN_SUCCESS.getStatus());
         modelAndView.addObject(MESSAGE, ResponseStatus.KAKAO_SIGN_IN_SUCCESS.getMessage());
-        modelAndView.addObject(DATA, tokenDto);
+        modelAndView.addObject(DATA, tokenResponseDto);
 
 
         return modelAndView;

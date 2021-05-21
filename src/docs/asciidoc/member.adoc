@@ -1,4 +1,4 @@
-= Custom Vocabulary API Guide
+= BbangDuck API Guide
 정구민;
 :doctype: book
 :icons: font

@@ -25,7 +25,7 @@ public class TokenDto {
     private LocalDateTime refreshTokenExpiredDate;
 
     @Builder
-    public TokenDto(Long memberId,String accessToken, long accessTokenValidSecond, String refreshToken, LocalDateTime refreshTokenExpiredDate) {
+    public TokenDto(Long memberId, String accessToken, long accessTokenValidSecond, String refreshToken, LocalDateTime refreshTokenExpiredDate) {
         this.memberId = memberId;
         this.accessToken = accessToken;
         this.accessTokenValidSecond = accessTokenValidSecond;
