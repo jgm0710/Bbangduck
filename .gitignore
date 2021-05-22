@@ -25,6 +25,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+!build/libs/bbangduck-0.0.1-SNAPSHOT.jar
 
 ### NetBeans ###
 /nbproject/private/
