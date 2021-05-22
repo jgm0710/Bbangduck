@@ -114,8 +114,6 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS, null));
     }
 
-    // TODO: 21. 5. 17. 방탈출 기록 공개 여부 수정
-    // TODO: 2021-05-19 test
     @PutMapping("/{memberId}/room-escape/recodes/open-yn")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> toggleRoomEscapeRecodesOpen(

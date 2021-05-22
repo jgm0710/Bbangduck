@@ -184,7 +184,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-19 문서화
     @Test
     @DisplayName("회원 프로필 이미지 수정")
     public void updateProfileImage() throws Exception {
@@ -339,7 +338,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-19 문서화
     @Test
     @DisplayName("회원 프로필 이미지 수정 - 파일 정보를 기입하지 않은 경우")
     public void updateProfileImage_FileInfoEmpty() throws Exception {
@@ -391,7 +389,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-19 문서화
+
     @Test
     @DisplayName("회원 프로필 이미지 삭제")
     public void deleteProfileImage() throws Exception {
@@ -524,7 +522,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-19 문서화
+
     @Test
     @DisplayName("회원 닉네임 변경")
     public void updateNicknameTest() throws Exception {
@@ -599,8 +597,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-19 문서화
-    // TODO: 2021-05-20 여기서부터 다시 진행
+
     @Test
     @DisplayName("회원 닉네임 변경 - 닉네임을 기입하지 않은 경우")
     public void updateNickname_NicknameEmpty() throws Exception {
@@ -714,7 +711,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-19 문서화
+
     @Test
     @DisplayName("회원 자기소개 수정")
     public void updateDescriptionTest() throws Exception {
@@ -761,7 +758,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-19 문서화
+
     @Test
     @DisplayName("회원 자기소개 수정 - 자기소개를 기입하지 않은 경우")
     public void updateDescription_Empty() throws Exception {
@@ -872,7 +869,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-05-20 문서화
     @Test
     @DisplayName("회원 방탈출 기록 공개 여부 변경")
     public void toggleRoomEscapeRecodesOpenTest() throws Exception {
