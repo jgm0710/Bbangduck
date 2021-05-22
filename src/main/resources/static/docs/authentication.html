@@ -933,7 +933,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: http://localhost:8080/api/members/45
+Location: http://localhost:8080/api/members/46
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -947,7 +947,7 @@ Content-Length: 1064
   "status" : 2201,
   "data" : {
     "memberInfo" : {
-      "memberId" : 45,
+      "memberId" : 46,
       "email" : "test@email.com",
       "nickname" : "testNickname",
       "profileImage" : null,
@@ -958,19 +958,19 @@ Content-Length: 1064
       "description" : null,
       "reviewCount" : 0,
       "roomEscapeRecordVisible" : true,
-      "registerDate" : "2021-05-22T12:35:28.3196783",
-      "updateDate" : "2021-05-22T12:35:28.3236669"
+      "registerDate" : "2021-05-22T12:45:48.3745626",
+      "updateDate" : "2021-05-22T12:45:48.3785554"
     },
     "tokenInfo" : {
-      "memberId" : 45,
+      "memberId" : 46,
       "accessToken" : {
         "header" : "eyJhbGciOiJIUzI1NiJ9",
-        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTQ1MjgsImV4cCI6MTYyMTY4NDUyOH0",
-        "signature" : "qPnUGUK3btiapeEt7XUmO50r-4bnwqh0pzLoT0rGKeg"
+        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0",
+        "signature" : "at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM"
       },
       "accessTokenValidSecond" : 30000,
-      "refreshToken" : "9e8f06da-971a-463e-86ea-dcb06702f0b4",
-      "refreshTokenExpiredDate" : "2021-06-05T12:35:28.3226691"
+      "refreshToken" : "c6fc65b4-192c-40e6-b67b-344ecbcdc687",
+      "refreshTokenExpiredDate" : "2021-06-05T12:45:48.3775544"
     }
   },
   "message" : " 회원가입에 성공했습니다."
@@ -1135,8 +1135,8 @@ Content-Length: 824
   "data" : [ {
     "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotBlank",
-    "defaultMessage" : "Nickname 을 입력해 주세요.",
-    "field" : "nickname"
+    "defaultMessage" : "Social ID 를 입력해 주세요.",
+    "field" : "socialId"
   }, {
     "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotBlank",
@@ -1144,14 +1144,14 @@ Content-Length: 824
     "field" : "email"
   }, {
     "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotBlank",
+    "defaultMessage" : "Nickname 을 입력해 주세요.",
+    "field" : "nickname"
+  }, {
+    "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotNull",
     "defaultMessage" : "Social Type 을 입력해 주세요.",
     "field" : "socialType"
-  }, {
-    "objectName" : "memberSocialSignUpRequestDto",
-    "code" : "NotBlank",
-    "defaultMessage" : "Social ID 를 입력해 주세요.",
-    "field" : "socialId"
   } ],
   "message" : "회원가입 시 기입사항을 올바르게 기입하지 않았습니다."
 }</code></pre>
@@ -1246,7 +1246,7 @@ Content-Length: 1020
 
     let status = 1221;
     let message = decodeURIComponent("\uCE74\uCE74\uC624 \uB85C\uADF8\uC778\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4.");
-    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxNjU0NTE4LCJleHAiOjE2MjE2ODQ1MTh9","signature":"rvuHWYXNyl9asEQW_dW-Wm1mPPkyca9QO7xbs0JhgKM"},"accessTokenValidSecond":30000,"refreshToken":"1aefdf3d-d864-4701-9ad3-f2054a028d64","refreshTokenExpiredDate":"2021-06-05T12:35:18.4434726"};
+    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxNjU1MTM2LCJleHAiOjE2MjE2ODUxMzZ9","signature":"ASSVLcitx53A1zuJejdypuEmqFCkbR9vGP8Y4fOp5Z4"},"accessTokenValidSecond":30000,"refreshToken":"019fdd31-4b58-4155-9bfd-b1cae296db9f","refreshTokenExpiredDate":"2021-06-05T12:45:36.7656514"};
     callSnsSignIn();
 
     function callSnsSignIn() {
@@ -1493,7 +1493,7 @@ Content-Length: 804
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/refresh' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{
-  "refreshToken" : "19a26ccc-721f-4f59-b9a4-45ef0f9f14c8"
+  "refreshToken" : "01103d83-9436-4c88-a6ac-fca003a67b08"
 }'</code></pre>
 </div>
 </div>
@@ -1518,12 +1518,12 @@ Content-Length: 589
     "memberId" : null,
     "accessToken" : {
       "header" : "eyJhbGciOiJIUzI1NiJ9",
-      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTQ1MjgsImV4cCI6MTYyMTY4NDUyOH0",
-      "signature" : "qPnUGUK3btiapeEt7XUmO50r-4bnwqh0pzLoT0rGKeg"
+      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0",
+      "signature" : "at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM"
     },
     "accessTokenValidSecond" : 30000,
-    "refreshToken" : "19a26ccc-721f-4f59-b9a4-45ef0f9f14c8",
-    "refreshTokenExpiredDate" : "2021-06-05T12:35:28.418414"
+    "refreshToken" : "01103d83-9436-4c88-a6ac-fca003a67b08",
+    "refreshTokenExpiredDate" : "2021-06-05T12:45:48.485265"
   },
   "message" : "Refresh Token 을 통한 Access Token 재발급에 성공했습니다."
 }</code></pre>
@@ -1620,8 +1620,8 @@ Content-Length: 589
 <h4 id="resources-withdrawal-success_curl_request"><a class="link" href="#resources-withdrawal-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/44/withdrawal' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTQ1MjgsImV4cCI6MTYyMTY4NDUyOH0.qPnUGUK3btiapeEt7XUmO50r-4bnwqh0pzLoT0rGKeg'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/45/withdrawal' -i -X DELETE \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0.at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM'</code></pre>
 </div>
 </div>
 </div>
@@ -1740,8 +1740,8 @@ Content-Length: 96
 <h4 id="resources-sign-out-success_curl_request"><a class="link" href="#resources-sign-out-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/57/sign-out' -i -X GET \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTQ1MjgsImV4cCI6MTYyMTY4NDUyOH0.qPnUGUK3btiapeEt7XUmO50r-4bnwqh0pzLoT0rGKeg'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/58/sign-out' -i -X GET \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0.at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM'</code></pre>
 </div>
 </div>
 </div>
