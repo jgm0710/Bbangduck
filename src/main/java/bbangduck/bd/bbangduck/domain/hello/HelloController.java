@@ -14,7 +14,7 @@ public class HelloController {
         model.addAttribute("title", "project title.");
         model.addAttribute("content", "project content.");
 
-        return "/hello";
+        return "hello";
     }
 
     @GetMapping("/api/hello")

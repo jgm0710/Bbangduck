@@ -958,19 +958,19 @@ Content-Length: 1064
       "description" : null,
       "reviewCount" : 0,
       "roomEscapeRecordVisible" : true,
-      "registerDate" : "2021-05-22T10:33:20.6086462",
-      "updateDate" : "2021-05-22T10:33:20.6116384"
+      "registerDate" : "2021-05-22T12:35:28.3196783",
+      "updateDate" : "2021-05-22T12:35:28.3236669"
     },
     "tokenInfo" : {
       "memberId" : 45,
       "accessToken" : {
         "header" : "eyJhbGciOiJIUzI1NiJ9",
-        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDcyMDAsImV4cCI6MTYyMTY3NzIwMH0",
-        "signature" : "mER1zc3IDm4jB69L7w1Cm2yo8pZwpVg1eQED7qrxLvA"
+        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTQ1MjgsImV4cCI6MTYyMTY4NDUyOH0",
+        "signature" : "qPnUGUK3btiapeEt7XUmO50r-4bnwqh0pzLoT0rGKeg"
       },
       "accessTokenValidSecond" : 30000,
-      "refreshToken" : "2597dbf0-5cd5-4058-b9bf-a66cb5ab670c",
-      "refreshTokenExpiredDate" : "2021-06-05T10:33:20.6106412"
+      "refreshToken" : "9e8f06da-971a-463e-86ea-dcb06702f0b4",
+      "refreshTokenExpiredDate" : "2021-06-05T12:35:28.3226691"
     }
   },
   "message" : " 회원가입에 성공했습니다."
@@ -1135,6 +1135,11 @@ Content-Length: 824
   "data" : [ {
     "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotBlank",
+    "defaultMessage" : "Nickname 을 입력해 주세요.",
+    "field" : "nickname"
+  }, {
+    "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotBlank",
     "defaultMessage" : "Email 을 입력해 주세요.",
     "field" : "email"
   }, {
@@ -1147,11 +1152,6 @@ Content-Length: 824
     "code" : "NotBlank",
     "defaultMessage" : "Social ID 를 입력해 주세요.",
     "field" : "socialId"
-  }, {
-    "objectName" : "memberSocialSignUpRequestDto",
-    "code" : "NotBlank",
-    "defaultMessage" : "Nickname 을 입력해 주세요.",
-    "field" : "nickname"
   } ],
   "message" : "회원가입 시 기입사항을 올바르게 기입하지 않았습니다."
 }</code></pre>
@@ -1246,7 +1246,7 @@ Content-Length: 1020
 
     let status = 1221;
     let message = decodeURIComponent("\uCE74\uCE74\uC624 \uB85C\uADF8\uC778\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4.");
-    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxNjQ3MTg2LCJleHAiOjE2MjE2NzcxODZ9","signature":"YpY_O8cSAlCyHpito5lE1yG4mbnjJStHR7mtcpHd5KE"},"accessTokenValidSecond":30000,"refreshToken":"73fd8901-bb44-4942-9ba3-fdd49b016ab0","refreshTokenExpiredDate":"2021-06-05T10:33:06.3075341"};
+    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxNjU0NTE4LCJleHAiOjE2MjE2ODQ1MTh9","signature":"rvuHWYXNyl9asEQW_dW-Wm1mPPkyca9QO7xbs0JhgKM"},"accessTokenValidSecond":30000,"refreshToken":"1aefdf3d-d864-4701-9ad3-f2054a028d64","refreshTokenExpiredDate":"2021-06-05T12:35:18.4434726"};
     callSnsSignIn();
 
     function callSnsSignIn() {
@@ -1493,7 +1493,7 @@ Content-Length: 804
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/refresh' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{
-  "refreshToken" : "a033030f-b68c-4e06-8cea-557467ed59d8"
+  "refreshToken" : "19a26ccc-721f-4f59-b9a4-45ef0f9f14c8"
 }'</code></pre>
 </div>
 </div>
@@ -1518,12 +1518,12 @@ Content-Length: 589
     "memberId" : null,
     "accessToken" : {
       "header" : "eyJhbGciOiJIUzI1NiJ9",
-      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDcyMDAsImV4cCI6MTYyMTY3NzIwMH0",
-      "signature" : "mER1zc3IDm4jB69L7w1Cm2yo8pZwpVg1eQED7qrxLvA"
+      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTQ1MjgsImV4cCI6MTYyMTY4NDUyOH0",
+      "signature" : "qPnUGUK3btiapeEt7XUmO50r-4bnwqh0pzLoT0rGKeg"
     },
     "accessTokenValidSecond" : 30000,
-    "refreshToken" : "a033030f-b68c-4e06-8cea-557467ed59d8",
-    "refreshTokenExpiredDate" : "2021-06-05T10:33:20.856983"
+    "refreshToken" : "19a26ccc-721f-4f59-b9a4-45ef0f9f14c8",
+    "refreshTokenExpiredDate" : "2021-06-05T12:35:28.418414"
   },
   "message" : "Refresh Token 을 통한 Access Token 재발급에 성공했습니다."
 }</code></pre>
@@ -1621,7 +1621,7 @@ Content-Length: 589
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/44/withdrawal' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDcyMDAsImV4cCI6MTYyMTY3NzIwMH0.mER1zc3IDm4jB69L7w1Cm2yo8pZwpVg1eQED7qrxLvA'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTQ1MjgsImV4cCI6MTYyMTY4NDUyOH0.qPnUGUK3btiapeEt7XUmO50r-4bnwqh0pzLoT0rGKeg'</code></pre>
 </div>
 </div>
 </div>
@@ -1741,7 +1741,7 @@ Content-Length: 96
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/57/sign-out' -i -X GET \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDcyMDEsImV4cCI6MTYyMTY3NzIwMX0.fqEu_Qxwphz5jxV8bqpu4qwpClZyu13LiuOnQP--sdM'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTQ1MjgsImV4cCI6MTYyMTY4NDUyOH0.qPnUGUK3btiapeEt7XUmO50r-4bnwqh0pzLoT0rGKeg'</code></pre>
 </div>
 </div>
 </div>
