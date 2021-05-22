@@ -958,19 +958,19 @@ Content-Length: 1064
       "description" : null,
       "reviewCount" : 0,
       "roomEscapeRecordVisible" : true,
-      "registerDate" : "2021-05-22T10:27:23.0613436",
-      "updateDate" : "2021-05-22T10:27:23.0663282"
+      "registerDate" : "2021-05-22T10:33:20.6086462",
+      "updateDate" : "2021-05-22T10:33:20.6116384"
     },
     "tokenInfo" : {
       "memberId" : 45,
       "accessToken" : {
         "header" : "eyJhbGciOiJIUzI1NiJ9",
-        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDY4NDMsImV4cCI6MTYyMTY3Njg0M30",
-        "signature" : "sJDZ0esMEGLLKKvBFPvgDL86_Luf2OHJGhMx2OeT8Yg"
+        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDcyMDAsImV4cCI6MTYyMTY3NzIwMH0",
+        "signature" : "mER1zc3IDm4jB69L7w1Cm2yo8pZwpVg1eQED7qrxLvA"
       },
       "accessTokenValidSecond" : 30000,
-      "refreshToken" : "222d36f3-050d-4a80-ba20-77591a007072",
-      "refreshTokenExpiredDate" : "2021-06-05T10:27:23.0653343"
+      "refreshToken" : "2597dbf0-5cd5-4058-b9bf-a66cb5ab670c",
+      "refreshTokenExpiredDate" : "2021-06-05T10:33:20.6106412"
     }
   },
   "message" : " 회원가입에 성공했습니다."
@@ -1139,11 +1139,6 @@ Content-Length: 824
     "field" : "email"
   }, {
     "objectName" : "memberSocialSignUpRequestDto",
-    "code" : "NotBlank",
-    "defaultMessage" : "Nickname 을 입력해 주세요.",
-    "field" : "nickname"
-  }, {
-    "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotNull",
     "defaultMessage" : "Social Type 을 입력해 주세요.",
     "field" : "socialType"
@@ -1152,6 +1147,11 @@ Content-Length: 824
     "code" : "NotBlank",
     "defaultMessage" : "Social ID 를 입력해 주세요.",
     "field" : "socialId"
+  }, {
+    "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotBlank",
+    "defaultMessage" : "Nickname 을 입력해 주세요.",
+    "field" : "nickname"
   } ],
   "message" : "회원가입 시 기입사항을 올바르게 기입하지 않았습니다."
 }</code></pre>
@@ -1231,7 +1231,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1019
+Content-Length: 1020
 
 &lt;!DOCTYPE html&gt;
 &lt;html lang="kr"&gt;
@@ -1246,7 +1246,7 @@ Content-Length: 1019
 
     let status = 1221;
     let message = decodeURIComponent("\uCE74\uCE74\uC624 \uB85C\uADF8\uC778\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4.");
-    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxNjQ2ODMyLCJleHAiOjE2MjE2NzY4MzJ9","signature":"tha4yGGIXLNzilgrTAfIfAzdhes8_ecV-0q46ZRx450"},"accessTokenValidSecond":30000,"refreshToken":"138bb678-6a51-458b-a4e2-8457d1af843f","refreshTokenExpiredDate":"2021-06-05T10:27:12.707148"};
+    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxNjQ3MTg2LCJleHAiOjE2MjE2NzcxODZ9","signature":"YpY_O8cSAlCyHpito5lE1yG4mbnjJStHR7mtcpHd5KE"},"accessTokenValidSecond":30000,"refreshToken":"73fd8901-bb44-4942-9ba3-fdd49b016ab0","refreshTokenExpiredDate":"2021-06-05T10:33:06.3075341"};
     callSnsSignIn();
 
     function callSnsSignIn() {
@@ -1493,7 +1493,7 @@ Content-Length: 804
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/refresh' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{
-  "refreshToken" : "ccf544f0-ecad-4da3-9593-5bcd6c707144"
+  "refreshToken" : "a033030f-b68c-4e06-8cea-557467ed59d8"
 }'</code></pre>
 </div>
 </div>
@@ -1510,7 +1510,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 588
+Content-Length: 589
 
 {
   "status" : 1222,
@@ -1518,12 +1518,12 @@ Content-Length: 588
     "memberId" : null,
     "accessToken" : {
       "header" : "eyJhbGciOiJIUzI1NiJ9",
-      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDY4NDMsImV4cCI6MTYyMTY3Njg0M30",
-      "signature" : "sJDZ0esMEGLLKKvBFPvgDL86_Luf2OHJGhMx2OeT8Yg"
+      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDcyMDAsImV4cCI6MTYyMTY3NzIwMH0",
+      "signature" : "mER1zc3IDm4jB69L7w1Cm2yo8pZwpVg1eQED7qrxLvA"
     },
     "accessTokenValidSecond" : 30000,
-    "refreshToken" : "ccf544f0-ecad-4da3-9593-5bcd6c707144",
-    "refreshTokenExpiredDate" : "2021-06-05T10:27:23.22291"
+    "refreshToken" : "a033030f-b68c-4e06-8cea-557467ed59d8",
+    "refreshTokenExpiredDate" : "2021-06-05T10:33:20.856983"
   },
   "message" : "Refresh Token 을 통한 Access Token 재발급에 성공했습니다."
 }</code></pre>
@@ -1621,7 +1621,7 @@ Content-Length: 588
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/44/withdrawal' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDY4NDIsImV4cCI6MTYyMTY3Njg0Mn0.B8VdDxPFAfMGin6ViLBMA_wpdRKGHomsBvPNeNjyfQc'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDcyMDAsImV4cCI6MTYyMTY3NzIwMH0.mER1zc3IDm4jB69L7w1Cm2yo8pZwpVg1eQED7qrxLvA'</code></pre>
 </div>
 </div>
 </div>
@@ -1741,7 +1741,7 @@ Content-Length: 96
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/57/sign-out' -i -X GET \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDY4NDMsImV4cCI6MTYyMTY3Njg0M30.sJDZ0esMEGLLKKvBFPvgDL86_Luf2OHJGhMx2OeT8Yg'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NDcyMDEsImV4cCI6MTYyMTY3NzIwMX0.fqEu_Qxwphz5jxV8bqpu4qwpClZyu13LiuOnQP--sdM'</code></pre>
 </div>
 </div>
 </div>

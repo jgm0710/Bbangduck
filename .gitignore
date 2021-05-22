@@ -4,6 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+!build/libs/bbangduck-0.0.1-SNAPSHOT.jar
 
 ### STS ###
 .apt_generated
@@ -25,7 +26,6 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-!build/libs/bbangduck-0.0.1-SNAPSHOT.jar
 
 ### NetBeans ###
 /nbproject/private/
