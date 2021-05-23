@@ -1,6 +1,8 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -27,4 +29,22 @@ public class ReviewImage {
 
     private String fileName;
 
+    @Builder
+    public ReviewImage(Long id, Review review, Long fileStorageId, String fileName) {
+        this.id = id;
+        this.review = review;
+        this.fileStorageId = fileStorageId;
+        this.fileName = fileName;
+    }
+
+    public static ReviewImage create(ReviewImageDto reviewImageDto) {
+        return ReviewImage.builder()
+                .fileStorageId(reviewImageDto.getFileStorageId())
+                .fileName(reviewImageDto.getFileName())
+                .build();
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+    }
 }

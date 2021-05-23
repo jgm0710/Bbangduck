@@ -29,4 +29,7 @@ public class MemberPlayInclination extends BaseEntityDateTime {
 
     private int playCount;
 
+    public void increasePlayCount() {
+        this.playCount++;
+    }
 }

@@ -17,5 +17,15 @@ public class Theme {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "theme_id")
-    public Long id;
+    private Long id;
+
+    private String genreCode;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getGenreCode() {
+        return genreCode;
+    }
 }
