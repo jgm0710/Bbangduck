@@ -20,6 +20,7 @@ public class SocialAccount extends BaseEntityDateTime {
     private Long id;
 
     private String socialId;
+
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 

@@ -1,5 +1,10 @@
 package bbangduck.bd.bbangduck.global.config;
 
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.entity.RefreshInfo;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
+import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -7,10 +12,14 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.ssl.SSLContexts;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +32,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.Set;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -66,6 +76,40 @@ public class AppConfig {
         requestFactory.setHttpClient(httpClient);
 
         return new RestTemplate(requestFactory);
+    }
+
+    @Bean
+    public ApplicationRunner applicationRunner() {
+        return new ApplicationRunner() {
+
+            @Autowired
+            private MemberService memberService;
+
+            @Autowired
+            private MemberRepository memberRepository;
+
+            @Override
+            public void run(ApplicationArguments args) {
+                PasswordEncoder passwordEncoder = passwordEncoder();
+                String encodedPassword = passwordEncoder.encode("bbangduckDEV7");
+                String email = "developer@bbangduck.com";
+
+                if (memberRepository.findByEmail(email).isEmpty()) {
+                    Member member = Member.builder()
+                            .email(email)
+                            .password(encodedPassword)
+                            .nickname("developer")
+                            .description("개발자")
+                            .roomEscapeRecordsOpenYN(false)
+                            .refreshInfo(RefreshInfo.init(1000))
+                            .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
+                            .build();
+
+                    memberRepository.save(member);
+                }
+
+            }
+        };
     }
 
 }
