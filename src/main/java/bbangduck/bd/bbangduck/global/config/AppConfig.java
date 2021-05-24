@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.global.config;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.entity.RefreshInfo;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import com.querydsl.jpa.impl.JPAQueryFactory;

@@ -1,34 +1,23 @@
 package bbangduck.bd.bbangduck.domain.member.controller;
 
-import bbangduck.bd.bbangduck.common.BaseControllerTest;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignInRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.entity.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.service.MemberDevelopService;
-import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.io.IOException;
-import java.net.URLConnection;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

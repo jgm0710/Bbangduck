@@ -8,7 +8,7 @@ import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;

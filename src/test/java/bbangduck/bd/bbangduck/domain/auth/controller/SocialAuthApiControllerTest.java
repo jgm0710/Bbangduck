@@ -4,7 +4,7 @@ import bbangduck.bd.bbangduck.domain.auth.KakaoAuthorizationCodeConfiguration;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.KakaoUserInfoDto;
 import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.DisplayName;

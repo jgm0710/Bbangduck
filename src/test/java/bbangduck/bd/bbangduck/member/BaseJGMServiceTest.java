@@ -4,7 +4,7 @@ import bbangduck.bd.bbangduck.common.BaseTest;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.SocialAccountRepository;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;

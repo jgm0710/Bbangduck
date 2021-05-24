@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.exception;
 
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.common.exception.ConflictException;
 
