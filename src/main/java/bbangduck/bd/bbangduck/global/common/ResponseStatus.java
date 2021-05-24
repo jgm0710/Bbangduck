@@ -88,6 +88,15 @@ public enum ResponseStatus {
     DOWNLOAD_THUMBNAIL_OF_NON_IMAGE_FILE(3410, "해당 파일은 이미지 파일이 아니므로, 썸네일 이미지 다운로드 요청이 불가능합니다.", "썸네일 이미지 요청 시 해당 파일이 이미지 파일이 아닌 경우"),
     FILE_DELETE_FAIL_FOR_UNKNOWN_REASON(3411, "삭제 요청한 파일이 알 수 없는 이유로 삭제되지 않았습니다. 다시 시도해 주세요.", "알 수 없는 이유로 삭제 요청한 파일이 삭제되지 않았을 경우"),
 
+    /**
+     * 개발자 권한 응답 코드
+     * 시작코드 97
+     */
+    DELETE_MEMBER_SUCCESS_BY_DEVELOPER_SUCCESS(97201, "개발자 권한으로 요청된 회원 삭제에 성공했습니다.", "개발자 권한으로 회원 삭제에 성공한 경우"),
+    GET_MEMBER_LIST_BY_DEVELOPER_SUCCESS(97202, "개발자 권한으로 요청된 회원 목록 조회에 성공했습니다.", "개발자 권한으로 회원 목록 조회에 성공한 경우"),
+    GET_MEMBER_BY_DEVELOPER_SUCCESS(97203, "개발자 권한으로 요청된 회원애 대한 조회에 성공했습니다.", "개발자 권한으로 회원 조회에 성공한 경우"),
+    SIGN_IN_DEVELOPER_SUCCESS(97204, "개발자 권한을 가진 사용자 로그인에 성공했습니다.", "개발자 계정을 통한 로그인에 성공한 경우"),
+
 
     /**
      * 공통 응답 코드
@@ -95,9 +104,8 @@ public enum ResponseStatus {
      */
     VALIDATION_ERROR(99411, "요청 시 기입 사항이 해당 요청의 규칙에 맞게 기입되지 않았습니다.", "API 요청 시 요청 Body 에 기입해야 할 부분이 해당 요청의 Validation 규칙에 맞지 않는 경우"),
     MD5_ENCODE_ERROR(99412, "알 수 없는 이유로 MD5 형식의 인코딩에 실패하였습니다.", "Etag 에 사용되는 MD5 인코더를 통한 문자열 인코딩 시 알 수 없는 이유로 예외가 발생한 경우"),
-    URL_ENCODE_ERROR(99413, "알 수 없는 이유로 URL 인코딩에 실패하였습니다.", "URLEncoder 를 통한 인코딩 시 알 수 없는 이유로 예외가 발생한 경우"),
+    URL_ENCODE_ERROR(99413, "알 수 없는 이유로 URL 인코딩에 실패하였습니다.", "URLEncoder 를 통한 인코딩 시 알 수 없는 이유로 예외가 발생한 경우");
 
-    ;
 
     private final int status;
     private final String message;

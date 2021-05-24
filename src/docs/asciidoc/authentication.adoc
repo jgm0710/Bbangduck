@@ -89,7 +89,7 @@
 * <<resources-kakao-sign-in>> 기능 구현
 
 2021-5-15:::
-* <<resources-sign-up>>
+* <<resources-social-sign-up>>
 ** 소셜 회원가입 요청 분리
 ** 추후 일반회원 가입 구현 시 일반 회원가입 요청 추가
 
@@ -103,6 +103,11 @@
 
 [[resources-sign-up]]
 == 회원가입
+
+* 일반 회원가입 기능은 아직 구현하지 않았습니다.
+
+[[resources-social-sign-up]]
+== 소셜 회원가입
 
 * `POST` `/api/auth/social/sign-up`
 * 요청에 필요한 Body 는 json 타입으로 기입합니다.

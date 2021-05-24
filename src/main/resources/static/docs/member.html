@@ -774,10 +774,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/29/profiles/images' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDYsImV4cCI6MTYyMTY4NTE0Nn0.S_STulrFX2w0o7X2ofBmD1EUg3dAqf0emMj-S71iR-E' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo' \
     -d '{
   "fileStorageId" : 22,
-  "fileName" : "a91d57eb-3103-4af4-846e-072d086e99ec_puppy.jpg"
+  "fileName" : "514063c8-214f-451c-9b9d-8df5926ce4e5_puppy.jpg"
 }'</code></pre>
 </div>
 </div>
@@ -926,7 +926,7 @@ Content-Length: 116
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/42/profiles/images' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDcsImV4cCI6MTYyMTY4NTE0N30.9W4GsfeQPPZO7_nHp6xvEwO2Tb9fMRZ4n6U6bWb62VM' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzEsImV4cCI6MTYyMTg1Mjk3MX0.QBcaCPYv6zSF1g9T9F8axOE7hJIocDhRIBgNhsFgO8Y' \
     -d '{
   "fileStorageId" : null,
   "fileName" : ""
@@ -952,14 +952,14 @@ Content-Length: 532
   "status" : 2408,
   "data" : [ {
     "objectName" : "memberUpdateProfileImageRequestDto",
-    "code" : "NotNull",
-    "defaultMessage" : "파일 저장소 ID 를 기입해 주세요.",
-    "field" : "fileStorageId"
-  }, {
-    "objectName" : "memberUpdateProfileImageRequestDto",
     "code" : "NotBlank",
     "defaultMessage" : "파일 이름을 기입해 주세요.",
     "field" : "fileName"
+  }, {
+    "objectName" : "memberUpdateProfileImageRequestDto",
+    "code" : "NotNull",
+    "defaultMessage" : "파일 저장소 ID 를 기입해 주세요.",
+    "field" : "fileStorageId"
   } ],
   "message" : "회원 프로필 이미지 수정 시 기입 사항을 올바르게 기입하지 않았습니다."
 }</code></pre>
@@ -1057,7 +1057,7 @@ Content-Length: 532
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/27/profiles/images' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDUsImV4cCI6MTYyMTY4NTE0NX0.gSnERLm59lOCXicnCw06KBkoprLJ1FQ7FjSbzWLDJuI'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo'</code></pre>
 </div>
 </div>
 </div>
@@ -1206,7 +1206,7 @@ Content-Length: 116
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/28/nicknames' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDUsImV4cCI6MTYyMTY4NTE0NX0.gSnERLm59lOCXicnCw06KBkoprLJ1FQ7FjSbzWLDJuI' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo' \
     -d '{
   "nickname" : "newUpdateNickname"
 }'</code></pre>
@@ -1352,7 +1352,7 @@ Content-Length: 105
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/37/nicknames' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDcsImV4cCI6MTYyMTY4NTE0N30.9W4GsfeQPPZO7_nHp6xvEwO2Tb9fMRZ4n6U6bWb62VM' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzEsImV4cCI6MTYyMTg1Mjk3MX0.QBcaCPYv6zSF1g9T9F8axOE7hJIocDhRIBgNhsFgO8Y' \
     -d '{
   "nickname" : ""
 }'</code></pre>
@@ -1506,7 +1506,7 @@ Content-Length: 329
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/44/descriptions' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0.at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzIsImV4cCI6MTYyMTg1Mjk3Mn0.U-SSmhTK6htmxDJGJp_WKL5HQgJx4mgAGhx4z9xQnyA' \
     -d '{
   "description" : "새로운 자기 소개 등록"
 }'</code></pre>
@@ -1649,7 +1649,7 @@ Content-Length: 109
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/23/descriptions' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDUsImV4cCI6MTYyMTY4NTE0NX0.gSnERLm59lOCXicnCw06KBkoprLJ1FQ7FjSbzWLDJuI' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo' \
     -d '{
   "description" : null
 }'</code></pre>
@@ -1780,7 +1780,7 @@ Content-Length: 341
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/17/room-escape/recodes/open-yn' -i -X PUT \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDUsImV4cCI6MTYyMTY4NTE0NX0.gSnERLm59lOCXicnCw06KBkoprLJ1FQ7FjSbzWLDJuI'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo'</code></pre>
 </div>
 </div>
 </div>

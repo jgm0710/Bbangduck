@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
+import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -38,6 +39,7 @@ public class MemberPlayInclinationQueryRepository {
                 .where(memberIdEq(memberId))
                 .orderBy(playCountDesc())
                 .fetch();
+
     }
 
     private OrderSpecifier<Integer> playCountDesc() {

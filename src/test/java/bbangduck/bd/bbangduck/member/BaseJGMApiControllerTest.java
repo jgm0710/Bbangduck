@@ -14,12 +14,16 @@ import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.net.URLConnection;
 
 @Disabled
 public class BaseJGMApiControllerTest extends BaseControllerTest {
+
+    @Autowired
+    protected PasswordEncoder passwordEncoder;
 
     @Autowired
     protected MemberRepository memberRepository;

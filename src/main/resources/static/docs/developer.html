@@ -443,19 +443,33 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel0">
 <li><a href="#overview">개요</a>
 <ul class="sectlevel1">
-<li><a href="#overview-http-verbs">HTTP 동사</a></li>
-<li><a href="#overview-http-status-codes">HTTP 상태 코드</a></li>
+<li><a href="#_home">home</a></li>
+<li><a href="#_오류_코드">오류 코드</a></li>
 <li><a href="#_히스토리">히스토리</a></li>
 </ul>
 </li>
-<li><a href="#resources">리소스 리스트</a>
+<li><a href="#resources-developer">개발자 접근용 리소스</a>
 <ul class="sectlevel1">
-<li><a href="#_0_home">0. home</a></li>
-<li><a href="#_1_회원_인증_관리">1. 회원 인증 관리</a></li>
-<li><a href="#_2_파일_관리">2. 파일 관리</a></li>
-<li><a href="#_3_회원_관리_회원_프로필_관리">3. 회원 관리 (회원 프로필 관리)</a></li>
-<li><a href="#_개발자_전용_리소스">개발자 전용 리소스</a></li>
-<li><a href="#_test_resource">Test Resource</a></li>
+<li><a href="#resources-developer-sign-in">개발자 로그인</a>
+<ul class="sectlevel2">
+<li><a href="#resources-developer-sign-in_curl_request">Example request</a></li>
+<li><a href="#resources-developer-sign-in_http_response">Example response</a></li>
+</ul>
+</li>
+<li><a href="#resources-get-member-list-by-developer">개발자 권한으로 회원 목록 조회</a>
+<ul class="sectlevel2">
+<li><a href="#resources-get-member-list-by-developer_curl_request">Example request</a></li>
+<li><a href="#resources-get-member-list-by-developer_http_response">Example response</a></li>
+</ul>
+</li>
+<li><a href="#resources-get-member-by-developer">개발자 권한으로 회원 1건 조회</a>
+<ul class="sectlevel2">
+<li><a href="#resources-get-member-by-developer_curl_request">Example request</a></li>
+<li><a href="#resources-get-member-by-developer_http_response">Example response</a></li>
+<li><a href="#resources-get-member-by-developer_curl_request">Example request</a></li>
+<li><a href="#resources-get-member-by-developer_http_response">Example response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -464,98 +478,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="content">
 <h1 id="overview" class="sect0"><a class="link" href="#overview">개요</a></h1>
 <div class="sect1">
-<h2 id="overview-http-verbs"><a class="link" href="#overview-http-verbs">HTTP 동사</a></h2>
+<h2 id="_home"><a class="link" href="#_home"><a href="/docs/index.html">home</a></a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>본 REST API에서 사용하는 HTTP 동사(verbs)는 가능한한 표준 HTTP와 REST 규약을 따릅니다.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">동사</th>
-<th class="tableblock halign-left valign-top">용례</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리소스를 가져올 때 사용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">새 리소스를 만들 때 사용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PUT</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">기존 리소스를 수정할 때 사용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PATCH</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">기존 리소스의 일부를 수정할 때 사용</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">기존 리소스를 삭제할 떄 사용</p></td>
-</tr>
-</tbody>
-</table>
+
 </div>
 </div>
 <div class="sect1">
-<h2 id="overview-http-status-codes"><a class="link" href="#overview-http-status-codes">HTTP 상태 코드</a></h2>
+<h2 id="_오류_코드"><a class="link" href="#_오류_코드">오류 코드</a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>본 REST API에서 사용하는 HTTP 상태 코드는 가능한한 표준 HTTP와 REST 규약을 따릅니다.</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
 </colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">상태 코드</th>
-<th class="tableblock halign-left valign-top">용례</th>
-</tr>
-</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>200 OK</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요청을 성공적으로 처리함</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>201 Created</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">새 리소스를 성공적으로 생성함.
-응답의 <code>Location</code> 헤더에 해당 리소스의 URI가 담겨있다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>204 No Content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">기존 리소스를 성공적으로 수정함.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>400 Bad Request</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">잘못된 요청을 보낸 경우.
-응답 본문에 더 오류에 대한 정보가 담겨있다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>401 Unauthorized</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">해당 리소스에 유효한 인증 자격 증명이 없기 때문에 요청이 적용되지 않음.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>403 Forbidden</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">서버에 요청이 전달되었지만, 권한 때문에 거절된 경우.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>404 Not Found</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요청한 리소스가 없음.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>409 Conflict</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요청된 리소스가 현재 서버의 상태와 충돌될 경우.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발생 API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CAUSE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP_STATUS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CODE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MESSAGE</p></td>
 </tr>
 </tbody>
 </table>
@@ -567,166 +512,543 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>히스토리는 문서의 변경이력을 표시합니다.</p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1">2021-04-07</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="/docs/hello.html">Rest Docs 설정 검증을 위한 Test 문서 생성</a></p>
-</li>
-</ul>
 </div>
-</dd>
-<dt class="hdlist1">2021-05-06</dt>
-<dd>
+</div>
+<h1 id="resources-developer" class="sect0"><a class="link" href="#resources-developer">개발자 접근용 리소스</a></h1>
+<div class="sect1">
+<h2 id="resources-developer-sign-in"><a class="link" href="#resources-developer-sign-in">개발자 로그인</a></h2>
+<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p><a href="/docs/authentication.html">회원 인증 관리</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p>회원가입 기능 구현</p>
+<p><code>POST</code> <code>/api/develop/members/sign-in</code></p>
 </li>
 <li>
-<p>카카오 로그인 기능 구현</p>
+<p>아래의 email, password 를 request body 에 실어서 요청합니다.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>email : <a href="mailto:developer@bbangduck.com">developer@bbangduck.com</a></p>
+</li>
+<li>
+<p>password : bbangduckDEV7</p>
 </li>
 </ul>
 </div>
 </li>
-</ul>
-</div>
-</dd>
-<dt class="hdlist1">2021-05-12</dt>
-<dd>
-<div class="ulist">
-<ul>
 <li>
-<p><a href="/docs/file-storage.html">파일 관리</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p>이미지 파일 업로드 기능 구현</p>
-</li>
-<li>
-<p>파일 다운로드 기능 구현</p>
-</li>
-<li>
-<p>이미지 파일 썸네일 다운로드 기능 구현</p>
+<p>응답으로 Access Token 이 발급됩니다. 해당 Access Token 을 통해서만 개발자 리소스에 접근이 가능합니다.</p>
 </li>
 </ul>
 </div>
-</li>
-</ul>
-</div>
-</dd>
-<dt class="hdlist1">2021-05-20 </dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="/docs/member.html">회원 관리 (회원 프로필 관리)</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p>회원 프로필 이미지 변경 기능 구현</p>
-</li>
-<li>
-<p>회원 프로필 이미지 삭제 기능 구현</p>
-</li>
-<li>
-<p>회원 닉네임 변경 기능 구현</p>
-</li>
-<li>
-<p>회원 자기소개 변경 기능 구현</p>
-</li>
-<li>
-<p>회원 방탈출 기록 공개 여부 변경 기능 구현</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</dd>
-<dt class="hdlist1">20210524</dt>
-<dd>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="/docs/developer.hltml">개발자 전용 리소스</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Email, Password 로 로그인 기능 구현</p>
-</li>
-<li>
-<p>회원 목록 조회 기능 구현</p>
-</li>
-<li>
-<p>회원 1건 조회 기능 구현</p>
-</li>
-<li>
-<p>회원 삭제 기능 구현</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-</dd>
-</dl>
-</div>
-</div>
-</div>
-<h1 id="resources" class="sect0"><a class="link" href="#resources">리소스 리스트</a></h1>
-<div class="openblock partintro">
+<div class="sect2">
+<h3 id="resources-developer-sign-in_curl_request"><a class="link" href="#resources-developer-sign-in_curl_request">Example request</a></h3>
+<div class="listingblock">
 <div class="content">
-아래 링크를 통해 해당 리소스 관련 문서를 열람할 수 있습니다.
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/develop/members/sign-in' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{
+  "email" : "developer@bbangduck.com",
+  "password" : "bbangduckDEV7"
+}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resources-developer-sign-in_http_response"><a class="link" href="#resources-developer-sign-in_http_response">Example response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 564
+
+{
+  "status" : 97204,
+  "data" : {
+    "memberId" : 68,
+    "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfREVWRUxPUCIsIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjIxODIyOTcyLCJleHAiOjE2MjE4NTI5NzJ9.Az1O1VYIZy-JZT2Kfs5Xi_I8EUP-Osv2GN5tdV01dxI",
+    "accessTokenValidSecond" : 30000,
+    "refreshToken" : "14c356f8-920b-498c-a9df-01b00fd828ca",
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.5537734"
+  },
+  "message" : "개발자 권한을 가진 사용자 로그인에 성공했습니다."
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_0_home"><a class="link" href="#_0_home"><a href="/docs/index.html">0. home</a></a></h2>
+<h2 id="resources-get-member-list-by-developer"><a class="link" href="#resources-get-member-list-by-developer">개발자 권한으로 회원 목록 조회</a></h2>
 <div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>GET</code> <code>/api/develop/members?pageNum={숫자}&amp;amount={숫자}</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>pageNum, amount 를 통해 조회 페이지, 조회 숫자를 지정합니다.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>개발자 권한을 가진 Access Token 을 Header 에 실어서 요청합니다.</p>
+</li>
+<li>
+<p>응답 결과로 가입된 모든 회원을 페이지별로 쪼개서 응답합니다.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>회원에 대한 모든 정보를 응답합니다. 실제 서비스 로직에서 이렇게 Entity 를 직접 노출시키는 경우는 존재하지 않습니다.</p>
+</li>
+<li>
+<p>절대 해당 요청의 응답을 사용하여 개발을 진행하시면 안됩니다.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="resources-get-member-list-by-developer_curl_request"><a class="link" href="#resources-get-member-list-by-developer_curl_request">Example request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/develop/members?pageNum=1&amp;amount=10' -i -X GET \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfREVWRUxPUCIsIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjIxODIyOTcyLCJleHAiOjE2MjE4NTI5NzJ9.Az1O1VYIZy-JZT2Kfs5Xi_I8EUP-Osv2GN5tdV01dxI'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resources-get-member-list-by-developer_http_response"><a class="link" href="#resources-get-member-list-by-developer_http_response">Example response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 9351
 
+{
+  "status" : 97202,
+  "data" : [ {
+    "registerDate" : "2021-05-24T11:22:52.355303",
+    "updateDate" : "2021-05-24T11:22:52.355303",
+    "id" : 57,
+    "email" : "developer@bbangduck.com",
+    "password" : "{bcrypt}$2a$10$fyhdD8hXNd0JKAKiEaHwX.UfVJNNAsgkARvryroxI3BVBrNGCL.Wa",
+    "profileImage" : null,
+    "socialAccounts" : [ ],
+    "nickname" : "developer",
+    "description" : "개발자",
+    "roomEscapeRecordsOpenYN" : false,
+    "roles" : [ "DEVELOP", "USER", "ADMIN" ],
+    "refreshTokenExpiredDate" : "2024-02-18T11:22:52.355303",
+    "refreshToken" : "fcee6dfa-e06b-4876-98ed-fe9e222830bf",
+    "roleNameList" : [ "ROLE_DEVELOP", "ROLE_USER", "ROLE_ADMIN" ],
+    "firstSocialAccount" : null
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.361286",
+    "updateDate" : "2021-05-24T11:22:52.361286",
+    "id" : 58,
+    "email" : "test0@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.361286",
+      "updateDate" : "2021-05-24T11:22:52.361286",
+      "id" : 48,
+      "socialId" : "333330",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname0",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.359293",
+    "refreshToken" : "6a8a779d-5a80-4217-9e38-eddcb5002b08",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.361286",
+      "updateDate" : "2021-05-24T11:22:52.361286",
+      "id" : 48,
+      "socialId" : "333330",
+      "socialType" : "KAKAO"
+    }
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.365278",
+    "updateDate" : "2021-05-24T11:22:52.365278",
+    "id" : 59,
+    "email" : "test1@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.366273",
+      "updateDate" : "2021-05-24T11:22:52.366273",
+      "id" : 49,
+      "socialId" : "333331",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname1",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.363281",
+    "refreshToken" : "a24df5b9-02cc-49a4-828e-269758dc8f8f",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.366273",
+      "updateDate" : "2021-05-24T11:22:52.366273",
+      "id" : 49,
+      "socialId" : "333331",
+      "socialType" : "KAKAO"
+    }
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.370265",
+    "updateDate" : "2021-05-24T11:22:52.370265",
+    "id" : 60,
+    "email" : "test2@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.372257",
+      "updateDate" : "2021-05-24T11:22:52.372257",
+      "id" : 50,
+      "socialId" : "333332",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname2",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.367269",
+    "refreshToken" : "b79d35f7-b8ec-4cf8-b98f-628827d63cda",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.372257",
+      "updateDate" : "2021-05-24T11:22:52.372257",
+      "id" : 50,
+      "socialId" : "333332",
+      "socialType" : "KAKAO"
+    }
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.376246",
+    "updateDate" : "2021-05-24T11:22:52.376246",
+    "id" : 61,
+    "email" : "test3@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.377245",
+      "updateDate" : "2021-05-24T11:22:52.377245",
+      "id" : 51,
+      "socialId" : "333333",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname3",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.374252",
+    "refreshToken" : "5f2a0db7-12cc-4634-8d86-af30fd9b21ab",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.377245",
+      "updateDate" : "2021-05-24T11:22:52.377245",
+      "id" : 51,
+      "socialId" : "333333",
+      "socialType" : "KAKAO"
+    }
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.382233",
+    "updateDate" : "2021-05-24T11:22:52.382233",
+    "id" : 62,
+    "email" : "test4@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.382233",
+      "updateDate" : "2021-05-24T11:22:52.382233",
+      "id" : 52,
+      "socialId" : "333334",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname4",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.37924",
+    "refreshToken" : "fe572f97-bfed-4632-b018-a6325bb1e9de",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.382233",
+      "updateDate" : "2021-05-24T11:22:52.382233",
+      "id" : 52,
+      "socialId" : "333334",
+      "socialType" : "KAKAO"
+    }
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.387218",
+    "updateDate" : "2021-05-24T11:22:52.387218",
+    "id" : 63,
+    "email" : "test5@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.388214",
+      "updateDate" : "2021-05-24T11:22:52.388214",
+      "id" : 53,
+      "socialId" : "333335",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname5",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.385222",
+    "refreshToken" : "5c8f48fb-32ed-409a-a4f4-393c62d151ca",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.388214",
+      "updateDate" : "2021-05-24T11:22:52.388214",
+      "id" : 53,
+      "socialId" : "333335",
+      "socialType" : "KAKAO"
+    }
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.391208",
+    "updateDate" : "2021-05-24T11:22:52.391208",
+    "id" : 64,
+    "email" : "test6@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.392204",
+      "updateDate" : "2021-05-24T11:22:52.392204",
+      "id" : 54,
+      "socialId" : "333336",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname6",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.389211",
+    "refreshToken" : "7330db61-d1c7-4b5a-badd-a51bf49f8c3a",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.392204",
+      "updateDate" : "2021-05-24T11:22:52.392204",
+      "id" : 54,
+      "socialId" : "333336",
+      "socialType" : "KAKAO"
+    }
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.396195",
+    "updateDate" : "2021-05-24T11:22:52.396195",
+    "id" : 65,
+    "email" : "test7@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.397193",
+      "updateDate" : "2021-05-24T11:22:52.397193",
+      "id" : 55,
+      "socialId" : "333337",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname7",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.394199",
+    "refreshToken" : "2bf810b9-ecea-4e5f-b4f2-83d5b8bf2895",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.397193",
+      "updateDate" : "2021-05-24T11:22:52.397193",
+      "id" : 55,
+      "socialId" : "333337",
+      "socialType" : "KAKAO"
+    }
+  }, {
+    "registerDate" : "2021-05-24T11:22:52.401179",
+    "updateDate" : "2021-05-24T11:22:52.401179",
+    "id" : 66,
+    "email" : "test8@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.402179",
+      "updateDate" : "2021-05-24T11:22:52.402179",
+      "id" : 56,
+      "socialId" : "333338",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname8",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.398188",
+    "refreshToken" : "cbf1f745-aa29-45a9-9d81-d55479b7d4a4",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.402179",
+      "updateDate" : "2021-05-24T11:22:52.402179",
+      "id" : 56,
+      "socialId" : "333338",
+      "socialType" : "KAKAO"
+    }
+  } ],
+  "message" : "개발자 권한으로 요청된 회원 목록 조회에 성공했습니다."
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_1_회원_인증_관리"><a class="link" href="#_1_회원_인증_관리"><a href="/docs/authentication.html">1. 회원 인증 관리</a></a></h2>
+<h2 id="resources-get-member-by-developer"><a class="link" href="#resources-get-member-by-developer">개발자 권한으로 회원 1건 조회</a></h2>
 <div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>GET</code> <code>/api/develop/members/{memberId}</code></p>
+</li>
+<li>
+<p>개발자 권한을 가진 Access Token 을 Header 에 실어서 요청합니다.</p>
+</li>
+<li>
+<p>회원에 대한 모든 정보를 응답합니다. 실제 서비스 로직에서 이렇게 Entity 를 직접 노출시키는 경우는 존재하지 않습니다.</p>
+</li>
+<li>
+<p>절대 해당 요청의 응답을 사용하여 개발을 진행하시면 안됩니다.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="resources-get-member-by-developer_curl_request"><a class="link" href="#resources-get-member-by-developer_curl_request">Example request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/develop/members/70' -i -X GET \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfREVWRUxPUCIsIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjIxODIyOTcyLCJleHAiOjE2MjE4NTI5NzJ9.Az1O1VYIZy-JZT2Kfs5Xi_I8EUP-Osv2GN5tdV01dxI'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resources-get-member-by-developer_http_response"><a class="link" href="#resources-get-member-by-developer_http_response">Example response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 1081
 
+{
+  "status" : 97203,
+  "data" : {
+    "registerDate" : "2021-05-24T11:22:52.657494",
+    "updateDate" : "2021-05-24T11:22:52.657494",
+    "id" : 70,
+    "email" : "test@email.com",
+    "password" : null,
+    "profileImage" : null,
+    "socialAccounts" : [ {
+      "registerDate" : "2021-05-24T11:22:52.658491",
+      "updateDate" : "2021-05-24T11:22:52.658491",
+      "id" : 58,
+      "socialId" : "3123213",
+      "socialType" : "KAKAO"
+    } ],
+    "nickname" : "testNickname",
+    "description" : null,
+    "roomEscapeRecordsOpenYN" : true,
+    "roles" : [ "USER" ],
+    "refreshTokenExpiredDate" : "2021-06-07T11:22:52.654502",
+    "refreshToken" : "06e0e89c-ebec-407d-ae6d-b1fae50586ae",
+    "roleNameList" : [ "ROLE_USER" ],
+    "firstSocialAccount" : {
+      "registerDate" : "2021-05-24T11:22:52.658491",
+      "updateDate" : "2021-05-24T11:22:52.658491",
+      "id" : 58,
+      "socialId" : "3123213",
+      "socialType" : "KAKAO"
+    }
+  },
+  "message" : "개발자 권한으로 요청된 회원애 대한 조회에 성공했습니다."
+}</code></pre>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_2_파일_관리"><a class="link" href="#_2_파일_관리"><a href="/docs/file-storage.html">2. 파일 관리</a></a></h2>
-<div class="sectionbody">
+</div>
+<div id="resources-delete-member-by-developer" class="ulist">
+<ul>
+<li>
+<p><code>DELETE</code> <code>/api/develop/members/{memberId}</code></p>
+</li>
+<li>
+<p>개발자 권한을 가진 Access Token 을 Header 에 실어서 요청합니다.</p>
+</li>
+<li>
+<p>회원 리소스를 완전히 삭제합니다. 실제 서비스 로직에서 회원을 삭제하는 경우는 없습니다.</p>
+</li>
+<li>
+<p>절대 해당 요청을 사용하여 실제 개발을 진행하시면 안됩니다.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="resources-get-member-by-developer_curl_request"><a class="link" href="#resources-get-member-by-developer_curl_request">Example request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/develop/members/74' -i -X DELETE \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfREVWRUxPUCIsIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjIxODIyOTcyLCJleHAiOjE2MjE4NTI5NzJ9.Az1O1VYIZy-JZT2Kfs5Xi_I8EUP-Osv2GN5tdV01dxI'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resources-get-member-by-developer_http_response"><a class="link" href="#resources-get-member-by-developer_http_response">Example response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 130
 
+{
+  "status" : 97201,
+  "data" : null,
+  "message" : "개발자 권한으로 요청된 회원 삭제에 성공했습니다."
+}</code></pre>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_3_회원_관리_회원_프로필_관리"><a class="link" href="#_3_회원_관리_회원_프로필_관리"><a href="/docs/member.html">3. 회원 관리 (회원 프로필 관리)</a></a></h2>
-<div class="sectionbody">
-
 </div>
-</div>
-<div class="sect1">
-<h2 id="_개발자_전용_리소스"><a class="link" href="#_개발자_전용_리소스"><a href="/docs/developer.html">개발자 전용 리소스</a></a></h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_test_resource"><a class="link" href="#_test_resource"><a href="/docs/hello.html">Test Resource</a></a></h2>
-<div class="sectionbody">
-
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-24 11:22:15 +0900
+Last updated 2021-05-24 09:55:01 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
