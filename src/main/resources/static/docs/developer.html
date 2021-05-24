@@ -575,10 +575,10 @@ Content-Length: 564
   "status" : 97204,
   "data" : {
     "memberId" : 70,
-    "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiLCJST0xFX0RFVkVMT1AiXSwiaWF0IjoxNjIxODIzNTU1LCJleHAiOjE2MjE4NTM1NTV9.La_vXbmx3b7jFqybDnofJCzEzuPN2X1CdmdDDzqpwWk",
+    "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iLCJST0xFX0RFVkVMT1AiXSwiaWF0IjoxNjIxODQ3MzAwLCJleHAiOjE2MjE4NzczMDB9.a6-4zFQx2nmUZvEXT-orBN-PXcFLpK2515Ya3xjeYoc",
     "accessTokenValidSecond" : 30000,
-    "refreshToken" : "2f3ac8f0-5b20-4570-9431-d760d6f314fb",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.4002328"
+    "refreshToken" : "94e600fe-c137-4d36-bbe3-8098db3e9869",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:20.0715527"
   },
   "message" : "개발자 권한을 가진 사용자 로그인에 성공했습니다."
 }</code></pre>
@@ -625,7 +625,7 @@ Content-Length: 564
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/develop/members?pageNum=1&amp;amount=10' -i -X GET \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiLCJST0xFX0RFVkVMT1AiXSwiaWF0IjoxNjIxODIzNTU1LCJleHAiOjE2MjE4NTM1NTV9.La_vXbmx3b7jFqybDnofJCzEzuPN2X1CdmdDDzqpwWk'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iLCJST0xFX0RFVkVMT1AiXSwiaWF0IjoxNjIxODQ3Mjk5LCJleHAiOjE2MjE4NzcyOTl9.5E1sAA2KXVAgd2Qh1S1o2B7TzBxs6uVbMSS2SWEtOLY'</code></pre>
 </div>
 </div>
 </div>
@@ -644,36 +644,36 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 9349
+Content-Length: 9347
 
 {
   "status" : 97202,
   "data" : [ {
-    "registerDate" : "2021-05-24T11:32:35.189796",
-    "updateDate" : "2021-05-24T11:32:35.189796",
+    "registerDate" : "2021-05-24T18:08:19.849619",
+    "updateDate" : "2021-05-24T18:08:19.849619",
     "id" : 59,
     "email" : "developer@bbangduck.com",
-    "password" : "{bcrypt}$2a$10$ridO1FAtmYnowq.sCP2ue.o7hzejqdzSSVdGcGabNPUl6j6hjtHQW",
+    "password" : "{bcrypt}$2a$10$ToFJL59t8YPv/NxYQ3V7m.5PTqSXq74bwACr0trdisFA2gucOYvAK",
     "profileImage" : null,
     "socialAccounts" : [ ],
     "nickname" : "developer",
     "description" : "개발자",
     "roomEscapeRecordsOpenYN" : false,
-    "roles" : [ "ADMIN", "USER", "DEVELOP" ],
-    "refreshToken" : "b508eb6b-981f-497f-bd95-ca757d09eaf7",
-    "refreshTokenExpiredDate" : "2024-02-18T11:32:35.188798",
-    "roleNameList" : [ "ROLE_ADMIN", "ROLE_USER", "ROLE_DEVELOP" ],
+    "roles" : [ "USER", "ADMIN", "DEVELOP" ],
+    "refreshTokenExpiredDate" : "2024-02-18T18:08:19.848624",
+    "refreshToken" : "b309608c-9b7e-47c1-bb18-e8a64f8a72b6",
+    "roleNameList" : [ "ROLE_USER", "ROLE_ADMIN", "ROLE_DEVELOP" ],
     "firstSocialAccount" : null
   }, {
-    "registerDate" : "2021-05-24T11:32:35.197775",
-    "updateDate" : "2021-05-24T11:32:35.197775",
+    "registerDate" : "2021-05-24T18:08:19.856589",
+    "updateDate" : "2021-05-24T18:08:19.856589",
     "id" : 60,
     "email" : "test0@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.198773",
-      "updateDate" : "2021-05-24T11:32:35.198773",
+      "registerDate" : "2021-05-24T18:08:19.858595",
+      "updateDate" : "2021-05-24T18:08:19.858595",
       "id" : 49,
       "socialId" : "333330",
       "socialType" : "KAKAO"
@@ -682,26 +682,26 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "c2badd39-cc09-4bdc-b493-7e37eecadf4a",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.193787",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.853597",
+    "refreshToken" : "bd48f11a-682a-4df0-a6b6-f48a55806cac",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.198773",
-      "updateDate" : "2021-05-24T11:32:35.198773",
+      "registerDate" : "2021-05-24T18:08:19.858595",
+      "updateDate" : "2021-05-24T18:08:19.858595",
       "id" : 49,
       "socialId" : "333330",
       "socialType" : "KAKAO"
     }
   }, {
-    "registerDate" : "2021-05-24T11:32:35.202761",
-    "updateDate" : "2021-05-24T11:32:35.202761",
+    "registerDate" : "2021-05-24T18:08:19.863569",
+    "updateDate" : "2021-05-24T18:08:19.863569",
     "id" : 61,
     "email" : "test1@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.203759",
-      "updateDate" : "2021-05-24T11:32:35.203759",
+      "registerDate" : "2021-05-24T18:08:19.864567",
+      "updateDate" : "2021-05-24T18:08:19.864567",
       "id" : 50,
       "socialId" : "333331",
       "socialType" : "KAKAO"
@@ -710,26 +710,26 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "a2ed7996-fc51-4270-9714-7c130e1be4e7",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.200767",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.860578",
+    "refreshToken" : "9199280e-4b16-41b5-aabe-1e7fb60db78d",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.203759",
-      "updateDate" : "2021-05-24T11:32:35.203759",
+      "registerDate" : "2021-05-24T18:08:19.864567",
+      "updateDate" : "2021-05-24T18:08:19.864567",
       "id" : 50,
       "socialId" : "333331",
       "socialType" : "KAKAO"
     }
   }, {
-    "registerDate" : "2021-05-24T11:32:35.208747",
-    "updateDate" : "2021-05-24T11:32:35.208747",
+    "registerDate" : "2021-05-24T18:08:19.872547",
+    "updateDate" : "2021-05-24T18:08:19.872547",
     "id" : 62,
     "email" : "test2@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.209744",
-      "updateDate" : "2021-05-24T11:32:35.209744",
+      "registerDate" : "2021-05-24T18:08:19.873544",
+      "updateDate" : "2021-05-24T18:08:19.873544",
       "id" : 51,
       "socialId" : "333332",
       "socialType" : "KAKAO"
@@ -738,26 +738,26 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "ff420e90-5b3f-4c1b-9f0e-171388c7f574",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.205754",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.868557",
+    "refreshToken" : "ba12315b-b6b4-4c54-8684-dc29147acdc6",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.209744",
-      "updateDate" : "2021-05-24T11:32:35.209744",
+      "registerDate" : "2021-05-24T18:08:19.873544",
+      "updateDate" : "2021-05-24T18:08:19.873544",
       "id" : 51,
       "socialId" : "333332",
       "socialType" : "KAKAO"
     }
   }, {
-    "registerDate" : "2021-05-24T11:32:35.212735",
-    "updateDate" : "2021-05-24T11:32:35.212735",
+    "registerDate" : "2021-05-24T18:08:19.877532",
+    "updateDate" : "2021-05-24T18:08:19.877532",
     "id" : 63,
     "email" : "test3@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.213732",
-      "updateDate" : "2021-05-24T11:32:35.213732",
+      "registerDate" : "2021-05-24T18:08:19.87853",
+      "updateDate" : "2021-05-24T18:08:19.87853",
       "id" : 52,
       "socialId" : "333333",
       "socialType" : "KAKAO"
@@ -766,26 +766,26 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "c1f2887b-a385-4b25-be3c-6fc57b28aa94",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.210741",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.875538",
+    "refreshToken" : "d34fe41f-7d72-4999-850b-674a5e1b7e87",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.213732",
-      "updateDate" : "2021-05-24T11:32:35.213732",
+      "registerDate" : "2021-05-24T18:08:19.87853",
+      "updateDate" : "2021-05-24T18:08:19.87853",
       "id" : 52,
       "socialId" : "333333",
       "socialType" : "KAKAO"
     }
   }, {
-    "registerDate" : "2021-05-24T11:32:35.217722",
-    "updateDate" : "2021-05-24T11:32:35.217722",
+    "registerDate" : "2021-05-24T18:08:19.881062",
+    "updateDate" : "2021-05-24T18:08:19.881062",
     "id" : 64,
     "email" : "test4@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.217722",
-      "updateDate" : "2021-05-24T11:32:35.217722",
+      "registerDate" : "2021-05-24T18:08:19.882059",
+      "updateDate" : "2021-05-24T18:08:19.882059",
       "id" : 53,
       "socialId" : "333334",
       "socialType" : "KAKAO"
@@ -794,26 +794,26 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "c8a1d162-419b-4266-8699-8a293ff8e9a5",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.21473",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.879077",
+    "refreshToken" : "259dd2da-63ba-4879-8e2d-5eb8c7bfb8a5",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.217722",
-      "updateDate" : "2021-05-24T11:32:35.217722",
+      "registerDate" : "2021-05-24T18:08:19.882059",
+      "updateDate" : "2021-05-24T18:08:19.882059",
       "id" : 53,
       "socialId" : "333334",
       "socialType" : "KAKAO"
     }
   }, {
-    "registerDate" : "2021-05-24T11:32:35.223707",
-    "updateDate" : "2021-05-24T11:32:35.223707",
+    "registerDate" : "2021-05-24T18:08:19.886049",
+    "updateDate" : "2021-05-24T18:08:19.886049",
     "id" : 65,
     "email" : "test5@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.224703",
-      "updateDate" : "2021-05-24T11:32:35.224703",
+      "registerDate" : "2021-05-24T18:08:19.887045",
+      "updateDate" : "2021-05-24T18:08:19.887045",
       "id" : 54,
       "socialId" : "333335",
       "socialType" : "KAKAO"
@@ -822,26 +822,26 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "57a55946-7006-4f09-8a6d-a3cab050f97d",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.219717",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.884053",
+    "refreshToken" : "4ff9e980-332a-4f53-92aa-ff3102f2cbfd",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.224703",
-      "updateDate" : "2021-05-24T11:32:35.224703",
+      "registerDate" : "2021-05-24T18:08:19.887045",
+      "updateDate" : "2021-05-24T18:08:19.887045",
       "id" : 54,
       "socialId" : "333335",
       "socialType" : "KAKAO"
     }
   }, {
-    "registerDate" : "2021-05-24T11:32:35.227695",
-    "updateDate" : "2021-05-24T11:32:35.227695",
+    "registerDate" : "2021-05-24T18:08:19.892032",
+    "updateDate" : "2021-05-24T18:08:19.892032",
     "id" : 66,
     "email" : "test6@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.228694",
-      "updateDate" : "2021-05-24T11:32:35.228694",
+      "registerDate" : "2021-05-24T18:08:19.893029",
+      "updateDate" : "2021-05-24T18:08:19.893029",
       "id" : 55,
       "socialId" : "333336",
       "socialType" : "KAKAO"
@@ -850,26 +850,26 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "539ae557-14ff-4ea7-9dca-98122b1c15c8",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.2257",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.88911",
+    "refreshToken" : "1a787eab-4c52-4b75-ba6c-5155b5c70509",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.228694",
-      "updateDate" : "2021-05-24T11:32:35.228694",
+      "registerDate" : "2021-05-24T18:08:19.893029",
+      "updateDate" : "2021-05-24T18:08:19.893029",
       "id" : 55,
       "socialId" : "333336",
       "socialType" : "KAKAO"
     }
   }, {
-    "registerDate" : "2021-05-24T11:32:35.233681",
-    "updateDate" : "2021-05-24T11:32:35.233681",
+    "registerDate" : "2021-05-24T18:08:19.897019",
+    "updateDate" : "2021-05-24T18:08:19.897019",
     "id" : 67,
     "email" : "test7@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.234677",
-      "updateDate" : "2021-05-24T11:32:35.234677",
+      "registerDate" : "2021-05-24T18:08:19.898017",
+      "updateDate" : "2021-05-24T18:08:19.898017",
       "id" : 56,
       "socialId" : "333337",
       "socialType" : "KAKAO"
@@ -878,26 +878,26 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "53d573e8-1e9e-401d-b7fd-edb05fbe7ec3",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.230687",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.894029",
+    "refreshToken" : "c517c070-d501-455e-91ae-9c73d2d2df05",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.234677",
-      "updateDate" : "2021-05-24T11:32:35.234677",
+      "registerDate" : "2021-05-24T18:08:19.898017",
+      "updateDate" : "2021-05-24T18:08:19.898017",
       "id" : 56,
       "socialId" : "333337",
       "socialType" : "KAKAO"
     }
   }, {
-    "registerDate" : "2021-05-24T11:32:35.239663",
-    "updateDate" : "2021-05-24T11:32:35.239663",
+    "registerDate" : "2021-05-24T18:08:19.904002",
+    "updateDate" : "2021-05-24T18:08:19.904002",
     "id" : 68,
     "email" : "test8@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.239663",
-      "updateDate" : "2021-05-24T11:32:35.239663",
+      "registerDate" : "2021-05-24T18:08:19.904997",
+      "updateDate" : "2021-05-24T18:08:19.904997",
       "id" : 57,
       "socialId" : "333338",
       "socialType" : "KAKAO"
@@ -906,12 +906,12 @@ Content-Length: 9349
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "6445295b-f272-4d33-aa11-9ae403a8e882",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.236672",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:19.901011",
+    "refreshToken" : "626b515f-488c-4147-898e-07a98b47ec8b",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.239663",
-      "updateDate" : "2021-05-24T11:32:35.239663",
+      "registerDate" : "2021-05-24T18:08:19.904997",
+      "updateDate" : "2021-05-24T18:08:19.904997",
       "id" : 57,
       "socialId" : "333338",
       "socialType" : "KAKAO"
@@ -948,7 +948,7 @@ Content-Length: 9349
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/develop/members/72' -i -X GET \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiLCJST0xFX0RFVkVMT1AiXSwiaWF0IjoxNjIxODIzNTU1LCJleHAiOjE2MjE4NTM1NTV9.La_vXbmx3b7jFqybDnofJCzEzuPN2X1CdmdDDzqpwWk'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iLCJST0xFX0RFVkVMT1AiXSwiaWF0IjoxNjIxODQ3MzAwLCJleHAiOjE2MjE4NzczMDB9.a6-4zFQx2nmUZvEXT-orBN-PXcFLpK2515Ya3xjeYoc'</code></pre>
 </div>
 </div>
 </div>
@@ -967,20 +967,20 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1080
+Content-Length: 1077
 
 {
   "status" : 97203,
   "data" : {
-    "registerDate" : "2021-05-24T11:32:35.494982",
-    "updateDate" : "2021-05-24T11:32:35.494982",
+    "registerDate" : "2021-05-24T18:08:20.172282",
+    "updateDate" : "2021-05-24T18:08:20.172282",
     "id" : 72,
     "email" : "test@email.com",
     "password" : null,
     "profileImage" : null,
     "socialAccounts" : [ {
-      "registerDate" : "2021-05-24T11:32:35.494982",
-      "updateDate" : "2021-05-24T11:32:35.494982",
+      "registerDate" : "2021-05-24T18:08:20.17328",
+      "updateDate" : "2021-05-24T18:08:20.17328",
       "id" : 59,
       "socialId" : "3123213",
       "socialType" : "KAKAO"
@@ -989,12 +989,12 @@ Content-Length: 1080
     "description" : null,
     "roomEscapeRecordsOpenYN" : true,
     "roles" : [ "USER" ],
-    "refreshToken" : "d700d1d3-e43d-457c-9de7-d70fd1cd0918",
-    "refreshTokenExpiredDate" : "2021-06-07T11:32:35.49199",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:20.170288",
+    "refreshToken" : "3072868a-38bb-4765-855a-a96082933f51",
     "roleNameList" : [ "ROLE_USER" ],
     "firstSocialAccount" : {
-      "registerDate" : "2021-05-24T11:32:35.494982",
-      "updateDate" : "2021-05-24T11:32:35.494982",
+      "registerDate" : "2021-05-24T18:08:20.17328",
+      "updateDate" : "2021-05-24T18:08:20.17328",
       "id" : 59,
       "socialId" : "3123213",
       "socialType" : "KAKAO"
@@ -1026,7 +1026,7 @@ Content-Length: 1080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/develop/members/76' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiLCJST0xFX0RFVkVMT1AiXSwiaWF0IjoxNjIxODIzNTU1LCJleHAiOjE2MjE4NTM1NTV9.La_vXbmx3b7jFqybDnofJCzEzuPN2X1CdmdDDzqpwWk'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXZlbG9wZXJAYmJhbmdkdWNrLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iLCJST0xFX0RFVkVMT1AiXSwiaWF0IjoxNjIxODQ3MzAwLCJleHAiOjE2MjE4NzczMDB9.a6-4zFQx2nmUZvEXT-orBN-PXcFLpK2515Ya3xjeYoc'</code></pre>
 </div>
 </div>
 </div>
