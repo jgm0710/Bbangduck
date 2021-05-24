@@ -947,7 +947,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: http://localhost:8080/api/members/77
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Location: http://localhost:8080/api/members/79
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -955,13 +958,13 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1064
+Content-Length: 1063
 
 {
   "status" : 2201,
   "data" : {
     "memberInfo" : {
-      "memberId" : 77,
+      "memberId" : 79,
       "email" : "test@email.com",
       "nickname" : "testNickname",
       "profileImage" : null,
@@ -972,19 +975,19 @@ Content-Length: 1064
       "description" : null,
       "reviewCount" : 0,
       "roomEscapeRecordVisible" : true,
-      "registerDate" : "2021-05-24T11:22:53.3286976",
-      "updateDate" : "2021-05-24T11:22:53.3326878"
+      "registerDate" : "2021-05-24T11:32:36.2308383",
+      "updateDate" : "2021-05-24T11:32:36.2348281"
     },
     "tokenInfo" : {
-      "memberId" : 77,
+      "memberId" : 79,
       "accessToken" : {
         "header" : "eyJhbGciOiJIUzI1NiJ9",
-        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzMsImV4cCI6MTYyMTg1Mjk3M30",
-        "signature" : "Y8UUJAIxrWO_4BIwi2VgILNmGwFInAta1ggk1PIP4Nw"
+        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTYsImV4cCI6MTYyMTg1MzU1Nn0",
+        "signature" : "gExeIaoiA3tMK3o7S8ly86n5nuG6sQr0wHriwnPdqSQ"
       },
       "accessTokenValidSecond" : 30000,
-      "refreshToken" : "c2cf5918-09e3-4f6d-9922-7dee83d00fb1",
-      "refreshTokenExpiredDate" : "2021-06-07T11:22:53.3316904"
+      "refreshToken" : "6429c2ff-7e04-4d1a-b89e-c7d2f9d4ed4e",
+      "refreshTokenExpiredDate" : "2021-06-07T11:32:36.233831"
     }
   },
   "message" : " 회원가입에 성공했습니다."
@@ -1135,6 +1138,9 @@ Content-Length: 1064
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1147,11 +1153,6 @@ Content-Length: 824
 {
   "status" : 2402,
   "data" : [ {
-    "objectName" : "memberSocialSignUpRequestDto",
-    "code" : "NotNull",
-    "defaultMessage" : "Social Type 을 입력해 주세요.",
-    "field" : "socialType"
-  }, {
     "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotBlank",
     "defaultMessage" : "Email 을 입력해 주세요.",
@@ -1166,6 +1167,11 @@ Content-Length: 824
     "code" : "NotBlank",
     "defaultMessage" : "Social ID 를 입력해 주세요.",
     "field" : "socialId"
+  }, {
+    "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotNull",
+    "defaultMessage" : "Social Type 을 입력해 주세요.",
+    "field" : "socialType"
   } ],
   "message" : "회원가입 시 기입사항을 올바르게 기입하지 않았습니다."
 }</code></pre>
@@ -1237,6 +1243,9 @@ Content-Length: 824
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Language: en
 Content-Type: text/html;charset=UTF-8
 X-Content-Type-Options: nosniff
@@ -1260,7 +1269,7 @@ Content-Length: 1020
 
     let status = 1221;
     let message = decodeURIComponent("\uCE74\uCE74\uC624 \uB85C\uADF8\uC778\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4.");
-    let data = {"memberId":2,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxODIyOTYzLCJleHAiOjE2MjE4NTI5NjN9","signature":"Z3kT0cloVYEDTZNiTY8KP0IS5Y5Pshu6YgfHGOZk_2Y"},"accessTokenValidSecond":30000,"refreshToken":"9a678cfe-dbbb-4483-9233-3df406d78ade","refreshTokenExpiredDate":"2021-06-07T11:22:43.5616398"};
+    let data = {"memberId":2,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxODIzNTQzLCJleHAiOjE2MjE4NTM1NDN9","signature":"xaVeHoyCsNdXeT1IeXxsajjWr3GV9K3vVZ1zRyl9HFM"},"accessTokenValidSecond":30000,"refreshToken":"99c70efe-ade8-4641-bc27-22409a15c9b0","refreshTokenExpiredDate":"2021-06-07T11:32:23.8241407"};
     callSnsSignIn();
 
     function callSnsSignIn() {
@@ -1318,6 +1327,9 @@ Content-Length: 1020
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Language: en
 Content-Type: text/html;charset=UTF-8
 X-Content-Type-Options: nosniff
@@ -1507,7 +1519,7 @@ Content-Length: 804
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/refresh' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{
-  "refreshToken" : "670587aa-40ab-4697-9c34-d53df8e429ef"
+  "refreshToken" : "258cdeec-7038-4615-8faa-056f1d3d8825"
 }'</code></pre>
 </div>
 </div>
@@ -1517,6 +1529,9 @@ Content-Length: 804
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1532,12 +1547,12 @@ Content-Length: 589
     "memberId" : null,
     "accessToken" : {
       "header" : "eyJhbGciOiJIUzI1NiJ9",
-      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzMsImV4cCI6MTYyMTg1Mjk3M30",
-      "signature" : "Y8UUJAIxrWO_4BIwi2VgILNmGwFInAta1ggk1PIP4Nw"
+      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTYsImV4cCI6MTYyMTg1MzU1Nn0",
+      "signature" : "gExeIaoiA3tMK3o7S8ly86n5nuG6sQr0wHriwnPdqSQ"
     },
     "accessTokenValidSecond" : 30000,
-    "refreshToken" : "670587aa-40ab-4697-9c34-d53df8e429ef",
-    "refreshTokenExpiredDate" : "2021-06-07T11:22:53.452367"
+    "refreshToken" : "258cdeec-7038-4615-8faa-056f1d3d8825",
+    "refreshTokenExpiredDate" : "2021-06-07T11:32:36.371463"
   },
   "message" : "Refresh Token 을 통한 Access Token 재발급에 성공했습니다."
 }</code></pre>
@@ -1634,8 +1649,8 @@ Content-Length: 589
 <h4 id="resources-withdrawal-success_curl_request"><a class="link" href="#resources-withdrawal-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/76/withdrawal' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzMsImV4cCI6MTYyMTg1Mjk3M30.Y8UUJAIxrWO_4BIwi2VgILNmGwFInAta1ggk1PIP4Nw'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/78/withdrawal' -i -X DELETE \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTYsImV4cCI6MTYyMTg1MzU1Nn0.gExeIaoiA3tMK3o7S8ly86n5nuG6sQr0wHriwnPdqSQ'</code></pre>
 </div>
 </div>
 </div>
@@ -1644,6 +1659,9 @@ Content-Length: 589
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1754,8 +1772,8 @@ Content-Length: 96
 <h4 id="resources-sign-out-success_curl_request"><a class="link" href="#resources-sign-out-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/89/sign-out' -i -X GET \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzMsImV4cCI6MTYyMTg1Mjk3M30.Y8UUJAIxrWO_4BIwi2VgILNmGwFInAta1ggk1PIP4Nw'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/91/sign-out' -i -X GET \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTYsImV4cCI6MTYyMTg1MzU1Nn0.gExeIaoiA3tMK3o7S8ly86n5nuG6sQr0wHriwnPdqSQ'</code></pre>
 </div>
 </div>
 </div>
@@ -1764,6 +1782,9 @@ Content-Length: 96
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1787,7 +1808,7 @@ Content-Length: 95
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-24 10:16:58 +0900
+Last updated 2021-05-24 11:29:55 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

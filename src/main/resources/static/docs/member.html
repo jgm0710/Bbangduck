@@ -772,12 +772,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="resources-member-update-profile-image-success_curl_request"><a class="link" href="#resources-member-update-profile-image-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/29/profiles/images' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/31/profiles/images' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTMsImV4cCI6MTYyMTg1MzU1M30.OldKIT5yaIEWazmLc114HBs_bxWE1pKuuzXa3SQ7_Zg' \
     -d '{
   "fileStorageId" : 22,
-  "fileName" : "514063c8-214f-451c-9b9d-8df5926ce4e5_puppy.jpg"
+  "fileName" : "60c246f8-172f-4709-99a6-2784ff53e4e7_puppy.jpg"
 }'</code></pre>
 </div>
 </div>
@@ -787,6 +787,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -924,9 +927,9 @@ Content-Length: 116
 <h4 id="resources-member-update-profile-image-file-info-empty_curl_request"><a class="link" href="#resources-member-update-profile-image-file-info-empty_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/42/profiles/images' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/44/profiles/images' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzEsImV4cCI6MTYyMTg1Mjk3MX0.QBcaCPYv6zSF1g9T9F8axOE7hJIocDhRIBgNhsFgO8Y' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTQsImV4cCI6MTYyMTg1MzU1NH0.YGJSjtQZIZYGk5zmBF1lRAe_BIeM4CHUppkyM-HdIQc' \
     -d '{
   "fileStorageId" : null,
   "fileName" : ""
@@ -939,6 +942,9 @@ Content-Length: 116
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1056,8 +1062,8 @@ Content-Length: 532
 <h4 id="reousrces-member-delete-profile-image-success_curl_request"><a class="link" href="#reousrces-member-delete-profile-image-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/27/profiles/images' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/29/profiles/images' -i -X DELETE \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTMsImV4cCI6MTYyMTg1MzU1M30.OldKIT5yaIEWazmLc114HBs_bxWE1pKuuzXa3SQ7_Zg'</code></pre>
 </div>
 </div>
 </div>
@@ -1066,6 +1072,9 @@ Content-Length: 532
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1204,9 +1213,9 @@ Content-Length: 116
 <h4 id="resources-member-upate-nickname-success_curl_request"><a class="link" href="#resources-member-upate-nickname-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/28/nicknames' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/30/nicknames' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTMsImV4cCI6MTYyMTg1MzU1M30.OldKIT5yaIEWazmLc114HBs_bxWE1pKuuzXa3SQ7_Zg' \
     -d '{
   "nickname" : "newUpdateNickname"
 }'</code></pre>
@@ -1218,6 +1227,9 @@ Content-Length: 116
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1350,9 +1362,9 @@ Content-Length: 105
 <h4 id="resources-member-update-nickname-emtpy_curl_request"><a class="link" href="#resources-member-update-nickname-emtpy_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/37/nicknames' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/39/nicknames' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzEsImV4cCI6MTYyMTg1Mjk3MX0.QBcaCPYv6zSF1g9T9F8axOE7hJIocDhRIBgNhsFgO8Y' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTQsImV4cCI6MTYyMTg1MzU1NH0.YGJSjtQZIZYGk5zmBF1lRAe_BIeM4CHUppkyM-HdIQc' \
     -d '{
   "nickname" : ""
 }'</code></pre>
@@ -1364,6 +1376,9 @@ Content-Length: 105
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1504,9 +1519,9 @@ Content-Length: 329
 <h4 id="resources-member-update-description-success_curl_request"><a class="link" href="#resources-member-update-description-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/44/descriptions' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/46/descriptions' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzIsImV4cCI6MTYyMTg1Mjk3Mn0.U-SSmhTK6htmxDJGJp_WKL5HQgJx4mgAGhx4z9xQnyA' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTQsImV4cCI6MTYyMTg1MzU1NH0.YGJSjtQZIZYGk5zmBF1lRAe_BIeM4CHUppkyM-HdIQc' \
     -d '{
   "description" : "새로운 자기 소개 등록"
 }'</code></pre>
@@ -1518,6 +1533,9 @@ Content-Length: 329
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1647,9 +1665,9 @@ Content-Length: 109
 <h4 id="resources-member-update-description-empty_curl_request"><a class="link" href="#resources-member-update-description-empty_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/23/descriptions' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/25/descriptions' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTMsImV4cCI6MTYyMTg1MzU1M30.OldKIT5yaIEWazmLc114HBs_bxWE1pKuuzXa3SQ7_Zg' \
     -d '{
   "description" : null
 }'</code></pre>
@@ -1661,6 +1679,9 @@ Content-Length: 109
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1779,8 +1800,8 @@ Content-Length: 341
 <h4 id="resources-member-toggle-room-escape-recodes-open-yn-success_curl_request"><a class="link" href="#resources-member-toggle-room-escape-recodes-open-yn-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/17/room-escape/recodes/open-yn' -i -X PUT \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NzAsImV4cCI6MTYyMTg1Mjk3MH0.Y00juIHNPxl4J-q45hsovx3zYrQ8qsuHf2btDMy2YRo'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/19/room-escape/recodes/open-yn' -i -X PUT \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjM1NTIsImV4cCI6MTYyMTg1MzU1Mn0.Et6TPFPZyTrAAOuPs6XhOmmncPhA1lXrUDhZSagz-ws'</code></pre>
 </div>
 </div>
 </div>
@@ -1789,6 +1810,9 @@ Content-Length: 341
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
