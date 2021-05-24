@@ -787,7 +787,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/images' -i -X POST \
     -H 'Content-Type: multipart/form-data;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NDYsImV4cCI6MTYyMTg0ODQ0Nn0.NuULkVoVSaS187iCLKYHLJLJK1f0ZH10mN7pJyhwOow' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MjI5NjcsImV4cCI6MTYyMTg1Mjk2N30.OkTX04sl7KImPSwSeFKDgmdUYcZyuY0LmxfUERAzDcw' \
     -F 'files=@puppy.jpg;type=image/jpeg' \
     -F 'files=@bbangduck.jpg;type=image/jpeg'</code></pre>
 </div>
@@ -811,14 +811,14 @@ Content-Length: 789
   "status" : 3201,
   "data" : [ {
     "fileId" : 2,
-    "fileName" : "745c4b86-1c1c-48e8-8c02-bb61fcfdbb51_puppy.jpg",
-    "fileDownloadUrl" : "http://localhost:8080/api/files/745c4b86-1c1c-48e8-8c02-bb61fcfdbb51_puppy.jpg",
-    "fileThumbnailDownloadUrl" : "http://localhost:8080/api/files/images/thumbnails/745c4b86-1c1c-48e8-8c02-bb61fcfdbb51_puppy.jpg"
+    "fileName" : "ea359464-10d7-4a3f-b8bd-e165bc1dbce3_puppy.jpg",
+    "fileDownloadUrl" : "http://localhost:8080/api/files/ea359464-10d7-4a3f-b8bd-e165bc1dbce3_puppy.jpg",
+    "fileThumbnailDownloadUrl" : "http://localhost:8080/api/files/images/thumbnails/ea359464-10d7-4a3f-b8bd-e165bc1dbce3_puppy.jpg"
   }, {
     "fileId" : 3,
-    "fileName" : "9961f0ab-4354-4a51-b332-34354cb30e04_bbangduck.jpg",
-    "fileDownloadUrl" : "http://localhost:8080/api/files/9961f0ab-4354-4a51-b332-34354cb30e04_bbangduck.jpg",
-    "fileThumbnailDownloadUrl" : "http://localhost:8080/api/files/images/thumbnails/9961f0ab-4354-4a51-b332-34354cb30e04_bbangduck.jpg"
+    "fileName" : "ccc5f6d7-2e58-4574-a8ec-90230897e4f4_bbangduck.jpg",
+    "fileDownloadUrl" : "http://localhost:8080/api/files/ccc5f6d7-2e58-4574-a8ec-90230897e4f4_bbangduck.jpg",
+    "fileThumbnailDownloadUrl" : "http://localhost:8080/api/files/images/thumbnails/ccc5f6d7-2e58-4574-a8ec-90230897e4f4_bbangduck.jpg"
   } ],
   "message" : "이미지 파일 업로드에 성공했습니다."
 }</code></pre>
@@ -897,7 +897,7 @@ Content-Length: 789
 <h4 id="resources-download-file-success_curl_request"><a class="link" href="#resources-download-file-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/de08765d-3da5-4437-b15e-5a46a9cd854b_puppy.jpg' -i -X GET</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/5a0305b6-419c-423e-b5e6-4f69913878c3_puppy.jpg' -i -X GET</code></pre>
 </div>
 </div>
 </div>
@@ -906,9 +906,9 @@ Content-Length: 789
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-ETag: "4faaa833dc2a2e7765aac2c95de7b913"
+ETag: "1b9c4a83fe2c7c440159607f54f52d74"
 Content-Type: image/jpeg;charset=UTF-8
-Content-Disposition: attachment; filename="de08765d-3da5-4437-b15e-5a46a9cd854b_puppy.jpg"
+Content-Disposition: attachment; filename="5a0305b6-419c-423e-b5e6-4f69913878c3_puppy.jpg"
 Cache-Control: max-age=60, must-revalidate, no-transform
 Accept-Ranges: bytes
 Content-Length: 59477
@@ -1513,8 +1513,8 @@ Q�g�C7?��
 <h4 id="resources-download-file-if-none-match_curl_request"><a class="link" href="#resources-download-file-if-none-match_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/de08765d-3da5-4437-b15e-5a46a9cd854b_puppy.jpg' -i -X GET \
-    -H 'If-None-Match: "4faaa833dc2a2e7765aac2c95de7b913"'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/5a0305b6-419c-423e-b5e6-4f69913878c3_puppy.jpg' -i -X GET \
+    -H 'If-None-Match: "1b9c4a83fe2c7c440159607f54f52d74"'</code></pre>
 </div>
 </div>
 </div>
@@ -1523,9 +1523,9 @@ Q�g�C7?��
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 304 Not Modified
-ETag: "4faaa833dc2a2e7765aac2c95de7b913"
+ETag: "1b9c4a83fe2c7c440159607f54f52d74"
 Content-Type: image/jpeg;charset=UTF-8
-Content-Disposition: attachment; filename="de08765d-3da5-4437-b15e-5a46a9cd854b_puppy.jpg"
+Content-Disposition: attachment; filename="5a0305b6-419c-423e-b5e6-4f69913878c3_puppy.jpg"
 Cache-Control: max-age=60, must-revalidate, no-transform
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1611,8 +1611,8 @@ X-Frame-Options: DENY</code></pre>
 <h4 id="resources-download-file-if-match_curl_request"><a class="link" href="#resources-download-file-if-match_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/de08765d-3da5-4437-b15e-5a46a9cd854b_puppy.jpg' -i -X GET \
-    -H 'If-None-Match: 93ce65f79eae2802d0da35df79aed98c'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/5a0305b6-419c-423e-b5e6-4f69913878c3_puppy.jpg' -i -X GET \
+    -H 'If-None-Match: 4abd53ca0680f412ba27b6a53af6648a'</code></pre>
 </div>
 </div>
 </div>
@@ -1621,9 +1621,9 @@ X-Frame-Options: DENY</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-ETag: "4faaa833dc2a2e7765aac2c95de7b913"
+ETag: "1b9c4a83fe2c7c440159607f54f52d74"
 Content-Type: image/jpeg;charset=UTF-8
-Content-Disposition: attachment; filename="de08765d-3da5-4437-b15e-5a46a9cd854b_puppy.jpg"
+Content-Disposition: attachment; filename="5a0305b6-419c-423e-b5e6-4f69913878c3_puppy.jpg"
 Cache-Control: max-age=60, must-revalidate, no-transform
 Accept-Ranges: bytes
 Content-Length: 59477
@@ -2226,7 +2226,7 @@ Q�g�C7?��
 <h4 id="resources-display-thumbnail-success_curl_request"><a class="link" href="#resources-display-thumbnail-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/images/thumbnails/82e95461-0c97-4f84-bbd4-5eb19776a485_puppy.jpg' -i -X GET</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/images/thumbnails/a4e05982-8b75-4f56-a405-d2ffa2eb394b_puppy.jpg' -i -X GET</code></pre>
 </div>
 </div>
 </div>
@@ -2235,9 +2235,9 @@ Q�g�C7?��
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-ETag: "2c9b6f51962637ca78687f8721718d27"
+ETag: "da03be52761356838e03e63e8b5e0d41"
 Content-Type: image/jpeg;charset=UTF-8
-Content-Disposition: attachment; filename="s_82e95461-0c97-4f84-bbd4-5eb19776a485_puppy.jpg"
+Content-Disposition: attachment; filename="s_a4e05982-8b75-4f56-a405-d2ffa2eb394b_puppy.jpg"
 Cache-Control: max-age=60, must-revalidate, no-transform
 Accept-Ranges: bytes
 Content-Length: 7652
@@ -2364,8 +2364,8 @@ v���ui��"������p	�ƎV;��_zf��n��Ə
 <h4 id="resources-display-thumbnail-if-none-match_curl_request"><a class="link" href="#resources-display-thumbnail-if-none-match_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/images/thumbnails/82e95461-0c97-4f84-bbd4-5eb19776a485_puppy.jpg' -i -X GET \
-    -H 'If-None-Match: "2c9b6f51962637ca78687f8721718d27"'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/images/thumbnails/a4e05982-8b75-4f56-a405-d2ffa2eb394b_puppy.jpg' -i -X GET \
+    -H 'If-None-Match: "da03be52761356838e03e63e8b5e0d41"'</code></pre>
 </div>
 </div>
 </div>
@@ -2374,9 +2374,9 @@ v���ui��"������p	�ƎV;��_zf��n��Ə
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 304 Not Modified
-ETag: "2c9b6f51962637ca78687f8721718d27"
+ETag: "da03be52761356838e03e63e8b5e0d41"
 Content-Type: image/jpeg;charset=UTF-8
-Content-Disposition: attachment; filename="s_82e95461-0c97-4f84-bbd4-5eb19776a485_puppy.jpg"
+Content-Disposition: attachment; filename="s_a4e05982-8b75-4f56-a405-d2ffa2eb394b_puppy.jpg"
 Cache-Control: max-age=60, must-revalidate, no-transform
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -2456,8 +2456,8 @@ X-Frame-Options: DENY</code></pre>
 <h4 id="resources-display-thumbnail-if-match_curl_request"><a class="link" href="#resources-display-thumbnail-if-match_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/images/thumbnails/82e95461-0c97-4f84-bbd4-5eb19776a485_puppy.jpg' -i -X GET \
-    -H 'If-None-Match: 981a28959f565709e25648772f803cce'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/files/images/thumbnails/a4e05982-8b75-4f56-a405-d2ffa2eb394b_puppy.jpg' -i -X GET \
+    -H 'If-None-Match: d02a916560efc0a8a295bb541b4e66ea'</code></pre>
 </div>
 </div>
 </div>
@@ -2466,9 +2466,9 @@ X-Frame-Options: DENY</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-ETag: "2c9b6f51962637ca78687f8721718d27"
+ETag: "da03be52761356838e03e63e8b5e0d41"
 Content-Type: image/jpeg;charset=UTF-8
-Content-Disposition: attachment; filename="s_82e95461-0c97-4f84-bbd4-5eb19776a485_puppy.jpg"
+Content-Disposition: attachment; filename="s_a4e05982-8b75-4f56-a405-d2ffa2eb394b_puppy.jpg"
 Cache-Control: max-age=60, must-revalidate, no-transform
 Accept-Ranges: bytes
 Content-Length: 7652

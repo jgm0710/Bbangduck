@@ -84,5 +84,4 @@ class MemberDevelopServiceTest extends BaseJGMServiceTest {
         socialAccountIdList.forEach(socialAccountId -> assertTrue(socialAccountRepository.findById(socialAccountId).isEmpty()));
 
     }
-
 }
