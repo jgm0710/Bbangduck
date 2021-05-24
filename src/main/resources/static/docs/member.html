@@ -772,12 +772,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="resources-member-update-profile-image-success_curl_request"><a class="link" href="#resources-member-update-profile-image-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/28/profiles/images' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/29/profiles/images' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2MTQ3NjQsImV4cCI6MTYyMTY0NDc2NH0.tr4f5hbifmOMoQIfcU8YiNBIn37AeNJ6LJCKZycymsU' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NDksImV4cCI6MTYyMTg0ODQ0OX0.d4ivcgprOT2GrYAWuc6VuI0jirNFcsolyW46B7KHqPg' \
     -d '{
   "fileStorageId" : 22,
-  "fileName" : "05899517-768d-4f8c-8e63-7d64a2060e6f_puppy.jpg"
+  "fileName" : "7e3f6f7c-8373-4203-8335-dc8f57332d86_puppy.jpg"
 }'</code></pre>
 </div>
 </div>
@@ -924,9 +924,9 @@ Content-Length: 116
 <h4 id="resources-member-update-profile-image-file-info-empty_curl_request"><a class="link" href="#resources-member-update-profile-image-file-info-empty_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/41/profiles/images' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/42/profiles/images' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2MTQ3NjUsImV4cCI6MTYyMTY0NDc2NX0.I-8buazvlu5T5x7EbwJ57mi0vyCa1rOUY5iR20S2rMc' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NTEsImV4cCI6MTYyMTg0ODQ1MX0.AjXE8tse-02FpPFymrgxg_C9K3TgWp1zIAsbnxuYpQA' \
     -d '{
   "fileStorageId" : null,
   "fileName" : ""
@@ -952,14 +952,14 @@ Content-Length: 532
   "status" : 2408,
   "data" : [ {
     "objectName" : "memberUpdateProfileImageRequestDto",
-    "code" : "NotNull",
-    "defaultMessage" : "파일 저장소 ID 를 기입해 주세요.",
-    "field" : "fileStorageId"
-  }, {
-    "objectName" : "memberUpdateProfileImageRequestDto",
     "code" : "NotBlank",
     "defaultMessage" : "파일 이름을 기입해 주세요.",
     "field" : "fileName"
+  }, {
+    "objectName" : "memberUpdateProfileImageRequestDto",
+    "code" : "NotNull",
+    "defaultMessage" : "파일 저장소 ID 를 기입해 주세요.",
+    "field" : "fileStorageId"
   } ],
   "message" : "회원 프로필 이미지 수정 시 기입 사항을 올바르게 기입하지 않았습니다."
 }</code></pre>
@@ -1056,8 +1056,8 @@ Content-Length: 532
 <h4 id="reousrces-member-delete-profile-image-success_curl_request"><a class="link" href="#reousrces-member-delete-profile-image-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/26/profiles/images' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2MTQ3NjMsImV4cCI6MTYyMTY0NDc2M30.4PyjNO31mCV6VFV7nplGP4Bh1q9soEBIXSc7xNOBv8I'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/27/profiles/images' -i -X DELETE \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NDksImV4cCI6MTYyMTg0ODQ0OX0.d4ivcgprOT2GrYAWuc6VuI0jirNFcsolyW46B7KHqPg'</code></pre>
 </div>
 </div>
 </div>
@@ -1204,9 +1204,9 @@ Content-Length: 116
 <h4 id="resources-member-upate-nickname-success_curl_request"><a class="link" href="#resources-member-upate-nickname-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/27/nicknames' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/28/nicknames' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2MTQ3NjMsImV4cCI6MTYyMTY0NDc2M30.4PyjNO31mCV6VFV7nplGP4Bh1q9soEBIXSc7xNOBv8I' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NDksImV4cCI6MTYyMTg0ODQ0OX0.d4ivcgprOT2GrYAWuc6VuI0jirNFcsolyW46B7KHqPg' \
     -d '{
   "nickname" : "newUpdateNickname"
 }'</code></pre>
@@ -1350,9 +1350,9 @@ Content-Length: 105
 <h4 id="resources-member-update-nickname-emtpy_curl_request"><a class="link" href="#resources-member-update-nickname-emtpy_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/36/nicknames' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/37/nicknames' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2MTQ3NjQsImV4cCI6MTYyMTY0NDc2NH0.tr4f5hbifmOMoQIfcU8YiNBIn37AeNJ6LJCKZycymsU' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NTAsImV4cCI6MTYyMTg0ODQ1MH0.sMpN64w_JubPKnBHz2BOTf4OybWWXkJUjVCMZf64cAk' \
     -d '{
   "nickname" : ""
 }'</code></pre>
@@ -1504,9 +1504,9 @@ Content-Length: 329
 <h4 id="resources-member-update-description-success_curl_request"><a class="link" href="#resources-member-update-description-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/43/descriptions' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/44/descriptions' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2MTQ3NjUsImV4cCI6MTYyMTY0NDc2NX0.I-8buazvlu5T5x7EbwJ57mi0vyCa1rOUY5iR20S2rMc' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NTEsImV4cCI6MTYyMTg0ODQ1MX0.AjXE8tse-02FpPFymrgxg_C9K3TgWp1zIAsbnxuYpQA' \
     -d '{
   "description" : "새로운 자기 소개 등록"
 }'</code></pre>
@@ -1647,9 +1647,9 @@ Content-Length: 109
 <h4 id="resources-member-update-description-empty_curl_request"><a class="link" href="#resources-member-update-description-empty_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/22/descriptions' -i -X PUT \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/23/descriptions' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2MTQ3NjMsImV4cCI6MTYyMTY0NDc2M30.4PyjNO31mCV6VFV7nplGP4Bh1q9soEBIXSc7xNOBv8I' \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NDksImV4cCI6MTYyMTg0ODQ0OX0.d4ivcgprOT2GrYAWuc6VuI0jirNFcsolyW46B7KHqPg' \
     -d '{
   "description" : null
 }'</code></pre>
@@ -1779,8 +1779,8 @@ Content-Length: 341
 <h4 id="resources-member-toggle-room-escape-recodes-open-yn-success_curl_request"><a class="link" href="#resources-member-toggle-room-escape-recodes-open-yn-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/16/room-escape/recodes/open-yn' -i -X PUT \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2MTQ3NjMsImV4cCI6MTYyMTY0NDc2M30.4PyjNO31mCV6VFV7nplGP4Bh1q9soEBIXSc7xNOBv8I'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/members/17/room-escape/recodes/open-yn' -i -X PUT \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4MTg0NDgsImV4cCI6MTYyMTg0ODQ0OH0.N0YLjYwiYYbfNrPD204XqSEDWoMCP-AAfil-Ot_Dwck'</code></pre>
 </div>
 </div>
 </div>
@@ -1812,7 +1812,7 @@ Content-Length: 127
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-22 00:48:28 +0900
+Last updated 2021-05-22 01:39:19 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
