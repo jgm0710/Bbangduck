@@ -36,15 +36,15 @@ public class ReviewService {
     // TODO: 2021-05-23 회원 성향 반영
     @Transactional
     public void createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Theme findTheme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-        Optional<MemberPlayInclination> optionalMemberPlayInclination = memberPlayInclinationQueryRepository.findOneByMemberAndGenre(memberId, findTheme.getGenreCode());
-        if (optionalMemberPlayInclination.isPresent()) {
-            MemberPlayInclination memberPlayInclination = optionalMemberPlayInclination.get();
-            memberPlayInclination.increasePlayCount();
-        }
-
-        Review review = Review.create(findMember, findTheme, reviewCreateDto);
-        reviewRepository.save(review);
+//        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+//        Theme findTheme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+//        Optional<MemberPlayInclination> optionalMemberPlayInclination = memberPlayInclinationQueryRepository.findOneByMemberAndGenre(memberId, findTheme.getGenreCode());
+//        if (optionalMemberPlayInclination.isPresent()) {
+//            MemberPlayInclination memberPlayInclination = optionalMemberPlayInclination.get();
+//            memberPlayInclination.increasePlayCount();
+//        }
+//
+//        Review review = Review.create(findMember, findTheme, reviewCreateDto);
+//        reviewRepository.save(review);
     }
 }

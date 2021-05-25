@@ -1,18 +1,15 @@
 package bbangduck.bd.bbangduck.domain.review.controller.dto;
 
-import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewType;
+import bbangduck.bd.bbangduck.domain.model.emumerate.*;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
-import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.util.List;
@@ -54,17 +51,17 @@ public class ReviewCreateRequestDto {
      * 테마 설문 조사 추가 작성 리뷰 요청 body
      */
 
-    private String perceivedDifficulty;
+    private Difficulty perceivedDifficulty;
 
-    private String perceivedHorrorGrade;
+    private HorrorGrade perceivedHorrorGrade;
 
-    private String perceivedActivity;
+    private Activity perceivedActivity;
 
-    private String scenarioSatisfaction;
+    private ScenarioSatisfaction scenarioSatisfaction;
 
-    private String interiorSatisfaction;
+    private InteriorSatisfaction interiorSatisfaction;
 
-    private String problemConfigurationSatisfaction;
+    private ProblemConfigurationSatisfaction problemConfigurationSatisfaction;
 
     public boolean isSimpleReview() {
         return !reviewImagesExists() && !commentExists() && !perceivedDifficultyExists() && !perceivedHorrorGradeExists() &&
@@ -73,27 +70,27 @@ public class ReviewCreateRequestDto {
     }
 
     public boolean perceivedDifficultyExists() {
-        return perceivedDifficulty != null && !perceivedDifficulty.isBlank();
+        return perceivedDifficulty != null;
     }
 
     public boolean perceivedHorrorGradeExists() {
-        return perceivedHorrorGrade != null && !perceivedHorrorGrade.isBlank();
+        return perceivedHorrorGrade != null;
     }
 
     public boolean perceivedActivityExists() {
-        return perceivedActivity != null && !perceivedActivity.isBlank();
+        return perceivedActivity != null;
     }
 
     public boolean scenarioSatisfactionExists() {
-        return scenarioSatisfaction != null && !scenarioSatisfaction.isBlank();
+        return scenarioSatisfaction != null;
     }
 
     public boolean interiorSatisfactionExists() {
-        return interiorSatisfaction != null && !interiorSatisfaction.isBlank();
+        return interiorSatisfaction != null ;
     }
 
     public boolean problemConfigurationSatisfactionExists() {
-        return problemConfigurationSatisfaction != null && !problemConfigurationSatisfaction.isBlank();
+        return problemConfigurationSatisfaction != null;
     }
 
     public boolean commentExists() {

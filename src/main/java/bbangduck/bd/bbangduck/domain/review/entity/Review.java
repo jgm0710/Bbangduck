@@ -1,12 +1,17 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.model.emumerate.*;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +67,33 @@ public class Review extends BaseEntityDateTime {
 
     @Enumerated(EnumType.STRING)
     private ProblemConfigurationSatisfaction problemConfigurationSatisfaction;
+
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, LocalTime clearTime, int hintUsageCount, int rating, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, ScenarioSatisfaction scenarioSatisfaction, InteriorSatisfaction interiorSatisfaction, ProblemConfigurationSatisfaction problemConfigurationSatisfaction) {
+        this.id = id;
+        this.member = member;
+        this.theme = theme;
+        this.reviewType = reviewType;
+        this.clearTime = clearTime;
+        this.hintUsageCount = hintUsageCount;
+        this.rating = rating;
+        this.comment = comment;
+        this.perceivedDifficulty = perceivedDifficulty;
+        this.perceivedHorrorGrade = perceivedHorrorGrade;
+        this.perceivedActivity = perceivedActivity;
+        this.scenarioSatisfaction = scenarioSatisfaction;
+        this.interiorSatisfaction = interiorSatisfaction;
+        this.problemConfigurationSatisfaction = problemConfigurationSatisfaction;
+    }
+
+    // TODO: 2021-05-25 create 구현
+    public static Review create(Member member, Theme theme, ReviewCreateDto reviewCreateDto) {
+        return null;
+    }
+
+    public void addReviewImage(ReviewImage reviewImage) {
+        this.reviewImages.add(reviewImage);
+        reviewImage.setReview(this);
+    }
 
     public Long getId() {
         return id;

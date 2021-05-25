@@ -56,8 +56,10 @@ public class MemberPlayInclinationQueryRepository {
         return Optional.ofNullable(result);
     }
 
+    // TODO: 2021-05-25 로직 수정
     private BooleanExpression genreCodeEq(String genreCode) {
-        return memberPlayInclination.genreCode.eq(genreCode);
+//        return memberPlayInclination.genreCode.eq(genreCode);
+        return null;
     }
 
     private OrderSpecifier<Integer> playCountDesc() {

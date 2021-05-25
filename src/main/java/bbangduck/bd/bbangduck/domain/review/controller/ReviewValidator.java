@@ -2,9 +2,8 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.global.common.ThrowUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
