@@ -17,7 +17,7 @@ public class BbangduckRecommendShop extends BaseEntityDateTime {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "shop_id")
+    @JoinColumn(name = "shop_id")
     private Shop shop;
 
     private boolean state;
