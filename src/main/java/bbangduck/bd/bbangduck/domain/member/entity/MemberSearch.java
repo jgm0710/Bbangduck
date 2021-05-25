@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,8 +22,15 @@ public class MemberSearch {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(name = "member_search_type")
+    @Enumerated(EnumType.STRING)
+    private MemberSearchType searchType;
+
     private String searchKeyword;
 
     @CreationTimestamp
-    private LocalDateTime searchDate;
+    private LocalDate searchDate;
+
+    @CreationTimestamp
+    private LocalDateTime searchTimes;
 }

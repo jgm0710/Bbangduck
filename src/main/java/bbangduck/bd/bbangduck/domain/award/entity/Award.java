@@ -1,9 +1,13 @@
 package bbangduck.bd.bbangduck.domain.award.entity;
 
+import bbangduck.bd.bbangduck.domain.award.entity.enumerate.AwardCondition;
+import bbangduck.bd.bbangduck.domain.award.entity.enumerate.AwardGroup;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -24,4 +28,7 @@ public class Award extends BaseEntityDateTime {
     @Enumerated(EnumType.STRING)
     @Column(name = "award_condition")
     private AwardCondition condition;
+
+    @CreationTimestamp
+    private LocalDateTime registerDate;
 }

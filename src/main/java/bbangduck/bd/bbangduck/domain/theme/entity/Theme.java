@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.theme.entity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
+import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -25,14 +28,21 @@ public class Theme extends BaseEntityDateTime {
     @Column(name = "theme_id")
     public Long id;
 
-    // TODO: 2021-05-24 샵 정보 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
-    @OneToOne(mappedBy = "theme", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "theme", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ThemeImage themeImage;
+
+    @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
+    private List<ThemeDetail> themeDetail = new ArrayList<>();
 
     @Column(name = "theme_name")
     private String name;
 
+    @Column(length = 3000)
+    private String introduction;
 
     private NumberOfPeople numberOfPeople;
 
@@ -41,5 +51,8 @@ public class Theme extends BaseEntityDateTime {
     private Activity activity;
 
     private LocalTime playTime;
+
+    @Column(name = "delete_yn")
+    private boolean deleteYN;
 
 }

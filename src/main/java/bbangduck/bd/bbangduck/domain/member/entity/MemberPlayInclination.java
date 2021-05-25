@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
+import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,9 @@ public class MemberPlayInclination extends BaseEntityDateTime {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String genreCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
 
     private int playCount;
 

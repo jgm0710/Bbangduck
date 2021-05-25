@@ -3,13 +3,16 @@ package bbangduck.bd.bbangduck.domain.award.entity;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "award_member_rel")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AwardMemberRel {
+public class AwardMemberRelation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +27,6 @@ public class AwardMemberRel {
     @JoinColumn(name = "award_id")
     private Award award;
 
+    @CreationTimestamp
+    private LocalDateTime registerDate;
 }

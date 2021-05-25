@@ -1,26 +1,21 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.jdo.annotations.Join;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-/**
- * 작성자 : 정구민 <br><br>
- *
- * 리뷰 작성 시 도전한 테마에 대한 체감 장르 정보를 담을 Entity
- */
 @Entity
+@Table(name = "play_together")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReviewPerceivedThemeGenre {
+public class ReviewPlayTogether {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_perceived_theme_genre_id")
+    @Column(name = "play_together_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,10 +23,9 @@ public class ReviewPerceivedThemeGenre {
     private Review review;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id")
-    private Genre genre;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @CreationTimestamp
     private LocalDateTime registerDate;
-
 }

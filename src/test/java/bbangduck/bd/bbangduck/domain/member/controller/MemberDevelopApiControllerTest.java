@@ -86,6 +86,15 @@ class MemberDevelopApiControllerTest extends BaseJGMApiControllerTest {
                 ))
         ;
 
+        mockMvc.perform(
+                post("/api/develop/members/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberSignInRequestDto))
+
+        ).andDo(print()).andExpect(status().isOk());
+
+
+
     }
 
     @Test
