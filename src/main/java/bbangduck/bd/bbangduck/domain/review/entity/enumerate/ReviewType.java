@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.review.entity;
+package bbangduck.bd.bbangduck.domain.review.entity.enumerate;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,13 +1,11 @@
 package bbangduck.bd.bbangduck.domain.auth.controller.dto;
 
 import bbangduck.bd.bbangduck.domain.auth.service.dto.SocialUserInfoInterface;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.IOException;
 
 @Data
 @Builder

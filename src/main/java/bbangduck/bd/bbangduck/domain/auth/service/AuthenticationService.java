@@ -7,7 +7,7 @@ import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenNotFoundExceptio
 import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.*;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;

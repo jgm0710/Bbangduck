@@ -1,9 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.QMember;
-import bbangduck.bd.bbangduck.domain.member.entity.QSocialAccount;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

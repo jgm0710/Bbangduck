@@ -1,12 +1,14 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.model.emumerate.*;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Review extends BaseEntityDateTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,17 +48,23 @@ public class Review {
     @Column(length = 3000)
     private String comment;
 
-    private String perceivedDifficulty;
+    @Enumerated(EnumType.STRING)
+    private Difficulty perceivedDifficulty;
 
-    private String perceivedHorrorGrade;
+    @Enumerated(EnumType.STRING)
+    private HorrorGrade perceivedHorrorGrade;
 
-    private String perceivedActivity;
+    @Enumerated(EnumType.STRING)
+    private Activity perceivedActivity;
 
-    private String scenarioSatisfaction;
+    @Enumerated(EnumType.STRING)
+    private ScenarioSatisfaction scenarioSatisfaction;
 
-    private String interiorSatisfaction;
+    @Enumerated(EnumType.STRING)
+    private InteriorSatisfaction interiorSatisfaction;
 
-    private String problemConfigurationSatisfaction;
+    @Enumerated(EnumType.STRING)
+    private ProblemConfigurationSatisfaction problemConfigurationSatisfaction;
 
     public Long getId() {
         return id;
@@ -94,27 +102,28 @@ public class Review {
         return comment;
     }
 
-    public String getPerceivedDifficulty() {
+    public Difficulty getPerceivedDifficulty() {
         return perceivedDifficulty;
     }
 
-    public String getPerceivedHorrorGrade() {
+    public HorrorGrade getPerceivedHorrorGrade() {
         return perceivedHorrorGrade;
     }
 
-    public String getPerceivedActivity() {
+    public Activity getPerceivedActivity() {
         return perceivedActivity;
     }
 
-    public String getScenarioSatisfaction() {
+    public ScenarioSatisfaction getScenarioSatisfaction() {
         return scenarioSatisfaction;
     }
 
-    public String getInteriorSatisfaction() {
+    public InteriorSatisfaction getInteriorSatisfaction() {
         return interiorSatisfaction;
     }
 
-    public String getProblemConfigurationSatisfaction() {
+    public ProblemConfigurationSatisfaction getProblemConfigurationSatisfaction() {
         return problemConfigurationSatisfaction;
     }
+
 }

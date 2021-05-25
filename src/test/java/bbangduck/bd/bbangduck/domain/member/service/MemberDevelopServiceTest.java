@@ -3,6 +3,8 @@ package bbangduck.bd.bbangduck.domain.member.service;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.entity.*;
+import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
 import org.junit.jupiter.api.BeforeEach;
