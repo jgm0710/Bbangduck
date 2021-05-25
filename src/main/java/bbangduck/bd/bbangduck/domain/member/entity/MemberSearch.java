@@ -1,9 +1,9 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberSearchType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
