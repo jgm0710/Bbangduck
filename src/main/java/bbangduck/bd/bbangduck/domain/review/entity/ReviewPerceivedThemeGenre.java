@@ -1,10 +1,13 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
+import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.jdo.annotations.Join;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -24,6 +27,11 @@ public class ReviewPerceivedThemeGenre {
     @JoinColumn(name = "review_id")
     private Review review;
 
-    private String genreCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
+
+    @CreationTimestamp
+    private LocalDateTime registerDate;
 
 }

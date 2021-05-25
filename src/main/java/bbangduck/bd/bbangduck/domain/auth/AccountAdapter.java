@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.auth;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

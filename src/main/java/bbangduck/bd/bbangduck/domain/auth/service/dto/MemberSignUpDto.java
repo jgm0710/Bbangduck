@@ -1,11 +1,9 @@
 package bbangduck.bd.bbangduck.domain.auth.service.dto;
 
-import bbangduck.bd.bbangduck.domain.member.entity.*;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 /**
  * 작성자 : 정구민 <br><br>

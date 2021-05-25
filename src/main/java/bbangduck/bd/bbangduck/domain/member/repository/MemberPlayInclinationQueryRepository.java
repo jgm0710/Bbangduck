@@ -41,6 +41,7 @@ public class MemberPlayInclinationQueryRepository {
                 .where(memberIdEq(memberId))
                 .orderBy(playCountDesc())
                 .fetch();
+
     }
 
     public Optional<MemberPlayInclination> findOneByMemberAndGenre(Long memberId, String genreCode) {

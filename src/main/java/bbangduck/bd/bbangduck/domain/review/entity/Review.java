@@ -1,17 +1,12 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +16,7 @@ import java.util.List;
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Review extends BaseEntityDateTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,66 +45,23 @@ public class Review {
     @Column(length = 3000)
     private String comment;
 
-    private String perceivedDifficulty;
+    @Enumerated(EnumType.STRING)
+    private Difficulty perceivedDifficulty;
 
-    private String perceivedHorrorGrade;
+    @Enumerated(EnumType.STRING)
+    private HorrorGrade perceivedHorrorGrade;
 
-    private String perceivedActivity;
+    @Enumerated(EnumType.STRING)
+    private Activity perceivedActivity;
 
-    private String scenarioSatisfaction;
+    @Enumerated(EnumType.STRING)
+    private ScenarioSatisfaction scenarioSatisfaction;
 
-    private String interiorSatisfaction;
+    @Enumerated(EnumType.STRING)
+    private InteriorSatisfaction interiorSatisfaction;
 
-    private String problemConfigurationSatisfaction;
-
-    @Builder
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, LocalTime clearTime, int hintUsageCount, int rating, String comment, String perceivedDifficulty, String perceivedHorrorGrade, String perceivedActivity, String scenarioSatisfaction, String interiorSatisfaction, String problemConfigurationSatisfaction) {
-        this.id = id;
-        this.member = member;
-        this.theme = theme;
-        this.reviewType = reviewType;
-        this.clearTime = clearTime;
-        this.hintUsageCount = hintUsageCount;
-        this.rating = rating;
-        this.comment = comment;
-        this.perceivedDifficulty = perceivedDifficulty;
-        this.perceivedHorrorGrade = perceivedHorrorGrade;
-        this.perceivedActivity = perceivedActivity;
-        this.scenarioSatisfaction = scenarioSatisfaction;
-        this.interiorSatisfaction = interiorSatisfaction;
-        this.problemConfigurationSatisfaction = problemConfigurationSatisfaction;
-    }
-
-    public static Review create(Member member, Theme theme, ReviewCreateDto reviewCreateDto) {
-        Review review = Review.builder()
-                .member(member)
-                .theme(theme)
-                .reviewType(reviewCreateDto.getReviewType())
-                .clearTime(reviewCreateDto.getClearTime())
-                .hintUsageCount(reviewCreateDto.getHintUsageCount())
-                .rating(reviewCreateDto.getRating())
-                .comment(reviewCreateDto.getComment())
-                .perceivedDifficulty(reviewCreateDto.getPerceivedDifficulty())
-                .perceivedHorrorGrade(reviewCreateDto.getPerceivedHorrorGrade())
-                .perceivedActivity(reviewCreateDto.getPerceivedActivity())
-                .scenarioSatisfaction(reviewCreateDto.getScenarioSatisfaction())
-                .interiorSatisfaction(reviewCreateDto.getInteriorSatisfaction())
-                .problemConfigurationSatisfaction(reviewCreateDto.getProblemConfigurationSatisfaction())
-                .build();
-
-        List<ReviewImageDto> reviewImageDtos = reviewCreateDto.getReviewImages();
-        reviewImageDtos.forEach(reviewImageDto -> {
-            ReviewImage reviewImage = ReviewImage.create(reviewImageDto);
-            review.addReviewImage(reviewImage);
-        });
-
-        return review;
-    }
-
-    public void addReviewImage(ReviewImage reviewImage) {
-        reviewImages.add(reviewImage);
-        reviewImage.setReview(this);
-    }
+    @Enumerated(EnumType.STRING)
+    private ProblemConfigurationSatisfaction problemConfigurationSatisfaction;
 
     public Long getId() {
         return id;
@@ -147,27 +99,27 @@ public class Review {
         return comment;
     }
 
-    public String getPerceivedDifficulty() {
+    public Difficulty getPerceivedDifficulty() {
         return perceivedDifficulty;
     }
 
-    public String getPerceivedHorrorGrade() {
+    public HorrorGrade getPerceivedHorrorGrade() {
         return perceivedHorrorGrade;
     }
 
-    public String getPerceivedActivity() {
+    public Activity getPerceivedActivity() {
         return perceivedActivity;
     }
 
-    public String getScenarioSatisfaction() {
+    public ScenarioSatisfaction getScenarioSatisfaction() {
         return scenarioSatisfaction;
     }
 
-    public String getInteriorSatisfaction() {
+    public InteriorSatisfaction getInteriorSatisfaction() {
         return interiorSatisfaction;
     }
 
-    public String getProblemConfigurationSatisfaction() {
+    public ProblemConfigurationSatisfaction getProblemConfigurationSatisfaction() {
         return problemConfigurationSatisfaction;
     }
 }

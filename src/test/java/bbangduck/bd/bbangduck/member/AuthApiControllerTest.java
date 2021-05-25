@@ -5,13 +5,12 @@ import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.entity.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.SocialType;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberSocialInfoDuplicateException;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,8 +22,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static bbangduck.bd.bbangduck.global.common.ResponseStatus.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -58,6 +60,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         ).andDo(print());
 
         //then
+        List<String> socialTypeList = Stream.of(SocialType.values()).map(socialType -> socialType.name()).collect(Collectors.toList());
         perform
                 .andExpect(status().isCreated())
                 .andDo(document(
@@ -68,7 +71,8 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                         requestFields(
                                 fieldWithPath("email").description("회원 식별에 필요한 Email 기입"),
                                 fieldWithPath("nickname").description("회원 활동 시 필요한 Nickname 기입"),
-                                fieldWithPath("socialType").description("Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시"),
+                                fieldWithPath("socialType").description("Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시 + \n" +
+                                        socialTypeList),
                                 fieldWithPath("socialId").description("Social 인증을 통해 회원가입을 진행하는 경우 해당 Social 매체 내에서 회원을 식별하기 위해 사용하는 ID 값을 기입 + \n" +
                                         "해당 SocialId 를 통해 회원을 식별합니다.")
                         ),

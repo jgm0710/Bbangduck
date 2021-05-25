@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class SocialAccount extends BaseEntityDateTime {
     private Long id;
 
     private String socialId;
+
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 

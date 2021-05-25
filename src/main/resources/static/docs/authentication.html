@@ -450,7 +450,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#resources-auth">회원 인증 관리 리소스</a>
 <ul class="sectlevel1">
-<li><a href="#resources-sign-up">회원가입</a>
+<li><a href="#resources-sign-up">회원가입</a></li>
+<li><a href="#resources-social-sign-up">소셜 회원가입</a>
 <ul class="sectlevel2">
 <li><a href="#resources-social-sign-up-success">소셜 회원가입 성공</a>
 <ul class="sectlevel3">
@@ -574,21 +575,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 리소스에 접근할 수 없는 회원입니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#resources-sign-up">회원가입</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#resources-social-sign-up">소셜 회원가입</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시 기입한 Email 이 기존 회원의 Email 과 중복되는 경우</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">409</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2403</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 Email 을 사용하는 회원이 이미 존재합니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#resources-sign-up">회원가입</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#resources-social-sign-up">소셜 회원가입</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시 기입한 Nickname 이 기존 회원의 Nickname 과 중복되는 경우</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">409</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2404</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 Nickname 을 사용하는 회원이 이미 존재합니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#resources-sign-up">회원가입</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#resources-social-sign-up">소셜 회원가입</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원가입 시 기입한 Social 인증 정보를 통해 이미 가입한 회원이 존재하는 경우</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">409</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2405</p></td>
@@ -659,7 +660,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#resources-sign-up">회원가입</a></p>
+<p><a href="#resources-social-sign-up">소셜 회원가입</a></p>
 <div class="ulist">
 <ul>
 <li>
@@ -697,6 +698,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1 id="resources-auth" class="sect0"><a class="link" href="#resources-auth">회원 인증 관리 리소스</a></h1>
 <div class="sect1">
 <h2 id="resources-sign-up"><a class="link" href="#resources-sign-up">회원가입</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>일반 회원가입 기능은 아직 구현하지 않았습니다.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="resources-social-sign-up"><a class="link" href="#resources-social-sign-up">소셜 회원가입</a></h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -783,7 +796,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>socialType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시<br>
+[KAKAO, NAVER]</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>socialId</code></p></td>
@@ -933,7 +947,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
-Location: http://localhost:8080/api/members/46
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Location: http://localhost:8080/api/members/79
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -947,7 +964,7 @@ Content-Length: 1064
   "status" : 2201,
   "data" : {
     "memberInfo" : {
-      "memberId" : 46,
+      "memberId" : 79,
       "email" : "test@email.com",
       "nickname" : "testNickname",
       "profileImage" : null,
@@ -958,19 +975,19 @@ Content-Length: 1064
       "description" : null,
       "reviewCount" : 0,
       "roomEscapeRecordVisible" : true,
-      "registerDate" : "2021-05-22T12:45:48.3745626",
-      "updateDate" : "2021-05-22T12:45:48.3785554"
+      "registerDate" : "2021-05-24T18:08:20.9402287",
+      "updateDate" : "2021-05-24T18:08:20.9462134"
     },
     "tokenInfo" : {
-      "memberId" : 46,
+      "memberId" : 79,
       "accessToken" : {
         "header" : "eyJhbGciOiJIUzI1NiJ9",
-        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0",
-        "signature" : "at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM"
+        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4NDczMDAsImV4cCI6MTYyMTg3NzMwMH0",
+        "signature" : "eQzLrrezdOsxCjDO35bYh--o00DAgdEqo5_9Jf8S12o"
       },
       "accessTokenValidSecond" : 30000,
-      "refreshToken" : "c6fc65b4-192c-40e6-b67b-344ecbcdc687",
-      "refreshTokenExpiredDate" : "2021-06-05T12:45:48.3775544"
+      "refreshToken" : "1748246a-a5bf-45c0-a4e9-db6f0b946cc2",
+      "refreshTokenExpiredDate" : "2021-06-07T18:08:20.9452154"
     }
   },
   "message" : " 회원가입에 성공했습니다."
@@ -1121,6 +1138,9 @@ Content-Length: 1064
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1134,14 +1154,14 @@ Content-Length: 824
   "status" : 2402,
   "data" : [ {
     "objectName" : "memberSocialSignUpRequestDto",
-    "code" : "NotBlank",
-    "defaultMessage" : "Social ID 를 입력해 주세요.",
-    "field" : "socialId"
+    "code" : "NotNull",
+    "defaultMessage" : "Social Type 을 입력해 주세요.",
+    "field" : "socialType"
   }, {
     "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotBlank",
-    "defaultMessage" : "Email 을 입력해 주세요.",
-    "field" : "email"
+    "defaultMessage" : "Social ID 를 입력해 주세요.",
+    "field" : "socialId"
   }, {
     "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotBlank",
@@ -1149,9 +1169,9 @@ Content-Length: 824
     "field" : "nickname"
   }, {
     "objectName" : "memberSocialSignUpRequestDto",
-    "code" : "NotNull",
-    "defaultMessage" : "Social Type 을 입력해 주세요.",
-    "field" : "socialType"
+    "code" : "NotBlank",
+    "defaultMessage" : "Email 을 입력해 주세요.",
+    "field" : "email"
   } ],
   "message" : "회원가입 시 기입사항을 올바르게 기입하지 않았습니다."
 }</code></pre>
@@ -1223,6 +1243,9 @@ Content-Length: 824
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Language: en
 Content-Type: text/html;charset=UTF-8
 X-Content-Type-Options: nosniff
@@ -1246,7 +1269,7 @@ Content-Length: 1020
 
     let status = 1221;
     let message = decodeURIComponent("\uCE74\uCE74\uC624 \uB85C\uADF8\uC778\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4.");
-    let data = {"memberId":1,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxNjU1MTM2LCJleHAiOjE2MjE2ODUxMzZ9","signature":"ASSVLcitx53A1zuJejdypuEmqFCkbR9vGP8Y4fOp5Z4"},"accessTokenValidSecond":30000,"refreshToken":"019fdd31-4b58-4155-9bfd-b1cae296db9f","refreshTokenExpiredDate":"2021-06-05T12:45:36.7656514"};
+    let data = {"memberId":2,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxODQ3Mjg4LCJleHAiOjE2MjE4NzcyODh9","signature":"nrbmrNiRNOEsQ9RP8KTWR-k6RrG3-1Yr_veabN2Mgu0"},"accessTokenValidSecond":30000,"refreshToken":"366c2896-7437-4c87-8715-189a3822ad62","refreshTokenExpiredDate":"2021-06-07T18:08:08.7827913"};
     callSnsSignIn();
 
     function callSnsSignIn() {
@@ -1304,6 +1327,9 @@ Content-Length: 1020
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Language: en
 Content-Type: text/html;charset=UTF-8
 X-Content-Type-Options: nosniff
@@ -1493,7 +1519,7 @@ Content-Length: 804
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/refresh' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{
-  "refreshToken" : "01103d83-9436-4c88-a6ac-fca003a67b08"
+  "refreshToken" : "8d8ec80c-2df9-4efe-bde1-abc41a002764"
 }'</code></pre>
 </div>
 </div>
@@ -1503,6 +1529,9 @@ Content-Length: 804
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1518,12 +1547,12 @@ Content-Length: 589
     "memberId" : null,
     "accessToken" : {
       "header" : "eyJhbGciOiJIUzI1NiJ9",
-      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0",
-      "signature" : "at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM"
+      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4NDczMDEsImV4cCI6MTYyMTg3NzMwMX0",
+      "signature" : "0_2MaZdrVrdpahMl9-jcioHjrE01ERXmVu4G0wnWxrI"
     },
     "accessTokenValidSecond" : 30000,
-    "refreshToken" : "01103d83-9436-4c88-a6ac-fca003a67b08",
-    "refreshTokenExpiredDate" : "2021-06-05T12:45:48.485265"
+    "refreshToken" : "8d8ec80c-2df9-4efe-bde1-abc41a002764",
+    "refreshTokenExpiredDate" : "2021-06-07T18:08:21.070082"
   },
   "message" : "Refresh Token 을 통한 Access Token 재발급에 성공했습니다."
 }</code></pre>
@@ -1620,8 +1649,8 @@ Content-Length: 589
 <h4 id="resources-withdrawal-success_curl_request"><a class="link" href="#resources-withdrawal-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/45/withdrawal' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0.at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/78/withdrawal' -i -X DELETE \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4NDczMDAsImV4cCI6MTYyMTg3NzMwMH0.eQzLrrezdOsxCjDO35bYh--o00DAgdEqo5_9Jf8S12o'</code></pre>
 </div>
 </div>
 </div>
@@ -1630,6 +1659,9 @@ Content-Length: 589
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1740,8 +1772,8 @@ Content-Length: 96
 <h4 id="resources-sign-out-success_curl_request"><a class="link" href="#resources-sign-out-success_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/58/sign-out' -i -X GET \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE2NTUxNDgsImV4cCI6MTYyMTY4NTE0OH0.at-swV4DrAejKGlvi5BqyFxOCTWHpcoJACBziSojXjM'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/91/sign-out' -i -X GET \
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4NDczMDEsImV4cCI6MTYyMTg3NzMwMX0.0_2MaZdrVrdpahMl9-jcioHjrE01ERXmVu4G0wnWxrI'</code></pre>
 </div>
 </div>
 </div>
@@ -1750,6 +1782,9 @@ Content-Length: 96
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1773,7 +1808,7 @@ Content-Length: 95
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-22 01:39:19 +0900
+Last updated 2021-05-24 13:23:09 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

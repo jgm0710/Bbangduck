@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.auth.controller.dto;
 
 import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
-import bbangduck.bd.bbangduck.domain.member.entity.*;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import lombok.*;
 
 import javax.validation.constraints.Email;

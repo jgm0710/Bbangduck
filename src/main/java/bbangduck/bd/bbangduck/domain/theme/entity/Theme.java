@@ -1,9 +1,18 @@
 package bbangduck.bd.bbangduck.domain.theme.entity;
 
+import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
+import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
+import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
+import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -12,20 +21,38 @@ import javax.persistence.*;
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Theme {
+public class Theme extends BaseEntityDateTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "theme_id")
-    private Long id;
+    public Long id;
 
-    private String genreCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
-    public Long getId() {
-        return id;
-    }
+    @OneToOne(mappedBy = "theme", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ThemeImage themeImage;
 
-    public String getGenreCode() {
-        return genreCode;
-    }
+    @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
+    private List<ThemeDetail> themeDetail = new ArrayList<>();
+
+    @Column(name = "theme_name")
+    private String name;
+
+    @Column(length = 3000)
+    private String introduction;
+
+    private NumberOfPeople numberOfPeople;
+
+    private Difficulty difficulty;
+
+    private Activity activity;
+
+    private LocalTime playTime;
+
+    @Column(name = "delete_yn")
+    private boolean deleteYN;
+
 }

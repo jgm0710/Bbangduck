@@ -30,19 +30,19 @@
 | 1403
 | 해당 리소스에 접근할 수 없는 회원입니다.
 
-| <<resources-sign-up>>
+| <<resources-social-sign-up>>
 | 회원가입 시 기입한 Email 이 기존 회원의 Email 과 중복되는 경우
 | 409
 | 2403
 | 해당 Email 을 사용하는 회원이 이미 존재합니다.
 
-| <<resources-sign-up>>
+| <<resources-social-sign-up>>
 | 회원가입 시 기입한 Nickname 이 기존 회원의 Nickname 과 중복되는 경우
 | 409
 | 2404
 | 해당 Nickname 을 사용하는 회원이 이미 존재합니다.
 
-| <<resources-sign-up>>
+| <<resources-social-sign-up>>
 | 회원가입 시 기입한 Social 인증 정보를 통해 이미 가입한 회원이 존재하는 경우
 | 409
 | 2405
@@ -89,7 +89,7 @@
 * <<resources-kakao-sign-in>> 기능 구현
 
 2021-5-15:::
-* <<resources-sign-up>>
+* <<resources-social-sign-up>>
 ** 소셜 회원가입 요청 분리
 ** 추후 일반회원 가입 구현 시 일반 회원가입 요청 추가
 
@@ -103,6 +103,11 @@
 
 [[resources-sign-up]]
 == 회원가입
+
+* 일반 회원가입 기능은 아직 구현하지 않았습니다.
+
+[[resources-social-sign-up]]
+== 소셜 회원가입
 
 * `POST` `/api/auth/social/sign-up`
 * 요청에 필요한 Body 는 json 타입으로 기입합니다.
