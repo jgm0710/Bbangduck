@@ -958,7 +958,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1064
+Content-Length: 1063
 
 {
   "status" : 2201,
@@ -975,19 +975,19 @@ Content-Length: 1064
       "description" : null,
       "reviewCount" : 0,
       "roomEscapeRecordVisible" : true,
-      "registerDate" : "2021-05-24T18:08:20.9402287",
-      "updateDate" : "2021-05-24T18:08:20.9462134"
+      "registerDate" : "2021-05-25T18:56:02.138565",
+      "updateDate" : "2021-05-25T18:56:02.1415785"
     },
     "tokenInfo" : {
       "memberId" : 79,
       "accessToken" : {
         "header" : "eyJhbGciOiJIUzI1NiJ9",
-        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4NDczMDAsImV4cCI6MTYyMTg3NzMwMH0",
-        "signature" : "eQzLrrezdOsxCjDO35bYh--o00DAgdEqo5_9Jf8S12o"
+        "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE5MzY1NjIsImV4cCI6MTYyMTk2NjU2Mn0",
+        "signature" : "5X73st162nwbrFq7LeZTFBJ6T7dr1onfWW9jjl3GkSI"
       },
       "accessTokenValidSecond" : 30000,
-      "refreshToken" : "1748246a-a5bf-45c0-a4e9-db6f0b946cc2",
-      "refreshTokenExpiredDate" : "2021-06-07T18:08:20.9452154"
+      "refreshToken" : "b17c4f98-16f2-4307-95c2-f7d9c47964ea",
+      "refreshTokenExpiredDate" : "2021-06-08T18:56:02.1405598"
     }
   },
   "message" : " 회원가입에 성공했습니다."
@@ -1154,6 +1154,11 @@ Content-Length: 824
   "status" : 2402,
   "data" : [ {
     "objectName" : "memberSocialSignUpRequestDto",
+    "code" : "NotBlank",
+    "defaultMessage" : "Email 을 입력해 주세요.",
+    "field" : "email"
+  }, {
+    "objectName" : "memberSocialSignUpRequestDto",
     "code" : "NotNull",
     "defaultMessage" : "Social Type 을 입력해 주세요.",
     "field" : "socialType"
@@ -1167,11 +1172,6 @@ Content-Length: 824
     "code" : "NotBlank",
     "defaultMessage" : "Nickname 을 입력해 주세요.",
     "field" : "nickname"
-  }, {
-    "objectName" : "memberSocialSignUpRequestDto",
-    "code" : "NotBlank",
-    "defaultMessage" : "Email 을 입력해 주세요.",
-    "field" : "email"
   } ],
   "message" : "회원가입 시 기입사항을 올바르게 기입하지 않았습니다."
 }</code></pre>
@@ -1269,7 +1269,7 @@ Content-Length: 1020
 
     let status = 1221;
     let message = decodeURIComponent("\uCE74\uCE74\uC624 \uB85C\uADF8\uC778\uC5D0 \uC131\uACF5\uD588\uC2B5\uB2C8\uB2E4.");
-    let data = {"memberId":2,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxODQ3Mjg4LCJleHAiOjE2MjE4NzcyODh9","signature":"nrbmrNiRNOEsQ9RP8KTWR-k6RrG3-1Yr_veabN2Mgu0"},"accessTokenValidSecond":30000,"refreshToken":"366c2896-7437-4c87-8715-189a3822ad62","refreshTokenExpiredDate":"2021-06-07T18:08:08.7827913"};
+    let data = {"memberId":2,"accessToken":{"header":"eyJhbGciOiJIUzI1NiJ9","payload":"eyJzdWIiOiJybmFscm5hbDk5OUBuYXZlci5jb20iLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjIxOTM2NTUxLCJleHAiOjE2MjE5NjY1NTF9","signature":"4dNHnWgcnBz8mavcS1P7fhHLTg576KMUP7K-4umvLNM"},"accessTokenValidSecond":30000,"refreshToken":"371c6b5a-bd5e-4f1d-9a10-6ad107d7a5ee","refreshTokenExpiredDate":"2021-06-08T18:55:51.6579358"};
     callSnsSignIn();
 
     function callSnsSignIn() {
@@ -1519,7 +1519,7 @@ Content-Length: 804
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/refresh' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -d '{
-  "refreshToken" : "8d8ec80c-2df9-4efe-bde1-abc41a002764"
+  "refreshToken" : "59f58284-60e7-4782-8117-a40823ef54d9"
 }'</code></pre>
 </div>
 </div>
@@ -1547,12 +1547,12 @@ Content-Length: 589
     "memberId" : null,
     "accessToken" : {
       "header" : "eyJhbGciOiJIUzI1NiJ9",
-      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4NDczMDEsImV4cCI6MTYyMTg3NzMwMX0",
-      "signature" : "0_2MaZdrVrdpahMl9-jcioHjrE01ERXmVu4G0wnWxrI"
+      "payload" : "eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE5MzY1NjIsImV4cCI6MTYyMTk2NjU2Mn0",
+      "signature" : "5X73st162nwbrFq7LeZTFBJ6T7dr1onfWW9jjl3GkSI"
     },
     "accessTokenValidSecond" : 30000,
-    "refreshToken" : "8d8ec80c-2df9-4efe-bde1-abc41a002764",
-    "refreshTokenExpiredDate" : "2021-06-07T18:08:21.070082"
+    "refreshToken" : "59f58284-60e7-4782-8117-a40823ef54d9",
+    "refreshTokenExpiredDate" : "2021-06-08T18:56:02.243286"
   },
   "message" : "Refresh Token 을 통한 Access Token 재발급에 성공했습니다."
 }</code></pre>
@@ -1650,7 +1650,7 @@ Content-Length: 589
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/78/withdrawal' -i -X DELETE \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4NDczMDAsImV4cCI6MTYyMTg3NzMwMH0.eQzLrrezdOsxCjDO35bYh--o00DAgdEqo5_9Jf8S12o'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE5MzY1NjIsImV4cCI6MTYyMTk2NjU2Mn0.5X73st162nwbrFq7LeZTFBJ6T7dr1onfWW9jjl3GkSI'</code></pre>
 </div>
 </div>
 </div>
@@ -1773,7 +1773,7 @@ Content-Length: 96
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/api/auth/91/sign-out' -i -X GET \
-    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE4NDczMDEsImV4cCI6MTYyMTg3NzMwMX0.0_2MaZdrVrdpahMl9-jcioHjrE01ERXmVu4G0wnWxrI'</code></pre>
+    -H 'X-AUTH-TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MjE5MzY1NjIsImV4cCI6MTYyMTk2NjU2Mn0.5X73st162nwbrFq7LeZTFBJ6T7dr1onfWW9jjl3GkSI'</code></pre>
 </div>
 </div>
 </div>
@@ -1808,7 +1808,7 @@ Content-Length: 95
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-24 13:23:09 +0900
+Last updated 2021-05-25 18:27:52 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
