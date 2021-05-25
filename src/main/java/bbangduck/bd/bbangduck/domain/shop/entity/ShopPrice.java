@@ -30,4 +30,8 @@ public class ShopPrice {
 
     @CreationTimestamp
     private LocalDateTime registerDate;
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
 }

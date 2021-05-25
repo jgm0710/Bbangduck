@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.genre.entity;
 
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -15,10 +16,28 @@ public class Genre extends BaseEntityDateTime {
     @Column(name = "genre_id")
     private Long id;
 
-    @Column(name = "genre_code")
+    @Column(name = "genre_code", unique = true)
     private String code;
 
     @Column(name = "genre_name")
     private String name;
 
+    @Builder
+    public Genre(Long id, String code, String name) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

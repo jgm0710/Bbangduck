@@ -50,6 +50,8 @@ public class ReviewCreateRequestDto {
     /**
      * 테마 설문 조사 추가 작성 리뷰 요청 body
      */
+    // TODO: 2021-05-25 리뷰 체감 장르 부분 추가
+    private List<String> genreCodes;
 
     private Difficulty perceivedDifficulty;
 
@@ -57,44 +59,44 @@ public class ReviewCreateRequestDto {
 
     private Activity perceivedActivity;
 
-    private ScenarioSatisfaction scenarioSatisfaction;
+    private Satisfaction scenarioSatisfaction;
 
-    private InteriorSatisfaction interiorSatisfaction;
+    private Satisfaction interiorSatisfaction;
 
-    private ProblemConfigurationSatisfaction problemConfigurationSatisfaction;
+    private Satisfaction problemConfigurationSatisfaction;
 
     public boolean isSimpleReview() {
-        return !reviewImagesExists() && !commentExists() && !perceivedDifficultyExists() && !perceivedHorrorGradeExists() &&
-                !perceivedActivityExists() && !scenarioSatisfactionExists() && !interiorSatisfactionExists() &&
-                !problemConfigurationSatisfactionExists();
+        return !reviewImagesExists() && commentNotExists() && perceivedDifficultyIsNull() && perceivedHorrorGradeIsNull() &&
+                perceivedActivityIsNull() && scenarioSatisfactionIsNull() && interiorSatisfactionIsNull() &&
+                problemConfigurationSatisfactionIsNull();
     }
 
-    public boolean perceivedDifficultyExists() {
-        return perceivedDifficulty != null;
+    public boolean perceivedDifficultyIsNull() {
+        return perceivedDifficulty == null;
     }
 
-    public boolean perceivedHorrorGradeExists() {
-        return perceivedHorrorGrade != null;
+    public boolean perceivedHorrorGradeIsNull() {
+        return perceivedHorrorGrade == null;
     }
 
-    public boolean perceivedActivityExists() {
-        return perceivedActivity != null;
+    public boolean perceivedActivityIsNull() {
+        return perceivedActivity == null;
     }
 
-    public boolean scenarioSatisfactionExists() {
-        return scenarioSatisfaction != null;
+    public boolean scenarioSatisfactionIsNull() {
+        return scenarioSatisfaction == null;
     }
 
-    public boolean interiorSatisfactionExists() {
-        return interiorSatisfaction != null ;
+    public boolean interiorSatisfactionIsNull() {
+        return interiorSatisfaction == null;
     }
 
-    public boolean problemConfigurationSatisfactionExists() {
-        return problemConfigurationSatisfaction != null;
+    public boolean problemConfigurationSatisfactionIsNull() {
+        return problemConfigurationSatisfaction == null;
     }
 
-    public boolean commentExists() {
-        return comment != null;
+    public boolean commentNotExists() {
+        return comment == null || comment.isBlank();
     }
 
     public boolean reviewImagesExists() {
@@ -102,13 +104,13 @@ public class ReviewCreateRequestDto {
     }
 
     public boolean isDetailReview() {
-        return !perceivedDifficultyExists() && !perceivedHorrorGradeExists() &&
-                !perceivedActivityExists() && !scenarioSatisfactionExists() && !interiorSatisfactionExists() &&
-                !problemConfigurationSatisfactionExists();
+        return perceivedDifficultyIsNull() && perceivedHorrorGradeIsNull() &&
+                perceivedActivityIsNull() && scenarioSatisfactionIsNull() && interiorSatisfactionIsNull() &&
+                problemConfigurationSatisfactionIsNull();
     }
 
     public ReviewCreateDto toServiceDto() {
-        List<ReviewImageDto> reviewImageDtos = reviewImages.stream().map(reviewImageRequestDto -> reviewImageRequestDto.toServiceDto()).collect(Collectors.toList());
+        List<ReviewImageDto> reviewImageDtos = reviewImages.stream().map(ReviewImageRequestDto::toServiceDto).collect(Collectors.toList());
 
         return ReviewCreateDto.builder()
                 .reviewType(reviewType)
@@ -117,6 +119,7 @@ public class ReviewCreateRequestDto {
                 .rating(rating)
                 .reviewImages(reviewImageDtos)
                 .comment(comment)
+                .genreCodes(genreCodes)
                 .perceivedDifficulty(perceivedDifficulty)
                 .perceivedHorrorGrade(perceivedHorrorGrade)
                 .perceivedActivity(perceivedActivity)

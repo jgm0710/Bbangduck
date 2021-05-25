@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.member.entity;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.jdo.annotations.Join;
@@ -31,6 +32,14 @@ public class MemberPlayInclination extends BaseEntityDateTime {
     private Genre genre;
 
     private int playCount;
+
+    @Builder
+    public MemberPlayInclination(Long id, Member member, Genre genre, int playCount) {
+        this.id = id;
+        this.member = member;
+        this.genre = genre;
+        this.playCount = playCount;
+    }
 
     public void increasePlayCount() {
         this.playCount++;

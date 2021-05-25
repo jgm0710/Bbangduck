@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
+import bbangduck.bd.bbangduck.domain.genre.entity.QGenre;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
-import bbangduck.bd.bbangduck.domain.member.entity.QMemberPlayInclination;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static bbangduck.bd.bbangduck.domain.member.entity.QMemberPlayInclination.*;
+import static bbangduck.bd.bbangduck.domain.genre.entity.QGenre.*;
 import static bbangduck.bd.bbangduck.domain.member.entity.QMemberPlayInclination.memberPlayInclination;
 
 /**
@@ -44,22 +44,20 @@ public class MemberPlayInclinationQueryRepository {
 
     }
 
-    public Optional<MemberPlayInclination> findOneByMemberAndGenre(Long memberId, String genreCode) {
+    public Optional<MemberPlayInclination> findOneByMemberAndGenre(Long memberId, Long genreId) {
         MemberPlayInclination result = queryFactory
                 .selectFrom(memberPlayInclination)
                 .where(
                         memberIdEq(memberId),
-                        genreCodeEq(genreCode)
+                        genreIdEq(genreId)
                 )
                 .fetchFirst();
 
         return Optional.ofNullable(result);
     }
 
-    // TODO: 2021-05-25 로직 수정
-    private BooleanExpression genreCodeEq(String genreCode) {
-//        return memberPlayInclination.genreCode.eq(genreCode);
-        return null;
+    private BooleanExpression genreIdEq(Long genreId) {
+        return genre.id.eq(genreId);
     }
 
     private OrderSpecifier<Integer> playCountDesc() {

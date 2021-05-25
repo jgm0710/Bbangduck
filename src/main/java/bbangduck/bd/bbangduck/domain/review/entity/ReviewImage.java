@@ -47,4 +47,20 @@ public class ReviewImage {
     public void setReview(Review review) {
         this.review = review;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public Long getFileStorageId() {
+        return fileStorageId;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
 }

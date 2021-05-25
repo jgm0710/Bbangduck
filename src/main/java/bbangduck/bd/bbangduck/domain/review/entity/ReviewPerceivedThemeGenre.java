@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -34,4 +35,26 @@ public class ReviewPerceivedThemeGenre {
     @CreationTimestamp
     private LocalDateTime registerDate;
 
+    @Builder
+    public ReviewPerceivedThemeGenre(Long id, Review review, Genre genre) {
+        this.id = id;
+        this.review = review;
+        this.genre = genre;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public LocalDateTime getRegisterDate() {
+        return registerDate;
+    }
 }

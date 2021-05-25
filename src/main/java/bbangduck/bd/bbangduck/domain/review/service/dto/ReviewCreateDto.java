@@ -1,12 +1,14 @@
 package bbangduck.bd.bbangduck.domain.review.service.dto;
 
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewPerceivedThemeGenre;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 // TODO: 2021-05-23 주석 달기
@@ -36,6 +38,8 @@ public class ReviewCreateDto {
     /**
      * 테마 설문 조사 추가 작성 리뷰
      */
+    // TODO: 2021-05-25 리뷰 체감 장르 부분 추가
+    private List<String> genreCodes;
 
     private Difficulty perceivedDifficulty;
 
@@ -43,20 +47,21 @@ public class ReviewCreateDto {
 
     private Activity perceivedActivity;
 
-    private ScenarioSatisfaction scenarioSatisfaction;
+    private Satisfaction scenarioSatisfaction;
 
-    private InteriorSatisfaction interiorSatisfaction;
+    private Satisfaction interiorSatisfaction;
 
-    private ProblemConfigurationSatisfaction problemConfigurationSatisfaction;
+    private Satisfaction problemConfigurationSatisfaction;
 
     @Builder
-    public ReviewCreateDto(ReviewType reviewType, LocalTime clearTime, Integer hintUsageCount, Integer rating, List<ReviewImageDto> reviewImages, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, ScenarioSatisfaction scenarioSatisfaction, InteriorSatisfaction interiorSatisfaction, ProblemConfigurationSatisfaction problemConfigurationSatisfaction) {
+    public ReviewCreateDto(ReviewType reviewType, LocalTime clearTime, Integer hintUsageCount, Integer rating, List<ReviewImageDto> reviewImages, String comment, List<String> genreCodes, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
         this.reviewType = reviewType;
         this.clearTime = clearTime;
         this.hintUsageCount = hintUsageCount;
         this.rating = rating;
         this.reviewImages = reviewImages;
         this.comment = comment;
+        this.genreCodes = genreCodes;
         this.perceivedDifficulty = perceivedDifficulty;
         this.perceivedHorrorGrade = perceivedHorrorGrade;
         this.perceivedActivity = perceivedActivity;
@@ -101,15 +106,19 @@ public class ReviewCreateDto {
         return perceivedActivity;
     }
 
-    public ScenarioSatisfaction getScenarioSatisfaction() {
+    public Satisfaction getScenarioSatisfaction() {
         return scenarioSatisfaction;
     }
 
-    public InteriorSatisfaction getInteriorSatisfaction() {
+    public Satisfaction getInteriorSatisfaction() {
         return interiorSatisfaction;
     }
 
-    public ProblemConfigurationSatisfaction getProblemConfigurationSatisfaction() {
+    public Satisfaction getProblemConfigurationSatisfaction() {
         return problemConfigurationSatisfaction;
+    }
+
+    public List<String> getGenreCodes() {
+        return genreCodes;
     }
 }

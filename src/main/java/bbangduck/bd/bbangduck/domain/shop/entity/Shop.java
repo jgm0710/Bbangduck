@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.shop.entity;
 
 import bbangduck.bd.bbangduck.domain.model.embeded.Location;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -49,4 +50,22 @@ public class Shop {
     @Column(name = "delete_yn")
     private boolean deleteYN;
 
+    @Builder
+    public Shop(Long id, Franchise franchise, ShopImage shopImage, String name, String shopUrl, String shopInfo, Location location, String address, Area area, boolean deleteYN) {
+        this.id = id;
+        this.franchise = franchise;
+        this.shopImage = shopImage;
+        this.name = name;
+        this.shopUrl = shopUrl;
+        this.shopInfo = shopInfo;
+        this.location = location;
+        this.address = address;
+        this.area = area;
+        this.deleteYN = deleteYN;
+    }
+
+    public void addShopPrices(ShopPrice shopPrice) {
+        this.shopPrices.add(shopPrice);
+        shopPrice.setShop(this);
+    }
 }

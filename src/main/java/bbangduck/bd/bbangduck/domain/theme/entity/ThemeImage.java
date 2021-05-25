@@ -22,4 +22,7 @@ public class ThemeImage {
 
     private String  fileName;
 
+    public void setTheme(Theme theme) {
+        this.theme = theme;
+    }
 }

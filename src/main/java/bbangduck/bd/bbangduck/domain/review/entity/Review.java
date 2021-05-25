@@ -1,12 +1,15 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
+import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -50,6 +53,9 @@ public class Review extends BaseEntityDateTime {
     @Column(length = 3000)
     private String comment;
 
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewPerceivedThemeGenre> perceivedThemeGenres = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private Difficulty perceivedDifficulty;
 
@@ -60,15 +66,16 @@ public class Review extends BaseEntityDateTime {
     private Activity perceivedActivity;
 
     @Enumerated(EnumType.STRING)
-    private ScenarioSatisfaction scenarioSatisfaction;
+    private Satisfaction scenarioSatisfaction;
 
     @Enumerated(EnumType.STRING)
-    private InteriorSatisfaction interiorSatisfaction;
+    private Satisfaction interiorSatisfaction;
 
     @Enumerated(EnumType.STRING)
-    private ProblemConfigurationSatisfaction problemConfigurationSatisfaction;
+    private Satisfaction problemConfigurationSatisfaction;
 
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, LocalTime clearTime, int hintUsageCount, int rating, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, ScenarioSatisfaction scenarioSatisfaction, InteriorSatisfaction interiorSatisfaction, ProblemConfigurationSatisfaction problemConfigurationSatisfaction) {
+    @Builder
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, LocalTime clearTime, int hintUsageCount, int rating, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
         this.id = id;
         this.member = member;
         this.theme = theme;
@@ -85,14 +92,41 @@ public class Review extends BaseEntityDateTime {
         this.problemConfigurationSatisfaction = problemConfigurationSatisfaction;
     }
 
-    // TODO: 2021-05-25 create 구현
     public static Review create(Member member, Theme theme, ReviewCreateDto reviewCreateDto) {
-        return null;
+        Review review = Review.builder()
+                .member(member)
+                .theme(theme)
+                .reviewType(reviewCreateDto.getReviewType())
+                .clearTime(reviewCreateDto.getClearTime())
+                .hintUsageCount(reviewCreateDto.getHintUsageCount())
+                .rating(reviewCreateDto.getRating())
+                .comment(reviewCreateDto.getComment())
+                .perceivedDifficulty(reviewCreateDto.getPerceivedDifficulty())
+                .perceivedHorrorGrade(reviewCreateDto.getPerceivedHorrorGrade())
+                .perceivedActivity(reviewCreateDto.getPerceivedActivity())
+                .scenarioSatisfaction(reviewCreateDto.getScenarioSatisfaction())
+                .interiorSatisfaction(reviewCreateDto.getInteriorSatisfaction())
+                .problemConfigurationSatisfaction(reviewCreateDto.getProblemConfigurationSatisfaction())
+                .build();
+
+        List<ReviewImageDto> reviewImages = reviewCreateDto.getReviewImages();
+        reviewImages.forEach(reviewImageDto -> review.addReviewImage(ReviewImage.create(reviewImageDto)));
+
+        return review;
     }
 
     public void addReviewImage(ReviewImage reviewImage) {
         this.reviewImages.add(reviewImage);
         reviewImage.setReview(this);
+    }
+
+    public void addPerceivedThemeGenre(Genre genre) {
+        ReviewPerceivedThemeGenre perceivedThemeGenre = ReviewPerceivedThemeGenre.builder()
+                .review(this)
+                .genre(genre)
+                .build();
+
+        this.perceivedThemeGenres.add(perceivedThemeGenre);
     }
 
     public Long getId() {
@@ -143,15 +177,19 @@ public class Review extends BaseEntityDateTime {
         return perceivedActivity;
     }
 
-    public ScenarioSatisfaction getScenarioSatisfaction() {
+    public Satisfaction getScenarioSatisfaction() {
         return scenarioSatisfaction;
     }
 
-    public InteriorSatisfaction getInteriorSatisfaction() {
+    public Satisfaction getInteriorSatisfaction() {
         return interiorSatisfaction;
     }
 
-    public ProblemConfigurationSatisfaction getProblemConfigurationSatisfaction() {
+    public Satisfaction getProblemConfigurationSatisfaction() {
         return problemConfigurationSatisfaction;
+    }
+
+    public List<ReviewPerceivedThemeGenre> getPerceivedThemeGenres() {
+        return perceivedThemeGenres;
     }
 }

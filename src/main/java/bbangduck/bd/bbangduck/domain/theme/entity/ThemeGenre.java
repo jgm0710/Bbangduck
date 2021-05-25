@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.theme.entity;
 
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -28,4 +29,26 @@ public class ThemeGenre {
     @CreationTimestamp
     private LocalDateTime registerDate;
 
+    @Builder
+    public ThemeGenre(Long id, Theme theme, Genre genre) {
+        this.id = id;
+        this.theme = theme;
+        this.genre = genre;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Theme getTheme() {
+        return theme;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public LocalDateTime getRegisterDate() {
+        return registerDate;
+    }
 }

@@ -49,33 +49,33 @@ public class ReviewValidator {
 
     private void validateDeepReview(ReviewCreateRequestDto requestDto, Errors errors) {
         validateDetailReview(requestDto, errors);
-        if (!requestDto.perceivedDifficultyExists()) {
+        if (requestDto.perceivedDifficultyIsNull()) {
             errors.rejectValue("perceivedDifficulty","NotBlank", "상세 및 설문 리뷰에 등록될 체감 난이도를 기입해 주세요.");
         }
 
-        if (!requestDto.perceivedHorrorGradeExists()) {
+        if (requestDto.perceivedHorrorGradeIsNull()) {
             errors.rejectValue("perceivedHorrorGrade","NotBlank", "상세 및 설문 리뷰에 등록될 체감 공포도를 기입해 주세요.");
         }
 
-        if (!requestDto.perceivedActivityExists()) {
+        if (requestDto.perceivedActivityIsNull()) {
             errors.rejectValue("perceivedActivity","NotBlank", "상세 및 설문 리뷰에 등록될 체감 활동성을 기입해 주세요.");
         }
 
-        if (!requestDto.scenarioSatisfactionExists()) {
+        if (requestDto.scenarioSatisfactionIsNull()) {
             errors.rejectValue("scenarioSatisfaction","NotBlank", "상세 및 설문 리뷰에 등록될 시나리오 만족도를 기입해 주세요.");
         }
 
-        if (!requestDto.interiorSatisfactionExists()) {
+        if (requestDto.interiorSatisfactionIsNull()) {
             errors.rejectValue("interiorSatisfaction","NotBlank", "상세 및 설문 리뷰에 등록될 인테리어 만족도를 기입해 주세요.");
         }
 
-        if (!requestDto.problemConfigurationSatisfactionExists()) {
+        if (requestDto.problemConfigurationSatisfactionIsNull()) {
             errors.rejectValue("problemConfigurationSatisfaction","NotBlank", "상세 및 설문 리뷰에 등록될 문제 구성도를 기입해 주세요.");
         }
     }
 
     private void validateDetailReview(ReviewCreateRequestDto requestDto, Errors errors) {
-        if (!requestDto.commentExists()) {
+        if (requestDto.commentNotExists()) {
             errors.rejectValue("comment", "NotBlank", "상세 리뷰에 등록될 내용을 기입해 주세요.");
         }
         validateReviewImages(requestDto.getReviewImages(), errors);
@@ -101,8 +101,6 @@ public class ReviewValidator {
                     errors.rejectValue("fileName", "NotBlank", "리뷰에 등록될 이미지 파일 중 [" + i + "] 번 파일의 파일 이름을 기입하지 않았습니다.");
                 }
             });
-        } else {
-          return;
         }
     }
 }
