@@ -112,14 +112,7 @@ bootJar {
     }
 }
 
-task copyDocument(type: Copy) {
-    from file("build/asciidoc/html5")
-    into file("src/main/resources/static/docs")
-}
-
 task copyDocumentToBuild(type: Copy) {
-    dependsOn copyDocument
-
     from file("build/asciidoc/html5")
     // resources/static/docs 로 복사하여 서버가 돌아가고 있을때 /docs/index.html 로 접속하면 볼수 있음
     into file("build/resources/main/static/docs")
