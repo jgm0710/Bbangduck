@@ -54,7 +54,7 @@ public class ReviewPerceivedThemeGenre {
         return genre;
     }
 
-    public LocalDateTime getRegisterDate() {
-        return registerDate;
+    public LocalDateTime getRegisterTimes() {
+        return registerTimes;
     }
 }

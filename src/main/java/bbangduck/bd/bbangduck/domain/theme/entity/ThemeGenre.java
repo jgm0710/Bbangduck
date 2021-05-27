@@ -48,7 +48,7 @@ public class ThemeGenre {
         return genre;
     }
 
-    public LocalDateTime getRegisterDate() {
-        return registerDate;
+    public LocalDateTime getRegisterTimes() {
+        return registerTimes;
     }
 }
