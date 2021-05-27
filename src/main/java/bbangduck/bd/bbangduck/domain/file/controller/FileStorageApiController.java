@@ -7,7 +7,6 @@ import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.global.common.MD5Utils;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.global.common.exception.URLEncodingUnknownException;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -67,7 +65,7 @@ public class FileStorageApiController {
         FileStorage storedFile = fileStorageService.getStoredFile(fileName);
         MediaType parseContentType = getParseContentType(storedFile.getFileType());
         String contentDisposition = getContentDisposition(resource.getFilename());
-        LocalDateTime lastModified = storedFile.getUpdateDate();
+        LocalDateTime lastModified = storedFile.getUpdateTimes();
 
         return getResourceResponseEntity(resource, parseContentType, contentDisposition, lastModified);
     }
@@ -78,7 +76,7 @@ public class FileStorageApiController {
         FileStorage storedFile = fileStorageService.getStoredFile(fileName);
         MediaType parseContentType = getParseContentType(storedFile.getFileType());
         String contentDisposition = getContentDisposition(resource.getFilename());
-        LocalDateTime lastModified = storedFile.getUpdateDate();
+        LocalDateTime lastModified = storedFile.getUpdateTimes();
 
         return getResourceResponseEntity(resource, parseContentType, contentDisposition, lastModified);
     }

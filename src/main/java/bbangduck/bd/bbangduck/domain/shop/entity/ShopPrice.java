@@ -29,5 +29,5 @@ public class ShopPrice {
     private ShopPriceUnit priceUnit;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 }

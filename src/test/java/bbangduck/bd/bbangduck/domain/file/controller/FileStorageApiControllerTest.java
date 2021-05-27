@@ -254,7 +254,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
         ;
 
         //given
-        LocalDateTime tempUpdateDate = storedFile.getUpdateDate().minusDays(1);
+        LocalDateTime tempUpdateDate = storedFile.getUpdateTimes().minusDays(1);
         String tempEncode = MD5Utils.encode(tempUpdateDate.format(DateTimeFormatter.ISO_DATE_TIME));
 
         //when
@@ -389,7 +389,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
                 ));
 
         //given
-        LocalDateTime tempUpdateDate = storedFile.getUpdateDate().minusDays(1);
+        LocalDateTime tempUpdateDate = storedFile.getUpdateTimes().minusDays(1);
         String tempEncode = MD5Utils.encode(tempUpdateDate.format(DateTimeFormatter.ISO_DATE_TIME));
 
         //when

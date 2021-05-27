@@ -26,6 +26,6 @@ public class ThemeGenre {
     private Genre genre;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 
 }

@@ -22,7 +22,6 @@ public class MemberSearch {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "member_search_type")
     @Enumerated(EnumType.STRING)
     private MemberSearchType searchType;
 

@@ -19,7 +19,7 @@ public class Franchise extends BaseEntityDateTime {
 
     // TODO: 2021-05-24 admin 추가
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_info_id")
+    @JoinColumn(name = "admin_id")
     private AdminInfo adminInfo;
 
     @Column(name = "franchise_name")

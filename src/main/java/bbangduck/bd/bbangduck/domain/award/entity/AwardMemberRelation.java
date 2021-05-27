@@ -28,5 +28,5 @@ public class AwardMemberRelation {
     private Award award;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 }

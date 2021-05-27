@@ -32,6 +32,6 @@ public class ReviewPerceivedThemeGenre {
     private Genre genre;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 
 }

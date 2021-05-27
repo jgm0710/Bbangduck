@@ -14,7 +14,7 @@ public class ThemeRating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JoinColumn(name = "theme_rating_id")
+    @Column(name = "theme_rating_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,5 +32,5 @@ public class ThemeRating {
     private boolean openYN;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 }

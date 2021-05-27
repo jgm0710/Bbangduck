@@ -1,7 +1,5 @@
 package bbangduck.bd.bbangduck.global.common;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,17 +19,17 @@ import java.time.LocalDateTime;
 public abstract class BaseEntityDateTime {
 
     @CreationTimestamp
-    protected LocalDateTime registerDate;
+    protected LocalDateTime registerTimes;
 
     @UpdateTimestamp
-    protected LocalDateTime updateDate;
+    protected LocalDateTime updateTimes;
 
 
-    public LocalDateTime getRegisterDate() {
-        return registerDate;
+    public LocalDateTime getRegisterTimes() {
+        return registerTimes;
     }
 
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
+    public LocalDateTime getUpdateTimes() {
+        return updateTimes;
     }
 }

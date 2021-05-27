@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendStatus;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendState;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -25,6 +25,6 @@ public class MemberFriend extends BaseEntityDateTime {
     private Member friend;
 
     @Enumerated(EnumType.STRING)
-    private MemberFriendStatus status;
+    private MemberFriendState state;
 
 }
