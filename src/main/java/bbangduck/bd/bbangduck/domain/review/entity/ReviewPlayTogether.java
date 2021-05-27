@@ -27,5 +27,5 @@ public class ReviewPlayTogether {
     private Member member;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 }

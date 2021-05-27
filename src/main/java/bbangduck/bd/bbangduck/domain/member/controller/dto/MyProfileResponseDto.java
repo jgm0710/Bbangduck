@@ -31,13 +31,11 @@ public class MyProfileResponseDto {
 
     private String description;
 
-    private int reviewCount;
-
     private boolean roomEscapeRecordVisible;
 
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 
-    private LocalDateTime updateDate;
+    private LocalDateTime updateTimes;
 
     // TODO: 2021-05-15 자기 프로필 응답 손보기
     // TODO: 2021-05-15 다른 회원의 프로필 조회 응답 Dto 구현
@@ -50,8 +48,8 @@ public class MyProfileResponseDto {
                 .nickname(member.getNickname())
                 .description(member.getDescription())
                 .roomEscapeRecordVisible(member.isRoomEscapeRecordsOpenYN())
-                .registerDate(member.getRegisterDate())
-                .updateDate(member.getUpdateDate())
+                .registerTimes(member.getRegisterTimes())
+                .updateTimes(member.getUpdateTimes())
                 .build();
     }
 

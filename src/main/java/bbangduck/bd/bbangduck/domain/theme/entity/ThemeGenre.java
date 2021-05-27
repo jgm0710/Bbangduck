@@ -27,7 +27,7 @@ public class ThemeGenre {
     private Genre genre;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 
     @Builder
     public ThemeGenre(Long id, Theme theme, Genre genre) {

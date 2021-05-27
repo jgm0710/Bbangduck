@@ -27,7 +27,6 @@ public class ThemeRanking {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "theme_ranking_type")
     @Enumerated(EnumType.STRING)
     private ThemeRankingType rankingType;
 
@@ -36,6 +35,6 @@ public class ThemeRanking {
     private int ranking;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 
 }

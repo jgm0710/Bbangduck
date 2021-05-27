@@ -20,7 +20,7 @@ public class FileStorage extends BaseEntityDateTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "file_id")
+    @Column(name = "file_storage_id")
     private Long id;
 
     @Column(length = 1000)

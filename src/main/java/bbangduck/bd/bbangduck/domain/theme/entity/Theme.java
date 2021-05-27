@@ -49,6 +49,7 @@ public class Theme extends BaseEntityDateTime {
     @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
     private List<ThemeGenre> themeGenres = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
     private NumberOfPeople numberOfPeople;
 
     private Difficulty difficulty;

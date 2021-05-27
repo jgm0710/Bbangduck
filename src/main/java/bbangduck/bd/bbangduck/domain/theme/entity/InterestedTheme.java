@@ -26,5 +26,5 @@ public class InterestedTheme {
     private Theme theme;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 }

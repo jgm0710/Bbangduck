@@ -39,6 +39,7 @@ public class Review extends BaseEntityDateTime {
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
+    @Enumerated(EnumType.STRING)
     private ReviewType reviewType;
 
     private LocalTime clearTime;

@@ -33,5 +33,5 @@ public class ShopRating {
     private boolean openYN;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 }

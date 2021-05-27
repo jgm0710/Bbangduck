@@ -33,7 +33,7 @@ public class ReviewPerceivedThemeGenre {
     private Genre genre;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 
     @Builder
     public ReviewPerceivedThemeGenre(Long id, Review review, Genre genre) {

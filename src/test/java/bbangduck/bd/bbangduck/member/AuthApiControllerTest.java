@@ -60,7 +60,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         ).andDo(print());
 
         //then
-        List<String> socialTypeList = Stream.of(SocialType.values()).map(socialType -> socialType.name()).collect(Collectors.toList());
+        List<String> socialTypeList = Stream.of(SocialType.values()).map(Enum::name).collect(Collectors.toList());
         perform
                 .andExpect(status().isCreated())
                 .andDo(document(
@@ -85,10 +85,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.memberInfo.socialAccounts[0].socialId").description("Social 인증을 통해 가입된 회원의 Social ID"),
                                 fieldWithPath("data.memberInfo.socialAccounts[0].socialType").description("Social 인증을 통해 가입된 회원이 사용한 Social 매체"),
                                 fieldWithPath("data.memberInfo.description").description("간략한 자기 소개 (null)"),
-                                fieldWithPath("data.memberInfo.reviewCount").description("작성한 리뷰 수 (null)"),
                                 fieldWithPath("data.memberInfo.roomEscapeRecordVisible").description("방탈출 기록 공개 여부 (Default True)"),
-                                fieldWithPath("data.memberInfo.registerDate").description("가입 날짜"),
-                                fieldWithPath("data.memberInfo.updateDate").description("회원 정보 최종 수정 날짜"),
+                                fieldWithPath("data.memberInfo.registerTimes").description("가입 날짜"),
+                                fieldWithPath("data.memberInfo.updateTimes").description("회원 정보 최종 수정 날짜"),
                                 fieldWithPath("data.tokenInfo.memberId").description("가입된 회원의 식별 ID"),
                                 fieldWithPath("data.tokenInfo.accessToken.header").description("가입된 회원에게 발급된 인증 JWT 토큰의 Header"),
                                 fieldWithPath("data.tokenInfo.accessToken.payload").description("가입된 회원에게 발급된 인증 JWT 토큰의 Payload"),

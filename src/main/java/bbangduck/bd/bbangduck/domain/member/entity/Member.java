@@ -47,6 +47,7 @@ public class Member extends BaseEntityDateTime {
 
     private String description;
 
+    @Column(name = "room_escape_records_open_yn")
     private boolean roomEscapeRecordsOpenYN;
 
     @Embedded
@@ -165,8 +166,8 @@ public class Member extends BaseEntityDateTime {
                 ", roomEscapeRecordsOpenYN=" + roomEscapeRecordsOpenYN +
                 ", refreshInfo=" + refreshInfo +
                 ", roles=" + roles +
-                ", registerDate=" + registerDate +
-                ", updateDate=" + updateDate +
+                ", registerTimes=" + registerTimes +
+                ", updateDate=" + updateTimes +
                 '}';
     }
 

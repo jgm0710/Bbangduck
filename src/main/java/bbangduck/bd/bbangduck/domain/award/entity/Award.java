@@ -30,5 +30,5 @@ public class Award extends BaseEntityDateTime {
     private AwardCondition condition;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 }

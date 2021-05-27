@@ -23,7 +23,7 @@ public class ThemeDetail {
 
     private LocalTime startTime;
 
-    private LocalDateTime endTime;
+    private LocalTime endTime;
 
     private LocalDate runDate;
 
