@@ -31,8 +31,6 @@ public class MyProfileResponseDto {
 
     private String description;
 
-    private int reviewCount;
-
     private boolean roomEscapeRecordVisible;
 
     private LocalDateTime registerTimes;

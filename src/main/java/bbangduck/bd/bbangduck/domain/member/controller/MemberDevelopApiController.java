@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignInRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.member.controller.dto.MyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberDevelopService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,21 +42,28 @@ public class MemberDevelopApiController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_DEVELOP')")
-    public ResponseEntity<ResponseDto<List<Member>>> getMemberListByDeveloper(
+    public ResponseEntity<ResponseDto<List<MyProfileResponseDto>>> getMemberListByDeveloper(
             @ModelAttribute CriteriaDto criteriaDto
     ) {
         List<Member> memberList = memberDevelopService.getMemberList(criteriaDto);
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_LIST_BY_DEVELOPER_SUCCESS, memberList));
+        List<MyProfileResponseDto> myProfileResponseDtos = new ArrayList<>();
+        memberList.forEach(member -> {
+            MyProfileResponseDto myProfileResponseDto = MyProfileResponseDto.convert(member);
+            myProfileResponseDtos.add(myProfileResponseDto);
+        });
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_LIST_BY_DEVELOPER_SUCCESS, myProfileResponseDtos));
     }
 
     @GetMapping("/{memberId}")
     @PreAuthorize("hasRole('ROLE_DEVELOP')")
-    public ResponseEntity<ResponseDto<Member>> getMemberByDeveloper(
+    public ResponseEntity<ResponseDto<MyProfileResponseDto>> getMemberByDeveloper(
             @PathVariable Long memberId
     ) {
         Member member = memberService.getMember(memberId);
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_BY_DEVELOPER_SUCCESS, member));
+        MyProfileResponseDto myProfileResponseDto = MyProfileResponseDto.convert(member);
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_BY_DEVELOPER_SUCCESS, myProfileResponseDto));
     }
 
     @DeleteMapping("/{memberId}")
