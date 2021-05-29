@@ -4,8 +4,11 @@ import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
+import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberFriendQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
@@ -37,6 +40,8 @@ public class ReviewService {
 
     private final MemberPlayInclinationQueryRepository memberPlayInclinationQueryRepository;
 
+    private final MemberFriendQueryRepository memberFriendQueryRepository;
+
     private final ThemeRepository themeRepository;
 
     private final GenreRepository genreRepository;
@@ -51,30 +56,48 @@ public class ReviewService {
      * 리뷰 체감 장르가 잘 등록되는지
      * 장르 코드로 장르를 찾을 수 없는 경우
      * 리뷰 체감 장르가 잘 저장되는지
+     * 친구가 아닌 사람을 함께 플레이한 친구에 등록한 경우
+     * 친구 추가 요청은 보냈지만 수락되지 않은 회원을 함께 플레이한 친구에 등록한 경우
      */
     @Transactional
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         Theme findTheme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-        List<Genre> themeGenres = findTheme.getGenres();
 
         Review review = Review.create(findMember, findTheme, reviewCreateDto);
+        addPerceivedGenresToReview(review, reviewCreateDto.getGenreCodes());
+        addPlayTogetherFriendsToReview(review, memberId, reviewCreateDto.getFriendIds());
         reviewRepository.save(review);
 
-        List<String> genreCodes = reviewCreateDto.getGenreCodes();
-        genreCodes.forEach(genreCode -> {
-            Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
-            review.addPerceivedThemeGenre(genre);
-        });
+        reflectingPropensityOfMemberToPlay(findMember, findTheme.getGenres());
 
+        return review.getId();
+    }
+
+    public Review getReview(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+    }
+
+    private void addPlayTogetherFriendsToReview(Review review, Long memberId, List<Long> friendIds) {
+        friendIds.forEach(friendId -> {
+            Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAllowedFriendByMemberAndFriend(memberId, friendId);
+            if (optionalMemberFriend.isEmpty()) {
+                throw new RelationOfMemberAndFriendIsNotFriendException(memberId, friendId);
+            }
+            MemberFriend memberFriend = optionalMemberFriend.get();
+            review.addPlayTogether(memberFriend.getFriend());
+        });
+    }
+
+    private void reflectingPropensityOfMemberToPlay(Member member, List<Genre> themeGenres) {
         themeGenres.forEach(genre -> {
-            Optional<MemberPlayInclination> optionalMemberPlayInclination = memberPlayInclinationQueryRepository.findOneByMemberAndGenre(memberId, genre.getId());
+            Optional<MemberPlayInclination> optionalMemberPlayInclination = memberPlayInclinationQueryRepository.findOneByMemberAndGenre(member.getId(), genre.getId());
             if (optionalMemberPlayInclination.isPresent()) {
                 MemberPlayInclination memberPlayInclination = optionalMemberPlayInclination.get();
                 memberPlayInclination.increasePlayCount();
             } else {
                 MemberPlayInclination newPlayInclination = MemberPlayInclination.builder()
-                        .member(findMember)
+                        .member(member)
                         .genre(genre)
                         .playCount(1)
                         .build();
@@ -82,11 +105,12 @@ public class ReviewService {
                 memberPlayInclinationRepository.save(newPlayInclination);
             }
         });
-
-        return review.getId();
     }
 
-    public Review getReview(Long reviewId) {
-        return reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+    private void addPerceivedGenresToReview(Review review, List<String> genreCodes) {
+        genreCodes.forEach(genreCode -> {
+            Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
+            review.addPerceivedThemeGenre(genre);
+        });
     }
 }

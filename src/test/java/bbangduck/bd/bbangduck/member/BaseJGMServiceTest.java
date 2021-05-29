@@ -7,10 +7,9 @@ import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
-import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
-import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.domain.member.repository.SocialAccountRepository;
+import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
@@ -29,6 +28,12 @@ import java.net.URLConnection;
 
 @Disabled
 public class BaseJGMServiceTest extends BaseTest {
+
+    @Autowired
+    protected MemberPlayInclinationQueryRepository memberPlayInclinationQueryRepository;
+
+    @Autowired
+    protected MemberFriendRepository memberFriendRepository;
 
     @Autowired
     protected ReviewService reviewService;
@@ -66,6 +71,12 @@ public class BaseJGMServiceTest extends BaseTest {
     @Autowired
     protected GenreRepository genreRepository;
 
+    @Autowired
+    protected MemberPlayInclinationRepository memberPlayInclinationRepository;
+
+    @Autowired
+    protected ReviewRepository reviewRepository;
+
     protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
 
     protected final String IMAGE_FILE_CLASS_PATH = "/static/test/puppy.jpg";
@@ -76,6 +87,10 @@ public class BaseJGMServiceTest extends BaseTest {
 
     @BeforeEach
     public void setUp() {
+        reviewRepository.deleteAll();
+        themeRepository.deleteAll();
+        memberPlayInclinationRepository.deleteAll();
+        memberFriendRepository.deleteAll();
         memberRepository.deleteAll();
     }
 

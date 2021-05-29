@@ -38,6 +38,8 @@ public class ReviewCreateRequestDto {
     @NotNull(message = "테마에 대한 평점을 기입해 주세요.")
     private Integer rating;
 
+    private List<OnlyFriendIdRequestDto> friendIds;
+
     /**
      * 상세 리뷰 요청 body
      */
@@ -111,12 +113,14 @@ public class ReviewCreateRequestDto {
 
     public ReviewCreateDto toServiceDto() {
         List<ReviewImageDto> reviewImageDtos = reviewImages.stream().map(ReviewImageRequestDto::toServiceDto).collect(Collectors.toList());
+        List<Long> friendIdsLong = friendIds.stream().map(OnlyFriendIdRequestDto::getFriendId).collect(Collectors.toList());
 
         return ReviewCreateDto.builder()
                 .reviewType(reviewType)
                 .clearTime(clearTime)
                 .hintUsageCount(hintUsageCount)
                 .rating(rating)
+                .friendIds(friendIdsLong)
                 .reviewImages(reviewImageDtos)
                 .comment(comment)
                 .genreCodes(genreCodes)

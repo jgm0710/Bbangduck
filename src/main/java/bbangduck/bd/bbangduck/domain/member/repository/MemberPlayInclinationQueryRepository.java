@@ -27,7 +27,7 @@ public class MemberPlayInclinationQueryRepository {
 
     public List<MemberPlayInclination> findTopByMember(Long memberId, long limit) {
         return queryFactory
-                .select(memberPlayInclination)
+                .selectFrom(memberPlayInclination)
                 .where(memberIdEq(memberId))
                 .orderBy(playCountDesc())
                 .offset(0)
@@ -37,7 +37,7 @@ public class MemberPlayInclinationQueryRepository {
 
     public List<MemberPlayInclination> findAllByMember(Long memberId) {
         return queryFactory
-                .select(memberPlayInclination)
+                .selectFrom(memberPlayInclination)
                 .where(memberIdEq(memberId))
                 .orderBy(playCountDesc())
                 .fetch();

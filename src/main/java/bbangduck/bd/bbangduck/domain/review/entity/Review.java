@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -47,6 +48,9 @@ public class Review extends BaseEntityDateTime {
     private int hintUsageCount;
 
     private int rating;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private List<ReviewPlayTogether> reviewPlayTogethers = new ArrayList<>();
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewImage> reviewImages = new ArrayList<>();
@@ -93,6 +97,10 @@ public class Review extends BaseEntityDateTime {
         this.problemConfigurationSatisfaction = problemConfigurationSatisfaction;
     }
 
+    public List<Member> getPlayTogetherMembers() {
+        return this.reviewPlayTogethers.stream().map(ReviewPlayTogether::getMember).collect(Collectors.toList());
+    }
+
     public static Review create(Member member, Theme theme, ReviewCreateDto reviewCreateDto) {
         Review review = Review.builder()
                 .member(member)
@@ -114,6 +122,15 @@ public class Review extends BaseEntityDateTime {
         reviewImages.forEach(reviewImageDto -> review.addReviewImage(ReviewImage.create(reviewImageDto)));
 
         return review;
+    }
+
+    public void addPlayTogether(Member friend) {
+        ReviewPlayTogether reviewPlayTogether = ReviewPlayTogether.builder()
+                .review(this)
+                .member(friend)
+                .build();
+
+        this.reviewPlayTogethers.add(reviewPlayTogether);
     }
 
     public void addReviewImage(ReviewImage reviewImage) {

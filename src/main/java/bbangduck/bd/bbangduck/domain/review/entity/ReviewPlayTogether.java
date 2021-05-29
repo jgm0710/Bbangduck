@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -28,4 +29,27 @@ public class ReviewPlayTogether {
 
     @CreationTimestamp
     private LocalDateTime registerTimes;
+
+    @Builder
+    public ReviewPlayTogether(Long id, Review review, Member member) {
+        this.id = id;
+        this.review = review;
+        this.member = member;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public LocalDateTime getRegisterTimes() {
+        return registerTimes;
+    }
 }

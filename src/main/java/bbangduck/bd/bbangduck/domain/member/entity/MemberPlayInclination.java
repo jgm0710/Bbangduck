@@ -44,4 +44,20 @@ public class MemberPlayInclination extends BaseEntityDateTime {
     public void increasePlayCount() {
         this.playCount++;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public int getPlayCount() {
+        return playCount;
+    }
 }

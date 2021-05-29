@@ -1,14 +1,12 @@
 package bbangduck.bd.bbangduck.domain.review.service.dto;
 
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewPerceivedThemeGenre;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 // TODO: 2021-05-23 주석 달기
@@ -26,6 +24,8 @@ public class ReviewCreateDto {
     private Integer hintUsageCount;
 
     private Integer rating;
+
+    private List<Long> friendIds;
 
     /**
      * 상세 리뷰
@@ -54,11 +54,12 @@ public class ReviewCreateDto {
     private Satisfaction problemConfigurationSatisfaction;
 
     @Builder
-    public ReviewCreateDto(ReviewType reviewType, LocalTime clearTime, Integer hintUsageCount, Integer rating, List<ReviewImageDto> reviewImages, String comment, List<String> genreCodes, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
+    public ReviewCreateDto(ReviewType reviewType, LocalTime clearTime, Integer hintUsageCount, Integer rating, List<Long> friendIds, List<ReviewImageDto> reviewImages, String comment, List<String> genreCodes, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
         this.reviewType = reviewType;
         this.clearTime = clearTime;
         this.hintUsageCount = hintUsageCount;
         this.rating = rating;
+        this.friendIds = friendIds;
         this.reviewImages = reviewImages;
         this.comment = comment;
         this.genreCodes = genreCodes;
@@ -120,5 +121,9 @@ public class ReviewCreateDto {
 
     public List<String> getGenreCodes() {
         return genreCodes;
+    }
+
+    public List<Long> getFriendIds() {
+        return friendIds;
     }
 }

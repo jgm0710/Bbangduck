@@ -5,8 +5,12 @@ import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpReque
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberFriendRepository;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
+import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +47,18 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     @Autowired
     protected MemberService memberService;
 
+    @Autowired
+    protected ReviewRepository reviewRepository;
+
+    @Autowired
+    protected ThemeRepository themeRepository;
+
+    @Autowired
+    protected MemberPlayInclinationRepository memberPlayInclinationRepository;
+
+    @Autowired
+    protected MemberFriendRepository memberFriendRepository;
+
     protected static int REFRESH_TOKEN_EXPIRED_DATE;
 
     protected static String JWT_TOKEN_HEADER_DESCRIPTION = "리소스 접근 시 회원 인증을 위해 필요한 JWT 토큰 인증 헤더";
@@ -70,6 +86,10 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     @BeforeEach
     public void setUp() {
         REFRESH_TOKEN_EXPIRED_DATE = securityJwtProperties.getRefreshTokenExpiredDate();
+        reviewRepository.deleteAll();
+        themeRepository.deleteAll();
+        memberPlayInclinationRepository.deleteAll();
+        memberFriendRepository.deleteAll();
         memberRepository.deleteAll();
     }
 
