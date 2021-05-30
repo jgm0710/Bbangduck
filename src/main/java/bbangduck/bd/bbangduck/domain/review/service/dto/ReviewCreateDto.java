@@ -9,7 +9,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalTime;
 import java.util.List;
 
-// TODO: 2021-05-23 주석 달기
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 리뷰 생성에 대한 Service 로직 구현 시 필요한 데이터들을 Dto 단위로 이동시키기 위해 구현한 Service Dto
+ * Controller 단과의 의존 관계를 최소화 하기 위해 구현
+ */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewCreateDto {
 
@@ -38,7 +43,6 @@ public class ReviewCreateDto {
     /**
      * 테마 설문 조사 추가 작성 리뷰
      */
-    // TODO: 2021-05-25 리뷰 체감 장르 부분 추가
     private List<String> genreCodes;
 
     private Difficulty perceivedDifficulty;
@@ -125,5 +129,9 @@ public class ReviewCreateDto {
 
     public List<Long> getFriendIds() {
         return friendIds;
+    }
+
+    public boolean reviewImagesExists() {
+        return reviewImages != null && !reviewImages.isEmpty();
     }
 }

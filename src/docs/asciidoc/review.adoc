@@ -1,0 +1,191 @@
+= BbangDuck API Guide
+정구민;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+:docinfo: shared-head
+
+[[overview]]
+= 개요
+== link:/docs/index.html[home]
+== 오류 코드
+
+|===
+| 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
+
+| <<resources-create-review>>
+| 인증되지 않은 사용자가 리소스에 접근하는 경우
+| 401
+| 1401
+| 인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.
+
+| <<resources-create-review>>
+| 탈퇴하거나 활동이 정지된 회원이 리소스에 접근하는 경우
+| 403
+| 1403
+| 해당 리소스에 접근할 수 없는 회원입니다.
+
+| <<resources-create-review>>
+| 리뷰를 생성할 테마를 찾을 수 없는 경우
+| 404
+| 5401
+| 해당 테마가 존재하지 않습니다.
+
+| <<resources-create-review>>
+| 리뷰 생성 시 등록하는 함께 플레이 한 친구와 인증된 회원과의 관계가 친구 수락 상태가 아닌 경우
+| 400
+| 2412
+| 요청된 두 회원은 서로 친구 관계가 아닙니다.
+
+| <<resources-create-review>>
+| 리뷰 생성 시 리뷰의 종류에 상관없이 필수적으로 기입해야하는 사항을 기입하지 않은 경우
+| 400
+| 4401
+| 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-create-simple-review>>
+| 간단 리뷰 생성 시 간단 리뷰와는 무관한 정보를 기입한 경우
+| 400
+| 4402
+| 간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-create-detail-review>>
+| 상세 리뷰 생성 시 필요한 값을 규칙에 맞게 기입하지 않은 경우
+| 400
+| 4403
+| 상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-create-deep-review>>
+| 상세 및 추가 설문 작성 리뷰 생성 시 필요한 값을 규칙에 맞게 기입하지 않은 경우
+| 400
+| 4404
+| 상세 및 추가 설문 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-create-deep-review>>
+| 상세 및 추가 설문 작성 리뷰 생성 시 등록한 체감 장르 코드를 통해 장를 찾을 수 없는 경우
+| 404
+| 6401
+| 해당 장르가 존재하지 않습니다.
+
+|===
+
+== 히스토리
+
+히스토리는 문서의 변경이력을 표시합니다.
+
+2021-05-30:::
+* <<resources-create-review>> 기능 구현
+
+[[resources-review]]
+= 리뷰 관련 리소스
+
+[[resources-create-review]]
+== 리뷰 생성
+
+* `POST` `/api/themes/{themeId}/reviews`
+
+* 리뷰의 종류는 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 작성 리뷰로 나뉩니다.
+** 3 종류의 리뷰 생성을 하나의 API 요청을 통해 관리합니다.
+** 각 리뷰의 종류에 따라 입력 규칙이 달라집니다.
+
+* 인증된 회원이 테마에 대한 리뷰를 생성합니다.
+** 리뷰를 작성하는 회원에 대한 정보는 X-AUTH-TOKEN 을 통해서 얻어집니다.
+** 인증되지 않은 사용자는 해당 리소스에 접근이 불가능합니다.
+
+* 요청이 성공하면 status, message 가 응됩니다. 별도의 data 는 응답되지 않습니다.
+** 생성된 리뷰에 대한 정보를 조회하려면 리뷰 조회 리소스를 통해 조회하면 됩니다.
+** 응답 Header 에 Location 부분에 리뷰 조회 API 요청에 대한 URL 값이 있습니다.
+
+* 리뷰에 함께한 친구를 등록할 경우 인증된 회원과 실제 친구 관계인 회원이 아니면 해당 요청은 실패합니다.
+
+* 리뷰에 이미지를 등록할 경우 이미지 파일 업로드 리소스를 통해 이미지 파일을 업로드 하고, 해당 요청에 응답으로 나온 파일 정보를 통해
+리뷰에 등록힐 이미지 파일에 대한 정보를 기입합니다.
+
+[[resources-create-review-empty]]
+==== 리뷰 생성 실패 - 아무 정보도 입력하지 않은 경우
+
+* 응답 HttpStatus : `400 Bad Request`
+
+operation::create-review-empty[snippets='response-fields,curl-request,http-response']
+
+[[resources-create-simple-review]]
+=== 간단 리뷰 생성
+
+* 간단 리뷰 생성의 경우 Review Type 을 `SIMPLE` 로 기입해야 합니다.
+
+* 간단 리뷰 생성의 경우 리뷰 타입, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록 만을 기입할 수 있습니다.
+** 함께 플레이한 친구 ID 목록은 기입하지 않아도 상관없으나, 다른 정보는 반드시 기입해야 합니다.
+
+[[resources-create-simple-review-success]]
+==== 간단 리뷰 생성 성공
+
+* 응답 HttpStatus : `201 Created`
+
+operation::create-simple-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-create-simple-review-request-over-data]]
+==== 간단 리뷰 생성 시 간단 리뷰와는 무관한 정보를 기입한 경우
+
+* 응답 HttpStatus : `400 Bad Request`
+
+* Review Type 이 `SIMPLE` 일 경우 상세 리뷰나, 추가 설문 리뷰에 해당하는 정보를 기입하면 요청에 실패합니다.
+
+operation::create-simple-review-request-over-data[snippets='response-fields,curl-request,http-response']
+
+[[resources-create-detail-review]]
+=== 상세 리뷰 생성
+
+* 상세 리뷰 생성의 경우 Review Type 을 `DETAIL` 로 기입해야 합니다.
+
+* 상세 리뷰 생성의 경우 리뷰 타입, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록, 이미지 파일 목록에 대한 정보, 코멘트 만을 기입할 수 있습니다.
+** 함께 플레이한 친구 ID 목록과 이미지 파일에 대한 정보는 기입하지 않아도 상관없으나, 다른 정보는 반드시 기입해야 합니다.
+
+[[resources-create-detail-review-success]]
+==== 상세 리뷰 생성 성공
+
+* 응답 HttpStatus : `201 Created`
+
+operation::create-detail-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-create-detail-review-request-over-data]]
+==== 상세 리뷰 생성 시 상세 리뷰와는 무관한 벙보를 기입한 경우
+
+* 응답 HttpStatus : `400 Bad Request`
+
+* 상세 리뷰 생성 시 상세 리뷰에 대한 입력 규칙을 맞추지 않은 대표적인 예시입니다.
+
+* 해당 요청 외에 다른 경우에도 해당 응답이 발생합니다.
+** 코멘트에 대한 정보를 기입하지 않은 경우
+** 이미지 파일 목록 등록 시, 파일 저장소 ID 는 기입하였으나, 파일 이름을 기입하지 않은 경우
+** 이미지 파일 목록 등록 시, 파일 이름은 기입하였으나, 파일 저장소 ID 는 기입하지 않은 경우
+
+operation::create-detail-review-request-over-data[snippets='response-fields,curl-request,http-response']
+
+
+[[resources-create-deep-review]]
+=== 상세 및 추가 설문 작성 리뷰 생성
+
+* 상세 및 추가 설문 작성 리뷰 생성의 경우 Review Type 을 `DEEP` 로 기입해야 합니다.
+
+* 함께 플레이한 친구 ID 목록과 이미지 파일에 대한 정보는 외에는 모두 기입해야 합니다.
+
+[[resources-create-deep-review-success]]
+==== 상세 및 추가 설문 작성 리뷰 생성 성공
+
+* 응답 HttpStatus : `201 Created`
+
+operation::create-deep-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-create-deep-review-not-deep]]
+==== 상세 및 추가 설문 작성 리뷰 생성 시 필요한 정보를 모두 기입하지 않은 경우
+
+* 응답 HttpStatus : `400 Bad Request`
+
+* 상세 및 추가 설문 작성 리뷰를 생성할 경우 이미지 파일에 대한 정보, 친구 목록에 대한 정보를 제외한 모든 정보를 기입해야 합니다.
+
+operation::create-deep-review-not-deep[snippets='response-fields,curl-request,http-response']

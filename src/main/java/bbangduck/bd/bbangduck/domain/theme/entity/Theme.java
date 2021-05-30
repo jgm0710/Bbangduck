@@ -52,8 +52,10 @@ public class Theme extends BaseEntityDateTime {
     @Enumerated(EnumType.STRING)
     private NumberOfPeople numberOfPeople;
 
+    @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
+    @Enumerated(EnumType.STRING)
     private Activity activity;
 
     private LocalTime playTime;

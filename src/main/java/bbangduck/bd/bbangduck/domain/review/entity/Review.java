@@ -118,8 +118,10 @@ public class Review extends BaseEntityDateTime {
                 .problemConfigurationSatisfaction(reviewCreateDto.getProblemConfigurationSatisfaction())
                 .build();
 
-        List<ReviewImageDto> reviewImages = reviewCreateDto.getReviewImages();
-        reviewImages.forEach(reviewImageDto -> review.addReviewImage(ReviewImage.create(reviewImageDto)));
+        if (reviewCreateDto.reviewImagesExists()) {
+            List<ReviewImageDto> reviewImages = reviewCreateDto.getReviewImages();
+            reviewImages.forEach(reviewImageDto -> review.addReviewImage(ReviewImage.create(reviewImageDto)));
+        }
 
         return review;
     }

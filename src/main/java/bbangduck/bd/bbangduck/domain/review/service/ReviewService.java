@@ -26,7 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-// TODO: 2021-05-23 주석 달기
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 리뷰와 관련된 비즈니스 로직을 정의하기 위해 구현한 Service
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -46,19 +50,6 @@ public class ReviewService {
 
     private final GenreRepository genreRepository;
 
-    // TODO: 2021-05-25 Test
-    /**
-     * 회원을 찾을 수 없는 경우
-     * 테마를 찾을 수 없는 경우
-     * 테마에 장르가 등록되어 있지 않은 경우
-     * 기존에 회원 성향에 테마의 장르가 있었던 경우 잘 증가하는지
-     * 기존에 회원 성향에 테마의 장르가 없었떤 경우 잘 생성되는지
-     * 리뷰 체감 장르가 잘 등록되는지
-     * 장르 코드로 장르를 찾을 수 없는 경우
-     * 리뷰 체감 장르가 잘 저장되는지
-     * 친구가 아닌 사람을 함께 플레이한 친구에 등록한 경우
-     * 친구 추가 요청은 보냈지만 수락되지 않은 회원을 함께 플레이한 친구에 등록한 경우
-     */
     @Transactional
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
@@ -79,14 +70,20 @@ public class ReviewService {
     }
 
     private void addPlayTogetherFriendsToReview(Review review, Long memberId, List<Long> friendIds) {
-        friendIds.forEach(friendId -> {
-            Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAllowedFriendByMemberAndFriend(memberId, friendId);
-            if (optionalMemberFriend.isEmpty()) {
-                throw new RelationOfMemberAndFriendIsNotFriendException(memberId, friendId);
-            }
-            MemberFriend memberFriend = optionalMemberFriend.get();
-            review.addPlayTogether(memberFriend.getFriend());
-        });
+        if (friendIdsExists(friendIds)) {
+            friendIds.forEach(friendId -> {
+                Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAllowedFriendByMemberAndFriend(memberId, friendId);
+                if (optionalMemberFriend.isEmpty()) {
+                    throw new RelationOfMemberAndFriendIsNotFriendException(memberId, friendId);
+                }
+                MemberFriend memberFriend = optionalMemberFriend.get();
+                review.addPlayTogether(memberFriend.getFriend());
+            });
+        }
+    }
+
+    private boolean friendIdsExists(List<Long> friendIds) {
+        return friendIds != null && !friendIds.isEmpty();
     }
 
     private void reflectingPropensityOfMemberToPlay(Member member, List<Genre> themeGenres) {
@@ -108,9 +105,15 @@ public class ReviewService {
     }
 
     private void addPerceivedGenresToReview(Review review, List<String> genreCodes) {
-        genreCodes.forEach(genreCode -> {
-            Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
-            review.addPerceivedThemeGenre(genre);
-        });
+        if (genreCodesExists(genreCodes)) {
+            genreCodes.forEach(genreCode -> {
+                Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
+                review.addPerceivedThemeGenre(genre);
+            });
+        }
+    }
+
+    private boolean genreCodesExists(List<String> genreCodes) {
+        return genreCodes != null&&!genreCodes.isEmpty();
     }
 }

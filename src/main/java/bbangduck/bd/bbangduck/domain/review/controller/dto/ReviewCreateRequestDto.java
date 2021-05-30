@@ -4,6 +4,7 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +13,15 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// TODO: 2021-05-23 주석 달기
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 리뷰 생성 시 클라이언트로부터 리뷰 생성에 필요한 데이터를 받을 때 사용할 Dto
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -38,13 +44,13 @@ public class ReviewCreateRequestDto {
     @NotNull(message = "테마에 대한 평점을 기입해 주세요.")
     private Integer rating;
 
-    private List<OnlyFriendIdRequestDto> friendIds;
+    private List<Long> friendIds;
 
     /**
      * 상세 리뷰 요청 body
      */
 
-    private List<ReviewImageRequestDto> reviewImages = null;
+    private List<ReviewImageRequestDto> reviewImages;
 
     @Length(max = 3000)
     private String comment;
@@ -52,7 +58,6 @@ public class ReviewCreateRequestDto {
     /**
      * 테마 설문 조사 추가 작성 리뷰 요청 body
      */
-    // TODO: 2021-05-25 리뷰 체감 장르 부분 추가
     private List<String> genreCodes;
 
     private Difficulty perceivedDifficulty;
@@ -67,6 +72,7 @@ public class ReviewCreateRequestDto {
 
     private Satisfaction problemConfigurationSatisfaction;
 
+    @JsonIgnore
     public boolean isSimpleReview() {
         return !reviewImagesExists() && commentNotExists() && perceivedDifficultyIsNull() && perceivedHorrorGradeIsNull() &&
                 perceivedActivityIsNull() && scenarioSatisfactionIsNull() && interiorSatisfactionIsNull() &&
@@ -105,22 +111,34 @@ public class ReviewCreateRequestDto {
         return reviewImages != null && !reviewImages.isEmpty();
     }
 
+    public boolean genreCodesExists() {
+        return genreCodes != null && !genreCodes.isEmpty();
+    }
+
+    @JsonIgnore
     public boolean isDetailReview() {
         return perceivedDifficultyIsNull() && perceivedHorrorGradeIsNull() &&
                 perceivedActivityIsNull() && scenarioSatisfactionIsNull() && interiorSatisfactionIsNull() &&
                 problemConfigurationSatisfactionIsNull();
     }
 
+    public boolean friendIdsExists() {
+        return friendIds != null && !friendIds.isEmpty();
+    }
+
     public ReviewCreateDto toServiceDto() {
-        List<ReviewImageDto> reviewImageDtos = reviewImages.stream().map(ReviewImageRequestDto::toServiceDto).collect(Collectors.toList());
-        List<Long> friendIdsLong = friendIds.stream().map(OnlyFriendIdRequestDto::getFriendId).collect(Collectors.toList());
+
+        List<ReviewImageDto> reviewImageDtos = null;
+        if (reviewImagesExists()) {
+            reviewImageDtos = reviewImages.stream().map(ReviewImageRequestDto::toServiceDto).collect(Collectors.toList());
+        }
 
         return ReviewCreateDto.builder()
                 .reviewType(reviewType)
                 .clearTime(clearTime)
                 .hintUsageCount(hintUsageCount)
                 .rating(rating)
-                .friendIds(friendIdsLong)
+                .friendIds(friendIds)
                 .reviewImages(reviewImageDtos)
                 .comment(comment)
                 .genreCodes(genreCodes)

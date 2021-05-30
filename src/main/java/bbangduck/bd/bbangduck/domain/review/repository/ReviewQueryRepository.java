@@ -10,7 +10,11 @@ import java.util.List;
 
 import static bbangduck.bd.bbangduck.domain.review.entity.QReview.review;
 
-// TODO: 2021-05-23 주석 달기
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 리뷰에 대해 기본 JpaRepository 보다 복잡한 쿼리가 필요한 경우 사용할 Repository
+ */
 @Repository
 @RequiredArgsConstructor
 public class ReviewQueryRepository {
@@ -18,11 +22,9 @@ public class ReviewQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<Review> findByMember(Long memberId) {
-        List<Review> reviews = queryFactory
+        return queryFactory
                 .selectFrom(review)
                 .where(review.member.id.eq(memberId))
                 .fetch();
-
-        return reviews;
     }
 }

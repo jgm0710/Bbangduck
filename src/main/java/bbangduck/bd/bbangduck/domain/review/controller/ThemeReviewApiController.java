@@ -3,9 +3,10 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
+import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.global.common.ThrowUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,22 +15,28 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
+import java.net.URI;
 
-// TODO: 2021-05-23 주석 달기
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 테마와 관련된 리뷰 요청 API 를 구현한 Controller
+ */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/themes/{themeId}/review")
+@RequestMapping("/api/themes/{themeId}/reviews")
 public class ThemeReviewApiController {
 
     private final ReviewService reviewService;
 
     private final ReviewValidator reviewValidator;
 
-    // TODO: 2021-05-22 리뷰 생성 기능 구현
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity createReview(
+    public ResponseEntity<ResponseDto<Object>> createReview(
             @PathVariable Long themeId,
             @RequestBody @Valid ReviewCreateRequestDto requestDto,
             Errors errors,
@@ -37,17 +44,35 @@ public class ThemeReviewApiController {
     ) {
         reviewValidator.validateCreateView(requestDto, errors);
 
-        reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
-        return null;
+        Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
+        URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId)).toUri();
+        ResponseStatus responseStatus = getCreateReviewResponseStatus(requestDto.getReviewType());
+
+        assert responseStatus != null;
+        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(responseStatus, null));
 
     }
 
+    private ResponseStatus getCreateReviewResponseStatus(ReviewType reviewType) {
+        switch (reviewType) {
+            case SIMPLE:
+                return ResponseStatus.CREATE_SIMPLE_REVIEW_SUCCESS;
+            case DETAIL:
+                return ResponseStatus.CREATE_DETAIL_REVIEW_SUCCESS;
+            case DEEP:
+                return ResponseStatus.CREATE_DEEP_REVIEW_SUCCESS;
+            default:
+                return null;
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity getReviewList(
+            @PathVariable Long themeId
+    ) {
+        return null;
+    }
+
     // TODO: 2021-05-22 테마별 리뷰 목록 기능 구현
-
-    // TODO: 2021-05-22 특정 회원이 작성한 리뷰 목록 기능 구현
-
-    // TODO: 2021-05-22 리뷰 수정 기능 구현
-
-    // TODO: 2021-05-22 리뷰 삭제 기능 구현
 
 }

@@ -29,7 +29,7 @@ public class ShopPrice {
     private ShopPriceUnit priceUnit;
 
     @CreationTimestamp
-    private LocalDateTime registerDate;
+    private LocalDateTime registerTimes;
 
     public void setShop(Shop shop) {
         this.shop = shop;

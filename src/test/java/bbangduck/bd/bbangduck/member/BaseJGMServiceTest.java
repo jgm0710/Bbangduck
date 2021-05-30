@@ -103,7 +103,7 @@ public class BaseJGMServiceTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() {
+    public void genreSetUp() {
         Genre horror = Genre.builder()
                 .code("HR1")
                 .name("공포")

@@ -11,7 +11,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-// TODO: 2021-05-23 주석 달기
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 리뷰 생성, 수정 요청 등에서 리뷰에 등록할 이미지 파일에 대한 정보를 받을 때 사용할 Dto
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -29,7 +33,11 @@ public class ReviewImageRequestDto {
     }
 
     public boolean fileNameExists() {
-        return fileName != null && !fileName.isBlank();
+        if (fileName == null) {
+            return false;
+        } else {
+            return !fileName.isBlank();
+        }
     }
 
     public ReviewImageDto toServiceDto() {
