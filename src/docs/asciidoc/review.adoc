@@ -81,6 +81,11 @@
 2021-05-30:::
 * <<resources-create-review>> 기능 구현
 
+2021-05-31:::
+* <<resources-create-review>> 수정
+** 리뷰 생성 시 테마 클리어 여부를 요청 body 로 받도록 변경
+** 변경 사항 문서 반영
+
 [[resources-review]]
 = 리뷰 관련 리소스
 
@@ -118,7 +123,7 @@ operation::create-review-empty[snippets='response-fields,curl-request,http-respo
 
 * 간단 리뷰 생성의 경우 Review Type 을 `SIMPLE` 로 기입해야 합니다.
 
-* 간단 리뷰 생성의 경우 리뷰 타입, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록 만을 기입할 수 있습니다.
+* 간단 리뷰 생성의 경우 리뷰 타입, 테마 클리어 여부, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록 만을 기입할 수 있습니다.
 ** 함께 플레이한 친구 ID 목록은 기입하지 않아도 상관없으나, 다른 정보는 반드시 기입해야 합니다.
 
 [[resources-create-simple-review-success]]
@@ -142,7 +147,7 @@ operation::create-simple-review-request-over-data[snippets='response-fields,curl
 
 * 상세 리뷰 생성의 경우 Review Type 을 `DETAIL` 로 기입해야 합니다.
 
-* 상세 리뷰 생성의 경우 리뷰 타입, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록, 이미지 파일 목록에 대한 정보, 코멘트 만을 기입할 수 있습니다.
+* 상세 리뷰 생성의 경우 리뷰 타입, 테마 클리어 여부, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록, 이미지 파일 목록에 대한 정보, 코멘트 만을 기입할 수 있습니다.
 ** 함께 플레이한 친구 ID 목록과 이미지 파일에 대한 정보는 기입하지 않아도 상관없으나, 다른 정보는 반드시 기입해야 합니다.
 
 [[resources-create-detail-review-success]]
