@@ -90,6 +90,12 @@ dependencies {
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
 
 
+// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+
 
 
 }
