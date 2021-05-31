@@ -1,7 +1,19 @@
+buildscript {
+    ext {
+        springBootVersion = '2.4.4'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.4.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'org.asciidoctor.convert' version '1.5.9.2'
     id 'java'
     //querydsl 추가
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
@@ -65,11 +77,24 @@ dependencies {
     // https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2
     implementation group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.4.0.RELEASE'
 
+    // restTemplate 을 위한 의존성 추가
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
     implementation group: 'org.apache.httpcomponents', name: 'httpclient'
 
+    // jwt 인증 토큰을 구현하기 위한 의존성 추가
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+
+    // 이미지 파일 크기 조정을 위한 의존성 추가
+    // https://mvnrepository.com/artifact/net.coobird/thumbnailator
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
+
+
+// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
 
 
 
@@ -93,14 +118,7 @@ bootJar {
     }
 }
 
-task copyDocument(type: Copy) {
-    from file("build/asciidoc/html5")
-    into file("src/main/resources/static/docs")
-}
-
 task copyDocumentToBuild(type: Copy) {
-    dependsOn copyDocument
-
     from file("build/asciidoc/html5")
     // resources/static/docs 로 복사하여 서버가 돌아가고 있을때 /docs/index.html 로 접속하면 볼수 있음
     into file("build/resources/main/static/docs")

@@ -1,20 +1,873 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-
-    <changeSet author="otrodevym" id="changelog-1.0">
-        <!-- 테스트 테이블 -->
-        <createTable tableName="test">
-            <column name="seq" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="otrodevym (generated)" id="1622018101012-1">
+        <createTable tableName="admin_info">
+            <column autoIncrement="true" name="admin_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(15)" >
-                <constraints nullable="false"/>
-            </column>
-            <column name="reg_date" type="timestamp" defaultValueDate="now()">
+            <column name="company_name" type="VARCHAR(50)"/>
+            <column name="owner" type="VARCHAR(50)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="company_num" type="VARCHAR(255)"/>
+            <column name="telephone" type="VARCHAR(50)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+            <column defaultValueBoolean="true" name="delete_yn" type="BIT(1)"/>
+            <column name="member_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-2">
+        <createTable tableName="ai_recommend_theme">
+            <column autoIncrement="true" name="ai_recommend_theme" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ai_recommend_date" type="date"/>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-3">
+        <createTable tableName="area">
+            <column autoIncrement="true" name="area_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="area_code" type="VARCHAR(50)"/>
+            <column name="area_name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-4">
+        <createTable tableName="award">
+            <column autoIncrement="true" name="award_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="award_group" type="VARCHAR(50)"/>
+            <column name="award_name" type="VARCHAR(50)"/>
+            <column name="award_condition" type="VARCHAR(50)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-5">
+        <createTable tableName="award_member_rel">
+            <column autoIncrement="true" name="award_member_rel_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="award_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-6">
+        <createTable tableName="bd_recommend">
+            <column autoIncrement="true" name="bd_recommend_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueBoolean="true" name="state" type="BIT(1)"/>
+            <column name="shop_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-7">
+        <createTable tableName="board">
+            <column autoIncrement="true" name="board_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="board_title" type="VARCHAR(50)"/>
+            <column name="board_content" type="VARCHAR(255)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+            <column name="writer" type="VARCHAR(50)"/>
+            <column name="board_type" remarks="E : 이벤트&#10;N : 공지사항&#10;B : 배너&#10;P : 푸시" type="VARCHAR(50)"/>
+            <column name="admin_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-8">
+        <createTable tableName="clause">
+            <column autoIncrement="true" name="clause_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="clause_name" type="VARCHAR(255)"/>
+            <column name="clause_content" type="VARCHAR(2000)"/>
+            <column name="register_times" type="timestamp"/>
+            <column name="update_times" type="timestamp"/>
+            <column name="delete_yn" type="BIT(1)"/>
+            <column name="admin_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="franchise_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-9">
+        <createTable tableName="file_storage">
+            <column autoIncrement="true" name="file_storage_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="file_name" type="VARCHAR(255)"/>
+            <column name="upload_path" type="VARCHAR(255)"/>
+            <column name="file_type" type="VARCHAR(50)"/>
+            <column name="size" type="BIGINT"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-10">
+        <createTable tableName="franchise">
+            <column autoIncrement="true" name="franchise_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="franchise_name" type="VARCHAR(50)"/>
+            <column name="franchise_owner" type="VARCHAR(50)"/>
+            <column name="owner_telephone" type="VARCHAR(50)"/>
+            <column defaultValueBoolean="true" name="delete_yn" type="BIT(1)"/>
+            <column name="admin_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-11">
+        <createTable tableName="genre">
+            <column autoIncrement="true" name="genre_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="genre_code" type="VARCHAR(50)"/>
+            <column name="genre_name" type="VARCHAR(255)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-12">
+        <createTable tableName="interested_theme">
+            <column autoIncrement="true" name="interested_theme_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-13">
+        <createTable tableName="member">
+            <column autoIncrement="true" name="member_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="nickname" type="VARCHAR(50)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="refresh_token" type="VARCHAR(255)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="refresh_token_expired_date" type="timestamp"/>
+            <column defaultValueBoolean="true" name="room_escape_records_open_yn" type="BIT(1)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-14">
+        <createTable tableName="member_friend">
+            <column autoIncrement="true" name="member_friend_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="friend_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" remarks="친구1 -&gt; 친구2 친구2- REQ : 친구 요청&#10;친구1 -&gt; 친구2 친구1 - STY : 수락 대기&#10;ALW : 친구 수락&#10;REF : 친구 거절&#10;CUT : 차단" type="VARCHAR(50)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-15">
+        <createTable tableName="member_play_inclination">
+            <column autoIncrement="true" name="member_play_inclination_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="genre_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="play_count" type="INT"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-16">
+        <createTable tableName="member_profile_image">
+            <column autoIncrement="true" name="member_profile_image_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_storage_id" type="BIGINT"/>
+            <column name="file_name" type="VARCHAR(255)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-17">
+        <createTable tableName="member_role">
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roles" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-18">
+        <createTable tableName="play_together">
+            <column autoIncrement="true" name="play_together_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="review_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-19">
+        <createTable tableName="review">
+            <column autoIncrement="true" name="review_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="review_type" type="VARCHAR(50)"/>
+            <column defaultValueBoolean="true" name="clear_yn" type="BIT(1)"/>
+            <column name="clear_time" type="TIME"/>
+            <column name="hint_usage_count" type="INT"/>
+            <column name="rating" type="INT"/>
+            <column name="comment" type="VARCHAR(2000)"/>
+            <column name="perceived_difficulty" type="VARCHAR(50)"/>
+            <column name="perceived_horror_grade" type="VARCHAR(50)"/>
+            <column name="perceived_activity" type="VARCHAR(50)"/>
+            <column name="scenario_satisfaction" type="VARCHAR(50)"/>
+            <column name="interior_satisfaction" type="VARCHAR(50)"/>
+            <column name="problem_configuration_satisfaction" type="VARCHAR(50)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-20">
+        <createTable tableName="review_image">
+            <column autoIncrement="true" name="review_image_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="review_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_storage_id" type="BIGINT"/>
+            <column name="file_name" type="VARCHAR(255)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-21">
+        <createTable tableName="review_perceived_theme_genre">
+            <column autoIncrement="true" name="review_perceived_theme_genre_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="review_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="genre_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-22">
+        <createTable tableName="shop">
+            <column autoIncrement="true" name="shop_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="shop_url" type="VARCHAR(50)"/>
+            <column name="shop_info" type="VARCHAR(255)"/>
+            <column defaultValueBoolean="true" name="delete_YN" type="BIT(1)"/>
+            <column name="shop_images" type="VARCHAR(255)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+            <column name="lat" type="FLOAT(12)"/>
+            <column name="lon" type="FLOAT(12)"/>
+            <column name="shop_name" type="VARCHAR(50)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="franchise_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="area_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-23">
+        <createTable tableName="shop_event">
+            <column autoIncrement="true" name="shop_event_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="board_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="start_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="end_times" type="timestamp"/>
+            <column name="shop_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-24">
+        <createTable tableName="shop_price">
+            <column autoIncrement="true" name="shop_price_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="shop_price" type="INT"/>
+            <column name="shop_price_unit" type="VARCHAR(50)"/>
+            <column name="shop_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-25">
+        <createTable tableName="shop_rating">
+            <column autoIncrement="true" name="shop_rating_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="shop_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shop_rating_type" remarks="B : bbang&#10;N : naver&#10;K : kakao&#10;L : local - 자체&#10;E : etc" type="VARCHAR(50)"/>
+            <column name="shop_rating" type="FLOAT(12)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueBoolean="true" name="open_yn" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-26">
+        <createTable tableName="social_account">
+            <column autoIncrement="true" name="social_account_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="social_type" type="VARCHAR(50)"/>
+            <column name="social_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-27">
+        <createTable tableName="theme">
+            <column autoIncrement="true" name="theme_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="theme_name" type="VARCHAR(50)"/>
+            <column name="number_of_people" type="VARCHAR(50)"/>
+            <column name="difficulty" type="VARCHAR(50)"/>
+            <column name="activity" type="VARCHAR(50)"/>
+            <column name="play_time" type="TIME"/>
+            <column name="introduction" type="VARCHAR(255)"/>
+            <column defaultValueBoolean="true" name="delete_YN" type="BIT(1)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+            <column name="shop_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-28">
+        <createTable tableName="theme_detail">
+            <column autoIncrement="true" name="theme_detail_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" type="time"/>
+            <column name="end_time" type="time"/>
+            <column name="run_date" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-29">
+        <createTable tableName="theme_rating">
+            <column autoIncrement="true" name="theme_rating_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="theme_rating_type" type="VARCHAR(50)"/>
+            <column name="theme_rating" type="FLOAT(12)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueBoolean="true" name="open_yn" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-30">
+        <createTable tableName="theme_event">
+            <column autoIncrement="true" name="theme_event_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="shop_event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-31">
+        <createTable tableName="theme_genre">
+            <column autoIncrement="true" name="theme_genre_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="genre_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-32">
+        <createTable tableName="theme_image">
+            <column autoIncrement="true" name="theme_image_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_storage_id" type="BIGINT"/>
+            <column name="file_name" type="VARCHAR(1000)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-33">
+        <createTable tableName="theme_ranking">
+            <column autoIncrement="true" name="theme_ranking_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ranking_type" remarks="Y : 년&#10;M : 월&#10;D : 일&#10;&#10;Y1 : 1년&#10;Y2 : 2년&#10;Y10 : 10년" type="VARCHAR(50)"/>
+            <column name="ranking_date" type="date"/>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="theme_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ranking" type="INT"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-34">
+        <createTable tableName="member_search">
+            <column autoIncrement="true" name="member_search_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="member_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="search_times" type="timestamp"/>
+            <column name="search_keyword" type="VARCHAR(255)"/>
+            <column name="search_date" remarks="일자 기준으로 파티셔닝" type="date"/>
+            <column name="search_type" remarks="T01 : 테마 검색&#10;S01 : 샵 검색&#10;M01 : 회원 검색&#10;F01 : 친구 검색&#10;C01 : 커뮤니티 제목 + 내용&#10;C02 : 커뮤니티 제목&#10;C03 : 커뮤니티 내용&#10;L01 : 지역 검색" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-35">
+        <createIndex indexName="FK_admin_info_TO_board_1" tableName="board">
+            <column name="admin_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-36">
+        <createIndex indexName="FK_admin_info_TO_clause_1" tableName="clause">
+            <column name="admin_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-37">
+        <createIndex indexName="FK_admin_info_TO_franchise_1" tableName="franchise">
+            <column name="admin_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-38">
+        <createIndex indexName="FK_area_TO_shop_1" tableName="shop">
+            <column name="area_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-39">
+        <createIndex indexName="FK_award_TO_award_member_rel_1" tableName="award_member_rel">
+            <column name="award_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-40">
+        <createIndex indexName="FK_board_TO_shop_event_1" tableName="shop_event">
+            <column name="board_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-41">
+        <createIndex indexName="FK_franchise_TO_clause_1" tableName="clause">
+            <column name="franchise_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-42">
+        <createIndex indexName="FK_franchise_TO_shop_1" tableName="shop">
+            <column name="franchise_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-43">
+        <createIndex indexName="FK_genre_TO_member_play_inclination_1" tableName="member_play_inclination">
+            <column name="genre_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-44">
+        <createIndex indexName="FK_genre_TO_review_perceived_theme_genre_1" tableName="review_perceived_theme_genre">
+            <column name="genre_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-45">
+        <createIndex indexName="FK_genre_TO_theme_genre_1" tableName="theme_genre">
+            <column name="genre_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-46">
+        <createIndex indexName="FK_member_TO_admin_info_1" tableName="admin_info">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-47">
+        <createIndex indexName="FK_member_TO_ai_recommend_theme_1" tableName="ai_recommend_theme">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-48">
+        <createIndex indexName="FK_member_TO_award_member_rel_1" tableName="award_member_rel">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-49">
+        <createIndex indexName="FK_member_TO_interested_theme_1" tableName="interested_theme">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-50">
+        <createIndex indexName="FK_member_TO_member_friend_1" tableName="member_friend">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-51">
+        <createIndex indexName="FK_member_TO_member_friend_2" tableName="member_friend">
+            <column name="friend_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-52">
+        <createIndex indexName="FK_member_TO_member_play_inclination_1" tableName="member_play_inclination">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-53">
+        <createIndex indexName="FK_member_TO_member_profile_image_1" tableName="member_profile_image">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-54">
+        <createIndex indexName="FK_member_TO_member_role_1" tableName="member_role">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-55">
+        <createIndex indexName="FK_member_TO_play_together_1" tableName="play_together">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-56">
+        <createIndex indexName="FK_member_TO_review_1" tableName="review">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-57">
+        <createIndex indexName="FK_member_TO_social_account_1" tableName="social_account">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-58">
+        <createIndex indexName="FK_member_TO_theme_ranking_1" tableName="theme_ranking">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-59">
+        <createIndex indexName="FK_member_TO_member_search_1" tableName="member_search">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-60">
+        <createIndex indexName="FK_review_TO_play_together_1" tableName="play_together">
+            <column name="review_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-61">
+        <createIndex indexName="FK_review_TO_review_image_1" tableName="review_image">
+            <column name="review_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-62">
+        <createIndex indexName="FK_review_TO_review_perceived_theme_genre_1" tableName="review_perceived_theme_genre">
+            <column name="review_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-63">
+        <createIndex indexName="FK_shop_TO_bd_recommend_1" tableName="bd_recommend">
+            <column name="shop_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-64">
+        <createIndex indexName="FK_shop_TO_shop_event_1" tableName="shop_event">
+            <column name="shop_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-65">
+        <createIndex indexName="FK_shop_TO_shop_price_1" tableName="shop_price">
+            <column name="shop_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-66">
+        <createIndex indexName="FK_shop_TO_shop_rating_1" tableName="shop_rating">
+            <column name="shop_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-67">
+        <createIndex indexName="FK_shop_TO_theme_1" tableName="theme">
+            <column name="shop_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-68">
+        <createIndex indexName="FK_shop_event_TO_theme_event_1" tableName="theme_event">
+            <column name="shop_event_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-69">
+        <createIndex indexName="FK_theme_TO_ai_recommend_theme_1" tableName="ai_recommend_theme">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-70">
+        <createIndex indexName="FK_theme_TO_interested_theme_1" tableName="interested_theme">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-71">
+        <createIndex indexName="FK_theme_TO_review_1" tableName="review">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-72">
+        <createIndex indexName="FK_theme_TO_theme_detail_1" tableName="theme_detail">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-73">
+        <createIndex indexName="FK_theme_TO_theme_rating_1" tableName="theme_rating">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-74">
+        <createIndex indexName="FK_theme_TO_theme_event_1" tableName="theme_event">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-75">
+        <createIndex indexName="FK_theme_TO_theme_genre_1" tableName="theme_genre">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-76">
+        <createIndex indexName="FK_theme_TO_theme_image_1" tableName="theme_image">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-77">
+        <createIndex indexName="FK_theme_TO_theme_ranking_1" tableName="theme_ranking">
+            <column name="theme_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-78">
+        <addForeignKeyConstraint baseColumnNames="admin_id" baseTableName="board" constraintName="FK_admin_info_TO_board_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="admin_id" referencedTableName="admin_info" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-79">
+        <addForeignKeyConstraint baseColumnNames="admin_id" baseTableName="clause" constraintName="FK_admin_info_TO_clause_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="admin_id" referencedTableName="admin_info" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-80">
+        <addForeignKeyConstraint baseColumnNames="admin_id" baseTableName="franchise" constraintName="FK_admin_info_TO_franchise_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="admin_id" referencedTableName="admin_info" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-81">
+        <addForeignKeyConstraint baseColumnNames="area_id" baseTableName="shop" constraintName="FK_area_TO_shop_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="area_id" referencedTableName="area" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-82">
+        <addForeignKeyConstraint baseColumnNames="award_id" baseTableName="award_member_rel" constraintName="FK_award_TO_award_member_rel_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="award_id" referencedTableName="award" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-83">
+        <addForeignKeyConstraint baseColumnNames="board_id" baseTableName="shop_event" constraintName="FK_board_TO_shop_event_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="board_id" referencedTableName="board" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-84">
+        <addForeignKeyConstraint baseColumnNames="franchise_id" baseTableName="clause" constraintName="FK_franchise_TO_clause_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="franchise_id" referencedTableName="franchise" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-85">
+        <addForeignKeyConstraint baseColumnNames="franchise_id" baseTableName="shop" constraintName="FK_franchise_TO_shop_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="franchise_id" referencedTableName="franchise" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-86">
+        <addForeignKeyConstraint baseColumnNames="genre_id" baseTableName="member_play_inclination" constraintName="FK_genre_TO_member_play_inclination_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="genre_id" referencedTableName="genre" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-87">
+        <addForeignKeyConstraint baseColumnNames="genre_id" baseTableName="review_perceived_theme_genre" constraintName="FK_genre_TO_review_perceived_theme_genre_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="genre_id" referencedTableName="genre" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-88">
+        <addForeignKeyConstraint baseColumnNames="genre_id" baseTableName="theme_genre" constraintName="FK_genre_TO_theme_genre_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="genre_id" referencedTableName="genre" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-89">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="admin_info" constraintName="FK_member_TO_admin_info_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-90">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="ai_recommend_theme" constraintName="FK_member_TO_ai_recommend_theme_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-91">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="award_member_rel" constraintName="FK_member_TO_award_member_rel_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-92">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="interested_theme" constraintName="FK_member_TO_interested_theme_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-93">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="member_friend" constraintName="FK_member_TO_member_friend_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-94">
+        <addForeignKeyConstraint baseColumnNames="friend_id" baseTableName="member_friend" constraintName="FK_member_TO_member_friend_2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-95">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="member_play_inclination" constraintName="FK_member_TO_member_play_inclination_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-96">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="member_profile_image" constraintName="FK_member_TO_member_profile_image_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-97">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="member_role" constraintName="FK_member_TO_member_role_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-98">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="play_together" constraintName="FK_member_TO_play_together_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-99">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="review" constraintName="FK_member_TO_review_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-100">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="social_account" constraintName="FK_member_TO_social_account_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-101">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="theme_ranking" constraintName="FK_member_TO_theme_ranking_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-102">
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="member_search" constraintName="FK_member_TO_member_search_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-103">
+        <addForeignKeyConstraint baseColumnNames="review_id" baseTableName="play_together" constraintName="FK_review_TO_play_together_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="review_id" referencedTableName="review" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-104">
+        <addForeignKeyConstraint baseColumnNames="review_id" baseTableName="review_image" constraintName="FK_review_TO_review_image_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="review_id" referencedTableName="review" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-105">
+        <addForeignKeyConstraint baseColumnNames="review_id" baseTableName="review_perceived_theme_genre" constraintName="FK_review_TO_review_perceived_theme_genre_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="review_id" referencedTableName="review" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-106">
+        <addForeignKeyConstraint baseColumnNames="shop_id" baseTableName="bd_recommend" constraintName="FK_shop_TO_bd_recommend_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="shop_id" referencedTableName="shop" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-107">
+        <addForeignKeyConstraint baseColumnNames="shop_id" baseTableName="shop_event" constraintName="FK_shop_TO_shop_event_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="shop_id" referencedTableName="shop" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-108">
+        <addForeignKeyConstraint baseColumnNames="shop_id" baseTableName="shop_price" constraintName="FK_shop_TO_shop_price_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="shop_id" referencedTableName="shop" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-109">
+        <addForeignKeyConstraint baseColumnNames="shop_id" baseTableName="shop_rating" constraintName="FK_shop_TO_shop_rating_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="shop_id" referencedTableName="shop" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-110">
+        <addForeignKeyConstraint baseColumnNames="shop_id" baseTableName="theme" constraintName="FK_shop_TO_theme_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="shop_id" referencedTableName="shop" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-111">
+        <addForeignKeyConstraint baseColumnNames="shop_event_id" baseTableName="theme_event" constraintName="FK_shop_event_TO_theme_event_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="shop_event_id" referencedTableName="shop_event" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-112">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="ai_recommend_theme" constraintName="FK_theme_TO_ai_recommend_theme_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-113">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="interested_theme" constraintName="FK_theme_TO_interested_theme_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-114">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="review" constraintName="FK_theme_TO_review_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-115">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="theme_detail" constraintName="FK_theme_TO_theme_detail_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-116">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="theme_rating" constraintName="FK_theme_TO_theme_rating_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-117">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="theme_event" constraintName="FK_theme_TO_theme_event_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-118">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="theme_genre" constraintName="FK_theme_TO_theme_genre_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-119">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="theme_image" constraintName="FK_theme_TO_theme_image_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
+    <changeSet author="otrodevym (generated)" id="1622018101012-120">
+        <addForeignKeyConstraint baseColumnNames="theme_id" baseTableName="theme_ranking" constraintName="FK_theme_TO_theme_ranking_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="theme_id" referencedTableName="theme" validate="true"/>
+    </changeSet>
 
-</databaseChangeLog> 
+<!--    샵 이미지 테이블 추가 -->
+    <changeSet author="otrodevym (generated)" id="1622018101012-121">
+        <createTable tableName="shop_image">
+            <column autoIncrement="true" name="shop_image_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="shop_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_storage_id" type="BIGINT"/>
+            <column name="file_name" type="VARCHAR(1000)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="otrodevym (generated)" id="1622018101012-122">
+        <addForeignKeyConstraint baseColumnNames="shop_id" baseTableName="shop_image" constraintName="FK_shop_TO_shop_image_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="shop_id" referencedTableName="shop" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

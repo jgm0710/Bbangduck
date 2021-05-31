@@ -10,6 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ * 인증 시 이메일을 통한 회원 정보를 SecurityContext 의 Authentication 에 넣어주기 위해 구현한 UserDetailsService 구현 Class
+ */
 @Service
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {

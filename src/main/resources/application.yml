@@ -1,21 +1,29 @@
 spring:
+#  profiles:
+#    active: dev
   datasource:
-    username: bbangduck
-    password: bbangduck
     url: jdbc:mysql://localhost:3306/bbangduck?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1234
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true  #Jpa show-sql 시 나오는 쿼리를 정렬해서 출력
         default_batch_fetch_size: 500  #Lazy 로딩 시 한 번에 가져올 개수 지정.
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
-    enabled: false
+    enabled: true
+  servlet:
+    multipart:
+      file-size-threshold: 2KB
+      max-file-size: 100MB
+      max-request-size: 115MB
 
 logging:
   level:
@@ -25,7 +33,7 @@ logging:
     org.springframework.security: debug #spring security에 대해 어떤 메세지가 출력이 되는지 확인
 
 kakao:
-  login:
+  sign-in:
     properties:
       native-app-key: 51a703abe9cf14386623caad48d40827
       rest-api-key: d053f45a470a5203cc53bdfb65b69c03
@@ -36,8 +44,19 @@ kakao:
       authorize-state: bbangduck7
       scope: profile account_email
 
-security-jwt:
-  jwt-token-header: X-AUTH-TOKEN
-  refresh-token-expired-date: 14
-  secret-key: bbangduck-jwt-secret-key
-  token-valid-second: 30000
+
+security:
+  jwt:
+    jwt-token-header: X-AUTH-TOKEN
+    refresh-token-expired-date: 14
+    secret-key: bbangduck-jwt-secret-key
+    token-valid-second: 30000
+file:
+  storage:
+    original-image-width: 1080
+    original-image-height: 720
+    thumbnail-image-width: 300
+    thumbnail-image-height: 300
+    file-cache-second: 60
+    thumbnail-prefix: s_
+    upload-path: C:\bbangduck\upload

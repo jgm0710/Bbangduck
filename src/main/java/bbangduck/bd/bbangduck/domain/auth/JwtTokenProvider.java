@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.auth;
 
 import bbangduck.bd.bbangduck.domain.auth.service.AccountService;
-import bbangduck.bd.bbangduck.global.config.properties.JwtSecurityProperties;
+import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -18,17 +18,24 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * 회원 인증에 대한 처리를 JWT Token 을 통해 하기 위해 구현된 Provider <br>
+ * 토큰 생성, Request Header 의 Token 정보 조회, 토큰 유효성 검증, JWT Token 을 통한 인증 정보 반환, <br>
+ * JWT Token 내의 Email 반환 등의 로직을 담고 있다.
+ */
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
     private String secretKey = "temp";
-    private final JwtSecurityProperties jwtSecurityProperties;
+    private final SecurityJwtProperties securityJwtProperties;
     private final AccountService accountService;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
     protected void init() {
-        this.secretKey = Base64.getEncoder().encodeToString(jwtSecurityProperties.getSecretKey().getBytes());
+        this.secretKey = Base64.getEncoder().encodeToString(securityJwtProperties.getSecretKey().getBytes());
     }
 
     // JWT 토큰 생성
@@ -39,7 +46,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + jwtSecurityProperties.getTokenValidTime())) // set Expire Time
+                .setExpiration(new Date(now.getTime() + securityJwtProperties.getTokenValidTime())) // set Expire Time
                 .signWith(SignatureAlgorithm.HS256, secretKey)  // 사용할 암호화 알고리즘과
                 // signature 에 들어갈 secret값 세팅
                 .compact();
@@ -58,7 +65,7 @@ public class JwtTokenProvider {
 
     // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(jwtSecurityProperties.getJwtTokenHeader());
+        return request.getHeader(securityJwtProperties.getJwtTokenHeader());
     }
 
     // 토큰의 유효성 + 만료일자 확인
@@ -71,7 +78,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public JwtSecurityProperties getJwtSecurityProperties() {
-        return jwtSecurityProperties;
+    public SecurityJwtProperties getSecurityJwtProperties() {
+        return securityJwtProperties;
     }
 }

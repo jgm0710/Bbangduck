@@ -1,0 +1,212 @@
+= BbangDuck API Guide
+정구민;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+:docinfo: shared-head
+
+[[overview]]
+= 개요
+== link:/docs/index.html[home]
+== 오류 코드
+
+|===
+| 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
+
+| <<resources-withdrawal>> / <<resources-sign-out>>
+| 인증되지 않은 회원이 리소스에 접근하는 경우
+| 401
+| 1401
+| 인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.
+
+| <<resources-withdrawal>> / <<resources-sign-out>>
+| 탈퇴하거나 계정이 정지된 회원이 리소스에 접근하는 경우
+| 403
+| 1403
+| 해당 리소스에 접근할 수 없는 회원입니다.
+
+| <<resources-social-sign-up>>
+| 회원가입 시 기입한 Email 이 기존 회원의 Email 과 중복되는 경우
+| 409
+| 2403
+| 해당 Email 을 사용하는 회원이 이미 존재합니다.
+
+| <<resources-social-sign-up>>
+| 회원가입 시 기입한 Nickname 이 기존 회원의 Nickname 과 중복되는 경우
+| 409
+| 2404
+| 해당 Nickname 을 사용하는 회원이 이미 존재합니다.
+
+| <<resources-social-sign-up>>
+| 회원가입 시 기입한 Social 인증 정보를 통해 이미 가입한 회원이 존재하는 경우
+| 409
+| 2405
+| 해당 소셜 회원은 이미 가입된 회원입니다.
+
+| <<resources-social-sign-up-empty>>
+| 회원가입 시 API 스펙에 맞지 않게 요청을 한 경우
+| 400
+| 2402
+| 회원가입 시 기입사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-refresh-sign-in>>
+| Refresh Token 을 통한 회원 조회에 실패했을 경우
+| 401
+| 1432
+| 해당 Refresh Token 을 통한 Access Token 재발급이 불가능합니다.
+
+| <<resources-refresh-sign-in>>
+| Refresh Token 의 유효기간이 만료된 경우
+| 401
+| 1433
+| Refresh Token 의 유효기간이 만료되었습니다.
+
+| <<resources-withdrawal>>
+| 다른 회원의 계정을 탈퇴하는 경우
+| 403
+| 1441
+| 자신의 계정만 탈퇴가 가능합니다.
+
+| <<resources-sign-out>>
+| 다른 회원을 로그아웃 하는 경우
+| 403
+| 1442
+| 자신의 계정만 로그아웃 할 수 있습니다.
+
+|===
+
+== 히스토리
+
+히스토리는 문서의 변경이력을 표시합니다.
+
+2021-05-06:::
+* <<resources-sign-up>> 기능 구현
+* <<resources-kakao-sign-in>> 기능 구현
+
+2021-5-15:::
+* <<resources-social-sign-up>>
+** 소셜 회원가입 요청 분리
+** 추후 일반회원 가입 구현 시 일반 회원가입 요청 추가
+
+2021-05-20:::
+* <<resources-refresh-sign-in>> 기능 구현
+* <<resources-withdrawal>> 기능 구현
+* <<resources-sign-out>> 기능 구현
+
+[[resources-auth]]
+= 회원 인증 관리 리소스
+
+[[resources-sign-up]]
+== 회원가입
+
+* 일반 회원가입 기능은 아직 구현하지 않았습니다.
+
+[[resources-social-sign-up]]
+== 소셜 회원가입
+
+* `POST` `/api/auth/social/sign-up`
+* 요청에 필요한 Body 는 json 타입으로 기입합니다.
+* Email, Nickname 은 모든 회원가입에 대해서 항상 기입해야 합니다.
+* 비밀번호의 경우 Social 인증을 통한 로그인 시 기입하지 않습니다.
+* Social 인증을 통한 회원가입이 아닌 경우 비밀번호를 기입합니다.
+** 다만 Social 회원이 아닌 경우에 대한 기능 구현은 아직 계획에 없으므로 해당 문서는 변경될 수 있습니다.
+
+[[resources-social-sign-up-success]]
+=== 소셜 회원가입 성공
+
+* 응답 HttpStatus : `201 Created`
+
+operation::social-sign-up-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-social-sign-up-empty]]
+=== 소셜 회원가입 실패
+
+* 응답 HttpStatus : `400 Bad Request`
+* 회원가입 시 기입해야 할 사항을 모두 입력하지 않았을 경우에 대한 응답입니다.
+
+operation::social-sign-up-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-kakao-sign-in]]
+== 카카오 로그인
+
+* 카카오 로그인은 `GET` `/api/auth/kakao/sign-in` 으로 요청합니다.
+** 이후 내부적인 처리에 의해 카카오 인증 페이지로 Redirect 됩니다.
+** 카카오 인증 페이지에서 로그인에 성공할 경우 `/api/auth/kakao/sign-in/callback` 에 Redirect 됩니다.
+
+[[resources-member-kakao-sign-up-callback]]
+=== 카카오 계정으로 가입된 회원의 로그인 성공
+
+* 카카오 계정을 통해 인증된 회원이 회원가입이 되어있는 회원일 경우 인증 토큰을 발급합니다.
+** 이 때의 status 값은 `1221` 입니다.
+* 인증 토큰의 경우 Header, Payload, Signature 쪼개어 응답합니다.
+* 해당 응답은 페이지를 응답합니다.
+** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.
+
+operation::member-kakao-sign-up-callback[snippets='curl-request,http-response']
+
+[[resources-no-member-kakao-sign-up-callbcak]]
+=== 카카오 계정으로 가입되지 않은 비회원 로그인 실패
+
+* 카카오 계정을 통해 인증된 회원이 회원가입이 되어있지 않은 회원일 경우 카카오 인증을 통해 넘어온 회원의 정보를 응답합니다.
+** 이 때의 status 값은 `1421` 입니다.
+* 응답되는 Data 는 SocialId, Email, Nickname, SocialType 에 대한 정보가 응답됩니다.
+* 해당 응답은 페이지를 응답합니다.
+** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.
+
+operation::no-member-kakao-sign-up-callback[snippets='curl-request,http-response']
+
+
+[[resources-refresh-sign-in]]
+== Refresh 로그인
+
+* `POST` `/api/auth/refresh`
+* Refresh Token 을 통해 Access Token 을 재발급 받습니다.
+* 응답되는 Access Token 은 Header, payload, signature 로 나누어 응답합니다.
+* 해당 요청에 사용되는 Refresh Token 은 로그인 시점에 응답됩니다.
+* 해당 요청 시 Refresh Token 의 기간이 만료되었다면 로그인에 실패합니다.
+
+[[resources-refresh-sign-in-success]]
+=== Refresh 로그인 성공
+
+* 응답 HttpStatus : `200 OK`
+
+operation::refresh-sign-in-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-withdrawal]]
+== 회원 탈퇴
+
+* `DELETE` `/api/auth/{memberId}/withdrawal`
+* 회원의 계정을 탈퇴합니다.
+* 인증된 사용자만 해당 리소스에 접근이 가능하고, 인증된 사용자는 다른 회원의 계정을 탈퇴할 수 없습니다.
+* 이미 계정이 탈퇴된 회원 또한 해당 리소스에 접근이 불가능합니다.
+
+[[resources-withdrawal-success]]
+=== 회원 탈퇴 성공
+
+* 응답 HttpStatus : `200 OK`
+
+operation::withdrawal-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+[[resources-sign-out]]
+== 로그아웃
+
+* `GET` `/api/auth/{memberId}/sign-out`
+* 회원을 로그아웃합니다.
+* 지정된 회원의 Refresh Token 을 삭제합니다.
+* 인증된 사용자만 해당 리소스에 접근이 가능하고, 인증된 사용자는 다른 회원을 로그아웃할 수 없습니다.
+* 로그아웃 시점에 회원의 Access Token, Refresh Token 은 프론트 단에서 삭제해 주시길 바랍니다.
+
+[[resources-sign-out-success]]
+=== 로그아웃 성공
+
+* 응답 HttpStatus : `200 OK`
+
+operation::sign-out-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+
+

@@ -14,6 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * Jwt Token 을 통해 인증된 사용자에 대한 Authentication 을 SecurityConfiguration 에 끼워넣기 위해 구현한 Filter Class
+ */
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 

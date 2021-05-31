@@ -2,7 +2,12 @@ package bbangduck.bd.bbangduck.global.common.exception;
 
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 
-public class StatusException extends RuntimeException{
+/**
+ * 작성자 : 정구민 <br><br>
+ *
+ * ResponseDto 를 통해 HttpStatus 외에 상태값을 응답하기 위해 구현한 최상위 Exception
+ */
+public abstract class StatusException extends RuntimeException{
 
     private final int status;
 
