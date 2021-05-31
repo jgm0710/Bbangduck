@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class Theme extends BaseEntityDateTime {
     private ThemeImage themeImage;
 
     @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
-    private List<ThemeDetail> themeDetail = new ArrayList<>();
+    private List<ThemeOperatingTimes> themeOperatingTimes = new ArrayList<>();
 
     @Column(name = "theme_name")
     private String name;

@@ -10,11 +10,11 @@ import java.time.LocalTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ThemeDetail {
+public class ThemeOperatingTimes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "theme_detail_id")
+    @Column(name = "theme_operating_times_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
