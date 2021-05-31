@@ -43,6 +43,11 @@ public class Review extends BaseEntityDateTime {
     @Enumerated(EnumType.STRING)
     private ReviewType reviewType;
 
+    private int recodeNumber;
+
+    @Column(name = "clear_yn")
+    private boolean clearYN;
+
     private LocalTime clearTime;
 
     private int hintUsageCount;

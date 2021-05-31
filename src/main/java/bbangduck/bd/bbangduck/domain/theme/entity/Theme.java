@@ -38,7 +38,7 @@ public class Theme extends BaseEntityDateTime {
     private ThemeImage themeImage;
 
     @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
-    private List<ThemeDetail> themeDetails = new ArrayList<>();
+    private List<ThemeOperatingTimes> themeOperatingTimes = new ArrayList<>();
 
     @Column(name = "theme_name")
     private String name;
