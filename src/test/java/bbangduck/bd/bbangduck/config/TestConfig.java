@@ -29,11 +29,4 @@ public class TestConfig {
         return new JPAQueryFactory(entityManager);
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.httpBasic().disable()
-//                .csrf().disable()
-//                .authorizeRequests()
-//                .anyRequest().permitAll();
-//    }
 }
