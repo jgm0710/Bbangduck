@@ -85,11 +85,13 @@ public class Review extends BaseEntityDateTime {
     private Satisfaction problemConfigurationSatisfaction;
 
     @Builder
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, LocalTime clearTime, int hintUsageCount, int rating, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
         this.id = id;
         this.member = member;
         this.theme = theme;
         this.reviewType = reviewType;
+        this.recodeNumber = recodeNumber;
+        this.clearYN = clearYN;
         this.clearTime = clearTime;
         this.hintUsageCount = hintUsageCount;
         this.rating = rating;
@@ -106,11 +108,13 @@ public class Review extends BaseEntityDateTime {
         return this.reviewPlayTogethers.stream().map(ReviewPlayTogether::getMember).collect(Collectors.toList());
     }
 
-    public static Review create(Member member, Theme theme, ReviewCreateDto reviewCreateDto) {
+    public static Review create(Member member, Theme theme, int recodeNumber, ReviewCreateDto reviewCreateDto) {
         Review review = Review.builder()
                 .member(member)
                 .theme(theme)
                 .reviewType(reviewCreateDto.getReviewType())
+                .recodeNumber(recodeNumber)
+                .clearYN(reviewCreateDto.isClearYN())
                 .clearTime(reviewCreateDto.getClearTime())
                 .hintUsageCount(reviewCreateDto.getHintUsageCount())
                 .rating(reviewCreateDto.getRating())
@@ -216,5 +220,13 @@ public class Review extends BaseEntityDateTime {
 
     public List<ReviewPerceivedThemeGenre> getPerceivedThemeGenres() {
         return perceivedThemeGenres;
+    }
+
+    public long getRecodeNumber() {
+        return recodeNumber;
+    }
+
+    public boolean isClearYN() {
+        return clearYN;
     }
 }

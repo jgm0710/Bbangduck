@@ -35,6 +35,9 @@ public class ReviewCreateRequestDto {
     @NotNull(message = "리뷰 타입을 기입해 주세요. [SIMPLE, DETAIL, DEEP]")
     private ReviewType reviewType;
 
+    @NotNull(message = "게임 클리어 여부를 기입해주세요.")
+    private Boolean clearYN;
+
     @NotNull(message = "게임 클리어 시간을 기입해 주세요.")
     private LocalTime clearTime;
 
@@ -135,6 +138,7 @@ public class ReviewCreateRequestDto {
 
         return ReviewCreateDto.builder()
                 .reviewType(reviewType)
+                .clearYN(clearYN)
                 .clearTime(clearTime)
                 .hintUsageCount(hintUsageCount)
                 .rating(rating)

@@ -37,7 +37,7 @@ public class Member extends BaseEntityDateTime {
 
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "member", fetch = FetchType.EAGER)
     private MemberProfileImage profileImage = null;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)

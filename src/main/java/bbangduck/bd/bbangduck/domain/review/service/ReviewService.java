@@ -6,14 +6,16 @@ import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
-import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberFriendQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewNotFoundException;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -38,6 +40,8 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
 
+    private final ReviewQueryRepository reviewQueryRepository;
+
     private final MemberRepository memberRepository;
 
     private final MemberPlayInclinationRepository memberPlayInclinationRepository;
@@ -54,8 +58,9 @@ public class ReviewService {
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         Theme findTheme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+        ReviewRecodesCountsDto recodesCountsDto = reviewQueryRepository.findRecodesCountsByMember(memberId).orElse(new ReviewRecodesCountsDto());
 
-        Review review = Review.create(findMember, findTheme, reviewCreateDto);
+        Review review = Review.create(findMember, findTheme, recodesCountsDto.getNextRecodeNumber(), reviewCreateDto);
         addPerceivedGenresToReview(review, reviewCreateDto.getGenreCodes());
         addPlayTogetherFriendsToReview(review, memberId, reviewCreateDto.getFriendIds());
         reviewRepository.save(review);

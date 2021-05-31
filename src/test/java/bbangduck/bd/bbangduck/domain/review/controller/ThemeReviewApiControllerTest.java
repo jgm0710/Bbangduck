@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -83,6 +82,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewType").description("생성하는 리뷰가 간단 리뷰인지, 상세 리뷰인지, 추가 설문 작성 리뷰인지 명시합니다. +\n" +
                                         "ReviewType 에 따라서 입력 규칙이 달라집니다. +\n" +
                                         REVIEW_TYPE_ENUM_LIST),
+                                fieldWithPath("clearYN").description("테마 클리어 여부를 기입"),
                                 fieldWithPath("clearTime").description("테마를 클리어하는데 걸린 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입"),
                                 fieldWithPath("rating").description("테마에 대한 평점 기입"),
@@ -180,6 +180,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewType").description("생성하는 리뷰가 간단 리뷰인지, 상세 리뷰인지, 추가 설문 작성 리뷰인지 명시합니다. +\n" +
                                         "ReviewType 에 따라서 입력 규칙이 달라집니다. +\n" +
                                         REVIEW_TYPE_ENUM_LIST),
+                                fieldWithPath("clearYN").description("테마 클리어 여부를 기입"),
                                 fieldWithPath("clearTime").description("테마를 클리어하는데 걸린 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입"),
                                 fieldWithPath("rating").description("테마에 대한 평점 기입"),
@@ -250,6 +251,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewType").description("생성하는 리뷰가 간단 리뷰인지, 상세 리뷰인지, 추가 설문 작성 리뷰인지 명시합니다. +\n" +
                                         "ReviewType 에 따라서 입력 규칙이 달라집니다. +\n" +
                                         REVIEW_TYPE_ENUM_LIST),
+                                fieldWithPath("clearYN").description("테마 클리어 여부를 기입"),
                                 fieldWithPath("clearTime").description("테마를 클리어하는데 걸린 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입"),
                                 fieldWithPath("rating").description("테마에 대한 평점 기입"),
@@ -1038,6 +1040,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
     private ReviewCreateRequestDto createDeepReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos, List<String> genreCodes) {
         return ReviewCreateRequestDto.builder()
                 .reviewType(ReviewType.DEEP)
+                .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
                 .hintUsageCount(1)
                 .rating(6)
@@ -1072,6 +1075,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
     private ReviewCreateRequestDto createSimpleReviewCreateRequestDto(List<Long> friendIds) {
         return ReviewCreateRequestDto.builder()
                 .reviewType(ReviewType.SIMPLE)
+                .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
                 .hintUsageCount(1)
                 .rating(6)
@@ -1082,6 +1086,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
     private ReviewCreateRequestDto createDetailReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos) {
         return ReviewCreateRequestDto.builder()
                 .reviewType(ReviewType.DETAIL)
+                .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
                 .hintUsageCount(1)
                 .rating(6)

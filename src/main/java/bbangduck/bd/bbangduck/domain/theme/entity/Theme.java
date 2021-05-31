@@ -28,13 +28,13 @@ public class Theme extends BaseEntityDateTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "theme_id")
-    public Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
-    @OneToOne(mappedBy = "theme", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "theme", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private ThemeImage themeImage;
 
     @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
@@ -76,8 +76,8 @@ public class Theme extends BaseEntityDateTime {
         this.deleteYN = deleteYN;
     }
 
-    public void addThemeDetail(ThemeDetail themeDetail) {
-        this.themeDetails.add(themeDetail);
+    public void addThemeOperatingTime(ThemeOperatingTimes themeDetail) {
+        this.themeOperatingTimes.add(themeDetail);
         themeDetail.setTheme(this);
     }
 
@@ -107,8 +107,8 @@ public class Theme extends BaseEntityDateTime {
         return themeImage;
     }
 
-    public List<ThemeDetail> getThemeDetails() {
-        return themeDetails;
+    public List<ThemeOperatingTimes> getThemeOperatingTimes() {
+        return themeOperatingTimes;
     }
 
     public String getName() {

@@ -99,6 +99,40 @@ class ReviewServiceTest extends BaseJGMServiceTest {
             boolean reviewPlayTogetherExists = friendIds.stream().anyMatch(friendId -> member.getId().equals(friendId));
             assertTrue(reviewPlayTogetherExists, "생성된 리뷰의 함께 플레이한 친구 목록에 생성 요청 시 등록한 친구 id 가 모두 포함되어 있어야 한다.");
         });
+
+        assertEquals(1, findReview.getRecodeNumber(), "해당 회원은 리뷰를 처음 생성했으므로, 생성된 리뷰의 번호는 1번");
+        assertEquals(reviewCreateDto.isClearYN(), findReview.isClearYN());
+    }
+
+    @Test
+    @DisplayName("리뷰 생성 - 리뷰를 두번 생성할 경우 2번째 생성된 리뷰의 recode number 가 2인지 검증")
+    public void createReview_recodeNumberTest() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        Theme savedTheme = createTheme();
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
+        List<FileStorage> storedFiles = List.of(storedFile);
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds, genreCodes);
+
+        Long reviewId = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        //when
+        System.out.println("==========================================================================================================================================================");
+        Long reviewId2 = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        System.out.println("==========================================================================================================================================================");
+
+        //then
+        Review review2 = reviewService.getReview(reviewId2);
+        assertEquals(2, review2.getRecodeNumber(), "해당 회원의 두 번째 생성된 리뷰의 recodeNumber 는 2여야 한다.");
+
     }
 
     @Test
@@ -280,112 +314,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //then
         assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
 
-    }
-
-    private Member createRequestStateFriendToMember(MemberSocialSignUpRequestDto memberSignUpRequestDto, Long signUpId) {
-        memberSignUpRequestDto.setEmail("notFriend@email.com");
-        memberSignUpRequestDto.setNickname("NotFriend");
-        memberSignUpRequestDto.setSocialId("333311211");
-        Long notFriendId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        Member signUpMember = memberService.getMember(signUpId);
-        Member notFriendMember = memberService.getMember(notFriendId);
-        MemberFriend memberFriend = MemberFriend.builder()
-                .member(signUpMember)
-                .friend(notFriendMember)
-                .state(MemberFriendState.REQUEST)
-                .build();
-        MemberFriend savedMemberFriend = memberFriendRepository.save(memberFriend);
-        return savedMemberFriend.getFriend();
-    }
-
-
-    private List<Long> createFriendToMember(MemberSocialSignUpRequestDto memberSignUpRequestDto, Long signUpId) {
-        Member signUpMember = memberService.getMember(signUpId);
-        List<Long> friendIds = new ArrayList<>();
-        for (int i = 100; i < 105; i++) {
-            memberSignUpRequestDto.setEmail("test" + i + "@email.com");
-            memberSignUpRequestDto.setNickname("test" + i);
-            memberSignUpRequestDto.setSocialId("33333" + i);
-            Long friendMemberId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-            Member friendMember = memberService.getMember(friendMemberId);
-
-            MemberFriend memberFriend = MemberFriend.builder()
-                    .member(signUpMember)
-                    .friend(friendMember)
-                    .state(MemberFriendState.ALLOW)
-                    .build();
-
-            MemberFriend savedMemberFriend = memberFriendRepository.save(memberFriend);
-            Member savedFriend = savedMemberFriend.getFriend();
-            friendIds.add(savedFriend.getId());
-        }
-        return friendIds;
-    }
-
-    private ReviewCreateDto createReviewCreateDto(List<FileStorage> storedFiles, List<Long> friendIds, List<String> genreCodes) {
-        List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
-        storedFiles.forEach(storedFile -> reviewImageDtoList.add(new ReviewImageDto(storedFile.getId(), storedFile.getFileName())));
-
-        return ReviewCreateDto.builder()
-                .reviewType(ReviewType.DEEP)
-                .clearTime(LocalTime.of(0, 45, 11))
-                .hintUsageCount(1)
-                .rating(6)
-                .friendIds(friendIds)
-                .reviewImages(reviewImageDtoList)
-                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n" +
-                        "일반모드로 하실분들은 2인이 최적입니다.")
-                .genreCodes(genreCodes)
-                .perceivedDifficulty(Difficulty.EASY)
-                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-                .perceivedActivity(Activity.NORMAL)
-                .scenarioSatisfaction(Satisfaction.NORMAL)
-                .interiorSatisfaction(Satisfaction.GOOD)
-                .problemConfigurationSatisfaction(Satisfaction.BAD)
-                .build();
-    }
-
-    private List<String> createGenreCodes() {
-        List<String> genreCodes = new ArrayList<>();
-        genreCodes.add("RSN1");
-        genreCodes.add("RMC1");
-        return genreCodes;
-    }
-
-    private Theme createTheme() {
-        Theme theme = Theme.builder()
-                .shop(null)
-                .name("이방인")
-                .introduction("\" Loading...80%\n" +
-                        "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
-                .numberOfPeople(NumberOfPeople.FIVE)
-                .difficulty(Difficulty.NORMAL)
-                .activity(Activity.LITTLE_ACTIVITY)
-                .playTime(LocalTime.of(1, 0))
-                .deleteYN(false)
-                .build();
-
-        Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
-        theme.addGenre(rsn1);
-
-        return themeRepository.save(theme);
-    }
-
-    private Theme createNotRegisterGenreTheme() {
-        Theme theme = Theme.builder()
-                .shop(null)
-                .name("이방인")
-                .introduction("\" Loading...80%\n" +
-                        "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
-                .numberOfPeople(NumberOfPeople.FIVE)
-                .difficulty(Difficulty.NORMAL)
-                .activity(Activity.LITTLE_ACTIVITY)
-                .playTime(LocalTime.of(1, 0))
-                .deleteYN(false)
-                .build();
-
-        return themeRepository.save(theme);
     }
 
 }

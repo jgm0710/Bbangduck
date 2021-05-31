@@ -24,6 +24,8 @@ public class ReviewCreateDto {
 
     private ReviewType reviewType;
 
+    private boolean clearYN;
+
     private LocalTime clearTime;
 
     private Integer hintUsageCount;
@@ -58,8 +60,9 @@ public class ReviewCreateDto {
     private Satisfaction problemConfigurationSatisfaction;
 
     @Builder
-    public ReviewCreateDto(ReviewType reviewType, LocalTime clearTime, Integer hintUsageCount, Integer rating, List<Long> friendIds, List<ReviewImageDto> reviewImages, String comment, List<String> genreCodes, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
+    public ReviewCreateDto(ReviewType reviewType, boolean clearYN, LocalTime clearTime, Integer hintUsageCount, Integer rating, List<Long> friendIds, List<ReviewImageDto> reviewImages, String comment, List<String> genreCodes, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
         this.reviewType = reviewType;
+        this.clearYN = clearYN;
         this.clearTime = clearTime;
         this.hintUsageCount = hintUsageCount;
         this.rating = rating;
@@ -133,5 +136,9 @@ public class ReviewCreateDto {
 
     public boolean reviewImagesExists() {
         return reviewImages != null && !reviewImages.isEmpty();
+    }
+
+    public boolean isClearYN() {
+        return clearYN;
     }
 }

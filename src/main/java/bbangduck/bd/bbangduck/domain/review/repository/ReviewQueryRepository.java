@@ -1,12 +1,18 @@
 package bbangduck.bd.bbangduck.domain.review.repository;
 
-import bbangduck.bd.bbangduck.domain.review.entity.QReview;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static bbangduck.bd.bbangduck.domain.review.entity.QReview.review;
 
@@ -26,5 +32,65 @@ public class ReviewQueryRepository {
                 .selectFrom(review)
                 .where(review.member.id.eq(memberId))
                 .fetch();
+    }
+
+    public Optional<ReviewRecodesCountsDto> findRecodesCountsByMember(Long memberId) {
+        ReviewRecodesCountsDto reviewRecodesCountsDto = queryFactory
+                .select(
+                        Projections.constructor(
+                                ReviewRecodesCountsDto.class,
+                                getTotalRecodesCountByMember(memberId),
+                                getSuccessRecodesCountByMember(memberId),
+                                getFailRecodesCountByMember(memberId)
+                        )
+                )
+                .from(review)
+                .fetchFirst();
+        return Optional.ofNullable(reviewRecodesCountsDto);
+    }
+
+    private Expression<Integer> getFailRecodesCountByMember(Long memberId) {
+        return ExpressionUtils.as(
+                JPAExpressions
+                        .select(review.count().intValue())
+                        .from(review)
+                        .where(
+                                memberIdEq(memberId),
+                                clearYnEq(false)
+                        ),
+                "failRecodesCount"
+        );
+    }
+
+    private Expression<Integer> getSuccessRecodesCountByMember(Long memberId) {
+        return ExpressionUtils.as(
+                JPAExpressions
+                        .select(review.count().intValue())
+                        .from(review)
+                        .where(
+                                memberIdEq(memberId),
+                                clearYnEq(true)
+                        ),
+                "successRecodesCount"
+        );
+    }
+
+    private Expression<Integer> getTotalRecodesCountByMember(Long memberId) {
+        return ExpressionUtils.as(
+                JPAExpressions
+                        .select(review.count().intValue())
+                        .from(review)
+                        .where(memberIdEq(memberId))
+                ,
+                "totalRecodesCount"
+        );
+    }
+
+    private BooleanExpression clearYnEq(boolean clearYN) {
+        return review.clearYN.eq(clearYN);
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        return review.member.id.eq(memberId);
     }
 }
