@@ -14,6 +14,7 @@ import org.apache.http.ssl.SSLContexts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -35,6 +36,7 @@ import java.util.Set;
  * Application 전반에 걸쳐 의존성 주입을 통해 사용할 Class 들을 Bean 으로 등록하기 위해 구현한 Configuration Class
  */
 @Configuration
+@EnableAutoConfiguration
 public class AppConfig {
 
     @Bean

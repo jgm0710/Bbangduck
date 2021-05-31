@@ -1,4 +1,6 @@
 spring:
+#  profiles:
+#    active: test
   datasource:
     username: sa
     password:
@@ -10,3 +12,51 @@ spring:
   jpa:
     properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: false
+  servlet:
+    multipart:
+      file-size-threshold: 2KB
+      max-file-size: 100MB
+      max-request-size: 115MB
+
+
+logging:
+  level:
+    bbangduck.bd.bbangduck: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.security: debug #spring security에 대해 어떤 메세지가 출력이 되는지 확인
+
+#kakao:
+#  sign-in:
+#    properties:
+#      native-app-key: 51a703abe9cf14386623caad48d40827
+#      rest-api-key: d053f45a470a5203cc53bdfb65b69c03
+#      java-script-key: d8952e843acd3811283f117ae4669d75
+#      admin-key: 1fddc4fda55b89bc7ccfc287cb305db5
+#      redirect-uri: http://localhost:8080/api/auth/kakao/sign-in/callback
+#      client-secret: R5IwQ9giaSwMLQ7Ta4gvneADq2herZzg
+#      authorize-state: bbangduck7
+#      scope: profile account_email
+#
+#
+#security:
+#  jwt:
+#    jwt-token-header: X-AUTH-TOKEN
+#    refresh-token-expired-date: 14
+#    secret-key: bbangduck-jwt-secret-key
+#    token-valid-second: 30000
+#file:
+#  storage:
+#    original-image-width: 1080
+#    original-image-height: 720
+#    thumbnail-image-width: 300
+#    thumbnail-image-height: 300
+#    file-cache-second: 60
+#    thumbnail-prefix: s_
+#    upload-path: C:\bbangduck\upload
