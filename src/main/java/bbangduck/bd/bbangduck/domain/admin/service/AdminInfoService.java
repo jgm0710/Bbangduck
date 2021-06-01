@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.admin.service;
 
+import bbangduck.bd.bbangduck.domain.admin.dto.AdminInfoDto;
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +15,5 @@ import java.util.List;
  */
 
 public interface AdminInfoService {
-    List<AdminInfo> getAdminInfoList(AdminInfo adminInfo);
+    List<AdminInfoDto> getAdminInfoList(AdminInfoDto adminInfo);
 }

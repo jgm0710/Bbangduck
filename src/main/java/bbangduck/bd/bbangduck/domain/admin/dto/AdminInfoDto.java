@@ -23,7 +23,7 @@ public class AdminInfoDto {
 
     private Long id;
 
-    private Member member;
+    private Long memberId;
 
     private String companyName;
 
@@ -36,17 +36,17 @@ public class AdminInfoDto {
     private String telephone;
 
 
-    public AdminInfo toEntity() {
-        System.out.println(this.toString());
-        return AdminInfo.builder()
-                .id(this.getId())
-                .owner(this.getOwner())
-                .companyName(this.getCompanyName())
-                .member(this.getMember())
-                .address(this.getAddress())
-                .companyNum(this.getCompanyNum())
-                .telephone(this.getTelephone())
+    public static AdminInfoDto of(AdminInfo adminInfo) {
+        return AdminInfoDto.builder()
+                .id(adminInfo.getId())
+                .owner(adminInfo.getOwner())
+                .companyName(adminInfo.getCompanyName())
+                .memberId(adminInfo.getMember().getId())
+                .address(adminInfo.getAddress())
+                .companyNum(adminInfo.getCompanyNum())
+                .telephone(adminInfo.getTelephone())
                 .build();
-
     }
+
+
 }

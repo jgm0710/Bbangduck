@@ -35,13 +35,10 @@ public class AdminInfoController {
 
     @GetMapping("/")
     public ResponseEntity<List<AdminInfoDto>> adminInfoSearch(@RequestBody @Valid AdminInfoDto adminInfoDto) {
-//    public String adminInfoSearch(@RequestBody @Valid AdminInfoDto adminInfoDto) {
 
-        List<AdminInfo> adminInfos = adminInfoService.getAdminInfoList(adminInfoDto.toEntity());
 
-        List<AdminInfoDto> adminInfoDtos = adminInfos.stream().map(AdminInfo::of).collect(Collectors.toList());
+        List<AdminInfoDto> adminInfoDtos = adminInfoService.getAdminInfoList(adminInfoDto);
 
         return ResponseEntity.ok().body(adminInfoDtos);
-//        return "Test";
     }
 }
