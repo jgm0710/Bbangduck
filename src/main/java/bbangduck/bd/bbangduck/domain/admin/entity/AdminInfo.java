@@ -43,28 +43,18 @@ public class AdminInfo extends BaseEntityDateTime{
     @Column(name = "delete_yn")
     private boolean deleteYN;
 
-//    @Builder
-//    public AdminInfo(Member member, String companyName, String owner, String address, String companyNum, String telephone, boolean deleteYN) {
-//        this.member = member;
-//        this.companyName = companyName;
-//        this.owner = owner;
-//        this.address = address;
-//        this.companyNum = companyNum;
-//        this.telephone = telephone;
-//        this.deleteYN = deleteYN;
-//    }
-
-    public AdminInfoDto of() {
-        return AdminInfoDto.builder()
-                .address(this.getAddress())
-                .companyNum(this.getCompanyNum())
-                .companyName(this.getCompanyName())
-                .telephone(this.getTelephone())
-                .id(this.getId())
-                .member(this.getMember())
-                .owner(this.getOwner())
+    public static AdminInfo toEntity(AdminInfoDto adminInfoDto, Member member) {
+        return AdminInfo.builder()
+                .id(adminInfoDto.getId())
+                .owner(adminInfoDto.getOwner())
+                .telephone(adminInfoDto.getTelephone())
+                .companyNum(adminInfoDto.getCompanyNum())
+                .companyName(adminInfoDto.getCompanyName())
+                .member(member)
+                .deleteYN(false)
                 .build();
     }
+
 
     @Override
     public String toString() {

@@ -160,7 +160,7 @@ public class AdminInfoAllTest {
         AdminInfoDto build = AdminInfoDto.builder()
                 .companyName("빵덕1")
                 .build();
-        List<AdminInfo> adminInfoList = adminInfoService.getAdminInfoList(build.toEntity());
+        List<AdminInfoDto> adminInfoList = adminInfoService.getAdminInfoList(build);
         System.out.println("+==============================================");
         adminInfoList.stream().forEach(System.out::println);
         System.out.println("+==============================================");

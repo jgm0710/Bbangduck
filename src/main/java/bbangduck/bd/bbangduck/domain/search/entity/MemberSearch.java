@@ -1,8 +1,9 @@
-package bbangduck.bd.bbangduck.domain.member.entity;
+package bbangduck.bd.bbangduck.domain.search.entity;
 
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberSearchType;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.search.dto.MemberSearchDto;
+import bbangduck.bd.bbangduck.domain.search.entity.enumerate.MemberSearchType;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +12,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Getter
+@Table
+@Builder
 public class MemberSearch {
 
     @Id
@@ -32,4 +37,14 @@ public class MemberSearch {
 
     @CreationTimestamp
     private LocalDateTime searchTimes;
+
+    public static MemberSearch toEntity(MemberSearchDto memberSearchDto, Member member) {
+        return MemberSearch.builder()
+                .id(memberSearchDto.getId())
+                .member(member)
+                .searchKeyword(memberSearchDto.getSearchKeyword())
+                .searchType(memberSearchDto.getSearchType())
+                .build();
+    }
+
 }
