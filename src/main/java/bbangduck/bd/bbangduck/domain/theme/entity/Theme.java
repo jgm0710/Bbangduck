@@ -142,4 +142,8 @@ public class Theme extends BaseEntityDateTime {
     public List<Genre> getGenres() {
         return themeGenres.stream().map(ThemeGenre::getGenre).collect(Collectors.toList());
     }
+
+    public String getThemeImageFileName() {
+        return themeImage == null ? null : themeImage.getFileName();
+    }
 }

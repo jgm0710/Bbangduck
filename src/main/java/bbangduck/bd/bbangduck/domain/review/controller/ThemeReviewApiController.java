@@ -45,7 +45,7 @@ public class ThemeReviewApiController {
         reviewValidator.validateCreateView(requestDto, errors);
 
         Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
-        URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId)).toUri();
+        URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId, currentMember)).toUri();
         ResponseStatus responseStatus = getCreateReviewResponseStatus(requestDto.getReviewType());
 
         assert responseStatus != null;

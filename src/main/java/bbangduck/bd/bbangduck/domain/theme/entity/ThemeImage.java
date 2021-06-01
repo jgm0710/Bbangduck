@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -22,7 +23,31 @@ public class ThemeImage {
 
     private String  fileName;
 
+    @Builder
+    public ThemeImage(Long id, Theme theme, Long fileStorageId, String fileName) {
+        this.id = id;
+        this.theme = theme;
+        this.fileStorageId = fileStorageId;
+        this.fileName = fileName;
+    }
+
     public void setTheme(Theme theme) {
         this.theme = theme;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Theme getTheme() {
+        return theme;
+    }
+
+    public Long getFileStorageId() {
+        return fileStorageId;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }

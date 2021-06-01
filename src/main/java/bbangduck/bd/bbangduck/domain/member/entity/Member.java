@@ -226,4 +226,8 @@ public class Member extends BaseEntityDateTime {
     public void signOut() {
         this.refreshInfo = null;
     }
+
+    public String getProfileImageFileName() {
+        return profileImage == null ? null : profileImage.getFileName();
+    }
 }

@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseEntityDateTime {
 
+    /**
+     * 간단 리뷰 (공통 기입)
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
@@ -57,12 +60,18 @@ public class Review extends BaseEntityDateTime {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewPlayTogether> reviewPlayTogethers = new ArrayList<>();
 
+    /**
+     * 상세 리뷰
+     */
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
     @Column(length = 3000)
     private String comment;
 
+    /**
+     * 상세 및 추가 설문 작성 리뷰
+     */
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewPerceivedThemeGenre> perceivedThemeGenres = new ArrayList<>();
 
@@ -84,8 +93,13 @@ public class Review extends BaseEntityDateTime {
     @Enumerated(EnumType.STRING)
     private Satisfaction problemConfigurationSatisfaction;
 
+    /**
+     * common
+     */
+    private long likeCount;
+
     @Builder
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction, long likeCount) {
         this.id = id;
         this.member = member;
         this.theme = theme;
@@ -102,10 +116,7 @@ public class Review extends BaseEntityDateTime {
         this.scenarioSatisfaction = scenarioSatisfaction;
         this.interiorSatisfaction = interiorSatisfaction;
         this.problemConfigurationSatisfaction = problemConfigurationSatisfaction;
-    }
-
-    public List<Member> getPlayTogetherMembers() {
-        return this.reviewPlayTogethers.stream().map(ReviewPlayTogether::getMember).collect(Collectors.toList());
+        this.likeCount = likeCount;
     }
 
     public static Review create(Member member, Theme theme, int recodeNumber, ReviewCreateDto reviewCreateDto) {
@@ -125,6 +136,7 @@ public class Review extends BaseEntityDateTime {
                 .scenarioSatisfaction(reviewCreateDto.getScenarioSatisfaction())
                 .interiorSatisfaction(reviewCreateDto.getInteriorSatisfaction())
                 .problemConfigurationSatisfaction(reviewCreateDto.getProblemConfigurationSatisfaction())
+                .likeCount(0)
                 .build();
 
         if (reviewCreateDto.reviewImagesExists()) {
@@ -133,6 +145,10 @@ public class Review extends BaseEntityDateTime {
         }
 
         return review;
+    }
+
+    public List<Member> getPlayTogetherMembers() {
+        return this.reviewPlayTogethers.stream().map(ReviewPlayTogether::getMember).collect(Collectors.toList());
     }
 
     public void addPlayTogether(Member friend) {
@@ -218,15 +234,35 @@ public class Review extends BaseEntityDateTime {
         return problemConfigurationSatisfaction;
     }
 
-    public List<ReviewPerceivedThemeGenre> getPerceivedThemeGenres() {
+    public List<ReviewPerceivedThemeGenre> getPerceivedThemeGenreEntities() {
         return perceivedThemeGenres;
     }
 
-    public long getRecodeNumber() {
+    public int getRecodeNumber() {
         return recodeNumber;
     }
 
     public boolean isClearYN() {
         return clearYN;
+    }
+
+    public boolean isMyReview(Member currentMember) {
+        return currentMember != null && this.member.getId().equals(currentMember.getId());
+    }
+
+    public long getLikeCount() {
+        return likeCount;
+    }
+
+    public List<Genre> getPerceivedThemeGenres() {
+        return this.perceivedThemeGenres.stream().map(ReviewPerceivedThemeGenre::getGenre).collect(Collectors.toList());
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount--;
     }
 }

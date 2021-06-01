@@ -72,6 +72,12 @@
 | 6401
 | 해당 장르가 존재하지 않습니다.
 
+| <<resources-get-an-review>>
+| 리뷰 조회 시 리뷰를 찾을 수 없는 경우
+| 404
+| 4405
+| 해당 리뷰가 존재하지 않습니다.
+
 |===
 
 == 히스토리
@@ -85,6 +91,9 @@
 * <<resources-create-review>> 수정
 ** 리뷰 생성 시 테마 클리어 여부를 요청 body 로 받도록 변경
 ** 변경 사항 문서 반영
+
+2021-06-01:::
+* <<resources-get-an-review>> 기능 구현
 
 [[resources-review]]
 = 리뷰 관련 리소스
@@ -194,3 +203,61 @@ operation::create-deep-review-success[snippets='request-headers,request-fields,r
 * 상세 및 추가 설문 작성 리뷰를 생성할 경우 이미지 파일에 대한 정보, 친구 목록에 대한 정보를 제외한 모든 정보를 기입해야 합니다.
 
 operation::create-deep-review-not-deep[snippets='response-fields,curl-request,http-response']
+
+[[resources-get-an-review]]
+== 리뷰 1건 조회
+
+* `GET` `/api/reviews/{reviewId}`
+
+* 리뷰 조회의 경우 조회의 결과로 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 리뷰가 다른 응답 형태로 나타날 수 있습니다.
+
+* 간단 리뷰의 경우 `ReviewType` 은 `SIMPLE`, 상세 리뷰의 경우 `ReviewType` 은 `DETAIL`, 상세 및 추가 설문 작성 리뷰의 경우 `ReviewType` 은 `DEEP`
+의 값으로 나타납니다.
+
+* 리뷰 조회의 경우 인증되지 않은 사용자도 리뷰를 조회할 수 있습니다.
+** 다만 인증되지 않은 사용자의 경우 리뷰에 좋아요를 등록하는 등의 요청을 하기 위해서는 인증의 단계를 거쳐야 합니다.
+** 인증되지 않은 회원의 `myReview` 는 `false`, `like` 도 `false` 가 나타납니다.
+
+* 인증된 회원이 자신이 생성한 리뷰를 조회하는 경우 `myReview` 는 `true` 가 됩니다.
+** 자신이 생성한 리뷰에 대해서는 좋아요를 등록하는 등의 요청이 불가능합니다.
+** 자신이 생성한 리뷰는 좋아요 버튼이 나오지 않도록 하는 등의 구현이 가능할 것 입니다.
+
+* 인증된 회원이 다른 회원이 생성한 리뷰를 조회하는 경우 리뷰에 좋아요를 등록하는 등의 요청을 수행할 수 있습니다.
+** 인증된 회원이 해당 리뷰에 좋아요를 등록했을 경우, `like` 는 `true` 가 나타납니다.
+** 인증된 회원이 해당 리뷰에 좋아요를 등록하지 않았을 경우, `like` 는 `false` 가 나타납니다.
+
+[[resources-get-simple-review]]
+=== 간단 리뷰가 조회된 경우
+
+* 응답 HttpStatus : `200 OK`
+
+* ReviewType : `SIMPLE`
+
+* 아래의 예시는 리뷰를 생성한 회원 A 가 있고, 리뷰를 조회하는 회원 B 가 있는 상황입니다.
+
+* B 는 A 가 생성한 리뷰에 좋아요를 등록한 상황입니다.
+* `myReview` 는 `false`, `like` 는 `true` 가 나오게 됩니다.
+
+NOTE: 상세 리뷰, 상세 및 추가 설문 리뷰 또한 위의 상황을 가정합니다.
+
+operation::get-simple-review-of-different-member-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+[[resources-get-detail-review]]
+=== 상세 리뷰가 조회된 경우
+
+* 응답 HttpStatus : `200 OK`
+
+* ReviewType : `DETAIL`
+
+operation::get-detail-review-of-different-member-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+[[resources-get-deep-review]]
+=== 상세 및 추가 설문 작성 리뷰가 조회된 경우
+
+* 응답 HttpStatus : `200 OK`
+
+* ReviewType : `DEEP`
+
+operation::get-deep-review-of-different-member-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+

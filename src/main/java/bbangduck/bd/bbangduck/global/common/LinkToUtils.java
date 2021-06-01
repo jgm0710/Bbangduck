@@ -2,7 +2,6 @@ package bbangduck.bd.bbangduck.global.common;
 
 import bbangduck.bd.bbangduck.domain.file.controller.FileStorageApiController;
 
-import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -17,11 +16,21 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class LinkToUtils {
 
     public static String  linkToFileDownload(String fileName) {
+        if (fileNameNotExists(fileName)) {
+            return null;
+        }
         String encodedFileName = getEncodedFileName(fileName);
         return linkTo(FileStorageApiController.class).slash(encodedFileName).toUri().toString();
     }
 
+    private static boolean fileNameNotExists(String fileName) {
+        return fileName == null || fileName.isBlank();
+    }
+
     public static String linkToImageFileThumbnailDownload(String fileName) {
+        if (fileNameNotExists(fileName)) {
+            return null;
+        }
         String encodedFileName = getEncodedFileName(fileName);
         return linkTo(FileStorageApiController.class).slash("images").slash("thumbnails").slash(encodedFileName).toUri().toString();
     }

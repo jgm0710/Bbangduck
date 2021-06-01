@@ -5,33 +5,22 @@ import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendState;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.member.repository.MemberFriendRepository;
-import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewPerceivedThemeGenre;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
-import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,7 +53,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         Review findReview = reviewService.getReview(reviewId);
 
         Member reviewMember = findReview.getMember();
-        List<ReviewPerceivedThemeGenre> reviewPerceivedThemeGenres = findReview.getPerceivedThemeGenres();
+        List<ReviewPerceivedThemeGenre> reviewPerceivedThemeGenres = findReview.getPerceivedThemeGenreEntities();
         Theme reviewTheme = findReview.getTheme();
         List<Genre> reviewThemeGenres = reviewTheme.getGenres();
         List<ReviewImage> reviewImages = findReview.getReviewImages();
