@@ -265,4 +265,32 @@ public class Review extends BaseEntityDateTime {
     public void decreaseLikeCount() {
         this.likeCount--;
     }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+//                ", member=" + member +
+//                ", theme=" + theme +
+                ", reviewType=" + reviewType +
+                ", recodeNumber=" + recodeNumber +
+                ", clearYN=" + clearYN +
+                ", clearTime=" + clearTime +
+                ", hintUsageCount=" + hintUsageCount +
+                ", rating=" + rating +
+//                ", reviewPlayTogethers=" + reviewPlayTogethers +
+                ", reviewImages=" + reviewImages +
+                ", comment='" + comment + '\'' +
+//                ", perceivedThemeGenres=" + perceivedThemeGenres +
+                ", perceivedDifficulty=" + perceivedDifficulty +
+                ", perceivedHorrorGrade=" + perceivedHorrorGrade +
+                ", perceivedActivity=" + perceivedActivity +
+                ", scenarioSatisfaction=" + scenarioSatisfaction +
+                ", interiorSatisfaction=" + interiorSatisfaction +
+                ", problemConfigurationSatisfaction=" + problemConfigurationSatisfaction +
+                ", likeCount=" + likeCount +
+                ", registerTimes=" + registerTimes +
+                ", updateTimes=" + updateTimes +
+                '}';
+    }
 }

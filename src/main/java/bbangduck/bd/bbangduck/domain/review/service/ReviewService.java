@@ -18,9 +18,11 @@ import bbangduck.bd.bbangduck.domain.review.exception.ReviewNotFoundException;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
+import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,5 +122,9 @@ public class ReviewService {
 
     private boolean genreCodesExists(List<String> genreCodes) {
         return genreCodes != null&&!genreCodes.isEmpty();
+    }
+
+    public QueryResults<Review> getThemeReviewList(Long themeId, ReviewSearchDto reviewSearchDto) {
+        return reviewQueryRepository.findListByTheme(themeId, reviewSearchDto);
     }
 }

@@ -11,16 +11,28 @@ import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendI
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewPerceivedThemeGenre;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
+import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
+import com.querydsl.core.QueryResults;
+import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -303,6 +315,174 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //then
         assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
 
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParametersForGetThemeReviewList")
+    @Transactional
+    @DisplayName("테마에 등록된 리뷰 목록 조회")
+    public void getThemeReviewList(ReviewSortCondition sortCondition) {
+        //given
+        Theme theme = createTheme();
+        ReviewSearchDto reviewSearchDto = ReviewSearchDto.builder()
+                .criteria(new CriteriaDto())
+                .sortCondition(sortCondition)
+                .build();
+
+        createTmpReviewList(theme);
+
+        Theme theme2 = createTheme();
+        createTmpReviewList(theme2);
+
+
+        //when
+        System.out.println("================================================================================================================================================================");
+        QueryResults<Review> reviewQueryResults = reviewService.getThemeReviewList(theme.getId(), reviewSearchDto);
+        List<Review> findReviews = reviewQueryResults.getResults();
+        System.out.println("================================================================================================================================================================");
+
+        //then
+        findReviews.forEach(review -> {
+            Theme reviewTheme = review.getTheme();
+            assertEquals(theme.getId(), reviewTheme.getId());
+            System.out.println("review = " + review);
+        });
+
+        boolean sortFlag = true;
+        switch (sortCondition) {
+            case LIKE_COUNT_DESC:
+                for (int i = 0; i < findReviews.size()-1; i++) {
+                    Review nowReview = findReviews.get(i);
+                    Review nextReview = findReviews.get(i + 1);
+
+                    if (nowReview.getLikeCount() < nextReview.getLikeCount()) {
+                        sortFlag = false;
+                        break;
+                    } else if (nowReview.getLikeCount() == nextReview.getLikeCount()) {
+                        LocalDateTime nowReviewRegisterTimes = nowReview.getRegisterTimes();
+                        LocalDateTime nextReviewRegisterTimes = nextReview.getRegisterTimes();
+
+                        if (nowReviewRegisterTimes.isBefore(nextReviewRegisterTimes)) {
+                            sortFlag = false;
+                            break;
+                        }
+                    }
+                }
+                break;
+            case LIKE_COUNT_ASC:
+                for (int i = 0; i < findReviews.size()-1; i++) {
+                    Review nowReview = findReviews.get(i);
+                    Review nextReview = findReviews.get(i + 1);
+
+                    if (nowReview.getLikeCount() > nextReview.getLikeCount()) {
+                        sortFlag = false;
+                        break;
+                    } else if (nowReview.getLikeCount() == nextReview.getLikeCount()) {
+                        LocalDateTime nowReviewRegisterTimes = nowReview.getRegisterTimes();
+                        LocalDateTime nextReviewRegisterTimes = nextReview.getRegisterTimes();
+
+                        if (nowReviewRegisterTimes.isBefore(nextReviewRegisterTimes)) {
+                            sortFlag = false;
+                            break;
+                        }
+                    }
+                }
+                break;
+            case LATEST:
+                for (int i = 0; i < findReviews.size()-1; i++) {
+                    Review nowReview = findReviews.get(i);
+                    Review nextReview = findReviews.get(i + 1);
+
+                    LocalDateTime nowReviewRegisterTimes = nowReview.getRegisterTimes();
+                    LocalDateTime nextReviewRegisterTimes = nextReview.getRegisterTimes();
+
+                    if (nowReviewRegisterTimes.isBefore(nextReviewRegisterTimes)) {
+                        sortFlag = false;
+                        break;
+                    }
+                }
+                break;
+            case OLDEST:
+                for (int i = 0; i < findReviews.size()-1; i++) {
+                    Review nowReview = findReviews.get(i);
+                    Review nextReview = findReviews.get(i + 1);
+
+                    LocalDateTime nowReviewRegisterTimes = nowReview.getRegisterTimes();
+                    LocalDateTime nextReviewRegisterTimes = nextReview.getRegisterTimes();
+
+                    if (nowReviewRegisterTimes.isAfter(nextReviewRegisterTimes)) {
+                        sortFlag = false;
+                        break;
+                    }
+                }
+                break;
+            case RATING_DESC:
+                for (int i = 0; i < findReviews.size()-1; i++) {
+                    Review nowReview = findReviews.get(i);
+                    Review nextReview = findReviews.get(i + 1);
+
+                    if (nowReview.getRating() < nextReview.getRating()) {
+                        sortFlag = false;
+                        break;
+                    } else if (nowReview.getRating() == nextReview.getRating()) {
+                        LocalDateTime nowReviewRegisterTimes = nowReview.getRegisterTimes();
+                        LocalDateTime nextReviewRegisterTimes = nextReview.getRegisterTimes();
+
+                        if (nowReviewRegisterTimes.isBefore(nextReviewRegisterTimes)) {
+                            sortFlag = false;
+                            break;
+                        }
+                    }
+                }
+                break;
+            case RATING_ASC:
+                for (int i = 0; i < findReviews.size()-1; i++) {
+                    Review nowReview = findReviews.get(i);
+                    Review nextReview = findReviews.get(i + 1);
+
+                    if (nowReview.getRating() > nextReview.getRating()) {
+                        sortFlag = false;
+                        break;
+                    } else if (nowReview.getRating() == nextReview.getRating()) {
+                        LocalDateTime nowReviewRegisterTimes = nowReview.getRegisterTimes();
+                        LocalDateTime nextReviewRegisterTimes = nextReview.getRegisterTimes();
+
+                        if (nowReviewRegisterTimes.isBefore(nextReviewRegisterTimes)) {
+                            sortFlag = false;
+                            break;
+                        }
+                    }
+                }
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + sortCondition);
+        }
+
+        assertTrue(sortFlag);
+
+    }
+
+    private void createTmpReviewList(Theme theme) {
+        for (int i = 0; i < 20; i++) {
+            Review newReview = Review.builder()
+                    .theme(theme)
+                    .rating(new Random().nextInt(10))
+                    .likeCount(new Random().nextInt(20))
+                    .build();
+
+            reviewRepository.save(newReview);
+        }
+    }
+
+    private static Stream<Arguments> provideParametersForGetThemeReviewList() {
+        return Stream.of(
+                Arguments.of(ReviewSortCondition.LATEST),
+                Arguments.of(ReviewSortCondition.OLDEST),
+                Arguments.of(ReviewSortCondition.LIKE_COUNT_DESC),
+                Arguments.of(ReviewSortCondition.LIKE_COUNT_ASC),
+                Arguments.of(ReviewSortCondition.RATING_DESC),
+                Arguments.of(ReviewSortCondition.RATING_ASC)
+        );
     }
 
 }

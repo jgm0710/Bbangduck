@@ -2,8 +2,12 @@ package bbangduck.bd.bbangduck.domain.review.repository;
 
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -11,6 +15,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +38,58 @@ public class ReviewQueryRepository {
                 .selectFrom(review)
                 .where(review.member.id.eq(memberId))
                 .fetch();
+    }
+
+    public QueryResults<Review> findListByTheme(Long themeId, ReviewSearchDto searchDto) {
+        return queryFactory
+                .selectFrom(review)
+                .where(
+                        themeIdEq(themeId)
+                )
+                .offset(searchDto.getOffset())
+                .limit(searchDto.getAmount())
+                .orderBy(
+                        sortConditionEq(searchDto.getSortCondition())
+                )
+                .fetchResults();
+    }
+
+    private BooleanExpression themeIdEq(Long themeId) {
+        return review.theme.id.eq(themeId);
+    }
+
+    private OrderSpecifier<?>[] sortConditionEq(ReviewSortCondition sortCondition) {
+        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+
+        switch (sortCondition) {
+            case OLDEST:
+                orderSpecifiers.add(review.registerTimes.asc());
+                break;
+            case LIKE_COUNT_DESC:
+                orderSpecifiers.add(review.likeCount.desc());
+                orderSpecifiers.add(reviewRegisterTimeDesc());
+                break;
+            case LIKE_COUNT_ASC:
+                orderSpecifiers.add(review.likeCount.asc());
+                orderSpecifiers.add(reviewRegisterTimeDesc());
+                break;
+            case RATING_DESC:
+                orderSpecifiers.add(review.rating.desc());
+                orderSpecifiers.add(reviewRegisterTimeDesc());
+                break;
+            case RATING_ASC:
+                orderSpecifiers.add(review.rating.asc());
+                orderSpecifiers.add(reviewRegisterTimeDesc());
+                break;
+            default:
+                orderSpecifiers.add(reviewRegisterTimeDesc());
+        }
+
+        return orderSpecifiers.toArray(new OrderSpecifier[orderSpecifiers.size()]);
+    }
+
+    private OrderSpecifier<LocalDateTime> reviewRegisterTimeDesc() {
+        return review.registerTimes.desc();
     }
 
     public Optional<ReviewRecodesCountsDto> findRecodesCountsByMember(Long memberId) {

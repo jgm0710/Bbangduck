@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static bbangduck.bd.bbangduck.domain.review.controller.ReviewResponseUtils.convertReviewToResponseDto;
+
 /**
  * 작성자 : 정구민 <br><br>
  * <p>
@@ -39,7 +41,7 @@ public class ReviewApiController {
         Review findReview = reviewService.getReview(reviewId);
         boolean existsReviewLike = getExistsReviewLike(reviewId, currentMember);
 
-        ReviewResponseDto reviewResponseDto = convertReview(findReview, currentMember, existsReviewLike);
+        ReviewResponseDto reviewResponseDto = convertReviewToResponseDto(findReview, currentMember, existsReviewLike);
 
         return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_REVIEW_SUCCESS, reviewResponseDto));
     }
@@ -49,19 +51,6 @@ public class ReviewApiController {
             return reviewLikeService.getExistsReviewLike(currentMember.getId(), reviewId);
         }
         return false;
-    }
-
-    private ReviewResponseDto convertReview(Review findReview, Member currentMember, boolean existsReviewLike) {
-        switch (findReview.getReviewType()) {
-            case SIMPLE:
-                return SimpleReviewResponseDto.convert(findReview, currentMember, existsReviewLike);
-            case DETAIL:
-                return DetailReviewResponseDto.convert(findReview, currentMember, existsReviewLike);
-            case DEEP:
-                return DeepReviewResponseDto.convert(findReview, currentMember, existsReviewLike);
-            default:
-                return null;
-        }
     }
 
     // TODO: 2021-05-22 리뷰 수정 기능 구현

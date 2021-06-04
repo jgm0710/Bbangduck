@@ -98,6 +98,7 @@ public enum ResponseStatus {
     CREATE_DETAIL_REVIEW_SUCCESS(4202, "상세 리뷰 생성에 성공했습니다.", "상세 리뷰 생성에 성공한 경우"),
     CREATE_DEEP_REVIEW_SUCCESS(4203, "상세 내용 및 추가 설문 리뷰 생성에 성공했습니다.", "상세 내용 및 추가 설문을 진행한 리뷰 생성에 성공한 경우"),
     GET_REVIEW_SUCCESS(4204, "리뷰 조회에 성공했습니다.", "리뷰 1건 조회에 성공한 경우"),
+    GET_REVIEW_LIST_SUCCESS(4205, "리뷰 목록 조회에 성공했습니다.", "리뷰 목록 조회에 성공한 경우"),
 
     CREATE_REVIEW_NOT_VALID(4401, "리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰 생성 요청 시 공통적으로 필요한 필수 기입 사항을 올바르게 기입하지 않은 경우"),
     CREATE_SIMPLE_REVIEW_NOT_VALID(4402, "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),

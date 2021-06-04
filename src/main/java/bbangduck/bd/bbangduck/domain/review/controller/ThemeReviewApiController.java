@@ -2,11 +2,15 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
+import bbangduck.bd.bbangduck.global.common.PaginationResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
+import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import static bbangduck.bd.bbangduck.domain.review.controller.ReviewResponseUtils.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -33,6 +40,8 @@ public class ThemeReviewApiController {
     private final ReviewService reviewService;
 
     private final ReviewValidator reviewValidator;
+
+    private final ReviewLikeService reviewLikeService;
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -53,24 +62,39 @@ public class ThemeReviewApiController {
 
     }
 
-    private ResponseStatus getCreateReviewResponseStatus(ReviewType reviewType) {
-        switch (reviewType) {
-            case SIMPLE:
-                return ResponseStatus.CREATE_SIMPLE_REVIEW_SUCCESS;
-            case DETAIL:
-                return ResponseStatus.CREATE_DETAIL_REVIEW_SUCCESS;
-            case DEEP:
-                return ResponseStatus.CREATE_DEEP_REVIEW_SUCCESS;
-            default:
-                return null;
-        }
+    @GetMapping
+    public ResponseEntity<ResponseDto<PaginationResponseDto<Object>>> getReviewList(
+            @PathVariable Long themeId,
+            @ModelAttribute ThemeReviewSearchRequestDto requestDto,
+            @CurrentUser Member currentMember
+    ) {
+        ReviewSearchDto reviewSearchDto = requestDto.toServiceDto();
+        QueryResults<Review> reviewQueryResults = reviewService.getThemeReviewList(themeId, reviewSearchDto);
+        long totalPageCount = reviewQueryResults.getTotal();
+        List<Review> findReviews = reviewQueryResults.getResults();
+
+        List<ReviewResponseDto> reviewResponseDtos = findReviews.stream().map(review -> {
+            boolean existsReviewLike = getExistsReviewLike(review.getId(), currentMember);
+            return convertReviewToResponseDto(review, currentMember, existsReviewLike);
+        }).collect(Collectors.toList());
+
+        PaginationResponseDto<Object> reviewsPaginationResponseDto = PaginationResponseDto.builder()
+                .list(reviewResponseDtos)
+                .pageNum(requestDto.getPageNum())
+                .amount(requestDto.getAmount())
+                .totalPageCount(totalPageCount)
+                .prevPage(getThemeReviewListPrevPageUriString(themeId, reviewSearchDto, currentMember))
+                .nextPage(getThemeReviewListNextPageUrlString(themeId, reviewSearchDto, currentMember, totalPageCount))
+                .build();
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_REVIEW_LIST_SUCCESS, reviewsPaginationResponseDto));
     }
 
-    @GetMapping
-    public ResponseEntity getReviewList(
-            @PathVariable Long themeId
-    ) {
-        return null;
+    private boolean getExistsReviewLike(Long reviewId, Member currentMember) {
+        if (currentMember != null) {
+            return reviewLikeService.getExistsReviewLike(currentMember.getId(), reviewId);
+        }
+        return false;
     }
 
     // TODO: 2021-05-22 테마별 리뷰 목록 기능 구현
