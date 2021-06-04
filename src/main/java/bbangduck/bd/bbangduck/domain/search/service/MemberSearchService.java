@@ -18,4 +18,6 @@ public interface MemberSearchService {
     List<MemberSearchDto> findAll();
 
     List<MemberSearchDto> findByMemberSearchTypeAndKeyword(MemberSearchDto memberSearchDto);
+
+    List<MemberSearchDto.MemberSearchTopMonthDto> searchTopMonthList();
 }

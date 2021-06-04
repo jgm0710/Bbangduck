@@ -43,11 +43,23 @@ public class MemberSearchDto {
                 .build();
     }
 
-//    @Data
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    public static class RequestDto {
-//        private Member member
-//
-//    }
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @ToString
+    @Builder
+    public static class MemberSearchTopMonthDto {
+//        qMemberSearch.searchKeyword.count().as("count"),
+//        qMemberSearch.searchKeyword,
+//        qMemberSearch.searchType,
+//        qMemberSearch.searchDate
+        private Long count;
+
+        private String searchKeyword;
+
+        private MemberSearchType searchType;
+
+        private LocalDate searchDate;
+
+    }
 }

@@ -83,4 +83,9 @@ public class MemberSearchServiceImple implements MemberSearchService {
         }
     }
 
+    @Override
+    public List<MemberSearchDto.MemberSearchTopMonthDto> searchTopMonthList() {
+        return this.memberSearchRepository.searchTopMonthList();
+    }
+
 }
