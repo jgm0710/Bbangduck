@@ -246,27 +246,27 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return friendIds;
     }
 
-    protected ReviewCreateDto createReviewCreateDto(List<FileStorage> storedFiles, List<Long> friendIds, List<String> genreCodes) {
-        List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
-        storedFiles.forEach(storedFile -> reviewImageDtoList.add(new ReviewImageDto(storedFile.getId(), storedFile.getFileName())));
-
-        return ReviewCreateDto.builder()
-                .reviewType(ReviewType.DEEP)
-                .clearTime(LocalTime.of(0, 45, 11))
-                .hintUsageCount(1)
-                .rating(6)
-                .friendIds(friendIds)
-                .reviewImages(reviewImageDtoList)
-                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
-                .genreCodes(genreCodes)
-                .perceivedDifficulty(Difficulty.EASY)
-                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-                .perceivedActivity(Activity.NORMAL)
-                .scenarioSatisfaction(Satisfaction.NORMAL)
-                .interiorSatisfaction(Satisfaction.GOOD)
-                .problemConfigurationSatisfaction(Satisfaction.BAD)
-                .build();
-    }
+//    protected ReviewCreateDto createReviewCreateDto(List<FileStorage> storedFiles, List<Long> friendIds, List<String> genreCodes) {
+//        List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
+//        storedFiles.forEach(storedFile -> reviewImageDtoList.add(new ReviewImageDto(storedFile.getId(), storedFile.getFileName())));
+//
+//        return ReviewCreateDto.builder()
+//                .reviewType(ReviewType.DEEP)
+//                .clearTime(LocalTime.of(0, 45, 11))
+//                .hintUsageCount(1)
+//                .rating(6)
+//                .friendIds(friendIds)
+//                .reviewImages(reviewImageDtoList)
+//                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
+//                .genreCodes(genreCodes)
+//                .perceivedDifficulty(Difficulty.EASY)
+//                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
+//                .perceivedActivity(Activity.NORMAL)
+//                .scenarioSatisfaction(Satisfaction.NORMAL)
+//                .interiorSatisfaction(Satisfaction.GOOD)
+//                .problemConfigurationSatisfaction(Satisfaction.BAD)
+//                .build();
+//    }
 
     protected List<String> createGenreCodes() {
         List<String> genreCodes = new ArrayList<>();
@@ -311,25 +311,25 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     }
 
 
-    protected ReviewCreateRequestDto createDeepReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos, List<String> genreCodes) {
-        return ReviewCreateRequestDto.builder()
-                .reviewType(ReviewType.DEEP)
-                .clearYN(true)
-                .clearTime(LocalTime.of(0, 45, 11))
-                .hintUsageCount(1)
-                .rating(6)
-                .friendIds(friendIds)
-                .reviewImages(reviewImageRequestDtos)
-                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
-                .genreCodes(genreCodes)
-                .perceivedDifficulty(Difficulty.EASY)
-                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-                .perceivedActivity(Activity.NORMAL)
-                .scenarioSatisfaction(Satisfaction.NORMAL)
-                .interiorSatisfaction(Satisfaction.GOOD)
-                .problemConfigurationSatisfaction(Satisfaction.BAD)
-                .build();
-    }
+//    protected ReviewCreateRequestDto createDeepReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos, List<String> genreCodes) {
+//        return ReviewCreateRequestDto.builder()
+//                .reviewType(ReviewType.DEEP)
+//                .clearYN(true)
+//                .clearTime(LocalTime.of(0, 45, 11))
+//                .hintUsageCount(1)
+//                .rating(6)
+//                .friendIds(friendIds)
+//                .reviewImages(reviewImageRequestDtos)
+//                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
+//                .genreCodes(genreCodes)
+//                .perceivedDifficulty(Difficulty.EASY)
+//                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
+//                .perceivedActivity(Activity.NORMAL)
+//                .scenarioSatisfaction(Satisfaction.NORMAL)
+//                .interiorSatisfaction(Satisfaction.GOOD)
+//                .problemConfigurationSatisfaction(Satisfaction.BAD)
+//                .build();
+//    }
 
     protected List<ReviewImageRequestDto> createReviewImageRequestDtos() throws IOException {
         MockMultipartFile files1 = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);

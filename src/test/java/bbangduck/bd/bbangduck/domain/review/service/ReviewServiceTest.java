@@ -3,14 +3,12 @@ package bbangduck.bd.bbangduck.domain.review.service;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewPerceivedThemeGenre;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
@@ -19,9 +17,7 @@ import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
 import com.querydsl.core.QueryResults;
-import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -65,7 +61,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         Review findReview = reviewService.getReview(reviewId);
 
         Member reviewMember = findReview.getMember();
-        List<ReviewPerceivedThemeGenre> reviewPerceivedThemeGenres = findReview.getPerceivedThemeGenreEntities();
         Theme reviewTheme = findReview.getTheme();
         List<Genre> reviewThemeGenres = reviewTheme.getGenres();
         List<ReviewImage> reviewImages = findReview.getReviewImages();
@@ -86,14 +81,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         assertTrue(reviewImages.stream().anyMatch(reviewImage -> reviewImage.getFileStorageId().equals(storedFile.getId())),
                 "생성된 리뷰 이미지 목록에 리뷰 작성 시 등록한 리뷰 이미지가 모두 있어야 한다.");
-
-        reviewPerceivedThemeGenres.forEach(reviewPerceivedThemeGenre -> {
-            Genre genre = reviewPerceivedThemeGenre.getGenre();
-            System.out.println("reviewPerceivedThemeGenre.getName() = " + genre.getName());
-            String code = genre.getCode();
-            assertTrue(reviewCreateDto.getGenreCodes().stream().anyMatch(genreCode -> genreCode.equals(code)),
-                    "생성된 리뷰의 체감 테마 목록 안에는 리뷰 생성 요청 시 등록된 체감 장르가 모두 있어야한다.");
-        });
 
         findReview.getPlayTogetherMembers().forEach(member -> {
             System.out.println("Play together member  = " + member.toString());
@@ -256,34 +243,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
             int playCount = memberPlayInclination.getPlayCount();
             assertEquals(2, playCount, "같은 테마에 대해서 두번 리뷰를 작성한 것이므로 회원 플레이 성향의 모든 장르에 대한 플레이 횟수는 2 가 나와야 한다.");
         });
-
-    }
-
-    @Test
-    @DisplayName("리뷰 생성 시 체감 테마 장르를 등록하는데, 해당 장르가 실제 존재하지 않는 장르일 경우")
-    public void createReview_PerceivedThemeGenreNotExist() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
-
-        Theme savedTheme = createTheme();
-
-        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
-        Long uploadImageFileId = fileStorageService.uploadImageFile(files);
-        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
-        List<FileStorage> storedFiles = List.of(storedFile);
-
-        List<String> genreCodes = createGenreCodes();
-        genreCodes.add("AMGN1");
-        ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds, genreCodes);
-
-        //when
-
-        //then
-        assertThrows(GenreNotFoundException.class, () -> reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
-
 
     }
 

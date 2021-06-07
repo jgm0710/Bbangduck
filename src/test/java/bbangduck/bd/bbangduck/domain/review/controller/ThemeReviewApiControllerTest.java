@@ -3,14 +3,8 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
-import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
-import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
-import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
@@ -94,14 +88,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("rating").description("테마에 대한 평점 기입"),
                                 fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입"),
                                 fieldWithPath("reviewImages").description("[null]"),
-                                fieldWithPath("comment").description("[null]"),
-                                fieldWithPath("genreCodes").description("[null]"),
-                                fieldWithPath("perceivedDifficulty").description("[null]"),
-                                fieldWithPath("perceivedHorrorGrade").description("[null]"),
-                                fieldWithPath("perceivedActivity").description("[null]"),
-                                fieldWithPath("scenarioSatisfaction").description("[null]"),
-                                fieldWithPath("interiorSatisfaction").description("[null]"),
-                                fieldWithPath("problemConfigurationSatisfaction").description("[null]")
+                                fieldWithPath("comment").description("[null]")
                         ),
                         responseFields(
                                 fieldWithPath("status").description(STATUS_DESCRIPTION),
@@ -193,14 +180,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입"),
                                 fieldWithPath("reviewImages[0].fileStorageId").description("리뷰에 등록할 이미지 파일의 파일 저장소 ID 기입"),
                                 fieldWithPath("reviewImages[0].fileName").description("리뷰에 등록할 이미지 파일의 파일 이름 기입"),
-                                fieldWithPath("comment").description("테마에 대한 상세 코멘트 기입"),
-                                fieldWithPath("genreCodes").description("[null]"),
-                                fieldWithPath("perceivedDifficulty").description("[null]"),
-                                fieldWithPath("perceivedHorrorGrade").description("[null]"),
-                                fieldWithPath("perceivedActivity").description("[null]"),
-                                fieldWithPath("scenarioSatisfaction").description("[null]"),
-                                fieldWithPath("interiorSatisfaction").description("[null]"),
-                                fieldWithPath("problemConfigurationSatisfaction").description("[null]")
+                                fieldWithPath("comment").description("테마에 대한 상세 코멘트 기입")
                         ),
                         responseFields(
                                 fieldWithPath("status").description(STATUS_DESCRIPTION),
@@ -212,123 +192,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    @Test
-    @DisplayName("추가 설문 리뷰 생성")
-    public void createDeepReview() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createTheme();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DEEP_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DEEP_REVIEW_SUCCESS.getMessage()))
-                .andDo(document(
-                        "create-deep-review-success",
-                        requestHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
-                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
-                        ),
-                        requestFields(
-                                fieldWithPath("reviewType").description("생성하는 리뷰가 간단 리뷰인지, 상세 리뷰인지, 추가 설문 작성 리뷰인지 명시합니다. +\n" +
-                                        "ReviewType 에 따라서 입력 규칙이 달라집니다. +\n" +
-                                        REVIEW_TYPE_ENUM_LIST),
-                                fieldWithPath("clearYN").description("테마 클리어 여부를 기입"),
-                                fieldWithPath("clearTime").description("테마를 클리어하는데 걸린 시간 기입"),
-                                fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입"),
-                                fieldWithPath("rating").description("테마에 대한 평점 기입"),
-                                fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입"),
-                                fieldWithPath("reviewImages[0].fileStorageId").description("리뷰에 등록할 이미지 파일의 파일 저장소 ID 기입"),
-                                fieldWithPath("reviewImages[0].fileName").description("리뷰에 등록할 이미지 파일의 파일 이름 기입"),
-                                fieldWithPath("comment").description("테마에 대한 상세 코멘트 기입"),
-                                fieldWithPath("genreCodes").description("테마에 대한 체감 장르를 기입. +\n" +
-                                        "장르 코드 목록을 기입하여 테마에 대한 여러 체감 장르를 등록."),
-                                fieldWithPath("perceivedDifficulty").description("테마에 대한 체감 난이도 기입 +\n" +
-                                        DIFFICULTY_ENUM_LIST),
-                                fieldWithPath("perceivedHorrorGrade").description("테마에 대한 체감 공포도 기입 +\n" +
-                                        HORROR_GRADE_ENUM_LIST),
-                                fieldWithPath("perceivedActivity").description("테마에 대한 체감 활동성 기입 +\n" +
-                                        ACTIVITY_ENUM_LIST),
-                                fieldWithPath("scenarioSatisfaction").description("테마에 대한 시나리오 만족도 기입 +\n" +
-                                        SATISFACTION_ENUM_LIST),
-                                fieldWithPath("interiorSatisfaction").description("테마에 대한 인테리어 만족도 기입 +\n" +
-                                        SATISFACTION_ENUM_LIST),
-                                fieldWithPath("problemConfigurationSatisfaction").description("테마에 대한 문제 구성도 기입 +\n" +
-                                        SATISFACTION_ENUM_LIST)
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-                        )
-                ))
-        ;
-
-    }
-
-    @Test
-    @DisplayName("추가 설문 리뷰 생성 - 장르 목록 중 하나의 장르 코드가 비어있는 경우")
-    public void createDeepReview_GenreCodeBlank() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createTheme();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-        genreCodes.add("");
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID.getStatus()))
-                .andExpect(jsonPath("data").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID.getMessage()))
-        ;
-
-    }
 
     @Test
     @DisplayName("리뷰 생성 - 리뷰 생성 시 리뷰에 관한 정보를 아무것도 입력하지 않은 경우")
@@ -420,7 +284,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].field").doesNotExist())
+                .andExpect(jsonPath("data[0].field").exists())
                 .andExpect(jsonPath("message").value(ResponseStatus.CREATE_SIMPLE_REVIEW_NOT_VALID.getMessage()))
                 .andDo(document(
                         "create-simple-review-request-over-data",
@@ -437,59 +301,59 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    @Test
-    @DisplayName("상세 리뷰 생성 - 추가 설문에 관한 정보가 입력 됐을 경우")
-    public void createDetailReview_IsDetailReview() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createTheme();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
-        reviewCreateRequestDto.setReviewType(ReviewType.DETAIL);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getStatus()))
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].field").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getMessage()))
-                .andDo(document(
-                        "create-detail-review-request-over-data",
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
-                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
-                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
-                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-                        )
-                ))
-        ;
-
-    }
+//    @Test
+//    @DisplayName("상세 리뷰 생성 - 추가 설문에 관한 정보가 입력 됐을 경우")
+//    public void createDetailReview_IsDetailReview() throws Exception {
+//        //given
+//        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+//        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+//
+//        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+//
+//
+//        Theme theme = createTheme();
+//
+//        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+//
+//        List<String> genreCodes = createGenreCodes();
+//
+//        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
+//        reviewCreateRequestDto.setReviewType(ReviewType.DETAIL);
+//
+//        TokenDto tokenDto = authenticationService.signIn(signUpId);
+//
+//        //when
+//        ResultActions perform = mockMvc.perform(
+//                post("/api/themes/" + theme.getId() + "/reviews")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
+//        ).andDo(print());
+//
+//
+//        //then
+//        perform
+//                .andExpect(status().isBadRequest())
+//                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getStatus()))
+//                .andExpect(jsonPath("data[0].objectName").exists())
+//                .andExpect(jsonPath("data[0].code").exists())
+//                .andExpect(jsonPath("data[0].defaultMessage").exists())
+//                .andExpect(jsonPath("data[0].field").doesNotExist())
+//                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getMessage()))
+//                .andDo(document(
+//                        "create-detail-review-request-over-data",
+//                        responseFields(
+//                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+//                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
+//                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
+//                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
+//                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
+//                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+//                        )
+//                ))
+//        ;
+//
+//    }
 
     @Test
     @DisplayName("상세 리뷰 생성 - 리뷰 생성 시 디테일 리뷰인데 코멘트를 입력하지 않았을 경우")
@@ -685,59 +549,59 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    @Test
-    @DisplayName("추가 설문 리뷰 생성 - 간단 리뷰 정보 외의 정보는 전혀 기입하지 않은 경우")
-    public void createDeepReview_NotDeep() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createTheme();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
-        reviewCreateRequestDto.setReviewType(ReviewType.DEEP);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID.getStatus()))
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID.getMessage()))
-                .andDo(document(
-                        "create-deep-review-not-deep",
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
-                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
-                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
-                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-                        )
-                ))
-        ;
-
-    }
+//    @Test
+//    @DisplayName("추가 설문 리뷰 생성 - 간단 리뷰 정보 외의 정보는 전혀 기입하지 않은 경우")
+//    public void createDeepReview_NotDeep() throws Exception {
+//        //given
+//        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+//        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+//
+//        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+//
+//
+//        Theme theme = createTheme();
+//
+//        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+//
+//        List<String> genreCodes = createGenreCodes();
+//
+//        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+//        reviewCreateRequestDto.setReviewType(ReviewType.DEEP);
+//
+//        TokenDto tokenDto = authenticationService.signIn(signUpId);
+//
+//        //when
+//        ResultActions perform = mockMvc.perform(
+//                post("/api/themes/" + theme.getId() + "/reviews")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
+//        ).andDo(print());
+//
+//
+//        //then
+//        perform
+//                .andExpect(status().isBadRequest())
+//                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID.getStatus()))
+//                .andExpect(jsonPath("data[0].objectName").exists())
+//                .andExpect(jsonPath("data[0].code").exists())
+//                .andExpect(jsonPath("data[0].defaultMessage").exists())
+//                .andExpect(jsonPath("data[0].field").exists())
+//                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID.getMessage()))
+//                .andDo(document(
+//                        "create-deep-review-not-deep",
+//                        responseFields(
+//                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+//                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
+//                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
+//                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
+//                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
+//                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+//                        )
+//                ))
+//        ;
+//
+//    }
 
 
     @Test
@@ -756,7 +620,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<String> genreCodes = createGenreCodes();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
+        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -793,7 +657,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<String> genreCodes = createGenreCodes();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
+        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -834,7 +698,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<String> genreCodes = createGenreCodes();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
+        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -875,7 +739,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<String> genreCodes = createGenreCodes();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
+        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -894,46 +758,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(new RelationOfMemberAndFriendIsNotFriendException(signUpId, requestStateFriendToMember.getId()).getMessage()))
         ;
-
-    }
-
-    @Test
-    @DisplayName("추가 설문 리뷰 생성 - 리뷰 생성 시 등록하는 체감 테마 장르가 실제 존재하지 않는 장르일 경우")
-    public void createReview_PerceivedThemeGenreNotExist() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createTheme();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-        String amgn1 = "AMGN1";
-        genreCodes.add(amgn1);
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("status").value(ResponseStatus.GENRE_NOT_FOUND.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(new GenreNotFoundException(amgn1).getMessage()));
 
     }
 
@@ -1088,7 +912,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
     }
 
     private void createSampleReviewList(Member member1, Member member2, Member member3, Theme theme, List<Member> friends) throws IOException {
-        Review member1SimpleReview = Review.builder()
+        Review member1SimpleReview1 = Review.builder()
                 .member(member1)
                 .theme(theme)
                 .reviewType(ReviewType.SIMPLE)
@@ -1100,9 +924,9 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .likeCount(312)
                 .build();
 
-        member1SimpleReview.addPlayTogether(friends.get(0));
+        member1SimpleReview1.addPlayTogether(friends.get(0));
 
-        Review member2SimpleReview = Review.builder()
+        Review member2SimpleReview1 = Review.builder()
                 .member(member2)
                 .theme(theme)
                 .reviewType(ReviewType.SIMPLE)
@@ -1114,9 +938,9 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .likeCount(411)
                 .build();
 
-        member2SimpleReview.addPlayTogether(friends.get(2));
+        member2SimpleReview1.addPlayTogether(friends.get(2));
 
-        Review member3SimpleReview = Review.builder()
+        Review member3SimpleReview1 = Review.builder()
                 .member(member3)
                 .theme(theme)
                 .reviewType(ReviewType.SIMPLE)
@@ -1128,7 +952,52 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .likeCount(214)
                 .build();
 
-        member3SimpleReview.addPlayTogether(friends.get(1));
+        member3SimpleReview1.addPlayTogether(friends.get(1));
+
+//
+        Review member1SimpleReview2 = Review.builder()
+                .member(member1)
+                .theme(theme)
+                .reviewType(ReviewType.SIMPLE)
+                .recodeNumber(1)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 46, 29))
+                .hintUsageCount(3)
+                .rating(6)
+                .likeCount(192)
+                .build();
+
+        member1SimpleReview2.addPlayTogether(friends.get(0));
+
+        Review member2SimpleReview2 = Review.builder()
+                .member(member2)
+                .theme(theme)
+                .reviewType(ReviewType.SIMPLE)
+                .recodeNumber(1)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 59, 12))
+                .hintUsageCount(5)
+                .rating(4)
+                .likeCount(442)
+                .build();
+
+        member2SimpleReview2.addPlayTogether(friends.get(2));
+
+        Review member3SimpleReview2 = Review.builder()
+                .member(member3)
+                .theme(theme)
+                .reviewType(ReviewType.SIMPLE)
+                .recodeNumber(1)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 51, 29))
+                .hintUsageCount(3)
+                .rating(6)
+                .likeCount(143)
+                .build();
+
+        member3SimpleReview2.addPlayTogether(friends.get(1));
+//
+
 
         MockMultipartFile files1 = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadImageFile1Id = fileStorageService.uploadImageFile(files1);
@@ -1138,7 +1007,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long uploadImageFile2Id = fileStorageService.uploadImageFile(files2);
         FileStorage storedFile2 = fileStorageService.getStoredFile(uploadImageFile2Id);
 
-        Review member1DetailReview = Review.builder()
+        Review member1DetailReview1 = Review.builder()
                 .member(member1)
                 .theme(theme)
                 .reviewType(ReviewType.DETAIL)
@@ -1151,12 +1020,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .likeCount(1027)
                 .build();
 
-        member1DetailReview.addPlayTogether(friends.get(0));
-        member1DetailReview.addPlayTogether(friends.get(1));
-        member1DetailReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member1DetailReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+        member1DetailReview1.addPlayTogether(friends.get(0));
+        member1DetailReview1.addPlayTogether(friends.get(1));
+        member1DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member1DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
-        Review member2DetailReview = Review.builder()
+        Review member2DetailReview1 = Review.builder()
                 .member(member2)
                 .theme(theme)
                 .reviewType(ReviewType.DETAIL)
@@ -1169,12 +1038,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .likeCount(682)
                 .build();
 
-        member2DetailReview.addPlayTogether(friends.get(3));
-        member2DetailReview.addPlayTogether(friends.get(4));
-        member2DetailReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member2DetailReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+        member2DetailReview1.addPlayTogether(friends.get(3));
+        member2DetailReview1.addPlayTogether(friends.get(4));
+        member2DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member2DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
-        Review member3DetailReview = Review.builder()
+        Review member3DetailReview1 = Review.builder()
                 .member(member3)
                 .theme(theme)
                 .reviewType(ReviewType.DETAIL)
@@ -1187,99 +1056,76 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .likeCount(721)
                 .build();
 
-        member3DetailReview.addPlayTogether(friends.get(0));
-        member3DetailReview.addPlayTogether(friends.get(1));
-        member3DetailReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member3DetailReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+        member3DetailReview1.addPlayTogether(friends.get(0));
+        member3DetailReview1.addPlayTogether(friends.get(1));
+        member3DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member3DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
-        List<String> genreCodes = createGenreCodes();
-        List<Genre> genres = genreCodes.stream().map(code -> genreRepository.findByCode(code).orElseThrow(GenreNotFoundException::new)).collect(Collectors.toList());
-
-        Review member1DeepReview = Review.builder()
+        Review member1DetailReview2 = Review.builder()
                 .member(member1)
                 .theme(theme)
-                .reviewType(ReviewType.DEEP)
+                .reviewType(ReviewType.DETAIL)
                 .recodeNumber(3)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 47, 34))
                 .hintUsageCount(0)
                 .rating(6)
                 .comment("스토리가 풍부하고, 재밌었어요")
-                .perceivedDifficulty(Difficulty.EASY)
-                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-                .perceivedActivity(Activity.LITTLE_ACTIVITY)
-                .scenarioSatisfaction(Satisfaction.GOOD)
-                .interiorSatisfaction(Satisfaction.GOOD)
-                .problemConfigurationSatisfaction(Satisfaction.NORMAL)
                 .likeCount(556)
                 .build();
 
-        member1DeepReview.addPlayTogether(friends.get(0));
-        member1DeepReview.addPlayTogether(friends.get(1));
-        member1DeepReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member1DeepReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
-        member1DeepReview.addPerceivedThemeGenre(genres.get(0));
+        member1DetailReview2.addPlayTogether(friends.get(0));
+        member1DetailReview2.addPlayTogether(friends.get(1));
+        member1DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member1DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
-        Review member2DeepReview = Review.builder()
+        Review member2DetailReview2 = Review.builder()
                 .member(member2)
                 .theme(theme)
-                .reviewType(ReviewType.DEEP)
+                .reviewType(ReviewType.DETAIL)
                 .recodeNumber(3)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 34, 11))
                 .hintUsageCount(0)
                 .rating(4)
                 .comment("너무 시시했어요. 조금 더 어려운 난이도를 바랍니다.")
-                .perceivedDifficulty(Difficulty.VERY_EASY)
-                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-                .perceivedActivity(Activity.LITTLE_ACTIVITY)
-                .scenarioSatisfaction(Satisfaction.BAD)
-                .interiorSatisfaction(Satisfaction.BAD)
-                .problemConfigurationSatisfaction(Satisfaction.VERY_BAD)
                 .likeCount(10)
                 .build();
 
-        member2DeepReview.addPlayTogether(friends.get(0));
-        member2DeepReview.addPlayTogether(friends.get(1));
-        member2DeepReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member2DeepReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
-        member2DeepReview.addPerceivedThemeGenre(genres.get(1));
-        member2DeepReview.addPerceivedThemeGenre(genres.get(0));
+        member2DetailReview2.addPlayTogether(friends.get(0));
+        member2DetailReview2.addPlayTogether(friends.get(1));
+        member2DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member2DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
-        Review member3DeepReview = Review.builder()
+        Review member3DetailReview2 = Review.builder()
                 .member(member3)
                 .theme(theme)
-                .reviewType(ReviewType.DEEP)
+                .reviewType(ReviewType.DETAIL)
                 .recodeNumber(3)
                 .clearYN(false)
                 .clearTime(LocalTime.of(0, 59, 11))
                 .hintUsageCount(3)
                 .rating(6)
                 .comment("생각보다 어려워서 힘들었어요.")
-                .perceivedDifficulty(Difficulty.DIFFICULT)
-                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-                .perceivedActivity(Activity.LITTLE_ACTIVITY)
-                .scenarioSatisfaction(Satisfaction.NORMAL)
-                .interiorSatisfaction(Satisfaction.NORMAL)
-                .problemConfigurationSatisfaction(Satisfaction.NORMAL)
                 .likeCount(45)
                 .build();
 
-        member3DeepReview.addPlayTogether(friends.get(0));
-        member3DeepReview.addPlayTogether(friends.get(1));
-        member3DeepReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member3DeepReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
-        member3DeepReview.addPerceivedThemeGenre(genres.get(1));
-        member3DeepReview.addPerceivedThemeGenre(genres.get(0));
+        member3DetailReview2.addPlayTogether(friends.get(0));
+        member3DetailReview2.addPlayTogether(friends.get(1));
+        member3DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member3DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
-        reviewRepository.save(member1SimpleReview);
-        reviewRepository.save(member2SimpleReview);
-        reviewRepository.save(member3SimpleReview);
-        reviewRepository.save(member1DetailReview);
-        reviewRepository.save(member2DetailReview);
-        reviewRepository.save(member3DetailReview);
-        reviewRepository.save(member1DeepReview);
-        reviewRepository.save(member2DeepReview);
-        reviewRepository.save(member3DeepReview);
+        reviewRepository.save(member1SimpleReview1);
+        reviewRepository.save(member2SimpleReview1);
+        reviewRepository.save(member3SimpleReview1);
+        reviewRepository.save(member1SimpleReview2);
+        reviewRepository.save(member2SimpleReview2);
+        reviewRepository.save(member3SimpleReview2);
+        reviewRepository.save(member1DetailReview1);
+        reviewRepository.save(member2DetailReview1);
+        reviewRepository.save(member3DetailReview1);
+        reviewRepository.save(member1DetailReview2);
+        reviewRepository.save(member2DetailReview2);
+        reviewRepository.save(member3DetailReview2);
     }
 }

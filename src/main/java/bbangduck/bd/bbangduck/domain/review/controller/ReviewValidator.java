@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsString;
 import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
 
 /**
@@ -27,85 +28,29 @@ public class ReviewValidator {
         ReviewType reviewType = requestDto.getReviewType();
 
         List<ReviewImageRequestDto> reviewImages = requestDto.getReviewImages();
+        String comment = requestDto.getComment();
 
         switch (reviewType) {
             case SIMPLE:
-                if (!requestDto.isSimpleReview()) {
-                    errors.reject("NotSimpleReview", "간단 리뷰 작성 시 기입하지 않아야 하는 사항이 기입되었습니다.");
+                if (existsString(comment)) {
+                    errors.rejectValue("comment","NotNeeded", "간단 리뷰 생성 시 코멘트는 필요하지 않습니다.");
+                }
+                if (existsList(reviewImages)) {
+                    errors.rejectValue("reviewImages","NotNeeded","간단 리뷰 생성 시 이미지는 필요하지 않습니다.");
                 }
                 hasErrorsThrow(ResponseStatus.CREATE_SIMPLE_REVIEW_NOT_VALID, errors);
                 break;
-
             case DETAIL:
-                if (requestDto.isDetailReview()) {
-                    validateDetailReview(requestDto, errors);
-                } else {
-                    errors.reject("NotDetailReview", "상세 리뷰 작성 시 기입하지 않아야 하는 사항이 기입되었습니다.");
+                if (!existsString(comment)) {
+                    errors.rejectValue("comment","NotBlank", "상세 리뷰 생성 시 필요한 코멘트를 기입해 주세요.");
+                }
+                if (existsList(reviewImages)) {
+                    validateReviewImages(reviewImages, errors);
                 }
                 hasErrorsThrow(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID, errors);
                 break;
-
-            case DEEP:
-                validateDeepReview(requestDto, errors);
-                hasErrorsThrow(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID, errors);
-                break;
-
             default:
                 break;
-        }
-    }
-
-    public boolean genreCodeExists(String genreCode) {
-        return genreCode != null && !genreCode.isBlank();
-    }
-
-    private void validateDeepReview(ReviewCreateRequestDto requestDto, Errors errors) {
-        validateDetailReview(requestDto, errors);
-        // TODO: 2021-05-30 체감 장르에 대한 부분 논의 후 반영
-        if (!requestDto.genreCodesExists()) {
-            errors.rejectValue("genreCodes", "NotEmpty", "상세 및 설문 리뷰에 등록될 체감 테마 장르 목록을 기입해 주세요.");
-        }else{
-            List<String> genreCodes = requestDto.getGenreCodes();
-            for (int i = 0; i < genreCodes.size(); i++) {
-                if (!genreCodeExists(genreCodes.get(i))) {
-                    errors.rejectValue("genreCodes[" + i + "]", "NotBlank", "상세 및 설문 리뷰에 등록될 체감 테마 목록 중 [" + i + "] 번 째 테마 코드가 기입되지 않았습니다.");
-                }
-            }
-        }
-
-
-        if (requestDto.perceivedDifficultyIsNull()) {
-            errors.rejectValue("perceivedDifficulty", "NotBlank", "상세 및 설문 리뷰에 등록될 체감 난이도를 기입해 주세요.");
-        }
-
-        if (requestDto.perceivedHorrorGradeIsNull()) {
-            errors.rejectValue("perceivedHorrorGrade", "NotBlank", "상세 및 설문 리뷰에 등록될 체감 공포도를 기입해 주세요.");
-        }
-
-        if (requestDto.perceivedActivityIsNull()) {
-            errors.rejectValue("perceivedActivity", "NotBlank", "상세 및 설문 리뷰에 등록될 체감 활동성을 기입해 주세요.");
-        }
-
-        if (requestDto.scenarioSatisfactionIsNull()) {
-            errors.rejectValue("scenarioSatisfaction", "NotBlank", "상세 및 설문 리뷰에 등록될 시나리오 만족도를 기입해 주세요.");
-        }
-
-        if (requestDto.interiorSatisfactionIsNull()) {
-            errors.rejectValue("interiorSatisfaction", "NotBlank", "상세 및 설문 리뷰에 등록될 인테리어 만족도를 기입해 주세요.");
-        }
-
-        if (requestDto.problemConfigurationSatisfactionIsNull()) {
-            errors.rejectValue("problemConfigurationSatisfaction", "NotBlank", "상세 및 설문 리뷰에 등록될 문제 구성도를 기입해 주세요.");
-        }
-    }
-
-    private void validateDetailReview(ReviewCreateRequestDto requestDto, Errors errors) {
-        if (requestDto.commentNotExists()) {
-            errors.rejectValue("comment", "NotBlank", "상세 리뷰에 등록될 내용을 기입해 주세요.");
-        }
-
-        if (requestDto.reviewImagesExists()) {
-            validateReviewImages(requestDto.getReviewImages(), errors);
         }
     }
 
@@ -123,3 +68,4 @@ public class ReviewValidator {
         }
     }
 }
+

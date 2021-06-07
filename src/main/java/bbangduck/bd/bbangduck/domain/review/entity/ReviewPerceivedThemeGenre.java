@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.jdo.annotations.Join;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -25,8 +24,8 @@ public class ReviewPerceivedThemeGenre {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
-    private Review review;
+    @JoinColumn(name = "review_survey_id")
+    private ReviewSurvey reviewSurvey;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
@@ -36,9 +35,9 @@ public class ReviewPerceivedThemeGenre {
     private LocalDateTime registerTimes;
 
     @Builder
-    public ReviewPerceivedThemeGenre(Long id, Review review, Genre genre) {
+    public ReviewPerceivedThemeGenre(Long id, ReviewSurvey reviewSurvey, Genre genre) {
         this.id = id;
-        this.review = review;
+        this.reviewSurvey = reviewSurvey;
         this.genre = genre;
     }
 
@@ -46,8 +45,8 @@ public class ReviewPerceivedThemeGenre {
         return id;
     }
 
-    public Review getReview() {
-        return review;
+    public ReviewSurvey getReviewSurvey() {
+        return reviewSurvey;
     }
 
     public Genre getGenre() {

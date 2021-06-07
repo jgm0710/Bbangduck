@@ -1,7 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.DeepReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.DetailReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.SimpleReviewResponseDto;
@@ -26,8 +25,9 @@ public class ReviewResponseUtils {
                 return SimpleReviewResponseDto.convert(findReview, currentMember, existsReviewLike);
             case DETAIL:
                 return DetailReviewResponseDto.convert(findReview, currentMember, existsReviewLike);
-            case DEEP:
-                return DeepReviewResponseDto.convert(findReview, currentMember, existsReviewLike);
+            // TODO: 2021-06-07 수정
+//            case DEEP:
+//                return DeepReviewResponseDto.convert(findReview, currentMember, existsReviewLike);
             default:
                 return null;
         }
@@ -39,8 +39,9 @@ public class ReviewResponseUtils {
                 return ResponseStatus.CREATE_SIMPLE_REVIEW_SUCCESS;
             case DETAIL:
                 return ResponseStatus.CREATE_DETAIL_REVIEW_SUCCESS;
-            case DEEP:
-                return ResponseStatus.CREATE_DEEP_REVIEW_SUCCESS;
+            // TODO: 2021-06-07 수정 
+//            case DEEP:
+//                return ResponseStatus.CREATE_DEEP_REVIEW_SUCCESS;
             default:
                 return null;
         }

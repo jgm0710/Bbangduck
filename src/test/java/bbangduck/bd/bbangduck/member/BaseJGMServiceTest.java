@@ -14,9 +14,12 @@ import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendState;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
-import bbangduck.bd.bbangduck.domain.model.emumerate.*;
+import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
+import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
+import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
@@ -25,8 +28,6 @@ import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
-import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +94,9 @@ public class BaseJGMServiceTest extends BaseTest {
     protected MemberPlayInclinationRepository memberPlayInclinationRepository;
 
     @Autowired
+    protected ReviewLikeRepository reviewLikeRepository;
+
+    @Autowired
     protected ReviewRepository reviewRepository;
 
     protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
@@ -105,6 +109,7 @@ public class BaseJGMServiceTest extends BaseTest {
 
     @BeforeEach
     public void setUp() {
+        reviewLikeRepository.deleteAll();
         reviewRepository.deleteAll();
         themeRepository.deleteAll();
         memberPlayInclinationRepository.deleteAll();
@@ -225,7 +230,7 @@ public class BaseJGMServiceTest extends BaseTest {
         storedFiles.forEach(storedFile -> reviewImageDtoList.add(new ReviewImageDto(storedFile.getId(), storedFile.getFileName())));
 
         return ReviewCreateDto.builder()
-                .reviewType(ReviewType.DEEP)
+                .reviewType(ReviewType.DETAIL)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
                 .hintUsageCount(1)
@@ -234,13 +239,6 @@ public class BaseJGMServiceTest extends BaseTest {
                 .reviewImages(reviewImageDtoList)
                 .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n" +
                         "일반모드로 하실분들은 2인이 최적입니다.")
-                .genreCodes(genreCodes)
-                .perceivedDifficulty(Difficulty.EASY)
-                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-                .perceivedActivity(Activity.NORMAL)
-                .scenarioSatisfaction(Satisfaction.NORMAL)
-                .interiorSatisfaction(Satisfaction.GOOD)
-                .problemConfigurationSatisfaction(Satisfaction.BAD)
                 .build();
     }
 

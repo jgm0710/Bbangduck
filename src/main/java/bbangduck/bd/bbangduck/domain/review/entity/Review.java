@@ -2,7 +2,6 @@ package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
@@ -70,36 +69,15 @@ public class Review extends BaseEntityDateTime {
     private String comment;
 
     /**
-     * 상세 및 추가 설문 작성 리뷰
-     */
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    private List<ReviewPerceivedThemeGenre> perceivedThemeGenres = new ArrayList<>();
-
-    @Enumerated(EnumType.STRING)
-    private Difficulty perceivedDifficulty;
-
-    @Enumerated(EnumType.STRING)
-    private HorrorGrade perceivedHorrorGrade;
-
-    @Enumerated(EnumType.STRING)
-    private Activity perceivedActivity;
-
-    @Enumerated(EnumType.STRING)
-    private Satisfaction scenarioSatisfaction;
-
-    @Enumerated(EnumType.STRING)
-    private Satisfaction interiorSatisfaction;
-
-    @Enumerated(EnumType.STRING)
-    private Satisfaction problemConfigurationSatisfaction;
-
-    /**
      * common
      */
+    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
+    private ReviewSurvey reviewSurvey;
+
     private long likeCount;
 
     @Builder
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction, long likeCount) {
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment,  long likeCount) {
         this.id = id;
         this.member = member;
         this.theme = theme;
@@ -110,12 +88,6 @@ public class Review extends BaseEntityDateTime {
         this.hintUsageCount = hintUsageCount;
         this.rating = rating;
         this.comment = comment;
-        this.perceivedDifficulty = perceivedDifficulty;
-        this.perceivedHorrorGrade = perceivedHorrorGrade;
-        this.perceivedActivity = perceivedActivity;
-        this.scenarioSatisfaction = scenarioSatisfaction;
-        this.interiorSatisfaction = interiorSatisfaction;
-        this.problemConfigurationSatisfaction = problemConfigurationSatisfaction;
         this.likeCount = likeCount;
     }
 
@@ -130,12 +102,6 @@ public class Review extends BaseEntityDateTime {
                 .hintUsageCount(reviewCreateDto.getHintUsageCount())
                 .rating(reviewCreateDto.getRating())
                 .comment(reviewCreateDto.getComment())
-                .perceivedDifficulty(reviewCreateDto.getPerceivedDifficulty())
-                .perceivedHorrorGrade(reviewCreateDto.getPerceivedHorrorGrade())
-                .perceivedActivity(reviewCreateDto.getPerceivedActivity())
-                .scenarioSatisfaction(reviewCreateDto.getScenarioSatisfaction())
-                .interiorSatisfaction(reviewCreateDto.getInteriorSatisfaction())
-                .problemConfigurationSatisfaction(reviewCreateDto.getProblemConfigurationSatisfaction())
                 .likeCount(0)
                 .build();
 
@@ -166,12 +132,12 @@ public class Review extends BaseEntityDateTime {
     }
 
     public void addPerceivedThemeGenre(Genre genre) {
-        ReviewPerceivedThemeGenre perceivedThemeGenre = ReviewPerceivedThemeGenre.builder()
-                .review(this)
-                .genre(genre)
-                .build();
-
-        this.perceivedThemeGenres.add(perceivedThemeGenre);
+//        ReviewPerceivedThemeGenre perceivedThemeGenre = ReviewPerceivedThemeGenre.builder()
+//                .review(this)
+//                .genre(genre)
+//                .build();
+//
+//        this.perceivedThemeGenres.add(perceivedThemeGenre);
     }
 
     public Long getId() {
@@ -210,33 +176,6 @@ public class Review extends BaseEntityDateTime {
         return comment;
     }
 
-    public Difficulty getPerceivedDifficulty() {
-        return perceivedDifficulty;
-    }
-
-    public HorrorGrade getPerceivedHorrorGrade() {
-        return perceivedHorrorGrade;
-    }
-
-    public Activity getPerceivedActivity() {
-        return perceivedActivity;
-    }
-
-    public Satisfaction getScenarioSatisfaction() {
-        return scenarioSatisfaction;
-    }
-
-    public Satisfaction getInteriorSatisfaction() {
-        return interiorSatisfaction;
-    }
-
-    public Satisfaction getProblemConfigurationSatisfaction() {
-        return problemConfigurationSatisfaction;
-    }
-
-    public List<ReviewPerceivedThemeGenre> getPerceivedThemeGenreEntities() {
-        return perceivedThemeGenres;
-    }
 
     public int getRecodeNumber() {
         return recodeNumber;
@@ -254,8 +193,10 @@ public class Review extends BaseEntityDateTime {
         return likeCount;
     }
 
+    // TODO: 2021-06-07 구현
     public List<Genre> getPerceivedThemeGenres() {
-        return this.perceivedThemeGenres.stream().map(ReviewPerceivedThemeGenre::getGenre).collect(Collectors.toList());
+//        return this.perceivedThemeGenres.stream().map(ReviewPerceivedThemeGenre::getGenre).collect(Collectors.toList());
+        return null;
     }
 
     public void increaseLikeCount() {
@@ -266,31 +207,5 @@ public class Review extends BaseEntityDateTime {
         this.likeCount--;
     }
 
-    @Override
-    public String toString() {
-        return "Review{" +
-                "id=" + id +
-//                ", member=" + member +
-//                ", theme=" + theme +
-                ", reviewType=" + reviewType +
-                ", recodeNumber=" + recodeNumber +
-                ", clearYN=" + clearYN +
-                ", clearTime=" + clearTime +
-                ", hintUsageCount=" + hintUsageCount +
-                ", rating=" + rating +
-//                ", reviewPlayTogethers=" + reviewPlayTogethers +
-                ", reviewImages=" + reviewImages +
-                ", comment='" + comment + '\'' +
-//                ", perceivedThemeGenres=" + perceivedThemeGenres +
-                ", perceivedDifficulty=" + perceivedDifficulty +
-                ", perceivedHorrorGrade=" + perceivedHorrorGrade +
-                ", perceivedActivity=" + perceivedActivity +
-                ", scenarioSatisfaction=" + scenarioSatisfaction +
-                ", interiorSatisfaction=" + interiorSatisfaction +
-                ", problemConfigurationSatisfaction=" + problemConfigurationSatisfaction +
-                ", likeCount=" + likeCount +
-                ", registerTimes=" + registerTimes +
-                ", updateTimes=" + updateTimes +
-                '}';
-    }
+
 }

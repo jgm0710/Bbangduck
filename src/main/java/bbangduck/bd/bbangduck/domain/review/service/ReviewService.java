@@ -1,7 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
@@ -63,7 +62,6 @@ public class ReviewService {
         ReviewRecodesCountsDto recodesCountsDto = reviewQueryRepository.findRecodesCountsByMember(memberId).orElse(new ReviewRecodesCountsDto());
 
         Review review = Review.create(findMember, findTheme, recodesCountsDto.getNextRecodeNumber(), reviewCreateDto);
-        addPerceivedGenresToReview(review, reviewCreateDto.getGenreCodes());
         addPlayTogetherFriendsToReview(review, memberId, reviewCreateDto.getFriendIds());
         reviewRepository.save(review);
 
@@ -111,14 +109,14 @@ public class ReviewService {
         });
     }
 
-    private void addPerceivedGenresToReview(Review review, List<String> genreCodes) {
-        if (genreCodesExists(genreCodes)) {
-            genreCodes.forEach(genreCode -> {
-                Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
-                review.addPerceivedThemeGenre(genre);
-            });
-        }
-    }
+//    private void addPerceivedGenresToReview(Review review, List<String> genreCodes) {
+//        if (genreCodesExists(genreCodes)) {
+//            genreCodes.forEach(genreCode -> {
+//                Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
+//                review.addPerceivedThemeGenre(genre);
+//            });
+//        }
+//    }
 
     private boolean genreCodesExists(List<String> genreCodes) {
         return genreCodes != null&&!genreCodes.isEmpty();

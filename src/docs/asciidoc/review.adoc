@@ -60,18 +60,6 @@
 | 4403
 | 상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
 
-| <<resources-create-deep-review>>
-| 상세 및 추가 설문 작성 리뷰 생성 시 필요한 값을 규칙에 맞게 기입하지 않은 경우
-| 400
-| 4404
-| 상세 및 추가 설문 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
-
-| <<resources-create-deep-review>>
-| 상세 및 추가 설문 작성 리뷰 생성 시 등록한 체감 장르 코드를 통해 장를 찾을 수 없는 경우
-| 404
-| 6401
-| 해당 장르가 존재하지 않습니다.
-
 | <<resources-get-an-review>>
 | 리뷰 조회 시 리뷰를 찾을 수 없는 경우
 | 404
@@ -98,6 +86,12 @@
 2021-06-07:::
 * <<resources-get-theme-review-list>> 기능 구현
 
+2022-06-07:::
+* <<resources-create-review>> 기능 기능 변경
+** 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 리뷰로 나누어 생성 요청을 보내던 것을
+간단 리뷰, 상세 리뷰로만 나누어 요청
+** 설문에 대한 부분은 별도의 요청을 통해서 진행하도록 변경
+
 [[resources-review]]
 = 리뷰 관련 리소스
 
@@ -106,8 +100,8 @@
 
 * `POST` `/api/themes/{themeId}/reviews`
 
-* 리뷰의 종류는 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 작성 리뷰로 나뉩니다.
-** 3 종류의 리뷰 생성을 하나의 API 요청을 통해 관리합니다.
+* 리뷰의 종류는 간단 리뷰, 상세 리뷰로 나뉩니다.
+** 2 종류의 리뷰 생성을 하나의 API 요청을 통해 관리합니다.
 ** 각 리뷰의 종류에 따라 입력 규칙이 달라집니다.
 
 * 인증된 회원이 테마에 대한 리뷰를 생성합니다.
@@ -122,6 +116,9 @@
 
 * 리뷰에 이미지를 등록할 경우 이미지 파일 업로드 리소스를 통해 이미지 파일을 업로드 하고, 해당 요청에 응답으로 나온 파일 정보를 통해
 리뷰에 등록힐 이미지 파일에 대한 정보를 기입합니다.
+
+[[resources-create-review-fail]]
+=== 리뷰 생성 실패
 
 [[resources-create-review-empty]]
 ==== 리뷰 생성 실패 - 아무 정보도 입력하지 않은 경우
@@ -150,7 +147,7 @@ operation::create-simple-review-success[snippets='request-headers,request-fields
 
 * 응답 HttpStatus : `400 Bad Request`
 
-* Review Type 이 `SIMPLE` 일 경우 상세 리뷰나, 추가 설문 리뷰에 해당하는 정보를 기입하면 요청에 실패합니다.
+* Review Type 이 `SIMPLE` 일 경우 상세 리뷰에 해당하는 정보를 기입하면 요청에 실패합니다.
 
 operation::create-simple-review-request-over-data[snippets='response-fields,curl-request,http-response']
 
@@ -170,42 +167,20 @@ operation::create-simple-review-request-over-data[snippets='response-fields,curl
 operation::create-detail-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 [[resources-create-detail-review-request-over-data]]
-==== 상세 리뷰 생성 시 상세 리뷰와는 무관한 벙보를 기입한 경우
+==== 상세 리뷰 생성 시 관련된 정보를 제대로 기입하지 않은 경우
 
 * 응답 HttpStatus : `400 Bad Request`
 
-* 상세 리뷰 생성 시 상세 리뷰에 대한 입력 규칙을 맞추지 않은 대표적인 예시입니다.
+* 상세 리뷰 생성 시 상세 리뷰에 대한 입력 규칙을 맞추지 않았을 경우 해당 응답이 나타납니다.
 
-* 해당 요청 외에 다른 경우에도 해당 응답이 발생합니다.
+* 다음의 경우에 해당 응답이 나타납니다.
 ** 코멘트에 대한 정보를 기입하지 않은 경우
 ** 이미지 파일 목록 등록 시, 파일 저장소 ID 는 기입하였으나, 파일 이름을 기입하지 않은 경우
 ** 이미지 파일 목록 등록 시, 파일 이름은 기입하였으나, 파일 저장소 ID 는 기입하지 않은 경우
 
-operation::create-detail-review-request-over-data[snippets='response-fields,curl-request,http-response']
+operation::create-detail-review-comment-empty[snippets='response-fields,curl-request,http-response']
 
 
-[[resources-create-deep-review]]
-=== 상세 및 추가 설문 작성 리뷰 생성
-
-* 상세 및 추가 설문 작성 리뷰 생성의 경우 Review Type 을 `DEEP` 로 기입해야 합니다.
-
-* 함께 플레이한 친구 ID 목록과 이미지 파일에 대한 정보는 외에는 모두 기입해야 합니다.
-
-[[resources-create-deep-review-success]]
-==== 상세 및 추가 설문 작성 리뷰 생성 성공
-
-* 응답 HttpStatus : `201 Created`
-
-operation::create-deep-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
-
-[[resources-create-deep-review-not-deep]]
-==== 상세 및 추가 설문 작성 리뷰 생성 시 필요한 정보를 모두 기입하지 않은 경우
-
-* 응답 HttpStatus : `400 Bad Request`
-
-* 상세 및 추가 설문 작성 리뷰를 생성할 경우 이미지 파일에 대한 정보, 친구 목록에 대한 정보를 제외한 모든 정보를 기입해야 합니다.
-
-operation::create-deep-review-not-deep[snippets='response-fields,curl-request,http-response']
 
 [[resources-get-an-review]]
 == 리뷰 1건 조회
@@ -253,15 +228,6 @@ operation::get-simple-review-of-different-member-success[snippets='request-heade
 * ReviewType : `DETAIL`
 
 operation::get-detail-review-of-different-member-success[snippets='request-headers,response-fields,curl-request,http-response']
-
-[[resources-get-deep-review]]
-=== 상세 및 추가 설문 작성 리뷰가 조회된 경우
-
-* 응답 HttpStatus : `200 OK`
-
-* ReviewType : `DEEP`
-
-operation::get-deep-review-of-different-member-success[snippets='request-headers,response-fields,curl-request,http-response']
 
 [[resources-get-theme-review-list]]
 == 테마에 등록된 리뷰 목록 조회

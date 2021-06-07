@@ -44,6 +44,7 @@ public class ThemeReviewApiController {
 
     private final ReviewLikeService reviewLikeService;
 
+    // TODO: 2021-06-07 리뷰 생성 로직 변경
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> createReview(
@@ -101,7 +102,5 @@ public class ThemeReviewApiController {
         }
         return false;
     }
-
-    // TODO: 2021-05-22 테마별 리뷰 목록 기능 구현
 
 }

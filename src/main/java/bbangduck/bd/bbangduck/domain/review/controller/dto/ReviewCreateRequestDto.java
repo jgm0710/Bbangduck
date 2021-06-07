@@ -1,10 +1,8 @@
 package bbangduck.bd.bbangduck.domain.review.controller.dto;
 
-import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +11,6 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,83 +55,14 @@ public class ReviewCreateRequestDto {
     @Length(max = 3000)
     private String comment;
 
-    /**
-     * 테마 설문 조사 추가 작성 리뷰 요청 body
-     */
-    private List<String> genreCodes;
-
-    private Difficulty perceivedDifficulty;
-
-    private HorrorGrade perceivedHorrorGrade;
-
-    private Activity perceivedActivity;
-
-    private Satisfaction scenarioSatisfaction;
-
-    private Satisfaction interiorSatisfaction;
-
-    private Satisfaction problemConfigurationSatisfaction;
-
-    @JsonIgnore
-    public boolean isSimpleReview() {
-        return !reviewImagesExists() && commentNotExists() && perceivedDifficultyIsNull() && perceivedHorrorGradeIsNull() &&
-                perceivedActivityIsNull() && scenarioSatisfactionIsNull() && interiorSatisfactionIsNull() &&
-                problemConfigurationSatisfactionIsNull();
-    }
-
-    public boolean perceivedDifficultyIsNull() {
-        return perceivedDifficulty == null;
-    }
-
-    public boolean perceivedHorrorGradeIsNull() {
-        return perceivedHorrorGrade == null;
-    }
-
-    public boolean perceivedActivityIsNull() {
-        return perceivedActivity == null;
-    }
-
-    public boolean scenarioSatisfactionIsNull() {
-        return scenarioSatisfaction == null;
-    }
-
-    public boolean interiorSatisfactionIsNull() {
-        return interiorSatisfaction == null;
-    }
-
-    public boolean problemConfigurationSatisfactionIsNull() {
-        return problemConfigurationSatisfaction == null;
-    }
-
-    public boolean commentNotExists() {
-        return comment == null || comment.isBlank();
-    }
 
     public boolean reviewImagesExists() {
         return reviewImages != null && !reviewImages.isEmpty();
     }
 
-    public boolean genreCodesExists() {
-        return genreCodes != null && !genreCodes.isEmpty();
-    }
-
-    @JsonIgnore
-    public boolean isDetailReview() {
-        return perceivedDifficultyIsNull() && perceivedHorrorGradeIsNull() &&
-                perceivedActivityIsNull() && scenarioSatisfactionIsNull() && interiorSatisfactionIsNull() &&
-                problemConfigurationSatisfactionIsNull();
-    }
-
-    public boolean friendIdsExists() {
-        return friendIds != null && !friendIds.isEmpty();
-    }
-
     public ReviewCreateDto toServiceDto() {
 
-        List<ReviewImageDto> reviewImageDtos = null;
-        if (reviewImagesExists()) {
-            reviewImageDtos = reviewImages.stream().map(ReviewImageRequestDto::toServiceDto).collect(Collectors.toList());
-        }
+        List<ReviewImageDto> reviewImageDtos = convertReviewImagesToServiceDto();
 
         return ReviewCreateDto.builder()
                 .reviewType(reviewType)
@@ -145,13 +73,13 @@ public class ReviewCreateRequestDto {
                 .friendIds(friendIds)
                 .reviewImages(reviewImageDtos)
                 .comment(comment)
-                .genreCodes(genreCodes)
-                .perceivedDifficulty(perceivedDifficulty)
-                .perceivedHorrorGrade(perceivedHorrorGrade)
-                .perceivedActivity(perceivedActivity)
-                .scenarioSatisfaction(scenarioSatisfaction)
-                .interiorSatisfaction(interiorSatisfaction)
-                .problemConfigurationSatisfaction(problemConfigurationSatisfaction)
                 .build();
+    }
+
+    private List<ReviewImageDto> convertReviewImagesToServiceDto() {
+        if (reviewImagesExists()) {
+            return reviewImages.stream().map(ReviewImageRequestDto::toServiceDto).collect(Collectors.toList());
+        }
+        return null;
     }
 }
