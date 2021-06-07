@@ -1,7 +1,10 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.DeepReviewResponseDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.DetailReviewResponseDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewResponseDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.SimpleReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
@@ -43,31 +46,34 @@ public class ReviewResponseUtils {
         }
     }
 
-    public static String getThemeReviewListNextPageUrlString(Long themeId, ReviewSearchDto searchDto, Member currentMember, long totalPageCount) {
+    public static String getThemeReviewListNextPageUrlString(Long themeId, ReviewSearchDto searchDto, long totalPagesCount) {
         int nextPageNum = searchDto.getNextPageNum();
-        if (nextPageNum <= totalPageCount) {
-            ThemeReviewSearchRequestDto nextPageSearchRequestDto = ThemeReviewSearchRequestDto.builder()
-                    .pageNum(nextPageNum)
-                    .amount(searchDto.getAmount())
-                    .sortCondition(searchDto.getSortCondition())
-                    .build();
-
-            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, nextPageSearchRequestDto, currentMember)).toUri().toString();
+        if (nextPageNum <= totalPagesCount) {
+            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, null,null)).toUriComponentsBuilder()
+                    .queryParam("pageNum", searchDto.getNextPageNum())
+                    .queryParam("amount", searchDto.getAmount())
+                    .queryParam("sortCondition", searchDto.getSortCondition()).toUriString();
         }
         return null;
     }
 
-    public static String getThemeReviewListPrevPageUriString(Long themeId, ReviewSearchDto searchDto, Member currentMember) {
+    public static String getThemeReviewListPrevPageUriString(Long themeId, ReviewSearchDto searchDto, long totalPagesCount) {
         Integer prevPageNum = searchDto.getPrevPageNum();
-        if (prevPageNum != null) {
-            ThemeReviewSearchRequestDto prevPageSearchRequestDto = ThemeReviewSearchRequestDto.builder()
-                    .pageNum(prevPageNum)
-                    .amount(searchDto.getAmount())
-                    .sortCondition(searchDto.getSortCondition())
-                    .build();
-
-            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, prevPageSearchRequestDto, currentMember)).toUri().toString();
+        if (prevPageNum != null && totalPagesCount >= prevPageNum) {
+            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, null, null)).toUriComponentsBuilder()
+                    .queryParam("pageNum", searchDto.getPrevPageNum())
+                    .queryParam("amount", searchDto.getAmount())
+                    .queryParam("sortCondition", searchDto.getSortCondition()).toUriString();
         }
+
         return null;
+    }
+
+    public static long calculateTotalPagesCount(long totalResultsCount, int amount) {
+        long totalPagesCount = totalResultsCount / amount;
+        if (totalResultsCount % amount != 0) {
+            totalPagesCount++;
+        }
+        return totalPagesCount;
     }
 }

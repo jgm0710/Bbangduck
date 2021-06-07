@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.global.common;
+package bbangduck.bd.bbangduck.domain.review.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaginationResponseDto<T> {
+public class ReviewPaginationResponseDto<T> {
 
     private T list;
 
@@ -22,10 +22,9 @@ public class PaginationResponseDto<T> {
 
     private int amount;
 
-    private long totalPageCount;
+    private long totalPagesCount;
 
-    private String prevPage;
+    private String prevPageUrl;
 
-    private String nextPage;
-
+    private String nextPageUrl;
 }

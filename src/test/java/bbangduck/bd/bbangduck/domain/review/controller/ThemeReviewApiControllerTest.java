@@ -6,15 +6,17 @@ import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendState;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.model.emumerate.*;
+import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
+import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
+import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
+import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
+import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
@@ -24,17 +26,21 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -929,5 +935,351 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(new GenreNotFoundException(amgn1).getMessage()));
 
+    }
+
+    @Test
+    @DisplayName("리뷰 목록 조회")
+    @Transactional
+    public void getReviewList() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        memberSocialSignUpRequestDto.setEmail("member1@emailcom");
+        memberSocialSignUpRequestDto.setNickname("member1");
+        memberSocialSignUpRequestDto.setSocialId("3311022333");
+
+        Long member1Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        memberSocialSignUpRequestDto.setEmail("member2@emailcom");
+        memberSocialSignUpRequestDto.setNickname("member2");
+        memberSocialSignUpRequestDto.setSocialId("33611223");
+
+        Long member2Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        memberSocialSignUpRequestDto.setEmail("member3@emai.com");
+        memberSocialSignUpRequestDto.setNickname("member3");
+        memberSocialSignUpRequestDto.setSocialId("33119372");
+
+        Long member3Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Member member1 = memberService.getMember(member1Id);
+        Member member2 = memberService.getMember(member2Id);
+        Member member3 = memberService.getMember(member3Id);
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, member1Id);
+
+        List<Member> friends = friendIds.stream().map(friendId -> memberService.getMember(friendId)).collect(Collectors.toList());
+
+        createSampleReviewList(member1, member2, member3, theme, friends);
+
+        em.flush();
+        em.clear();
+
+        TokenDto tokenDto = authenticationService.signIn(member1Id);
+
+        //when
+        System.out.println("====================================================================================================================================================================================");
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/" + theme.getId() + "/reviews")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .param("pageNum", "2")
+                        .param("amount", "4")
+                        .param("sortCondition", "LIKE_COUNT_DESC")
+        ).andDo(print());
+        System.out.println("====================================================================================================================================================================================");
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_LIST_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data.list").exists())
+                .andExpect(jsonPath("data.pageNum").exists())
+                .andExpect(jsonPath("data.amount").exists())
+                .andExpect(jsonPath("data.totalPagesCount").exists())
+                .andExpect(jsonPath("data.prevPageUrl").exists())
+                .andExpect(jsonPath("data.nextPageUrl").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_LIST_SUCCESS.getMessage()))
+                .andDo(document(
+                        "get-theme-review-list-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestParameters(
+                                parameterWithName("pageNum").description("조회할 페이지 기입"),
+                                parameterWithName("amount").description("조회할 수량 기입"),
+                                parameterWithName("sortCondition").description("조회 시 정렬 조건 기입 +\n" +
+                                        ReviewSortCondition.getNameList())
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data.list").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
+                                        "간단 리뷰, 상세 리뷰, 상세 및 추가 설문 작성 리뷰가 모두 응답됨 -> 각 응답 형태는 리뷰 1건 조회 리소스를 통해 참조"),
+                                fieldWithPath("data.pageNum").description("현재 요청한 페이지 번호"),
+                                fieldWithPath("data.amount").description("현재 요청한 수량"),
+                                fieldWithPath("data.totalPagesCount").description("요청 시 입력한 pageNum, amount, sortCondition 에 의해 조회된 결과의 총 페이지 수"),
+                                fieldWithPath("data.prevPageUrl").description("현재 페이지 기준 이전 페이지에 대한 요청 URL +\n" +
+                                        "이전 페이지가 실제로 존재할 수 없는 페이지 일 경우 [null] 값이 나옴"),
+                                fieldWithPath("data.nextPageUrl").description("현재 페이지 기준 다음 페이지에 대한 요청 URL +\n" +
+                                        "총 페이지 수 보다 다음 페이지가 커서 실제 존재할 수 없는 페이지 일 경우 [null] 값이 나옴"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("리뷰 목록 조회 - 인증되지 않은 회원이 리뷰 목록 조회")
+    @Transactional
+    public void getReviewList_Unauthorized() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        memberSocialSignUpRequestDto.setEmail("member1@emailcom");
+        memberSocialSignUpRequestDto.setNickname("member1");
+        memberSocialSignUpRequestDto.setSocialId("3311022333");
+
+        Long member1Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        memberSocialSignUpRequestDto.setEmail("member2@emailcom");
+        memberSocialSignUpRequestDto.setNickname("member2");
+        memberSocialSignUpRequestDto.setSocialId("33611223");
+
+        Long member2Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        memberSocialSignUpRequestDto.setEmail("member3@emai.com");
+        memberSocialSignUpRequestDto.setNickname("member3");
+        memberSocialSignUpRequestDto.setSocialId("33119372");
+
+        Long member3Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Member member1 = memberService.getMember(member1Id);
+        Member member2 = memberService.getMember(member2Id);
+        Member member3 = memberService.getMember(member3Id);
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, member1Id);
+
+        List<Member> friends = friendIds.stream().map(friendId -> memberService.getMember(friendId)).collect(Collectors.toList());
+
+        createSampleReviewList(member1, member2, member3, theme, friends);
+
+        em.flush();
+        em.clear();
+
+        TokenDto tokenDto = authenticationService.signIn(member1Id);
+
+        //when
+        System.out.println("====================================================================================================================================================================================");
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/" + theme.getId() + "/reviews")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .param("pageNum", "2")
+                        .param("amount", "4")
+                        .param("sortCondition", "LIKE_COUNT_DESC")
+        ).andDo(print());
+        System.out.println("====================================================================================================================================================================================");
+
+        //then
+        perform
+                .andExpect(status().isOk());
+
+    }
+
+    private void createSampleReviewList(Member member1, Member member2, Member member3, Theme theme, List<Member> friends) throws IOException {
+        Review member1SimpleReview = Review.builder()
+                .member(member1)
+                .theme(theme)
+                .reviewType(ReviewType.SIMPLE)
+                .recodeNumber(1)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 41, 19))
+                .hintUsageCount(3)
+                .rating(6)
+                .likeCount(312)
+                .build();
+
+        member1SimpleReview.addPlayTogether(friends.get(0));
+
+        Review member2SimpleReview = Review.builder()
+                .member(member2)
+                .theme(theme)
+                .reviewType(ReviewType.SIMPLE)
+                .recodeNumber(1)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 51, 11))
+                .hintUsageCount(5)
+                .rating(4)
+                .likeCount(411)
+                .build();
+
+        member2SimpleReview.addPlayTogether(friends.get(2));
+
+        Review member3SimpleReview = Review.builder()
+                .member(member3)
+                .theme(theme)
+                .reviewType(ReviewType.SIMPLE)
+                .recodeNumber(1)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 41, 19))
+                .hintUsageCount(3)
+                .rating(6)
+                .likeCount(214)
+                .build();
+
+        member3SimpleReview.addPlayTogether(friends.get(1));
+
+        MockMultipartFile files1 = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFile1Id = fileStorageService.uploadImageFile(files1);
+        FileStorage storedFile1 = fileStorageService.getStoredFile(uploadImageFile1Id);
+
+        MockMultipartFile files2 = createMockMultipartFile("files", IMAGE_FILE2_CLASS_PATH);
+        Long uploadImageFile2Id = fileStorageService.uploadImageFile(files2);
+        FileStorage storedFile2 = fileStorageService.getStoredFile(uploadImageFile2Id);
+
+        Review member1DetailReview = Review.builder()
+                .member(member1)
+                .theme(theme)
+                .reviewType(ReviewType.DETAIL)
+                .recodeNumber(2)
+                .clearYN(false)
+                .clearTime(LocalTime.of(1, 2, 19))
+                .hintUsageCount(5)
+                .rating(8)
+                .comment("테마가 너무 어렵네요 다음에는 꼭 성공하고 싶어요~")
+                .likeCount(1027)
+                .build();
+
+        member1DetailReview.addPlayTogether(friends.get(0));
+        member1DetailReview.addPlayTogether(friends.get(1));
+        member1DetailReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member1DetailReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+
+        Review member2DetailReview = Review.builder()
+                .member(member2)
+                .theme(theme)
+                .reviewType(ReviewType.DETAIL)
+                .recodeNumber(2)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 38, 23))
+                .hintUsageCount(0)
+                .rating(6)
+                .comment("어렵다는 평이 있어서 걱정했는데 생각보다 시시해서 아쉬웠어요. 테마 자체는 재밌습니다 :)")
+                .likeCount(682)
+                .build();
+
+        member2DetailReview.addPlayTogether(friends.get(3));
+        member2DetailReview.addPlayTogether(friends.get(4));
+        member2DetailReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member2DetailReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+
+        Review member3DetailReview = Review.builder()
+                .member(member3)
+                .theme(theme)
+                .reviewType(ReviewType.DETAIL)
+                .recodeNumber(2)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 58, 11))
+                .hintUsageCount(4)
+                .rating(9)
+                .comment("어렵긴 하지만 운이 좋아서 간신히 성공했네요 ㅎㅎ. 너무 재밌었습니다.")
+                .likeCount(721)
+                .build();
+
+        member3DetailReview.addPlayTogether(friends.get(0));
+        member3DetailReview.addPlayTogether(friends.get(1));
+        member3DetailReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member3DetailReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+
+        List<String> genreCodes = createGenreCodes();
+        List<Genre> genres = genreCodes.stream().map(code -> genreRepository.findByCode(code).orElseThrow(GenreNotFoundException::new)).collect(Collectors.toList());
+
+        Review member1DeepReview = Review.builder()
+                .member(member1)
+                .theme(theme)
+                .reviewType(ReviewType.DEEP)
+                .recodeNumber(3)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 47, 34))
+                .hintUsageCount(0)
+                .rating(6)
+                .comment("스토리가 풍부하고, 재밌었어요")
+                .perceivedDifficulty(Difficulty.EASY)
+                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
+                .perceivedActivity(Activity.LITTLE_ACTIVITY)
+                .scenarioSatisfaction(Satisfaction.GOOD)
+                .interiorSatisfaction(Satisfaction.GOOD)
+                .problemConfigurationSatisfaction(Satisfaction.NORMAL)
+                .likeCount(556)
+                .build();
+
+        member1DeepReview.addPlayTogether(friends.get(0));
+        member1DeepReview.addPlayTogether(friends.get(1));
+        member1DeepReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member1DeepReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+        member1DeepReview.addPerceivedThemeGenre(genres.get(0));
+
+        Review member2DeepReview = Review.builder()
+                .member(member2)
+                .theme(theme)
+                .reviewType(ReviewType.DEEP)
+                .recodeNumber(3)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 34, 11))
+                .hintUsageCount(0)
+                .rating(4)
+                .comment("너무 시시했어요. 조금 더 어려운 난이도를 바랍니다.")
+                .perceivedDifficulty(Difficulty.VERY_EASY)
+                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
+                .perceivedActivity(Activity.LITTLE_ACTIVITY)
+                .scenarioSatisfaction(Satisfaction.BAD)
+                .interiorSatisfaction(Satisfaction.BAD)
+                .problemConfigurationSatisfaction(Satisfaction.VERY_BAD)
+                .likeCount(10)
+                .build();
+
+        member2DeepReview.addPlayTogether(friends.get(0));
+        member2DeepReview.addPlayTogether(friends.get(1));
+        member2DeepReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member2DeepReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+        member2DeepReview.addPerceivedThemeGenre(genres.get(1));
+        member2DeepReview.addPerceivedThemeGenre(genres.get(0));
+
+        Review member3DeepReview = Review.builder()
+                .member(member3)
+                .theme(theme)
+                .reviewType(ReviewType.DEEP)
+                .recodeNumber(3)
+                .clearYN(false)
+                .clearTime(LocalTime.of(0, 59, 11))
+                .hintUsageCount(3)
+                .rating(6)
+                .comment("생각보다 어려워서 힘들었어요.")
+                .perceivedDifficulty(Difficulty.DIFFICULT)
+                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
+                .perceivedActivity(Activity.LITTLE_ACTIVITY)
+                .scenarioSatisfaction(Satisfaction.NORMAL)
+                .interiorSatisfaction(Satisfaction.NORMAL)
+                .problemConfigurationSatisfaction(Satisfaction.NORMAL)
+                .likeCount(45)
+                .build();
+
+        member3DeepReview.addPlayTogether(friends.get(0));
+        member3DeepReview.addPlayTogether(friends.get(1));
+        member3DeepReview.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+        member3DeepReview.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+        member3DeepReview.addPerceivedThemeGenre(genres.get(1));
+        member3DeepReview.addPerceivedThemeGenre(genres.get(0));
+
+        reviewRepository.save(member1SimpleReview);
+        reviewRepository.save(member2SimpleReview);
+        reviewRepository.save(member3SimpleReview);
+        reviewRepository.save(member1DetailReview);
+        reviewRepository.save(member2DetailReview);
+        reviewRepository.save(member3DetailReview);
+        reviewRepository.save(member1DeepReview);
+        reviewRepository.save(member2DeepReview);
+        reviewRepository.save(member3DeepReview);
     }
 }

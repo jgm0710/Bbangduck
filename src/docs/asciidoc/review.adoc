@@ -95,6 +95,9 @@
 2021-06-01:::
 * <<resources-get-an-review>> 기능 구현
 
+2021-06-07:::
+* <<resources-get-theme-review-list>> 기능 구현
+
 [[resources-review]]
 = 리뷰 관련 리소스
 
@@ -259,5 +262,34 @@ operation::get-detail-review-of-different-member-success[snippets='request-heade
 * ReviewType : `DEEP`
 
 operation::get-deep-review-of-different-member-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+[[resources-get-theme-review-list]]
+== 테마에 등록된 리뷰 목록 조회
+
+* `get` `/api/themes/{themeId}/reviews?{parameters}`
+
+* 테마에 등록된 리뷰 목록 조회의 경우, 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 작성 리뷰가 모두 응답됩니다.
+** 세 Review Type 에 따라 다른 응답 형태를 띕니다. (나타내는 데이터의 양이 다름)
+
+NOTE: 각 응답 형태에 대한 부분은 리뷰 1건 조회 리소스를 참고하세요.
+
+* 해당 리소스는 인증되지 않은 사용자도 접근이 가능합니다.
+
+* 인증된 사용자는 리뷰 목록 조회 중 해당 리뷰가 자신이 생성한 리뷰인지, 다른 회원이 생성한 리뷰인지를
+`myReview` 를 통해 알 수 있습니다.
+** 자신이 생성한 리뷰는 `myReview` 가 `true`, 다른 회원이 생성한 리뷰는 `myReview` 가 `false` 로 나타납니다.
+
+* 리뷰 목록 조회에 성공한 경우, 간단한 페이징 정보와 이전, 다음 페이지 요청에 해당하는 URL 을 응답 받습니다.
+** 총 페이지 개수 기준 이전 페이지가 없다면 (이전 페이지가 0 페이지 이거나, 아예 잘못된 요청을 통해 이전 페이지가 총 페이지 수 보다 클 경우)
+`prevPageUrl` 은 `null` 이 나옵니다.
+** 마찬가지로 총 페이지 개수 기준 다음 페이지가 없다면 (다음 페이지가 총 페이지 수 보다 클 경우) `nextPageUrl` 은 `null` 이 나옵니다.
+
+
+[[resources-get-theme-review-list-success]]
+=== 테마에 등록된 리뷰 목록 조회 성공
+
+응답 HttpStatus : `200 OK`
+
+operation::get-theme-review-list-success[snippets='request-headers,request-parameters,response-fields,curl-request,http-response']
 
 

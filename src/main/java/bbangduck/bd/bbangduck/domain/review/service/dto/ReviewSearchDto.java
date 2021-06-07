@@ -48,4 +48,8 @@ public class ReviewSearchDto {
     public int getNextPageNum() {
         return criteria.getPageNum() + 1;
     }
+
+    public int getPageNum() {
+        return this.criteria.getPageNum();
+    }
 }

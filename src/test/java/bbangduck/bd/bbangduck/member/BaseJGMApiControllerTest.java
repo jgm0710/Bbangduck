@@ -37,6 +37,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.time.LocalTime;
@@ -47,6 +48,9 @@ import java.util.stream.Stream;
 
 @Disabled
 public class BaseJGMApiControllerTest extends BaseControllerTest {
+
+    @Autowired
+    protected EntityManager em;
 
     @Autowired
     protected ReviewLikeService reviewLikeService;

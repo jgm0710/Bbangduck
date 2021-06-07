@@ -2,12 +2,14 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewResponseDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ThemeReviewSearchRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
-import bbangduck.bd.bbangduck.global.common.PaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewPaginationResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import com.querydsl.core.QueryResults;
@@ -18,7 +20,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,14 +64,15 @@ public class ThemeReviewApiController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<PaginationResponseDto<Object>>> getReviewList(
+    public ResponseEntity<ResponseDto<ReviewPaginationResponseDto<Object>>> getReviewList(
             @PathVariable Long themeId,
             @ModelAttribute ThemeReviewSearchRequestDto requestDto,
             @CurrentUser Member currentMember
     ) {
         ReviewSearchDto reviewSearchDto = requestDto.toServiceDto();
+
         QueryResults<Review> reviewQueryResults = reviewService.getThemeReviewList(themeId, reviewSearchDto);
-        long totalPageCount = reviewQueryResults.getTotal();
+        long totalResultsCount = reviewQueryResults.getTotal();
         List<Review> findReviews = reviewQueryResults.getResults();
 
         List<ReviewResponseDto> reviewResponseDtos = findReviews.stream().map(review -> {
@@ -78,16 +80,19 @@ public class ThemeReviewApiController {
             return convertReviewToResponseDto(review, currentMember, existsReviewLike);
         }).collect(Collectors.toList());
 
-        PaginationResponseDto<Object> reviewsPaginationResponseDto = PaginationResponseDto.builder()
+        long totalPagesCount = calculateTotalPagesCount(totalResultsCount, reviewSearchDto.getAmount());
+
+        ReviewPaginationResponseDto<Object> reviewsReviewPaginationResponseDto = ReviewPaginationResponseDto.builder()
                 .list(reviewResponseDtos)
                 .pageNum(requestDto.getPageNum())
                 .amount(requestDto.getAmount())
-                .totalPageCount(totalPageCount)
-                .prevPage(getThemeReviewListPrevPageUriString(themeId, reviewSearchDto, currentMember))
-                .nextPage(getThemeReviewListNextPageUrlString(themeId, reviewSearchDto, currentMember, totalPageCount))
+                .totalPagesCount(totalPagesCount)
+                .prevPageUrl(getThemeReviewListPrevPageUriString(themeId, reviewSearchDto, totalPagesCount))
+                .nextPageUrl(getThemeReviewListNextPageUrlString(themeId, reviewSearchDto, totalPagesCount))
                 .build();
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_REVIEW_LIST_SUCCESS, reviewsPaginationResponseDto));
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_REVIEW_LIST_SUCCESS, reviewsReviewPaginationResponseDto));
     }
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {
