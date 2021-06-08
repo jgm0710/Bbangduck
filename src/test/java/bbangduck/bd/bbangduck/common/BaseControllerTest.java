@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 /**
  * 기본 Controller Test 상속
  */
-@ExtendWith(value = {SpringExtension.class, RestDocumentationExtension.class})
+@ExtendWith(value = {SpringExtension.class, RestDocumentationExtension.class, MockitoExtension.class})
 @Disabled
 public abstract class BaseControllerTest extends BaseTest{
 

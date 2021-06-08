@@ -14,10 +14,9 @@ import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendState;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
-import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
-import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
-import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
+import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
@@ -27,6 +26,7 @@ import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
+import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -44,6 +44,12 @@ import java.util.List;
 
 @Disabled
 public class BaseJGMServiceTest extends BaseTest {
+
+    @Autowired
+    protected MemberFriendQueryRepository memberFriendQueryRepository;
+
+    @Autowired
+    protected ReviewProperties reviewProperties;
 
     @Autowired
     protected ReviewQueryRepository reviewQueryRepository;
@@ -225,7 +231,7 @@ public class BaseJGMServiceTest extends BaseTest {
         return friendIds;
     }
 
-    protected ReviewCreateDto createReviewCreateDto(List<FileStorage> storedFiles, List<Long> friendIds, List<String> genreCodes) {
+    protected ReviewCreateDto createReviewCreateDto(List<FileStorage> storedFiles, List<Long> friendIds) {
         List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
         storedFiles.forEach(storedFile -> reviewImageDtoList.add(new ReviewImageDto(storedFile.getId(), storedFile.getFileName())));
 
@@ -292,6 +298,18 @@ public class BaseJGMServiceTest extends BaseTest {
                 .hintUsageCount(1)
                 .rating(6)
                 .friendIds(friendIds)
+                .build();
+    }
+
+    protected ReviewSurveyCreateRequestDto createReviewSurveyCreateRequestDto(List<String> genreCodes) {
+        return ReviewSurveyCreateRequestDto.builder()
+                .genreCodes(genreCodes)
+                .perceivedDifficulty(Difficulty.EASY)
+                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
+                .perceivedActivity(Activity.NORMAL)
+                .scenarioSatisfaction(Satisfaction.GOOD)
+                .interiorSatisfaction(Satisfaction.BAD)
+                .problemConfigurationSatisfaction(Satisfaction.VERY_BAD)
                 .build();
     }
 

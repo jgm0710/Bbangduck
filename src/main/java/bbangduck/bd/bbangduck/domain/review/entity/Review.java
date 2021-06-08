@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class Review extends BaseEntityDateTime {
     private long likeCount;
 
     @Builder
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment,  long likeCount) {
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment, long likeCount, LocalDateTime registerTimes, LocalDateTime updateTimes) {
         this.id = id;
         this.member = member;
         this.theme = theme;
@@ -89,6 +90,8 @@ public class Review extends BaseEntityDateTime {
         this.rating = rating;
         this.comment = comment;
         this.likeCount = likeCount;
+        super.registerTimes = registerTimes;
+        super.updateTimes = updateTimes;
     }
 
     public static Review create(Member member, Theme theme, int recodeNumber, ReviewCreateDto reviewCreateDto) {
@@ -207,5 +210,13 @@ public class Review extends BaseEntityDateTime {
         this.likeCount--;
     }
 
+    public void setReviewSurvey(ReviewSurvey reviewSurvey) {
+        reviewSurvey.setReview(this);
+        this.reviewSurvey = reviewSurvey;
+    }
+
+    public ReviewSurvey getReviewSurvey() {
+        return reviewSurvey;
+    }
 
 }

@@ -2,8 +2,11 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
+import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -20,10 +23,15 @@ import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
  * 사용될 Custom Validator
  */
 @Component
+@RequiredArgsConstructor
 public class ReviewValidator {
+
+    private final ReviewProperties reviewProperties;
 
     public void validateCreateView(ReviewCreateRequestDto requestDto, Errors errors) {
         hasErrorsThrow(ResponseStatus.CREATE_REVIEW_NOT_VALID, errors);
+
+        checkPlayTogetherFriendsCount(requestDto.getFriendIds(), reviewProperties.getPlayTogetherFriendsCountLimit(), errors);
 
         ReviewType reviewType = requestDto.getReviewType();
 
@@ -54,6 +62,18 @@ public class ReviewValidator {
         }
     }
 
+    private void checkPlayTogetherFriendsCount(List<Long> friendIds,int playTogetherFriendsCountLimit, Errors errors) {
+        if (!existsList(friendIds)) {
+            return;
+        }
+
+        if (friendIds.size()>playTogetherFriendsCountLimit) {
+            errors.rejectValue("friendIds", "ExceededDataCount", "함께 플레이한 친구 ID 수가 제한된 개수보다 많습니다. 함께한 친구 추가 가능 개수 : " + playTogetherFriendsCountLimit);
+        }
+
+        hasErrorsThrow(ResponseStatus.CREATE_REVIEW_NOT_VALID, errors);
+    }
+
     private void validateReviewImages(List<ReviewImageRequestDto> reviewImageRequestDtos, Errors errors) {
         for (int i = 0; i < reviewImageRequestDtos.size(); i++) {
             ReviewImageRequestDto reviewImageRequestDto = reviewImageRequestDtos.get(i);
@@ -66,6 +86,25 @@ public class ReviewValidator {
                 errors.rejectValue("reviewImages[" + i + "].fileName", "NotBlank", "리뷰에 등록될 이미지 파일 중 [" + i + "] 번 파일의 파일 이름을 기입하지 않았습니다.");
             }
         }
+    }
+
+    public void validateAddSurveyToReview(ReviewSurveyCreateRequestDto requestDto, Errors errors) {
+        hasErrorsThrow(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID, errors);
+
+        List<String> genreCodes = requestDto.getGenreCodes();
+        int perceivedThemeGenresCountLimit = reviewProperties.getPerceivedThemeGenresCountLimit();
+        checkPerceivedThemeGenresCount(genreCodes, perceivedThemeGenresCountLimit, errors);
+    }
+
+    private void checkPerceivedThemeGenresCount(List<String> genreCodes, int perceivedThemeGenresCountLimit, Errors errors) {
+        if (!existsList(genreCodes)) {
+            return;
+        }
+
+        if (genreCodes.size() > perceivedThemeGenresCountLimit) {
+            errors.rejectValue("genreCodes", "ExceededDataCount", "리뷰 설문에 등록할 체감 장르의 개수가 제한된 개수보다 많습니다. 체감 테마 장르 등록 가능 개수 : " + perceivedThemeGenresCountLimit);
+        }
+        hasErrorsThrow(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID, errors);
     }
 }
 

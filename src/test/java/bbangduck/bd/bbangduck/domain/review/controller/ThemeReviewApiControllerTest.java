@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -549,59 +550,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-//    @Test
-//    @DisplayName("추가 설문 리뷰 생성 - 간단 리뷰 정보 외의 정보는 전혀 기입하지 않은 경우")
-//    public void createDeepReview_NotDeep() throws Exception {
-//        //given
-//        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-//        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-//
-//        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-//
-//
-//        Theme theme = createTheme();
-//
-//        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-//
-//        List<String> genreCodes = createGenreCodes();
-//
-//        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
-//        reviewCreateRequestDto.setReviewType(ReviewType.DEEP);
-//
-//        TokenDto tokenDto = authenticationService.signIn(signUpId);
-//
-//        //when
-//        ResultActions perform = mockMvc.perform(
-//                post("/api/themes/" + theme.getId() + "/reviews")
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-//        ).andDo(print());
-//
-//
-//        //then
-//        perform
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID.getStatus()))
-//                .andExpect(jsonPath("data[0].objectName").exists())
-//                .andExpect(jsonPath("data[0].code").exists())
-//                .andExpect(jsonPath("data[0].defaultMessage").exists())
-//                .andExpect(jsonPath("data[0].field").exists())
-//                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DEEP_REVIEW_NOT_VALID.getMessage()))
-//                .andDo(document(
-//                        "create-deep-review-not-deep",
-//                        responseFields(
-//                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-//                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
-//                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
-//                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
-//                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
-//                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-//                        )
-//                ))
-//        ;
-//
-//    }
 
 
     @Test
@@ -638,6 +586,62 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 생성 - 리뷰 생성 시 함께한 친구 수가 제한된 개수보다 많을 경우")
+    public void createReview_OverPlayTogetherFriendsCount() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+//        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        List<Long> friendIds = new ArrayList<>();
+        for (long i = 0; i < reviewProperties.getPlayTogetherFriendsCountLimit()+2; i++) {
+            friendIds.add(i);
+        }
+
+        Theme theme = createTheme();
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+
+        List<String> genreCodes = createGenreCodes();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/themes/" + theme.getId() + "/reviews")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
+                .andDo(document(
+                        "create-review-over-play-together",
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
+                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
+                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
+                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
 
     }
 
@@ -730,7 +734,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
         Member requestStateFriendToMember = createRequestStateFriendToMember(memberSocialSignUpRequestDto, signUpId);
-        friendIds.add(requestStateFriendToMember.getId());
+        friendIds.set(4, requestStateFriendToMember.getId());
 
 
         Theme theme = createTheme();
