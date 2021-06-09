@@ -461,7 +461,25 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID.getMessage()))
+                .andDo(document(
+                        "add-survey-to-review-over-perceived-theme-genres-count",
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
+                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
+                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
+                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
 
     }
 

@@ -18,13 +18,13 @@
 |===
 | 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
 
-| <<resources-create-review>>
+| <<resources-create-review>> / <<resources-add-survey-to-review>>
 | 인증되지 않은 사용자가 리소스에 접근하는 경우
 | 401
 | 1401
 | 인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.
 
-| <<resources-create-review>>
+| <<resources-create-review>> / <<resources-add-survey-to-review>>
 | 탈퇴하거나 활동이 정지된 회원이 리소스에 접근하는 경우
 | 403
 | 1403
@@ -59,6 +59,30 @@
 | 400
 | 4403
 | 상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-add-survey-to-review>>
+| 설문을 추가할 리뷰를 찾을 수 없는 경우
+| 404
+| 4405
+| 해당 리뷰가 존재하지 않습니다.
+
+| <<resources-add-survey-to-review>>
+| 설문에 체감 테마 장르 등록 시 해당 장르를 찾을 수 없는 경우
+| 404
+| 6401
+| 해당 장르가 존재하지 않습니다.
+
+| <<resources-add-survey-to-review-not-valid>>
+| 리뷰에 설문 등록 시 입력 규칙에 맞게 값을 기입하지 않은 경우
+| 400
+| 4406
+| 리뷰에 설문 추가 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-add-survey-to-review>>
+| 리뷰에 설문 등록 시 다른 회원이 생성한 리뷰에 설문을 등록하는 경우
+| 403
+| 4408
+| 다른 회원이 생성한 리뷰에는 설문을 추가할 수 없습니다.
 
 | <<resources-get-an-review>>
 | 리뷰 조회 시 리뷰를 찾을 수 없는 경우
@@ -95,6 +119,9 @@
 2021-06-09:::
 * <<resources-create-review-over-play-together>> 추가
 ** 함께한 친구가 많을 경우에 대한 입력값 제한 설정
+
+2021-06-10:::
+* <<resources-add-survey-to-review>> 기능 구현
 
 [[resources-review]]
 = 리뷰 관련 리소스
@@ -198,21 +225,54 @@ operation::create-detail-review-comment-empty[snippets='response-fields,curl-req
 
 * `POST` `/api/reviews/{reviewId}/surveys`
 
-* 리뷰에 설문 추가 리소스는 생성된 리뷰에
+* 리뷰에 설문 추가 리소스는 생성된 리뷰에 리뷰를 등록하는 테마에 대한 설문을 추가합니다.
+
+* 설문 추가는 리뷰가 생성된 이후 7일 이내에만 추가가 가능합니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능하며, 다른 회원이 생성한 리뷰에는 설문을 등록할 수 없습니다.
+
+* 설문 등록 시 주어진 모든 값을 기입해야 하며, 입력하지 않았을 경우 요청에 실패합니다.
+** 추가로 설문 등록 시 체감 테마 장르는 제한된 개수 이내에만 등록이 가능합니다.
+** 체감 테마 장르 기입 시 제한된 개수 이상을 기입할 경우 요청에 실패합니다.
 
 
 [[resources-add-survey-to-review-success]]
 === 리뷰에 설문 추가 성공
+
+* 응답 HttpStatus : `No Content`
+
+* 별도의 응답 Body Data 는 없습니다.
 
 operation::add-survey-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 [[resources-add-survey-to-review-not-valid]]
 === 리뷰에 설문 추가 시 값을 제대로 기입하지 않은 경우
 
+* 응답 HttpStatus : `400 Bad Request`
+
+* 리뷰에 설문 추가 시 주어진 값을 모두, 정해진 값대로 기입하지 않은 경우 요청에 실패합니다.
+
 operation::add-survey-to-review-not-valid[snippets='response-fields,curl-request,http-response']
+
+[[resources-add-survey-to-review-over-perceived-theme-genres-count]]
+=== 리뷰에 설문 추가 시 등록하는 체감 테마 장르의 수가 제한된 개수보다 많을 경우
+
+* 응답 HttpStatus : `400 Bad Request`
+
+* 설문 등록 시 체감 테마 장르를 기입하게 되는데, 제한된 개수보다 많은 수의 장르 코드를 기입한 경우 요청에 실패합니다.
+
+operation::add-survey-to-review-over-perceived-theme-genres-count[snippets='response-fields,curl-request,http-response']
 
 [[resources-add-survey-to-review-period-expiration]]
 === 리뷰에 설문 추가 시 설문 추가 가능 기간이 지난 경우
+
+* 응답 HttpStatus : `400 Bad Request`
+
+* 리뷰에 설문 추가는 리뷰를 생성한지 7일 이내에만 진행할 수 있습니다.
+
+* 리뷰를 생성한 지 7일 이후 설문을 등록할 경우 요청에 실패합니다.
+
+* 해당 기간은 추후 변동될 수 있습니다.
 
 operation::add-survey-to-review-period-expiration[snippets='response-fields,curl-request,http-response']
 
@@ -251,7 +311,7 @@ operation::add-survey-to-review-period-expiration[snippets='response-fields,curl
 * B 는 A 가 생성한 리뷰에 좋아요를 등록한 상황입니다.
 * `myReview` 는 `false`, `like` 는 `true` 가 나오게 됩니다.
 
-NOTE: 상세 리뷰, 상세 및 추가 설문 리뷰 또한 위의 상황을 가정합니다.
+NOTE: 상세 리뷰 또한 위의 상황을 가정합니다.
 
 operation::get-simple-review-of-different-member-success[snippets='request-headers,response-fields,curl-request,http-response']
 
