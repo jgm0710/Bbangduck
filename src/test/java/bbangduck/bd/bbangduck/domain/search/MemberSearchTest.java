@@ -99,7 +99,12 @@ public class MemberSearchTest {
                 .searchDate(LocalDate.now())
                 .member(member)
                 .build();
-        this.memberSearchService.save(MemberSearchDto.of(memberSearch));
+
+        MemberSearchDto of = MemberSearchDto.of(memberSearch);
+        System.out.println("===");
+        System.out.println(of.toString());
+        System.out.println("===");
+        this.memberSearchService.save(of);
 
         MemberSearch memberSearch1 = MemberSearch.builder()
                 .searchTimes(LocalDateTime.now())

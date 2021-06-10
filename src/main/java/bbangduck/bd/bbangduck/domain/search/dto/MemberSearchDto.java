@@ -34,12 +34,16 @@ public class MemberSearchDto {
 
     private String searchKeyword;
 
+
+    private LocalDate searchDate;
+
     public static MemberSearchDto of(MemberSearch memberSearch) {
         return MemberSearchDto.builder()
                 .id(memberSearch.getId())
                 .searchType(memberSearch.getSearchType())
                 .searchKeyword(memberSearch.getSearchKeyword())
                 .memberId(memberSearch.getMember().getId())
+                .searchDate(memberSearch.getSearchDate())
                 .build();
     }
 
@@ -62,4 +66,8 @@ public class MemberSearchDto {
         private LocalDate searchDate;
 
     }
+
+
+
+
 }

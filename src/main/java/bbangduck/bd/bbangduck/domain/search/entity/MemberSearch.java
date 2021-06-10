@@ -5,6 +5,7 @@ import bbangduck.bd.bbangduck.domain.search.dto.MemberSearchDto;
 import bbangduck.bd.bbangduck.domain.search.entity.enumerate.MemberSearchType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
@@ -33,10 +34,11 @@ public class MemberSearch {
 
     private String searchKeyword;
 
-    @CreationTimestamp
+    @CreatedDate
+    //    @CreationTimestamp
 //    @Temporal(TemporalType.DATE) // only Date or Calendar
-//    @Column(columnDefinition = "DATE")
 //    @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
+//    @Column(columnDefinition = "DATE")
     private LocalDate searchDate;
 
     @CreationTimestamp
@@ -48,7 +50,18 @@ public class MemberSearch {
                 .member(member)
                 .searchKeyword(memberSearchDto.getSearchKeyword())
                 .searchType(memberSearchDto.getSearchType())
+                .searchDate(memberSearchDto.getSearchDate())
                 .build();
     }
 
+    @Override
+    public String toString() {
+        return "MemberSearch{" +
+                "id=" + id +
+                ", searchType=" + searchType +
+                ", searchKeyword='" + searchKeyword + '\'' +
+                ", searchDate=" + searchDate +
+                ", searchTimes=" + searchTimes +
+                '}';
+    }
 }
