@@ -29,6 +29,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("인증 관련 Service 로직 테스트")
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest extends BaseJGMServiceTest {
 

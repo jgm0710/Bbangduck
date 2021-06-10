@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("개발자 권한을 통한 회원 조작 API Controller 테스트")
 class MemberDevelopApiControllerTest extends BaseJGMApiControllerTest {
 
     private final String email = "developer@bbangduck.com";

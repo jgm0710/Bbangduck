@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.search.service;
 
 import bbangduck.bd.bbangduck.domain.search.dto.MemberSearchDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -18,4 +19,8 @@ public interface MemberSearchService {
     List<MemberSearchDto> findAll();
 
     List<MemberSearchDto> findByMemberSearchTypeAndKeyword(MemberSearchDto memberSearchDto);
+
+    List<MemberSearchDto.MemberSearchTopMonthDto> searchTopMonthList();
+
+    List<MemberSearchDto> findTop10ByMemberIdAndSearchDateLessThan(String email, LocalDate localDate);
 }

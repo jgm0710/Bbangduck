@@ -18,4 +18,6 @@ public enum MemberSearchType {
     public String getDescription() {
         return this.description;
     }
+
+
 }

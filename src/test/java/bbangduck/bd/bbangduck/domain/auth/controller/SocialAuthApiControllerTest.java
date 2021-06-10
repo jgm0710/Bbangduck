@@ -1,9 +1,9 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.KakaoAuthorizationCodeConfiguration;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.KakaoUserInfoDto;
-import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
+import bbangduck.bd.bbangduck.domain.auth.service.dto.KakaoUserInfoDto;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
@@ -16,12 +16,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("소셜 인증 (로그인) API Controller 테스트")
 @ExtendWith(MockitoExtension.class)
 class SocialAuthApiControllerTest extends BaseJGMApiControllerTest {
 

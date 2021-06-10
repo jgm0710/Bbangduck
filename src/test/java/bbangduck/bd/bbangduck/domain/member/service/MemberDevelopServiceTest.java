@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("개발자 권한을 통한 회원 조작 Service 로직 테스트")
 class MemberDevelopServiceTest extends BaseJGMServiceTest {
 
     @Autowired
