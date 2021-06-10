@@ -7,6 +7,7 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyCreateDto;
+import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReviewSurvey {
+public class ReviewSurvey extends BaseEntityDateTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

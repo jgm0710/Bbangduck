@@ -28,13 +28,79 @@
         </createTable>
     </changeSet>
 
+    <!-- review_like table 의 member_id 컬럼에 생성될 외례키 인덱스 생성-->
+    <changeSet author="jgm (generated)" id="createIndex-FK_review_like_TO_member_1">
+        <createIndex indexName="FK_review_like_TO_member_1" tableName="review_like">
+            <column name="member_id"/>
+        </createIndex>
+    </changeSet>
+
     <!-- member table 과 review_like table 외례키 연결 -->
     <changeSet author="jgm (generated)" id="add-foreign-key-review-like-to-member">
         <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="review_like" constraintName="FK_review_like_TO_member_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+    </changeSet>
+
+    <!-- review_like table 의 review_id 컬럼에 생성될 외례키 인덱스 생성-->
+    <changeSet author="jgm (generated)" id="createIndex-FK_review_like_TO_review_1">
+        <createIndex indexName="FK_review_like_TO_review_1" tableName="review_like">
+            <column name="review_id"/>
+        </createIndex>
     </changeSet>
 
     <!-- review table 과 review_like table 외례키 연결 -->
     <changeSet author="jgm (generated)" id="add-foreign-key-review-like-to-review">
         <addForeignKeyConstraint baseColumnNames="review_id" baseTableName="review_like" constraintName="FK_review_like_TO_review_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="review_id" referencedTableName="review" validate="true"/>
     </changeSet>
+
+    <!-- 리뷰 설문 테이블 생성 -->
+    <changeSet author="jgm (generated)" id="createTable-review_survey">
+        <createTable tableName="review_survey">
+            <column autoIncrement="true" name="review_survey_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="review_id" type="BIGINT"/>
+            <column name="perceived_difficulty" type="VARCHAR(50)"/>
+            <column name="perceived_horror_grade" type="VARCHAR(50)"/>
+            <column name="perceived_activity" type="VARCHAR(50)"/>
+            <column name="scenario_satisfaction" type="VARCHAR(50)"/>
+            <column name="interior_satisfaction" type="VARCHAR(50)"/>
+            <column name="problem_configuration_satisfaction" type="VARCHAR(50)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <!-- 리뷰 체감 장르 테이블의 review_id 와 연결된 외례키를 review_survey 테이블의 review_survey_id 와 연걸하기 위해 컬럼명 변경 -->
+    <changeSet author="jgm (alternated)" id="renameColumn-review_id-To-review_survey_id">
+        <renameColumn columnDataType="BIGINT"
+                      newColumnName="review_survey_id"
+                      oldColumnName="review_id"
+                      tableName="review_perceived_theme_genre"/>
+    </changeSet>
+
+    <!-- 리뷰 체감 장르 테이블과 리뷰 테이블 사이의 외례키 삭제 -->
+    <changeSet author="jgm (alternated)" id="dropForeignKeyConstraint-FK_review_TO_review_perceived_theme_genre_1">
+        <dropForeignKeyConstraint
+                baseTableName="review_perceived_theme_genre"
+                constraintName="FK_review_TO_review_perceived_theme_genre_1"/>
+    </changeSet>
+
+    <!-- 리뷰 체감 장르 테이블과 리뷰 테이블 사이의 외례키 인덱스 삭제 -->
+    <changeSet author="liquibase-docs" id="dropIndex-example">
+        <dropIndex indexName="FK_review_TO_review_perceived_theme_genre_1"
+                   tableName="review_perceived_theme_genre"/>
+    </changeSet>
+
+    <!-- 리뷰 체감 장르 테이블과 리뷰 설문 테이블 사이의 외례키를 위한 인덱스 생성 -->
+    <changeSet author="jgm (generated)" id="createIndex-FK_review_survey_TO_review_perceived_theme_genre_1">
+        <createIndex indexName="FK_review_survey_TO_review_perceived_theme_genre_1" tableName="review_perceived_theme_genre">
+            <column name="review_survey_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 리뷰 체감 장르 테이블과 리뷰 설문 테이블 사이의 외례키 생성 -->
+    <changeSet author="jgm (generated)" id="addForeignKeyConstraint-FK_review_survey_TO_review_perceived_theme_genre_1">
+        <addForeignKeyConstraint baseColumnNames="review_survey_id" baseTableName="review_perceived_theme_genre" constraintName="FK_review_survey_TO_review_perceived_theme_genre_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="review_survey_id" referencedTableName="review_survey" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>
