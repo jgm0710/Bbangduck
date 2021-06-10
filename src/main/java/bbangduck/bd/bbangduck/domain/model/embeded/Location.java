@@ -1,8 +1,16 @@
 package bbangduck.bd.bbangduck.domain.model.embeded;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Embeddable
 public class Location {
 

@@ -1,15 +1,24 @@
 package bbangduck.bd.bbangduck.domain.shop.entity;
 
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 // TODO: 2021-05-25 clear
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Getter
+@Table
 public class ShopImage extends BaseEntityDateTime {
+
+    public static ShopImage instance = new ShopImage();
+
+    public static ShopImage getInstance() {
+        return instance;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

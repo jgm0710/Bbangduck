@@ -2,14 +2,17 @@ package bbangduck.bd.bbangduck.domain.shop.entity;
 
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 // TODO: 2021-05-25 완료
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Getter
+@Table
 public class Franchise extends BaseEntityDateTime {
 
     @Id

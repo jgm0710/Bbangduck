@@ -32,8 +32,6 @@ public class MemberSearchContoller {
 
     private final MemberSearchService memberSearchService;
 
-    private final MemberSearch memberSearch;
-
     @PostMapping(value = "/")
     public ResponseEntity<String> memberSearchPost(@RequestBody @Valid MemberSearchDto memberSearchDto) {
 
