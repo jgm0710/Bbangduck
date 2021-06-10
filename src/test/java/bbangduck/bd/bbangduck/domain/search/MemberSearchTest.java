@@ -33,6 +33,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -167,7 +168,7 @@ public class MemberSearchTest {
                 .andDo(print());
     }
 
-    @Test
+//    @Test
     public void searchTopMonthListTest() {
 
         List<MemberSearchDto> all = this.memberSearchService.findAll();
@@ -180,6 +181,16 @@ public class MemberSearchTest {
 
         MatcherAssert.assertThat(memberSearchTopMonthDtos.size(), CoreMatchers.is(1));
     }
+
+
+    @Test
+     public void searchMyTop10SearchLog() throws Exception {
+         String email = "otrodevym@gmail.com";
+        List<MemberSearchDto> list = this.memberSearchService.findTop10ByMemberIdAndSearchDateLessThan(email,
+                 LocalDate.now().minusMonths(1));
+
+        list.stream().forEach(System.out::println);
+     }
 
 
 //    public static void main(String[] args) {

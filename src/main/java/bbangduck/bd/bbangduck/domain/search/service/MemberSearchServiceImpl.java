@@ -10,6 +10,7 @@ import bbangduck.bd.bbangduck.domain.search.repository.MemberSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class MemberSearchServiceImple implements MemberSearchService {
+public class MemberSearchServiceImpl implements MemberSearchService {
 
     private final MemberSearchRepository memberSearchRepository;
 
@@ -86,6 +87,18 @@ public class MemberSearchServiceImple implements MemberSearchService {
     @Override
     public List<MemberSearchDto.MemberSearchTopMonthDto> searchTopMonthList() {
         return this.memberSearchRepository.searchTopMonthList();
+    }
+
+    @Override
+    public List<MemberSearchDto> findTop10ByMemberIdAndSearchDateLessThan(String email, LocalDate localDate) {
+        Member byEmail = null;
+        try {
+            byEmail = this.memberRepository.findByEmail(email).orElseThrow(Exception::new);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this.memberSearchRepository.findTop10ByMemberIdAndSearchDateLessThan(byEmail.getId(), localDate);
+
     }
 
 }
