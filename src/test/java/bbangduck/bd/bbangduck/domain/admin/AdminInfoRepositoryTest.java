@@ -1,6 +1,5 @@
 package bbangduck.bd.bbangduck.domain.admin;
 
-import bbangduck.bd.bbangduck.config.TestConfig;
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.domain.admin.repository.AdminInfoRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -8,19 +7,17 @@ import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import org.hamcrest.CoreMatchers;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 //@Import(TestConfig.class)
 @ExtendWith(SpringExtension.class)
 @DisplayName("관리자 정보 테스트")
+@ActiveProfiles("test") // db 커넥션을 application-test.yml 파일을 따르도록 설정하는 annotation
 public class AdminInfoRepositoryTest {
 
 

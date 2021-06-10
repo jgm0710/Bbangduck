@@ -37,6 +37,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("인증 관련 API Controller 테스트")
 @ExtendWith(MockitoExtension.class)
 class AuthApiControllerTest extends BaseJGMApiControllerTest {
 

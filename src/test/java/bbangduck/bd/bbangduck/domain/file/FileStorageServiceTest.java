@@ -16,10 +16,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("파일 저장소 Service 로직 테스트")
 class FileStorageServiceTest extends BaseJGMServiceTest {
 
     @Autowired

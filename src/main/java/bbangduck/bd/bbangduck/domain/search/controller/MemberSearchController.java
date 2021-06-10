@@ -1,14 +1,10 @@
 package bbangduck.bd.bbangduck.domain.search.controller;
 
-import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.search.dto.MemberSearchDto;
-import bbangduck.bd.bbangduck.domain.search.entity.MemberSearch;
 import bbangduck.bd.bbangduck.domain.search.entity.enumerate.MemberSearchType;
 import bbangduck.bd.bbangduck.domain.search.service.MemberSearchService;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,11 +24,9 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class MemberSearchContoller {
+public class MemberSearchController {
 
     private final MemberSearchService memberSearchService;
-
-    private final MemberSearch memberSearch;
 
     @PostMapping(value = "/")
     public ResponseEntity<String> memberSearchPost(@RequestBody @Valid MemberSearchDto memberSearchDto) {
