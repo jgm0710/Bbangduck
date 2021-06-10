@@ -34,20 +34,40 @@ public class MemberSearchDto {
 
     private String searchKeyword;
 
+
+    private LocalDate searchDate;
+
     public static MemberSearchDto of(MemberSearch memberSearch) {
         return MemberSearchDto.builder()
                 .id(memberSearch.getId())
                 .searchType(memberSearch.getSearchType())
                 .searchKeyword(memberSearch.getSearchKeyword())
                 .memberId(memberSearch.getMember().getId())
+                .searchDate(memberSearch.getSearchDate())
                 .build();
     }
 
-//    @Data
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    public static class RequestDto {
-//        private Member member
-//
-//    }
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @ToString
+    @Builder
+    public static class MemberSearchTopMonthDto {
+//        qMemberSearch.searchKeyword.count().as("count"),
+//        qMemberSearch.searchKeyword,
+//        qMemberSearch.searchType,
+//        qMemberSearch.searchDate
+        private Long count;
+
+        private String searchKeyword;
+
+        private MemberSearchType searchType;
+
+        private LocalDate searchDate;
+
+    }
+
+
+
+
 }

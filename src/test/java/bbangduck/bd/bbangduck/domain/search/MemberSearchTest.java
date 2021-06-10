@@ -10,6 +10,8 @@ import bbangduck.bd.bbangduck.domain.search.entity.MemberSearch;
 import bbangduck.bd.bbangduck.domain.search.entity.enumerate.MemberSearchType;
 import bbangduck.bd.bbangduck.domain.search.service.MemberSearchService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,8 +33,10 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
@@ -50,8 +54,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 //@RequiredArgsConstructor
 public class MemberSearchTest {
 
-//    @Autowired
-    @MockBean
+    @Autowired
+//    @MockBean
     private MemberSearchService memberSearchService;
 
 //    @Autowired
@@ -88,8 +92,6 @@ public class MemberSearchTest {
                 .build();
         this.memberRepository.save(member);
 
-        this.entityManager.flush();
-        this.entityManager.clear();
 
         MemberSearch memberSearch = MemberSearch.builder()
                 .searchTimes(LocalDateTime.now())
@@ -98,7 +100,24 @@ public class MemberSearchTest {
                 .searchDate(LocalDate.now())
                 .member(member)
                 .build();
-        this.memberSearchService.save(MemberSearchDto.of(memberSearch));
+
+        MemberSearchDto of = MemberSearchDto.of(memberSearch);
+        System.out.println("===");
+        System.out.println(of.toString());
+        System.out.println("===");
+        this.memberSearchService.save(of);
+
+        MemberSearch memberSearch1 = MemberSearch.builder()
+                .searchTimes(LocalDateTime.now())
+                .searchKeyword("빵덕 찾지말아줭")
+                .searchType(MemberSearchType.T01)
+                .searchDate(LocalDate.now().minusMonths(2))
+                .member(member)
+                .build();
+        this.memberSearchService.save(MemberSearchDto.of(memberSearch1));
+
+        this.entityManager.flush();
+        this.entityManager.clear();
 
     }
 
@@ -131,13 +150,10 @@ public class MemberSearchTest {
         searchDtos.forEach(System.out::println);
     }
 
-    @Test
+//    @Test
     public void controllerSaveTest() throws Exception {
         MemberSearchDto memberSearchDto = MemberSearchDto.builder()
                 .searchType(MemberSearchType.T01).searchKeyword("빵덕 찾아줭").memberId(1L).id(1L).build();
-
-
-
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(memberSearchDto);
@@ -151,4 +167,33 @@ public class MemberSearchTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print());
     }
+
+//    @Test
+    public void searchTopMonthListTest() {
+
+        List<MemberSearchDto> all = this.memberSearchService.findAll();
+        all.forEach(System.out::println);
+
+        System.out.println("=================================================");
+
+        List<MemberSearchDto.MemberSearchTopMonthDto> memberSearchTopMonthDtos = this.memberSearchService.searchTopMonthList();
+        memberSearchTopMonthDtos.forEach(System.out::println);
+
+        MatcherAssert.assertThat(memberSearchTopMonthDtos.size(), CoreMatchers.is(1));
+    }
+
+
+    @Test
+     public void searchMyTop10SearchLog() throws Exception {
+         String email = "otrodevym@gmail.com";
+        List<MemberSearchDto> list = this.memberSearchService.findTop10ByMemberIdAndSearchDateLessThan(email,
+                 LocalDate.now().minusMonths(1));
+
+        list.stream().forEach(System.out::println);
+     }
+
+
+//    public static void main(String[] args) {
+//        System.out.println(LocalDate.now().minusMonths(2));
+//    }
 }

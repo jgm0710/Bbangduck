@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.search.repository;
 
-import bbangduck.bd.bbangduck.domain.search.entity.MemberSearch;
+import bbangduck.bd.bbangduck.domain.search.dto.MemberSearchDto;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface MemberSearchRepositoryCustom {
 
-    List<MemberSearch> searchTopMonthList();
+    List<MemberSearchDto.MemberSearchTopMonthDto> searchTopMonthList();
 }
