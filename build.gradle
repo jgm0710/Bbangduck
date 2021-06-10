@@ -50,6 +50,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.liquibase:liquibase-core:4.3.1'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    implementation 'org.projectlombok:lombok:1.18.18'
+    implementation 'org.projectlombok:lombok:1.18.18'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation('com.h2database:h2')
@@ -88,6 +90,17 @@ dependencies {
     // 이미지 파일 크기 조정을 위한 의존성 추가
     // https://mvnrepository.com/artifact/net.coobird/thumbnailator
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
+
+
+// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+
+    /**
+     * 아래 부분에 의존성이 기존 testImplementation 'org.springframework.boot:spring-boot-starter-test'
+     * 의존성과 충돌이 나는 문제가 있는 것 같습니다. 주석 해제하셔서 검토해보시고 말씀해주세요.
+     * */
+//    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+//    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
 
 
 
@@ -140,3 +153,8 @@ compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
 //querydsl 추가 끝
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

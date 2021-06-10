@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("회원(프로필 정보) 관련 Service 로직 테스트")
 class MemberServiceTest extends BaseJGMServiceTest {
 
     @Autowired

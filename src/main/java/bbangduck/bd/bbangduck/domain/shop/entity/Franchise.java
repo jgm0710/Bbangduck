@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.shop.entity;
 
-import bbangduck.bd.bbangduck.domain.member.entity.AdminInfo;
+import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

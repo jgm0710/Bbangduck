@@ -1,4 +1,6 @@
 spring:
+#  profiles:
+#    active: test
   datasource:
     username: sa
     password:
@@ -7,8 +9,8 @@ spring:
     hikari:
       jdbc-url: jdbc:h2:mem:testdb
 
-  jpa:
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate.dialect: org.hibernate.dialect.H2Dialect
+#  jpa:
+#    properties:
+#      hibernate.dialect: org.hibernate.dialect.H2Dialect
+#    hibernate:
+#      ddl-auto: validate

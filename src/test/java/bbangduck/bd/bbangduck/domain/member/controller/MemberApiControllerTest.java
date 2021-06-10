@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("회원(프로필 관리) 관련 API Controller 테스트")
 class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     @Test
