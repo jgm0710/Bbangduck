@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("파일 저장소 API Controller 테스트")
 @ExtendWith(MockitoExtension.class)
 class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
 
