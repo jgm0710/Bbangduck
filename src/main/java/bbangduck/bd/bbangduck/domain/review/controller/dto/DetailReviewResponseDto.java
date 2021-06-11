@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * 리뷰 조회 시 해당 리뷰가 상세 리뷰일 경우 해당 Dto 를 통해서 Data 응답
  */
 @EqualsAndHashCode(callSuper = true)
@@ -23,12 +23,12 @@ public class DetailReviewResponseDto extends SimpleReviewResponseDto {
 
     private String comment;
 
-    public static DetailReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike) {
-        return new DetailReviewResponseDto(review, currentMember, existReviewLike);
+    public static DetailReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
+        return new DetailReviewResponseDto(review, currentMember, existReviewLike, periodForAddingSurveys);
     }
 
-    protected DetailReviewResponseDto(Review review, Member currentMember, boolean existReviewLike) {
-        super(review, currentMember, existReviewLike);
+    protected DetailReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
+        super(review, currentMember, existReviewLike, periodForAddingSurveys);
 
         this.reviewImages = convertReviewImages(review.getReviewImages());
         this.comment = review.getComment();

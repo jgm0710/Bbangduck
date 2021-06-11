@@ -13,6 +13,7 @@ import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
+import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,8 @@ public class ReviewApiController {
 
     private final ReviewValidator reviewValidator;
 
-    // TODO: 2021-06-08 리뷰 1건 조회 로직 수정, 리뷰 구분이 바뀜
+    private final ReviewProperties reviewProperties;
+
     @GetMapping
     public ResponseEntity<ResponseDto<ReviewResponseDto>> getReview(
             @PathVariable Long reviewId,
@@ -52,7 +54,7 @@ public class ReviewApiController {
         Review findReview = reviewService.getReview(reviewId);
         boolean existsReviewLike = getExistsReviewLike(reviewId, currentMember);
 
-        ReviewResponseDto reviewResponseDto = convertReviewToResponseDto(findReview, currentMember, existsReviewLike);
+        ReviewResponseDto reviewResponseDto = convertReviewToResponseDto(findReview, currentMember, existsReviewLike, reviewProperties.getPeriodForAddingSurveys());
 
         return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_REVIEW_SUCCESS, reviewResponseDto));
     }

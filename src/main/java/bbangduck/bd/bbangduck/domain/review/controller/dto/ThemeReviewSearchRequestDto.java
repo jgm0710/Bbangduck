@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 /**
  * 작성자 : 정구민 <br><br>
  * <p>
@@ -16,8 +19,11 @@ import lombok.Data;
 @AllArgsConstructor
 public class ThemeReviewSearchRequestDto {
 
+    @Min(value = 1, message = "페이지 번호는 1보다 작을 수 없습니다.")
     private Integer pageNum;
 
+    @Min(value = 1, message = "한 번에 조회할 수 있는 수량은 1 개 보다 작을 수 없습니다.")
+    @Max(value = 200, message = "한 번에 조회할 수 있는 수량은 200 개 보다 많을 수 없습니다.")
     private Integer amount;
 
     private ReviewSortCondition sortCondition;

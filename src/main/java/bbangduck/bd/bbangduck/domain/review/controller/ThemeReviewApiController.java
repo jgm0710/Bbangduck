@@ -12,10 +12,13 @@ import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewPaginationResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
+import bbangduck.bd.bbangduck.global.common.ThrowUtils;
+import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +47,8 @@ public class ThemeReviewApiController {
 
     private final ReviewLikeService reviewLikeService;
 
+    private final ReviewProperties reviewProperties;
+
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> createReview(
@@ -68,9 +73,11 @@ public class ThemeReviewApiController {
     @GetMapping
     public ResponseEntity<ResponseDto<ReviewPaginationResponseDto<Object>>> getReviewList(
             @PathVariable Long themeId,
-            @ModelAttribute ThemeReviewSearchRequestDto requestDto,
+            @ModelAttribute @Valid ThemeReviewSearchRequestDto requestDto,
+            BindingResult bindingResult,
             @CurrentUser Member currentMember
     ) {
+        ThrowUtils.hasErrorsThrow(ResponseStatus.GET_REVIEW_LIST_NOT_VALID, bindingResult);
         ReviewSearchDto reviewSearchDto = requestDto.toServiceDto();
 
         QueryResults<Review> reviewQueryResults = reviewService.getThemeReviewList(themeId, reviewSearchDto);
@@ -79,7 +86,7 @@ public class ThemeReviewApiController {
 
         List<ReviewResponseDto> reviewResponseDtos = findReviews.stream().map(review -> {
             boolean existsReviewLike = getExistsReviewLike(review.getId(), currentMember);
-            return convertReviewToResponseDto(review, currentMember, existsReviewLike);
+            return convertReviewToResponseDto(review, currentMember, existsReviewLike, reviewProperties.getPeriodForAddingSurveys());
         }).collect(Collectors.toList());
 
         long totalPagesCount = calculateTotalPagesCount(totalResultsCount, reviewSearchDto.getAmount());

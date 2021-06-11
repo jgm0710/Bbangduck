@@ -7,19 +7,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * 리뷰 조회 시 해당 리뷰가 간단 리뷰일 경우 해당 Dto 를 동해서 Data 응답
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SimpleReviewResponseDto implements ReviewResponseDto{
+public class SimpleReviewResponseDto implements ReviewResponseDto {
 
     private Long reviewId;
 
@@ -47,12 +48,20 @@ public class SimpleReviewResponseDto implements ReviewResponseDto{
 
     private boolean like;
 
+    private boolean possibleRegisterForSurveyYN;
 
-    public static SimpleReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike) {
-        return new SimpleReviewResponseDto(review, currentMember, existReviewLike);
+    protected boolean surveyYN;
+
+    private LocalDateTime registerTimes;
+
+    private LocalDateTime updateTimes;
+
+
+    public static SimpleReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
+        return new SimpleReviewResponseDto(review, currentMember, existReviewLike, periodForAddingSurveys);
     }
 
-    protected SimpleReviewResponseDto(Review review,Member currentMember, boolean existReviewLike) {
+    protected SimpleReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
         this.reviewId = review.getId();
         this.writerInfo = ReviewMemberSimpleInfoResponseDto.convert(review.getMember());
         this.themeInfo = ReviewThemeSimpleInfoResponseDto.convert(review.getTheme());
@@ -66,13 +75,22 @@ public class SimpleReviewResponseDto implements ReviewResponseDto{
         this.likeCount = review.getLikeCount();
         this.myReview = review.isMyReview(currentMember);
         this.like = existReviewLike;
+        this.possibleRegisterForSurveyYN = calculatePossibleRegisterForSurveyYN(review.getRegisterTimes(), periodForAddingSurveys);
+        this.surveyYN = false;
+        this.registerTimes = review.getRegisterTimes();
+        this.updateTimes = review.getUpdateTimes();
+    }
+
+    private boolean calculatePossibleRegisterForSurveyYN(LocalDateTime registerTimes, long periodForAddingSurveys) {
+        LocalDateTime registerSurveyPeriodExpirationDateTime = LocalDateTime.now().minusDays(periodForAddingSurveys);
+        return registerTimes.isAfter(registerSurveyPeriodExpirationDateTime);
     }
 
     private List<ReviewMemberSimpleInfoResponseDto> convertReviewPlayTogetherFriends(List<Member> playTogetherMembers) {
         if (playTogetherMembersExists(playTogetherMembers)) {
             return playTogetherMembers.stream()
-                        .map(ReviewMemberSimpleInfoResponseDto::convert)
-                        .collect(Collectors.toList());
+                    .map(ReviewMemberSimpleInfoResponseDto::convert)
+                    .collect(Collectors.toList());
         }
         return null;
     }

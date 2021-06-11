@@ -7,6 +7,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
@@ -834,8 +835,11 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         requestParameters(
-                                parameterWithName("pageNum").description("조회할 페이지 기입"),
-                                parameterWithName("amount").description("조회할 수량 기입"),
+                                parameterWithName("pageNum").description("조회할 페이지 기입 +\n" +
+                                        "1 보다 작은 페이지는 조회할 수 없습니다."),
+                                parameterWithName("amount").description("조회할 수량 기입 +\n" +
+                                        "한 번에 조회 가능한 수량은 1~200 개 입니다. +\n" +
+                                        "해당 수량은 추후 변경 될 수 있습니다."),
                                 parameterWithName("sortCondition").description("조회 시 정렬 조건 기입 +\n" +
                                         ReviewSortCondition.getNameList())
                         ),
@@ -853,6 +857,129 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("리뷰 목록 조회 - 페이지 번호를 1보다 작게 기입한 경우")
+    public void getReviewList_PageNum_LT_1() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        memberSocialSignUpRequestDto.setEmail("member1@emailcom");
+        memberSocialSignUpRequestDto.setNickname("member1");
+        memberSocialSignUpRequestDto.setSocialId("3311022333");
+
+        Long member1Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+
+        Theme theme = createTheme();
+
+
+        TokenDto tokenDto = authenticationService.signIn(member1Id);
+
+        //when
+        System.out.println("====================================================================================================================================================================================");
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/" + theme.getId() + "/reviews")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .param("pageNum", "-1")
+                        .param("amount", "4")
+                        .param("sortCondition", "LIKE_COUNT_DESC")
+        ).andDo(print());
+        System.out.println("====================================================================================================================================================================================");
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getMessage()))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("리뷰 목록 조회 - 페이징 수량을 1보다 작게 기입한 경우")
+    public void getReviewList_Amount_LT_1() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        memberSocialSignUpRequestDto.setEmail("member1@emailcom");
+        memberSocialSignUpRequestDto.setNickname("member1");
+        memberSocialSignUpRequestDto.setSocialId("3311022333");
+
+        Long member1Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+
+        Theme theme = createTheme();
+
+
+        TokenDto tokenDto = authenticationService.signIn(member1Id);
+
+        //when
+        System.out.println("====================================================================================================================================================================================");
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/" + theme.getId() + "/reviews")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .param("pageNum", "1")
+                        .param("amount", "-1")
+                        .param("sortCondition", "LIKE_COUNT_DESC")
+        ).andDo(print());
+        System.out.println("====================================================================================================================================================================================");
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getMessage()))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("리뷰 목록 조회 시 - 페이징 수량을 200보다 크게 기입한 경우")
+    public void getReviewList_Amount_GT_200() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        memberSocialSignUpRequestDto.setEmail("member1@emailcom");
+        memberSocialSignUpRequestDto.setNickname("member1");
+        memberSocialSignUpRequestDto.setSocialId("3311022333");
+
+        Long member1Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+
+        Theme theme = createTheme();
+
+
+        TokenDto tokenDto = authenticationService.signIn(member1Id);
+
+        //when
+        System.out.println("====================================================================================================================================================================================");
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/" + theme.getId() + "/reviews")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .param("pageNum", "1")
+                        .param("amount", "201")
+                        .param("sortCondition", "LIKE_COUNT_DESC")
+        ).andDo(print());
+        System.out.println("====================================================================================================================================================================================");
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getMessage()))
         ;
 
     }
@@ -1131,5 +1258,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         reviewRepository.save(member1DetailReview2);
         reviewRepository.save(member2DetailReview2);
         reviewRepository.save(member3DetailReview2);
+
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(createGenreCodes());
+        reviewService.addSurveyToReview(member3SimpleReview1.getId(), reviewSurveyCreateRequestDto.toServiceDto());
+        reviewService.addSurveyToReview(member2SimpleReview2.getId(), reviewSurveyCreateRequestDto.toServiceDto());
+        reviewService.addSurveyToReview(member1DetailReview1.getId(), reviewSurveyCreateRequestDto.toServiceDto());
+        reviewService.addSurveyToReview(member3DetailReview1.getId(), reviewSurveyCreateRequestDto.toServiceDto());
+        reviewService.addSurveyToReview(member3DetailReview2.getId(), reviewSurveyCreateRequestDto.toServiceDto());
     }
 }
