@@ -19,7 +19,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ShopEventRepositoryimpl implements ShopEventRepositoryCustom{
+public class ShopEventRepositoryImpl implements ShopEventRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 

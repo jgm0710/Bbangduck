@@ -29,8 +29,10 @@ public class ShopEvent {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @Setter
     private LocalDateTime startTimes;
 
+    @Setter
     private LocalDateTime endTimes;
 
     public static ShopEvent toEntity(ShopEventDto shopEventDto, Board board, Shop shop) {

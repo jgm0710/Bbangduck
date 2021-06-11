@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ShopRepositoryCustom {
-    List<Shop> search(Shop shop);
-
-    Page<Shop> searchPage(Shop shop, Pageable pageable);
+//    List<Shop> search(Shop shop);
+//
+//    Page<Shop> searchPage(Shop shop, Pageable pageable);
 }

@@ -34,6 +34,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @SpringBootTest
@@ -74,6 +75,7 @@ public class EventTestContoller {
     private FranchiseRepository franchiseRepository;
 
 
+
     @BeforeEach
     public void setup() {
         member1 = Member.builder()
@@ -106,7 +108,7 @@ public class EventTestContoller {
     }
 
 
-    @Test
+//    @Test
     public void eventSaveTest() {
         Board board = Board.builder()
                 .adminInfo(adminInfoSave1)
@@ -193,4 +195,40 @@ public class EventTestContoller {
 
 
     }
+
+
+
+    @Test
+    public void shopEventUpdateTest() {
+        eventSaveTest();
+        List<ShopEvent> shopEventRepositoryAll = this.shopEventRepository.findAll();
+
+
+
+        ShopEvent oldShopEvent = Optional.of(shopEventRepositoryAll.get(0)).get();
+
+        ShopEvent newShopEvent = ShopEvent.builder()
+                .endTimes(LocalDateTime.now())
+                .startTimes(LocalDateTime.now().plusDays(10))
+                .build();
+
+
+        System.out.println("=======================");
+        System.out.println("old : " + oldShopEvent.toString());
+        System.out.println("=======================");
+        System.out.println("new : " + newShopEvent.toString());
+        System.out.println("=======================");
+
+
+        Optional<ShopEvent> update = this.eventService.update(oldShopEvent.getId(), newShopEvent);
+
+        ShopEvent shopEvent = this.shopEventRepository.findById(oldShopEvent.getId()).orElseThrow();
+        System.out.println(shopEvent.toString());
+
+        MatcherAssert.assertThat(oldShopEvent.getStartTimes(),
+                CoreMatchers.not(CoreMatchers.is(shopEvent.getStartTimes())));
+
+    }
+
+
 }
