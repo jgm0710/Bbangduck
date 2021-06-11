@@ -99,6 +99,7 @@ public enum ResponseStatus {
     GET_REVIEW_LIST_SUCCESS(4205, "리뷰 목록 조회에 성공했습니다.", "리뷰 목록 조회에 성공한 경우"),
     UPDATE_REVIEW_SUCCESS(4206, "리뷰 수정에 성공했습니다.", "리뷰 수정에 성공한 경우"),
     ADD_SURVEY_TO_REVIEW_SUCCESS(4207, "리뷰에 설문 등록 요청을 성공했습니다.", "리뷰에 테마에 관한 설문 정보 등록을 성공한 경우"),
+    UPDATE_SURVEY_FROM_REVIEW_SUCCESS(4208, "리뷰에 등록된 설문 수정 요청에 성공했습니다.", "리뷰에 등록된 설문 수정 요청을 성공한 경우"),
 
     CREATE_REVIEW_NOT_VALID(4401, "리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰 생성 요청 시 공통적으로 필요한 필수 기입 사항을 올바르게 기입하지 않은 경우"),
     CREATE_SIMPLE_REVIEW_NOT_VALID(4402, "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),
@@ -107,6 +108,10 @@ public enum ResponseStatus {
     ADD_SURVEY_TO_REVIEW_NOT_VALID(4406, "리뷰에 설문 추가 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 설문 추가 시 기입 사항을 올바르게 기입하지 않은 경우"),
     EXPIRATION_OF_REVIEW_SURVEY_ADD_PERIOD_EXCEPTION(4407, "리뷰 설문 조사 등록 가능 기간이 만료되었습니다.", "리뷰에 설문 조사 등록 시 등록 가능 기간을 지난 경우"),
     ADD_SURVEYS_TO_REVIEWS_CREATED_BY_OTHER_MEMBERS(4408, "다른 회원이 생성한 리뷰에는 설문을 추가할 수 없습니다.", "다른 회원이 생성한 리뷰에 설문을 추가하는 경우"),
+    UPDATE_SURVEY_FROM_REVIEW_NOT_VALID(4409, "리뷰에 등록된 설문 수정 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 등록된 설문 수정 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    UPDATE_SURVEY_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS(4410, "다른 회원이 생성한 리뷰의 설문은 수정할 수 없습니다.", "다른 회원이 생성한 리뷰의 설문을 수정하는 경우"),
+    NO_GENRE_TO_REGISTER_FOR_REVIEW_SURVEY(4411, "리뷰 설문에 등록할 장르를 반드시 기입해야 합니다.", "리뷰에 설문 등록, 수정 시 장르를 등록해야 하는데, 장르 코드를 기입하지 않은 경우"),
+    REVIEW_HAS_NOT_SURVEY(4412, "리뷰에 설문이 등록되어 있지 않으므로, 설문을 수정할 수 없습니다.", "리뷰 설문 수정 요청 시 리뷰에 설문이 등록되어 있지 않을 경우"),
 
     EXISTS_REVIEW_LIKE(4431, "해당 리뷰에 이미 좋아요가 등록되어 있습니다.", "리뷰에 좋아요 등록 시 이미 좋아요를 등록한 리뷰인 경우"),
     ADD_LIKE_TO_MY_REVIEW(4432, "본인이 생성한 리뷰에는 좋아요를 등록할 수 없습니다.", "자신이 생성한 리뷰에 좋아요를 등록하는 경우"),

@@ -12,6 +12,7 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
@@ -32,8 +33,7 @@ import java.util.stream.Stream;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -338,7 +338,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-06-08 문서화
     @Test
     @DisplayName("리뷰에 설문 등록")
     public void addSurveyToReview() throws Exception {
@@ -380,7 +379,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform
-                .andExpect(status().isNoContent())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("status").value(ResponseStatus.ADD_SURVEY_TO_REVIEW_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.ADD_SURVEY_TO_REVIEW_SUCCESS.getMessage()))
@@ -415,7 +414,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-06-09 문서화 꼭
     @Test
     @DisplayName("리뷰에 설문 등록 - 등록되는 체감 테마 장르의 개수가 제한된 개수보다 많을 경우")
     public void addSurveyToReview_OverPerceivedThemeGenresCount() throws Exception {
@@ -580,7 +578,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-06-08 문서화
     @ParameterizedTest
     @MethodSource("provideReviewSurveyCreateRequestDtoForAddReviewSurveyValidation")
     @DisplayName("리뷰에 설문 등록 - validation 검증")
@@ -853,5 +850,518 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.FORBIDDEN.getMessage()));
 
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정")
+    public void updateSurveyFromReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "ADVT1");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_SUCCESS.getMessage()))
+                .andDo(document(
+                        "update-survey-from-review-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정")
+                        ),
+                        requestFields(
+                                fieldWithPath("genreCodes").description("수정할 설문에 등록할 장르 코드 목록 기입"),
+                                fieldWithPath("perceivedDifficulty").description("수정할 설문에 등록할 체감 난이도 기입"),
+                                fieldWithPath("perceivedHorrorGrade").description("수정할 설문에 등록할 체감 공포도 기입"),
+                                fieldWithPath("perceivedActivity").description("수정할 설문에 등록할 체감 활동성 기입"),
+                                fieldWithPath("scenarioSatisfaction").description("수정할 설문에 등록할 시나리오 만족도 기입"),
+                                fieldWithPath("interiorSatisfaction").description("수정할 설문에 등록할 체감 인테리어 만족도 기입"),
+                                fieldWithPath("problemConfigurationSatisfaction").description("수정할 설문에 등록할 문제 구성 만족도 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideReviewSurveyUpdateRequestDtoForUpdateSurveyFromReviewValidation")
+    @DisplayName("리뷰에 등록된 설문 수정 - 기본 validation 기입 문제")
+    public void updateSurveyFromReview_NotValid(ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto) throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "ADVT1");
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID.getMessage()))
+                .andDo(document(
+                        "update-survey-from-review-not-valid",
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
+                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
+                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
+                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    private static Stream<Arguments> provideReviewSurveyUpdateRequestDtoForUpdateSurveyFromReviewValidation() {
+        List<String> genreCodes = List.of("RSN1");
+
+        return Stream.of(
+                Arguments.of(ReviewSurveyUpdateRequestDto.builder()
+                        .genreCodes(null)
+                        .perceivedDifficulty(Difficulty.EASY)
+                        .perceivedHorrorGrade(HorrorGrade.NORMAL)
+                        .perceivedActivity(Activity.NORMAL)
+                        .scenarioSatisfaction(Satisfaction.GOOD)
+                        .interiorSatisfaction(Satisfaction.VERY_BAD)
+                        .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
+                        .build()),
+                Arguments.of(ReviewSurveyUpdateRequestDto.builder()
+                        .genreCodes(genreCodes)
+                        .perceivedDifficulty(null)
+                        .perceivedHorrorGrade(HorrorGrade.NORMAL)
+                        .perceivedActivity(Activity.NORMAL)
+                        .scenarioSatisfaction(Satisfaction.GOOD)
+                        .interiorSatisfaction(Satisfaction.VERY_BAD)
+                        .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
+                        .build()),
+                Arguments.of(ReviewSurveyUpdateRequestDto.builder()
+                        .genreCodes(genreCodes)
+                        .perceivedDifficulty(Difficulty.EASY)
+                        .perceivedHorrorGrade(null)
+                        .perceivedActivity(Activity.NORMAL)
+                        .scenarioSatisfaction(Satisfaction.GOOD)
+                        .interiorSatisfaction(Satisfaction.VERY_BAD)
+                        .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
+                        .build()),
+                Arguments.of(ReviewSurveyUpdateRequestDto.builder()
+                        .genreCodes(genreCodes)
+                        .perceivedDifficulty(Difficulty.EASY)
+                        .perceivedHorrorGrade(HorrorGrade.NORMAL)
+                        .perceivedActivity(null)
+                        .scenarioSatisfaction(Satisfaction.GOOD)
+                        .interiorSatisfaction(Satisfaction.VERY_BAD)
+                        .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
+                        .build()),
+                Arguments.of(ReviewSurveyUpdateRequestDto.builder()
+                        .genreCodes(genreCodes)
+                        .perceivedDifficulty(Difficulty.EASY)
+                        .perceivedHorrorGrade(HorrorGrade.NORMAL)
+                        .perceivedActivity(Activity.NORMAL)
+                        .scenarioSatisfaction(null)
+                        .interiorSatisfaction(Satisfaction.VERY_BAD)
+                        .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
+                        .build()),
+                Arguments.of(ReviewSurveyUpdateRequestDto.builder()
+                        .genreCodes(genreCodes)
+                        .perceivedDifficulty(Difficulty.EASY)
+                        .perceivedHorrorGrade(HorrorGrade.NORMAL)
+                        .perceivedActivity(Activity.NORMAL)
+                        .scenarioSatisfaction(Satisfaction.GOOD)
+                        .interiorSatisfaction(null)
+                        .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
+                        .build()),
+                Arguments.of(ReviewSurveyUpdateRequestDto.builder()
+                        .genreCodes(genreCodes)
+                        .perceivedDifficulty(Difficulty.EASY)
+                        .perceivedHorrorGrade(HorrorGrade.NORMAL)
+                        .perceivedActivity(Activity.NORMAL)
+                        .scenarioSatisfaction(Satisfaction.GOOD)
+                        .interiorSatisfaction(Satisfaction.VERY_BAD)
+                        .problemConfigurationSatisfaction(null)
+                        .build())
+
+        );
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 장르 코드를 5개보다 많이 기입한 경우")
+    public void updateSurveyFromReview_OverPerceivedThemeGenresCount() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = new ArrayList<>();
+        int perceivedThemeGenresCountLimit = reviewProperties.getPerceivedThemeGenresCountLimit();
+        for (int i = 0; i < perceivedThemeGenresCountLimit + 2; i++) {
+            newGenreCodes.add("" + i);
+        }
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID.getMessage()))
+                .andDo(document(
+                        "update-survey-from-review-over-perceived-theme-genres-count",
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
+                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
+                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
+                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 다른 회원이 생성한 리뷰의 설문을 수정하는 경우")
+    public void updateSurveyFromReview_ReviewCreatedByOtherMembers() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "ADVT1");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        memberSocialSignUpRequestDto.setEmail("member2@email.com");
+        memberSocialSignUpRequestDto.setNickname("member2");
+        memberSocialSignUpRequestDto.setSocialId("339217839127");
+        Long member2Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(member2Id);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 리뷰를 찾을 수 없는 경우")
+    public void updateSurveyFromReview_ReviewNotFound() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "ADVT1");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + 10000000L + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("status").value(ResponseStatus.REVIEW_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.REVIEW_NOT_FOUND.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 장르를 찾을 수 없는 경우")
+    public void updateSurveyFromReview_GenreNotFound() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("AMGN1", "AMGN2");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("status").value(ResponseStatus.GENRE_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(new GenreNotFoundException("AMGN1").getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 인증되지 않은 사용자가 리소스 접근")
+    public void updateSurveyFromReview_Unauthorized() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "ADVT1");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 탈퇴한 사용자가 리소스 접근")
+    public void updateSurveyFromReview_Forbidden() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "ADVT1");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        authenticationService.withdrawal(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.FORBIDDEN.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.FORBIDDEN.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 리뷰에 설문이 등록되어 있지 않은 경우")
+    public void updateSurveyFromReview_ReviewHasNotSurvey() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createTheme();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+//        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "ADVT1");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.REVIEW_HAS_NOT_SURVEY.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.REVIEW_HAS_NOT_SURVEY.getMessage()));
     }
 }

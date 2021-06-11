@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
@@ -94,6 +95,7 @@ public class ReviewValidator {
         List<String> genreCodes = requestDto.getGenreCodes();
         int perceivedThemeGenresCountLimit = reviewProperties.getPerceivedThemeGenresCountLimit();
         checkPerceivedThemeGenresCount(genreCodes, perceivedThemeGenresCountLimit, errors);
+        hasErrorsThrow(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID, errors);
     }
 
     private void checkPerceivedThemeGenresCount(List<String> genreCodes, int perceivedThemeGenresCountLimit, Errors errors) {
@@ -104,7 +106,15 @@ public class ReviewValidator {
         if (genreCodes.size() > perceivedThemeGenresCountLimit) {
             errors.rejectValue("genreCodes", "ExceededDataCount", "리뷰 설문에 등록할 체감 장르의 개수가 제한된 개수보다 많습니다. 체감 테마 장르 등록 가능 개수 : " + perceivedThemeGenresCountLimit);
         }
-        hasErrorsThrow(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID, errors);
+    }
+
+    public void validateUpdateSurveyFromReview(ReviewSurveyUpdateRequestDto requestDto, Errors errors) {
+        hasErrorsThrow(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID, errors);
+
+        List<String> genreCodes = requestDto.getGenreCodes();
+        int perceivedThemeGenresCountLimit = reviewProperties.getPerceivedThemeGenresCountLimit();
+        checkPerceivedThemeGenresCount(genreCodes, perceivedThemeGenresCountLimit, errors);
+        hasErrorsThrow(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID, errors);
     }
 }
 

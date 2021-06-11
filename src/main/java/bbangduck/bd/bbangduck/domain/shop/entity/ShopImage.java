@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-// TODO: 2021-05-25 clear
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShopImage extends BaseEntityDateTime {

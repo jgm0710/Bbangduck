@@ -16,12 +16,16 @@ import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.exception.ExpirationOfReviewSurveyAddPeriodException;
+import bbangduck.bd.bbangduck.domain.review.exception.NoGenreToRegisterForReviewSurveyException;
+import bbangduck.bd.bbangduck.domain.review.exception.ReviewHasNotSurveyException;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewNotFoundException;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewPerceivedThemeGenreRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyCreateDto;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyUpdateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
@@ -36,6 +40,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -64,6 +69,8 @@ public class ReviewService {
     private final GenreRepository genreRepository;
 
     private final ReviewProperties reviewProperties;
+
+    private final ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
 
     @Transactional
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
@@ -141,11 +148,36 @@ public class ReviewService {
     }
 
     private void addPerceivedGenresToReviewSurvey(ReviewSurvey reviewSurvey, List<String> genreCodes) {
-        if (existsList(genreCodes)) {
-            genreCodes.forEach(genreCode -> {
-                Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
-                reviewSurvey.addPerceivedThemeGenre(genre);
-            });
+        checkIfGenreCodeExists(genreCodes);
+        genreCodes.forEach(genreCode -> {
+            Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
+            reviewSurvey.addPerceivedThemeGenre(genre);
+        });
+    }
+
+    private void checkIfGenreCodeExists(List<String> genreCodes) {
+        if (!existsList(genreCodes)) {
+            throw new NoGenreToRegisterForReviewSurveyException();
         }
+    }
+
+    @Transactional
+    public void updateSurveyFromReview(Long reviewId, ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
+        Review review = getReview(reviewId);
+
+        if (!isNotNull(review.getReviewSurvey())) {
+            throw new ReviewHasNotSurveyException();
+        }
+
+        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
+
+        review.updateSurvey(reviewSurveyUpdateDto);
+        updatePerceivedGenresFromReviewSurvey(review.getReviewSurvey(), reviewSurveyUpdateDto.getGenreCodes());
+    }
+
+    private void updatePerceivedGenresFromReviewSurvey(ReviewSurvey reviewSurvey, List<String> genreCodes) {
+        checkIfGenreCodeExists(genreCodes);
+        reviewPerceivedThemeGenreRepository.deleteByReviewSurvey(reviewSurvey);
+        addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
     }
 }

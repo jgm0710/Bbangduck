@@ -3,11 +3,11 @@ package bbangduck.bd.bbangduck.domain.shop.entity;
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-// TODO: 2021-05-25 완료
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Franchise extends BaseEntityDateTime {
@@ -17,7 +17,6 @@ public class Franchise extends BaseEntityDateTime {
     @Column(name = "franchise_id")
     private Long id;
 
-    // TODO: 2021-05-24 admin 추가
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     private AdminInfo adminInfo;
@@ -33,4 +32,13 @@ public class Franchise extends BaseEntityDateTime {
     @Column(name = "delete_yn")
     private boolean deleteYN;
 
+    @Builder
+    public Franchise(Long id, AdminInfo adminInfo, String name, String owner, String ownerTelephone, boolean deleteYN) {
+        this.id = id;
+        this.adminInfo = adminInfo;
+        this.name = name;
+        this.owner = owner;
+        this.ownerTelephone = ownerTelephone;
+        this.deleteYN = deleteYN;
+    }
 }

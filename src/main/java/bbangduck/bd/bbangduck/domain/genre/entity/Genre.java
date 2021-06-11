@@ -40,4 +40,15 @@ public class Genre extends BaseEntityDateTime {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "Genre{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", registerTimes=" + registerTimes +
+                ", updateTimes=" + updateTimes +
+                '}';
+    }
 }

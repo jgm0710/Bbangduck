@@ -5,6 +5,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyUpdateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
@@ -196,12 +197,6 @@ public class Review extends BaseEntityDateTime {
         return likeCount;
     }
 
-    // TODO: 2021-06-07 구현
-    public List<Genre> getPerceivedThemeGenres() {
-//        return this.perceivedThemeGenres.stream().map(ReviewPerceivedThemeGenre::getGenre).collect(Collectors.toList());
-        return null;
-    }
-
     public void increaseLikeCount() {
         this.likeCount++;
     }
@@ -219,4 +214,7 @@ public class Review extends BaseEntityDateTime {
         return reviewSurvey;
     }
 
+    public void updateSurvey(ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
+        this.reviewSurvey.update(reviewSurveyUpdateDto);
+    }
 }

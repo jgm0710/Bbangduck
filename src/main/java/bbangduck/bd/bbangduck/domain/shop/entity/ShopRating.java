@@ -8,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-// TODO: 2021-05-25 clear
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ShopRating {

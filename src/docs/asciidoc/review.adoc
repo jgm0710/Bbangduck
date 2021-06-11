@@ -18,13 +18,13 @@
 |===
 | 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
 
-| <<resources-create-review>> / <<resources-add-survey-to-review>>
+| <<resources-create-review>> / <<resources-add-survey-to-review>> / <<resources-update-survey-from-review>>
 | 인증되지 않은 사용자가 리소스에 접근하는 경우
 | 401
 | 1401
 | 인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.
 
-| <<resources-create-review>> / <<resources-add-survey-to-review>>
+| <<resources-create-review>> / <<resources-add-survey-to-review>> / <<resources-update-survey-from-review>>
 | 탈퇴하거나 활동이 정지된 회원이 리소스에 접근하는 경우
 | 403
 | 1403
@@ -84,6 +84,36 @@
 | 4408
 | 다른 회원이 생성한 리뷰에는 설문을 추가할 수 없습니다.
 
+| <<resources-update-survey-from-review-not-valid>>
+| 리뷰에 등록된 설문 수정 시 입력 규칙을 지키지 않은 경우
+| 400
+| 4409
+| 리뷰에 등록된 설문 수정 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-update-survey-from-review>>
+| 다른 회원이 생성한 리뷰에 등록된 설문을 수정하는 경우
+| 403
+| 4410
+| 다른 회원이 생성한 리뷰의 설문은 수정할 수 없습니다.
+
+| <<resources-update-survey-from-review>>
+| 리뷰를 찾을 수 없는 경우
+| 404
+| 4405
+| 해당 리뷰가 존재하지 않습니다.
+
+| <<resources-update-survey-from-review>>
+| 등록할 장르를 찾을 수 없는 경우
+| 404
+| 6401
+| 해당 장르가 존재하지 않습니다.
+
+| <<resources-update-survey-from-review>>
+| 리뷰에 설문이 등록되어 있지 않았을 경우
+| 400
+| 4412
+| 리뷰에 설문이 등록되어 있지 않으므로, 설문을 수정할 수 없습니다.
+
 | <<resources-get-an-review>>
 | 리뷰 조회 시 리뷰를 찾을 수 없는 경우
 | 404
@@ -122,6 +152,9 @@
 
 2021-06-10:::
 * <<resources-add-survey-to-review>> 기능 구현
+
+2021-06-11:::
+* <<resources-update-survey-from-review>> 기능 구현
 
 [[resources-review]]
 = 리뷰 관련 리소스
@@ -275,6 +308,58 @@ operation::add-survey-to-review-over-perceived-theme-genres-count[snippets='resp
 * 해당 기간은 추후 변동될 수 있습니다.
 
 operation::add-survey-to-review-period-expiration[snippets='response-fields,curl-request,http-response']
+
+[[resources-update-survey-from-review]]
+== 리뷰에 등록된 설문 수정
+
+* `PUT` `/api/reviews/{reviewId}/surveys`
+
+* 리뷰에 등록된 설문의 내용을 수정합니다.
+
+* 인증된 회원만 해당 리소스에 접근이 가능하고, 다른 회원이 생성한 리뷰에 등록된 설문은 수정할 수 없습니다.
+
+* 설문 수정 시 등록하는 체감 테마 장르는 제한된 개수 만큼만 기입할 수 있습니다.
+
+* 설문 수정은 리뷰를 생성한 지 7일 이내에만 가능합니다.
+** 해당 기간은 추후 변경될 수 있습니다.
+
+* 리뷰에 설문이 등록되어 있지 않았을 경우 요청은 실패합니다.
+
+[[resources-update-survey-from-review-success]]
+=== 리뷰에 등록된 설문 수정 성공
+
+* 응답 HttpStatus : `204 No Content`
+
+* 별도의 응답 Data 는 없습니다.
+
+operation::update-survey-from-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-update-survey-from-review-not-valid]]
+=== 리뷰에 등록된 설문 수정 - 입력 규칙을 지키지 않은 경우
+
+* 응답 HttpStatus : `400 Bad Request`
+
+* 리뷰에 등록된 설문 수정 시 기입해야하는 값을 기입하지 않았거나, 장르 코드를 제한된 개수보다 많이 기입하는 경우 요청에 실패합니다.
+
+operation::update-survey-from-review-not-valid[snippets='response-fields,curl-request,http-response']
+
+[[resources-update-survey-from-review-over-perceived-theme-genres-count]]
+=== 리뷰에 등록된 설문 수정 - 체감 테마 장르의 수를 제한된 개수보다 많이 기입한 경우
+
+* 응답 HttpStatus : `400 Bad Request`
+
+* 설문 수정 시 체감 테마 장르를 정해진 개수보다 많이 기입할 경우 요청에 실패합니다.
+
+operation::update-survey-from-review-over-perceived-theme-genres-count[snippets='response-fields,curl-request,http-response']
+
+[[resources-update-survey-from-review-period-expiration]]
+=== 리뷰에 등록된 설문 수정 - 설문 수정 가능 기간이 만료된 경우
+
+* 응답 HttpStatus : `409 Conflict`
+
+* 설문 수정은 리뷰를 생성한 지 7일 이내에만 가능합니다.
+
+operation::update-survey-from-review-period-expiration[snippets='response-fields,curl-request,http-response']
 
 
 [[resources-get-an-review]]

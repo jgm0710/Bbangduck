@@ -44,8 +44,6 @@ public class ThemeReviewApiController {
 
     private final ReviewLikeService reviewLikeService;
 
-    // TODO: 2021-06-07 리뷰 생성 로직 변경
-    // TODO: 2021-06-09 friendIds 5개 이상일 경우 validation 에러 발생
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> createReview(

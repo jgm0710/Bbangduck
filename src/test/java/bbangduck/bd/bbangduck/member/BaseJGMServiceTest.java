@@ -1,6 +1,8 @@
 package bbangduck.bd.bbangduck.member;
 
 import bbangduck.bd.bbangduck.common.BaseTest;
+import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
+import bbangduck.bd.bbangduck.domain.admin.repository.AdminInfoRepository;
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
@@ -10,24 +12,35 @@ import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
+import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendState;
+import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewPerceivedThemeGenreRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
+import bbangduck.bd.bbangduck.domain.shop.entity.Area;
+import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
+import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.domain.shop.entity.repository.AreaRepository;
+import bbangduck.bd.bbangduck.domain.shop.entity.repository.FranchiseRepository;
+import bbangduck.bd.bbangduck.domain.shop.entity.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +54,13 @@ import java.net.URLConnection;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Disabled
 public class BaseJGMServiceTest extends BaseTest {
+
+    @Autowired
+    protected ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
 
     @Autowired
     protected MemberFriendQueryRepository memberFriendQueryRepository;
@@ -105,6 +122,18 @@ public class BaseJGMServiceTest extends BaseTest {
     @Autowired
     protected ReviewRepository reviewRepository;
 
+    @Autowired
+    protected AdminInfoRepository adminInfoRepository;
+
+    @Autowired
+    protected AreaRepository areaRepository;
+
+    @Autowired
+    protected FranchiseRepository franchiseRepository;
+
+    @Autowired
+    protected ShopRepository shopRepository;
+
     protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
 
     protected final String IMAGE_FILE_CLASS_PATH = "/static/test/puppy.jpg";
@@ -115,9 +144,22 @@ public class BaseJGMServiceTest extends BaseTest {
 
     @BeforeEach
     public void setUp() {
+//        deleteAll();
+    }
+
+    @AfterEach
+    void tearDown() {
+        deleteAll();
+    }
+
+    private void deleteAll() {
         reviewLikeRepository.deleteAll();
         reviewRepository.deleteAll();
         themeRepository.deleteAll();
+        shopRepository.deleteAll();
+        areaRepository.deleteAll();
+        franchiseRepository.deleteAll();
+        adminInfoRepository.deleteAll();
         memberPlayInclinationRepository.deleteAll();
         memberFriendRepository.deleteAll();
         memberRepository.deleteAll();
@@ -256,8 +298,19 @@ public class BaseJGMServiceTest extends BaseTest {
     }
 
     protected Theme createTheme() {
+
+        Member member = createAdminMemberSample();
+
+        AdminInfo adminInfo = createAdminInfoSample(member);
+
+        Franchise franchise = createFranchiseSample(adminInfo);
+
+        Area area = createAreaSample();
+
+        Shop shop = createShopSample(franchise, area);
+
         Theme theme = Theme.builder()
-                .shop(null)
+                .shop(shop)
                 .name("이방인")
                 .introduction("\" Loading...80%\n" +
                         "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
@@ -274,9 +327,80 @@ public class BaseJGMServiceTest extends BaseTest {
         return themeRepository.save(theme);
     }
 
+    protected Member createAdminMemberSample() {
+        Member member = Member.builder()
+                .email("hong@email.com")
+                .password("hong")
+                .nickname("hong")
+                .description("hong")
+                .roomEscapeRecordsOpenYN(true)
+                .refreshInfo(RefreshInfo.init(securityJwtProperties.getRefreshTokenExpiredDate()))
+                .roles(Set.of(MemberRole.ADMIN))
+                .build();
+
+        memberRepository.save(member);
+        return member;
+    }
+
+    protected AdminInfo createAdminInfoSample(Member member) {
+        AdminInfo adminInfo = AdminInfo.builder()
+                .owner("홍길동")
+                .telephone("010-1234-1234")
+                .companyNum("1199372787")
+                .companyName("활빈당")
+                .member(member)
+                .deleteYN(false)
+                .build();
+
+        adminInfoRepository.save(adminInfo);
+        return adminInfo;
+    }
+
+    protected Franchise createFranchiseSample(AdminInfo adminInfo) {
+        Franchise franchise = Franchise.builder()
+                .adminInfo(adminInfo)
+                .name("빵덕")
+                .owner("빵덕 사장")
+                .ownerTelephone("8301382190798")
+                .deleteYN(false)
+                .build();
+
+        return franchiseRepository.save(franchise);
+    }
+
+    protected Shop createShopSample(Franchise franchise, Area area) {
+        Shop shop = Shop.builder()
+                .franchise(franchise)
+                .name("빵덕 샵")
+                .shopUrl(null)
+                .shopInfo(null)
+                .location(null)
+                .address("서울 강남구 어딘가")
+                .area(area)
+                .deleteYN(false)
+                .build();
+
+        return shopRepository.save(shop);
+    }
+
+    protected Area createAreaSample() {
+        Area area = Area.builder()
+                .code("GN1")
+                .name("강남")
+                .build();
+
+        return areaRepository.save(area);
+    }
+
     protected Theme createNotRegisterGenreTheme() {
+        Member adminMemberSample = createAdminMemberSample();
+        AdminInfo adminInfoSample = createAdminInfoSample(adminMemberSample);
+        Franchise franchiseSample = createFranchiseSample(adminInfoSample);
+        Area areaSample = createAreaSample();
+        Shop shopSample = createShopSample(franchiseSample, areaSample);
+
         Theme theme = Theme.builder()
-                .shop(null)
+                .shop(shopSample)
                 .name("이방인")
                 .introduction("\" Loading...80%\n" +
                         "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
@@ -310,6 +434,18 @@ public class BaseJGMServiceTest extends BaseTest {
                 .scenarioSatisfaction(Satisfaction.GOOD)
                 .interiorSatisfaction(Satisfaction.BAD)
                 .problemConfigurationSatisfaction(Satisfaction.VERY_BAD)
+                .build();
+    }
+
+    protected ReviewSurveyUpdateRequestDto createReviewSurveyUpdateRequestDto(List<String> newGenreCodes) {
+        return ReviewSurveyUpdateRequestDto.builder()
+                .genreCodes(newGenreCodes)
+                .perceivedDifficulty(Difficulty.VERY_DIFFICULT)
+                .perceivedHorrorGrade(HorrorGrade.VERY_HORROR)
+                .perceivedActivity(Activity.VERY_ACTIVITY)
+                .scenarioSatisfaction(Satisfaction.VERY_GOOD)
+                .interiorSatisfaction(Satisfaction.VERY_GOOD)
+                .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                 .build();
     }
 

@@ -1,9 +1,13 @@
 package bbangduck.bd.bbangduck.domain.shop.entity;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
-// TODO: 2021-05-25 clear
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Area {
 
     @Id
@@ -16,4 +20,11 @@ public class Area {
 
     @Column(name = "area_name")
     private String name;
+
+    @Builder
+    public Area(Long id, String code, String name) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+    }
 }
