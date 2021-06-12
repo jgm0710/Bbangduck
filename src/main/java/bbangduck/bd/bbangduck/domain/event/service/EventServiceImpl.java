@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,6 +38,12 @@ public class EventServiceImpl implements EventService {
 
         return oldShopEvent;
 
+    }
+
+    @Override
+    public List<ShopEvent> runningEvent() {
+        return this.shopEventRepository.findByStartTimesLessThanEqualAndEndTimesGreaterThanEqual(LocalDateTime.now(),
+                LocalDateTime.now());
     }
 
 }

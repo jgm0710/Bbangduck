@@ -198,7 +198,7 @@ public class EventTestContoller {
 
 
 
-    @Test
+//    @Test
     public void shopEventUpdateTest() {
         eventSaveTest();
         List<ShopEvent> shopEventRepositoryAll = this.shopEventRepository.findAll();
@@ -227,6 +227,16 @@ public class EventTestContoller {
 
         MatcherAssert.assertThat(oldShopEvent.getStartTimes(),
                 CoreMatchers.not(CoreMatchers.is(shopEvent.getStartTimes())));
+
+    }
+
+    @Test
+    public void runningEventTest() {
+        eventSaveTest();
+        List<ShopEvent> list = this.eventService.runningEvent();
+
+        list.forEach(shopEvent -> shopEvent.toString());
+
 
     }
 
