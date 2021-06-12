@@ -1,8 +1,7 @@
 package bbangduck.bd.bbangduck.domain.shop.entity;
 
 import bbangduck.bd.bbangduck.domain.model.embeded.Location;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +9,10 @@ import java.util.List;
 // TODO: 2021-05-25 완료
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Getter
+@Table
 public class Shop {
 
     @Id
@@ -21,6 +24,7 @@ public class Shop {
     @JoinColumn(name = "franchise_id")
     private Franchise franchise;
 
+    @Setter
     @OneToOne(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ShopImage shopImage;
 
@@ -34,6 +38,7 @@ public class Shop {
     @Column(length = 3000)
     private String shopInfo;
 
+    @Setter
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<ShopPrice> shopPrices;
 
