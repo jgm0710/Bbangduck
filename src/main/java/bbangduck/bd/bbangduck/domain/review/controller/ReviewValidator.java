@@ -1,9 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
@@ -41,25 +38,33 @@ public class ReviewValidator {
 
         switch (reviewType) {
             case SIMPLE:
-                if (existsString(comment)) {
-                    errors.rejectValue("comment","NotNeeded", "간단 리뷰 생성 시 코멘트는 필요하지 않습니다.");
-                }
-                if (existsList(reviewImages)) {
-                    errors.rejectValue("reviewImages","NotNeeded","간단 리뷰 생성 시 이미지는 필요하지 않습니다.");
-                }
+                simpleReviewValidate(errors, reviewImages, comment);
                 hasErrorsThrow(ResponseStatus.CREATE_SIMPLE_REVIEW_NOT_VALID, errors);
                 break;
             case DETAIL:
-                if (!existsString(comment)) {
-                    errors.rejectValue("comment","NotBlank", "상세 리뷰 생성 시 필요한 코멘트를 기입해 주세요.");
-                }
-                if (existsList(reviewImages)) {
-                    validateReviewImages(reviewImages, errors);
-                }
+                detailReviewValidate(errors, reviewImages, comment);
                 hasErrorsThrow(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID, errors);
                 break;
             default:
                 break;
+        }
+    }
+
+    private void detailReviewValidate(Errors errors, List<ReviewImageRequestDto> reviewImages, String comment) {
+        if (!existsString(comment)) {
+            errors.rejectValue("comment","NotBlank", "상세 리뷰 등록에 필요한 코멘트를 기입해 주세요.");
+        }
+        if (existsList(reviewImages)) {
+            validateReviewImages(reviewImages, errors);
+        }
+    }
+
+    private void simpleReviewValidate(Errors errors, List<ReviewImageRequestDto> reviewImages, String comment) {
+        if (existsString(comment)) {
+            errors.rejectValue("comment","NotNeeded", "간단 리뷰는 코멘트를 필요로 하지 않습니다.");
+        }
+        if (existsList(reviewImages)) {
+            errors.rejectValue("reviewImages","NotNeeded","간단 리뷰는 이미지를 필요로 하지 않습니다.");
         }
     }
 
@@ -115,6 +120,28 @@ public class ReviewValidator {
         int perceivedThemeGenresCountLimit = reviewProperties.getPerceivedThemeGenresCountLimit();
         checkPerceivedThemeGenresCount(genreCodes, perceivedThemeGenresCountLimit, errors);
         hasErrorsThrow(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID, errors);
+    }
+
+    public void validateUpdateReview(ReviewUpdateRequestDto requestDto, Errors errors) {
+        hasErrorsThrow(ResponseStatus.UPDATE_REVIEW_NOT_VALID, errors);
+        checkPlayTogetherFriendsCount(requestDto.getFriendIds(), reviewProperties.getPerceivedThemeGenresCountLimit(), errors);
+
+        ReviewType reviewType = requestDto.getReviewType();
+        List<ReviewImageRequestDto> reviewImages = requestDto.getReviewImages();
+        String comment = requestDto.getComment();
+
+        switch (reviewType) {
+            case SIMPLE:
+                simpleReviewValidate(errors, reviewImages, comment);
+                hasErrorsThrow(ResponseStatus.UPDATE_REVIEW_NOT_VALID, errors);
+                break;
+            case DETAIL:
+                detailReviewValidate(errors, reviewImages, comment);
+                hasErrorsThrow(ResponseStatus.UPDATE_REVIEW_NOT_VALID, errors);
+                break;
+            default:
+                break;
+        }
     }
 }
 

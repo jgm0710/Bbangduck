@@ -161,5 +161,4 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(new ResponseDto<>(status, errorsResponseDtos, message));
     }
 
-    // TODO: 2021-05-02 BindingResult 처리 ExceptionHandler 추가
 }

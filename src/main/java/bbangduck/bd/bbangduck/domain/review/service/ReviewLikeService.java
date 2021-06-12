@@ -39,6 +39,7 @@ public class ReviewLikeService {
     }
 
     // TODO: 2021-06-01 test
+    // TODO: 2021-06-12 삭제된 리뷰일 경우에 대한 처리 추가
     @Transactional
     public Long addLikeToReview(Long memberId, Long reviewId) {
         if (getExistsReviewLike(memberId, reviewId)) {

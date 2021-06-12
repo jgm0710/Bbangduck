@@ -2,6 +2,10 @@ package bbangduck.bd.bbangduck.domain.review.entity.enumerate;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * 작성자 : 정구민 <br><br>
  *
@@ -17,4 +21,9 @@ public enum ReviewType {
     ;
 
     private final String description;
+
+    public static List<String> getNameList() {
+        return Stream.of(ReviewType.values()).map(Enum::name).collect(Collectors.toList());
+    }
+
 }

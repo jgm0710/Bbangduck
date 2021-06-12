@@ -102,7 +102,7 @@ public class ReviewSurvey extends BaseEntityDateTime {
         return review;
     }
 
-    public List<ReviewPerceivedThemeGenre> getPerceivedThemeGenresEntity() {
+    public List<ReviewPerceivedThemeGenre> getPerceivedThemeGenreEntities() {
         return perceivedThemeGenres;
     }
 

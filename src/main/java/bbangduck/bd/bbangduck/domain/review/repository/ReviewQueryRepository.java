@@ -44,7 +44,8 @@ public class ReviewQueryRepository {
         return queryFactory
                 .selectFrom(review)
                 .where(
-                        themeIdEq(themeId)
+                        themeIdEq(themeId),
+                        deleteYnEq(false)
                 )
                 .offset(searchDto.getOffset())
                 .limit(searchDto.getAmount())
@@ -52,6 +53,10 @@ public class ReviewQueryRepository {
                         sortConditionEq(searchDto.getSortCondition())
                 )
                 .fetchResults();
+    }
+
+    private BooleanExpression deleteYnEq(boolean deleteYN) {
+        return review.deleteYN.eq(deleteYN);
     }
 
     private BooleanExpression themeIdEq(Long themeId) {
@@ -114,7 +119,8 @@ public class ReviewQueryRepository {
                         .from(review)
                         .where(
                                 memberIdEq(memberId),
-                                clearYnEq(false)
+                                clearYnEq(false),
+                                deleteYnEq(false)
                         ),
                 "failRecodesCount"
         );
@@ -127,7 +133,8 @@ public class ReviewQueryRepository {
                         .from(review)
                         .where(
                                 memberIdEq(memberId),
-                                clearYnEq(true)
+                                clearYnEq(true),
+                                deleteYnEq(false)
                         ),
                 "successRecodesCount"
         );
@@ -138,7 +145,10 @@ public class ReviewQueryRepository {
                 JPAExpressions
                         .select(review.count().intValue())
                         .from(review)
-                        .where(memberIdEq(memberId))
+                        .where(
+                                memberIdEq(memberId),
+                                deleteYnEq(false)
+                        )
                 ,
                 "totalRecodesCount"
         );
@@ -150,5 +160,22 @@ public class ReviewQueryRepository {
 
     private BooleanExpression memberIdEq(Long memberId) {
         return review.member.id.eq(memberId);
+    }
+
+    public long decreaseRecodeNumberWhereInGreaterThenThisRecodeNumber(Long reviewId, Integer recodeNumber) {
+        return queryFactory
+                .update(review)
+                .set(review.recodeNumber, review.recodeNumber.subtract(1))
+                .where(
+                        review.member.id.eq(
+                                JPAExpressions
+                                        .select(review.member.id)
+                                        .from(review)
+                                        .where(review.id.eq(reviewId))
+                        ),
+                        review.recodeNumber.gt(recodeNumber)
+                )
+                .execute()
+        ;
     }
 }

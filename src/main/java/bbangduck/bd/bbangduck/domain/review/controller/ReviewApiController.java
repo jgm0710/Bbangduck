@@ -8,6 +8,7 @@ import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateReq
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewUpdateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.exception.AddSurveysToReviewsCreatedByOtherMembersException;
+import bbangduck.bd.bbangduck.domain.review.exception.UpdateReviewCreatedByOtherMembersException;
 import bbangduck.bd.bbangduck.domain.review.exception.UpdateSurveyFromReviewCreatedByOtherMembersException;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
@@ -67,6 +68,18 @@ public class ReviewApiController {
     }
 
     // TODO: 2021-05-22 리뷰 수정 기능 구현
+    /**
+     *
+     * 요청 실패 경우
+     * - Validation - bad request
+     * -- 간단 리뷰 검증
+     * -- 상세 리뷰 검증
+     * - 리뷰에 등록하는 친구가 5명 이상일 경우
+     * - 리뷰를 찾을 수 없는 경우
+     * - 리뷰에 등록하는 친구가 실제 친구 관계가 아닐 경우
+     * - 다른 회원이 생성한 리뷰를 수정하는 경우
+     * - 삭제된 리뷰에 대한 테스트 진행
+     */
     @PutMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity updateReview(
@@ -75,13 +88,19 @@ public class ReviewApiController {
             Errors errors,
             @CurrentUser Member currentMember
     ) {
-//        reviewValidator.validateUpdateReview(requestDto, errors);
+        reviewValidator.validateUpdateReview(requestDto, errors);
 
-//        reviewService.updateReview(currentMember.getId(), requestDto.toServiceDto());
+        Review review = reviewService.getReview(reviewId);
+        Member reviewMember = review.getMember();
+        if (!reviewMember.getId().equals(currentMember.getId())) {
+            throw new UpdateReviewCreatedByOtherMembersException();
+        }
 
-//        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus));
-        return null;
+        reviewService.updateReview(reviewId, requestDto.toServiceDto());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_REVIEW_SUCCESS, null));
     }
+
 
     @PostMapping("/surveys")
     @PreAuthorize("hasRole('ROLE_USER')")

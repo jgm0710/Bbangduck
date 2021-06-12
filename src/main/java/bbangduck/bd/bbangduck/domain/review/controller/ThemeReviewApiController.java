@@ -57,6 +57,11 @@ public class ThemeReviewApiController {
             Errors errors,
             @CurrentUser Member currentMember
     ) {
+        // TODO: 2021-06-12 validation 규칙 변경 및 문서화 적용
+        /**
+         * clearYN 이 true 이면 clear time 이 있어야하고,
+         * clearYN 이 false 이면 clear time 이 없어도 됨
+         */
         reviewValidator.validateCreateView(requestDto, errors);
 
         Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
@@ -68,8 +73,6 @@ public class ThemeReviewApiController {
 
     }
 
-    // TODO: 2021-06-08 리뷰 목록 조회 로직 수정
-    // TODO: 2021-06-08 페이지 넘버를 0보다 작게 입력한 경우나, 수량을 잘못 입력한 경우 테스트 구현
     @GetMapping
     public ResponseEntity<ResponseDto<ReviewPaginationResponseDto<Object>>> getReviewList(
             @PathVariable Long themeId,

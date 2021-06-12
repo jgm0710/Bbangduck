@@ -6,6 +6,7 @@ import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewUpdateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
+
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * Review Entity
  */
 @Entity
@@ -78,8 +81,11 @@ public class Review extends BaseEntityDateTime {
 
     private long likeCount;
 
+    @Column(name = "delete_yn")
+    private boolean deleteYN;
+
     @Builder
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment, long likeCount, LocalDateTime registerTimes, LocalDateTime updateTimes) {
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment, long likeCount, LocalDateTime registerTimes, LocalDateTime updateTimes, boolean deleteYN) {
         this.id = id;
         this.member = member;
         this.theme = theme;
@@ -91,6 +97,7 @@ public class Review extends BaseEntityDateTime {
         this.rating = rating;
         this.comment = comment;
         this.likeCount = likeCount;
+        this.deleteYN = deleteYN;
         super.registerTimes = registerTimes;
         super.updateTimes = updateTimes;
     }
@@ -107,6 +114,7 @@ public class Review extends BaseEntityDateTime {
                 .rating(reviewCreateDto.getRating())
                 .comment(reviewCreateDto.getComment())
                 .likeCount(0)
+                .deleteYN(false)
                 .build();
 
         if (reviewCreateDto.reviewImagesExists()) {
@@ -216,5 +224,33 @@ public class Review extends BaseEntityDateTime {
 
     public void updateSurvey(ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
         this.reviewSurvey.update(reviewSurveyUpdateDto);
+    }
+
+    public boolean isDeleteYN() {
+        return deleteYN;
+    }
+
+    public void update(ReviewUpdateDto reviewUpdateDto) {
+        this.reviewType = reviewUpdateDto.getReviewType();
+        this.clearYN = reviewUpdateDto.isClearYN();
+        this.clearTime = reviewUpdateDto.getClearTime();
+        this.hintUsageCount = reviewUpdateDto.getHintUsageCount();
+        this.rating = reviewUpdateDto.getRating();
+        this.comment = reviewUpdateDto.getComment();
+
+        List<ReviewImageDto> reviewImageDtos = reviewUpdateDto.getReviewImages();
+        if (existsList(reviewImageDtos)) {
+            List<ReviewImage> reviewImages = reviewImageDtos.stream().map(ReviewImage::create).collect(Collectors.toList());
+            reviewImages.forEach(this::addReviewImage);
+        }
+    }
+
+    public List<ReviewPlayTogether> getReviewPlayTogetherEntities() {
+        return reviewPlayTogethers;
+    }
+
+    public void delete() {
+        this.deleteYN = true;
+        this.recodeNumber = -1;
     }
 }

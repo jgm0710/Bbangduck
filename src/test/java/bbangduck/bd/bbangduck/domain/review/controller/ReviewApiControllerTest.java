@@ -54,7 +54,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         memberService.updateProfileImage(signUpId, new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName()));
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -150,6 +150,56 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
     }
 
     @Test
+    @DisplayName("리뷰 조회 - 삭제된 리뷰를 조회하는 경우")
+    public void getReview_DeletedReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
+
+        memberService.updateProfileImage(signUpId, new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName()));
+
+        Theme theme = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        memberSocialSignUpRequestDto.setEmail("member2@emailcom");
+        memberSocialSignUpRequestDto.setNickname("member2");
+        memberSocialSignUpRequestDto.setSocialId("3323311321");
+
+        Long signUpId2 = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        reviewLikeService.addLikeToReview(signUpId2, createdReviewId);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId2);
+
+        reviewService.deleteReview(createdReviewId);
+
+        //when
+        System.out.println("================================================================================================================================================");
+        ResultActions perform = mockMvc.perform(
+                get("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+        System.out.println("================================================================================================================================================");
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.MANIPULATE_DELETED_REVIEW.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MANIPULATE_DELETED_REVIEW.getMessage()));
+
+    }
+
+    @Test
     @DisplayName("간단 리뷰 조회 - 설문이 등록된 경우")
     public void getSimpleReview_AddSurveyTrue() throws Exception {
         //given
@@ -162,7 +212,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         memberService.updateProfileImage(signUpId, new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName()));
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -292,7 +342,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         memberService.updateProfileImage(signUpId, new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName()));
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -404,7 +454,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         memberService.updateProfileImage(signUpId, new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName()));
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -538,7 +588,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         memberService.updateProfileImage(signUpId, new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName()));
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -584,7 +634,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         memberService.updateProfileImage(signUpId, new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName()));
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -629,7 +679,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
@@ -697,6 +747,56 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
     }
 
     @Test
+    @DisplayName("리뷰에 설문 등록 - 삭제된 리뷰에 설문 등록")
+    public void addSurveyToReview_DeletedReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Theme theme = createThemeSample();
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+
+        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
+                .genreCodes(genreCodes)
+                .perceivedDifficulty(Difficulty.EASY)
+                .perceivedHorrorGrade(HorrorGrade.NORMAL)
+                .perceivedActivity(Activity.NORMAL)
+                .scenarioSatisfaction(Satisfaction.GOOD)
+                .interiorSatisfaction(Satisfaction.VERY_BAD)
+                .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
+                .build();
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        reviewService.deleteReview(savedReviewId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/reviews/" + savedReviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyCreateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.MANIPULATE_DELETED_REVIEW.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MANIPULATE_DELETED_REVIEW.getMessage()));
+
+    }
+
+    @Test
     @DisplayName("리뷰에 설문 등록 - 등록되는 체감 테마 장르의 개수가 제한된 개수보다 많을 경우")
     public void addSurveyToReview_OverPerceivedThemeGenresCount() throws Exception {
         //given
@@ -705,7 +805,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
@@ -772,7 +872,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
@@ -821,7 +921,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
@@ -870,7 +970,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
@@ -992,7 +1092,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
@@ -1045,7 +1145,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
@@ -1093,7 +1193,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
@@ -1141,7 +1241,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -1198,6 +1298,50 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
+    @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 삭제될 리뷰의 설문을 수정하는 경우")
+    public void updateSurveyFromReview_DeletedReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme theme = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "ADVT1");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        reviewService.deleteReview(reviewId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + reviewId + "/surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewSurveyUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.MANIPULATE_DELETED_REVIEW.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MANIPULATE_DELETED_REVIEW.getMessage()));
+
+    }
+
     @ParameterizedTest
     @MethodSource("provideReviewSurveyUpdateRequestDtoForUpdateSurveyFromReviewValidation")
     @DisplayName("리뷰에 등록된 설문 수정 - 기본 validation 기입 문제")
@@ -1206,7 +1350,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -1333,7 +1477,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -1394,7 +1538,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -1441,7 +1585,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -1483,7 +1627,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -1526,7 +1670,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -1569,7 +1713,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
@@ -1613,7 +1757,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 

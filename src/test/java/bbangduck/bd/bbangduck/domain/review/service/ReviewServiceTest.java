@@ -8,13 +8,12 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
+import bbangduck.bd.bbangduck.domain.review.exception.ManipulateDeletedReviewsException;
 import bbangduck.bd.bbangduck.domain.review.exception.NoGenreToRegisterForReviewSurveyException;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewHasNotSurveyException;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewNotFoundException;
@@ -22,6 +21,7 @@ import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyCreateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.exception.ManipulateDeletedThemeException;
 import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
@@ -58,7 +58,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        Theme savedTheme = createTheme();
+        Theme savedTheme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadImageFileId = fileStorageService.uploadImageFile(files);
@@ -107,6 +107,32 @@ class ReviewServiceTest extends BaseJGMServiceTest {
     }
 
     @Test
+    @DisplayName("리뷰 생성 - 테마가 삭제된 테마일 경우")
+    public void createReview_ThemeIsDeleted() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        Theme savedTheme = createDeletedThemeSample();
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
+        List<FileStorage> storedFiles = List.of(storedFile);
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
+
+        //when
+
+        //then
+        assertThrows(ManipulateDeletedThemeException.class, () -> reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
+
+    }
+
+    @Test
     @DisplayName("리뷰 생성 - 리뷰를 두번 생성할 경우 2번째 생성된 리뷰의 recode number 가 2인지 검증")
     public void createReview_recodeNumberTest() throws Exception {
         //given
@@ -115,7 +141,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        Theme savedTheme = createTheme();
+        Theme savedTheme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadImageFileId = fileStorageService.uploadImageFile(files);
@@ -146,7 +172,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        Theme savedTheme = createTheme();
+        Theme savedTheme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadImageFileId = fileStorageService.uploadImageFile(files);
@@ -172,7 +198,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        Theme savedTheme = createTheme();
+        Theme savedTheme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadImageFileId = fileStorageService.uploadImageFile(files);
@@ -225,7 +251,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        Theme savedTheme = createTheme();
+        Theme savedTheme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadImageFileId = fileStorageService.uploadImageFile(files);
@@ -273,7 +299,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         friendIds.add(savedRequestStateFriend.getId());
 
 
-        Theme savedTheme = createTheme();
+        Theme savedTheme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadImageFileId = fileStorageService.uploadImageFile(files);
@@ -290,22 +316,67 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
     }
 
+    @Test
+    @DisplayName("리뷰 조회 - 삭제된 리뷰일 경우")
+    public void getReview_DeletedReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        Theme savedTheme = createThemeSample();
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
+        List<FileStorage> storedFiles = List.of(storedFile);
+
+        List<String> genreCodes = createGenreCodes();
+        ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+
+        reviewService.deleteReview(reviewId);
+
+        em.flush();
+        em.clear();
+        //when
+
+        //then
+        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.getReview(reviewId));
+
+    }
+
     @ParameterizedTest
     @MethodSource("provideParametersForGetThemeReviewList")
     @Transactional
     @DisplayName("테마에 등록된 리뷰 목록 조회")
     public void getThemeReviewList(ReviewSortCondition sortCondition) {
         //given
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
         ReviewSearchDto reviewSearchDto = ReviewSearchDto.builder()
                 .criteria(new CriteriaDto())
                 .sortCondition(sortCondition)
                 .build();
 
-        createTmpReviewList(theme);
+        List<Review> tmpReviewList = createTmpReviewList(theme);
 
-        Theme theme2 = createTheme();
+        Theme theme2 = createThemeSample();
         createTmpReviewList(theme2);
+
+        em.flush();
+        em.clear();
+
+        Long deletedReviewId1 = tmpReviewList.get(13).getId();
+        Long deletedReviewId2 = tmpReviewList.get(14).getId();
+        Long deletedReviewId3 = tmpReviewList.get(15).getId();
+        reviewService.deleteReview(deletedReviewId1);
+        reviewService.deleteReview(deletedReviewId2);
+        reviewService.deleteReview(deletedReviewId3);
+
+        em.flush();
+        em.clear();
 
 
         //when
@@ -315,6 +386,10 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         System.out.println("================================================================================================================================================================");
 
         //then
+        assertTrue(findReviews.stream().noneMatch(review -> review.getId().equals(deletedReviewId1)), "조회된 리뷰 목록에는 deletedReviewId1 이 없어야 한다.");
+        assertTrue(findReviews.stream().noneMatch(review -> review.getId().equals(deletedReviewId2)), "조회된 리뷰 목록에는 deletedReviewId2 이 없어야 한다.");
+        assertTrue(findReviews.stream().noneMatch(review -> review.getId().equals(deletedReviewId3)), "조회된 리뷰 목록에는 deletedReviewId3 이 없어야 한다.");
+
         findReviews.forEach(review -> {
             Theme reviewTheme = review.getTheme();
             assertEquals(theme.getId(), reviewTheme.getId());
@@ -435,8 +510,9 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
     }
 
-    private void createTmpReviewList(Theme theme) {
+    private List<Review> createTmpReviewList(Theme theme) {
         Member adminMemberSample = createAdminMemberSample();
+        List<Review> reviewList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             Review newReview = Review.builder()
                     .theme(theme)
@@ -445,8 +521,11 @@ class ReviewServiceTest extends BaseJGMServiceTest {
                     .likeCount(new Random().nextInt(20))
                     .build();
 
-            reviewRepository.save(newReview);
+            Review savedReview = reviewRepository.save(newReview);
+            reviewList.add(savedReview);
         }
+
+        return reviewList;
     }
 
     private static Stream<Arguments> provideParametersForGetThemeReviewList() {
@@ -468,7 +547,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadFileId = fileStorageService.uploadImageFile(files);
@@ -516,6 +595,45 @@ class ReviewServiceTest extends BaseJGMServiceTest {
     }
 
     @Test
+    @DisplayName("리뷰에 설문 정보 추가 - 삭제된 리뷰에 설문을 추가하는 경우")
+    public void addSurveyToReview_DeletedReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme theme = createThemeSample();
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadFileId);
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        ReviewCreateDto reviewCreateDto = createReviewCreateDto(List.of(storedFile), friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), reviewCreateDto);
+
+        List<String> genreCodes = createGenreCodes();
+
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+        ReviewSurveyCreateDto reviewSurveyCreateDto = reviewSurveyCreateRequestDto.toServiceDto();
+
+        em.flush();
+        em.clear();
+
+        reviewService.deleteReview(reviewId);
+
+        em.flush();
+        em.clear();
+
+        //when
+
+        //then
+        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.addSurveyToReview(reviewId, reviewSurveyCreateDto));
+
+    }
+
+    @Test
     @DisplayName("리뷰에 설문 정보 추가 - 리뷰를 찾을 수 없는 경우")
     @Transactional
     public void addSurveyToReview_ReviewNotFound() throws Exception {
@@ -523,7 +641,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadFileId = fileStorageService.uploadImageFile(files);
@@ -558,7 +676,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
         Long uploadFileId = fileStorageService.uploadImageFile(files);
@@ -593,7 +711,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
@@ -638,13 +756,51 @@ class ReviewServiceTest extends BaseJGMServiceTest {
     }
 
     @Test
+    @DisplayName("리뷰에 등록된 설문 수정 - 삭제된 리뷰의 설문을 수정")
+    public void updateSurveyFromReview_DeletedReview() {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme theme = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+
+        List<String> oldGenreCodes = List.of("HR1", "RSN1");
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
+        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+
+        List<String> newGenreCodes = List.of("HR1", "RMC1");
+        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+
+        em.flush();
+        em.clear();
+
+        reviewService.deleteReview(reviewId);
+
+        em.flush();
+        em.clear();
+
+        //when
+
+        //then
+        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
+
+    }
+
+    @Test
     @DisplayName("리뷰에 등록된 설문 수정 - 리뷰를 찾을 수 없는 경우")
     public void updateSurveyFromReview_ReviewNotFound() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
@@ -678,7 +834,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
@@ -713,7 +869,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
@@ -747,7 +903,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
@@ -770,6 +926,286 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         //then
         assertThrows(ReviewHasNotSurveyException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 간단 리뷰 to 상세 리뷰")
+    public void updateReview_SimpleToDetail() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        List<Long> signUpMemberFriendsIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        List<Long> oldFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(1));
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Theme theme = createThemeSample();
+
+        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(2));
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageId);
+
+        em.flush();
+        em.clear();
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = List.of(new ReviewImageRequestDto(storedFile.getId(), storedFile.getFileName()));
+
+        ReviewUpdateRequestDto reviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        //when
+        reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto());
+
+        em.flush();
+        em.clear();
+        //then
+
+        Review findReview = reviewService.getReview(createdReviewId);
+
+        assertEquals(reviewUpdateRequestDto.getReviewType(), findReview.getReviewType());
+        assertEquals(reviewUpdateRequestDto.getClearYN(), findReview.isClearYN());
+        assertEquals(reviewUpdateRequestDto.getClearTime(), findReview.getClearTime());
+        assertEquals(reviewUpdateRequestDto.getHintUsageCount(), findReview.getHintUsageCount());
+        assertEquals(reviewUpdateRequestDto.getRating(), findReview.getRating());
+        assertEquals(reviewUpdateRequestDto.getComment(), findReview.getComment());
+
+        List<Member> playTogetherMembers = findReview.getPlayTogetherMembers();
+        assertTrue(playTogetherMembers.stream().anyMatch(member -> member.getId().equals(signUpMemberFriendsIds.get(0))), "수정된 리뷰에 등록된 친구 목록에는 0 번 친구가 포함되어 있어야 한다.");
+        assertTrue(playTogetherMembers.stream().noneMatch(member -> member.getId().equals(signUpMemberFriendsIds.get(1))), "수정된 리뷰에 등록된 친구 목록에는 1 번 친구가 포함되어 있지 않아야 한다.");
+        assertTrue(playTogetherMembers.stream().anyMatch(member -> member.getId().equals(signUpMemberFriendsIds.get(2))), "수정된 리뷰에 등록된 친구 목록에는 2 번 친구가 포함되어 있어야 한다.");
+
+        List<ReviewImage> reviewImages = findReview.getReviewImages();
+        assertTrue(reviewImages.stream().anyMatch(reviewImage -> reviewImage.getFileStorageId().equals(storedFile.getId())), "수정된 리뷰에 등록된 이미지에는 수정 요청 시 기입한 이미지 파일에 대한 정보가 있어야 한다.");
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 상세 리뷰 to 간단 리뷰")
+    public void updateReview_DetailToSimple() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme theme = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+
+        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        ReviewUpdateRequestDto reviewUpdateRequestDto = createSimpleReviewUpdateRequestDto(friendIds);
+
+        em.flush();
+        em.clear();
+
+        //when
+        System.out.println("====================================================================================================================================");
+        reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto());
+
+        em.flush();
+        em.clear();
+        System.out.println("====================================================================================================================================");
+
+        //then
+        Review findReview = reviewService.getReview(createdReviewId);
+
+        assertEquals(reviewUpdateRequestDto.getReviewType(), findReview.getReviewType());
+        assertEquals(reviewUpdateRequestDto.getClearYN(), findReview.isClearYN());
+        assertEquals(reviewUpdateRequestDto.getClearTime(), findReview.getClearTime());
+        assertEquals(reviewUpdateRequestDto.getHintUsageCount(), findReview.getHintUsageCount());
+        assertEquals(reviewUpdateRequestDto.getRating(), findReview.getRating());
+
+        List<Member> playTogetherMembers = findReview.getPlayTogetherMembers();
+        playTogetherMembers.forEach(member -> assertTrue(friendIds.stream().anyMatch(friendId -> friendId.equals(member.getId())), "수정된 리뷰에는 리뷰 생성 시 등록하고, 수정 시 바꾸지 않고 다시 등록했던 친구들이 그대로 있어야 한다."));
+
+        List<ReviewImage> reviewImages = findReview.getReviewImages();
+        reviewImages.forEach(reviewImage -> System.out.println("reviewImage = " + reviewImage));
+        assertTrue(reviewImages.isEmpty(), "상세 리뷰에서 간단 리뷰로 수정될 경우 review image 는 비어 있어야 한다.");
+        assertNull(findReview.getComment(), "수정된 review 의 코멘트는 null 이어야 한다.");
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 상세 리뷰 to 상세 리뷰")
+    public void updateReview_DetailToDetail() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme theme = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        List<Long> oldFriendIds = List.of(friendIds.get(0), friendIds.get(1));
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(oldFriendIds, reviewImageRequestDtos);
+
+        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendIds.get(1), friendIds.get(2));
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageId);
+
+        ReviewImageRequestDto reviewImageRequestDto1 = reviewImageRequestDtos.get(0);
+        ReviewImageRequestDto reviewImageRequestDto2 = reviewImageRequestDtos.get(1);
+        ReviewImageRequestDto reviewImageRequestDto3 = new ReviewImageRequestDto(storedFile.getId(), storedFile.getFileName());
+
+
+        List<ReviewImageRequestDto> updateReviewImageRequestDtos = List.of(reviewImageRequestDto1, reviewImageRequestDto3);
+
+        ReviewUpdateRequestDto reviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, updateReviewImageRequestDtos);
+
+        em.flush();
+        em.clear();
+
+        //when
+        System.out.println("====================================================================================================================================");
+        reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto());
+
+        em.flush();
+        em.clear();
+        System.out.println("====================================================================================================================================");
+
+        //then
+        Review findReview = reviewService.getReview(createdReviewId);
+        List<ReviewImage> findReviewImages = findReview.getReviewImages();
+
+        assertTrue(findReviewImages.stream().anyMatch(reviewImage -> reviewImage.getFileStorageId().equals(reviewImageRequestDto1.getFileStorageId())), "수정 된 리뷰에는 1 번 이미지가 포함되어 있어야 한다.");
+        assertTrue(findReviewImages.stream().noneMatch(reviewImage -> reviewImage.getFileStorageId().equals(reviewImageRequestDto2.getFileStorageId())), "수정 된 리뷰에는 2 번 이미지가 포함되어 있지 않아야 한다.");
+        assertTrue(findReviewImages.stream().anyMatch(reviewImage -> reviewImage.getFileStorageId().equals(reviewImageRequestDto3.getFileStorageId())), "수정 된 리뷰에는 3 번 이미지가 포함되어 있어야 한다.");
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 삭제된 리뷰일 경우")
+    public void updateReview_DeletedReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        List<Long> signUpMemberFriendsIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        List<Long> oldFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(1));
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Theme theme = createThemeSample();
+
+        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(2));
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageId);
+
+        em.flush();
+        em.clear();
+
+        System.out.println("================================================================================================================");
+        reviewService.deleteReview(createdReviewId);
+
+        em.flush();
+        em.clear();
+        System.out.println("================================================================================================================");
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = List.of(new ReviewImageRequestDto(storedFile.getId(), storedFile.getFileName()));
+
+        ReviewUpdateRequestDto reviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        //when
+
+        //then
+        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 리뷰를 찾을 수 없는 경우")
+    public void updateReview_ReviewNotFound() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        List<Long> signUpMemberFriendsIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        List<Long> oldFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(1));
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Theme theme = createThemeSample();
+
+        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(2));
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageId);
+
+        em.flush();
+        em.clear();
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = List.of(new ReviewImageRequestDto(storedFile.getId(), storedFile.getFileName()));
+
+        ReviewUpdateRequestDto reviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        //when
+
+        //then
+        assertThrows(ReviewNotFoundException.class, () -> reviewService.updateReview(100000L, reviewUpdateRequestDto.toServiceDto()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 수정 시 등록하는 친구와 리뷰를 작성한 회원이 실제 친구 관계가 아닐 경우")
+    public void updateReview_ReviewMemberAndFriendIdMemberAreNotFriend() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        List<Long> signUpMemberFriendsIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        List<Long> oldFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(1));
+
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Theme theme = createThemeSample();
+
+        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = new ArrayList<>();
+        newFriendIds.add(signUpMemberFriendsIds.get(0));
+        newFriendIds.add(signUpMemberFriendsIds.get(2));
+
+        Member requestStateFriendToMember = createRequestStateFriendToMember(memberSignUpRequestDto, signUpId);
+        newFriendIds.add(requestStateFriendToMember.getId());
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageId);
+
+        em.flush();
+        em.clear();
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = List.of(new ReviewImageRequestDto(storedFile.getId(), storedFile.getFileName()));
+
+        ReviewUpdateRequestDto reviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        //when
+
+        //then
+        assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto()));
 
     }
 

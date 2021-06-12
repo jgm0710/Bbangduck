@@ -63,4 +63,14 @@ public class ReviewImage {
     public String getFileName() {
         return fileName;
     }
+
+    @Override
+    public String toString() {
+        return "ReviewImage{" +
+                "id=" + id +
+//                ", review=" + review +
+                ", fileStorageId=" + fileStorageId +
+                ", fileName='" + fileName + '\'' +
+                '}';
+    }
 }

@@ -299,28 +299,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return friendIds;
     }
 
-//    protected ReviewCreateDto createReviewCreateDto(List<FileStorage> storedFiles, List<Long> friendIds, List<String> genreCodes) {
-//        List<ReviewImageDto> reviewImageDtoList = new ArrayList<>();
-//        storedFiles.forEach(storedFile -> reviewImageDtoList.add(new ReviewImageDto(storedFile.getId(), storedFile.getFileName())));
-//
-//        return ReviewCreateDto.builder()
-//                .reviewType(ReviewType.DEEP)
-//                .clearTime(LocalTime.of(0, 45, 11))
-//                .hintUsageCount(1)
-//                .rating(6)
-//                .friendIds(friendIds)
-//                .reviewImages(reviewImageDtoList)
-//                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
-//                .genreCodes(genreCodes)
-//                .perceivedDifficulty(Difficulty.EASY)
-//                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-//                .perceivedActivity(Activity.NORMAL)
-//                .scenarioSatisfaction(Satisfaction.NORMAL)
-//                .interiorSatisfaction(Satisfaction.GOOD)
-//                .problemConfigurationSatisfaction(Satisfaction.BAD)
-//                .build();
-//    }
-
     protected List<String> createGenreCodes() {
         List<String> genreCodes = new ArrayList<>();
         genreCodes.add("RSN1");
@@ -328,7 +306,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return genreCodes;
     }
 
-    protected Theme createTheme() {
+    protected Theme createThemeSample() {
         Member member = createAdminMemberSample();
 
         AdminInfo adminInfo = createAdminInfoSample(member);
@@ -355,6 +333,36 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         theme.addGenre(rsn1);
 
         return themeRepository.save(theme);
+    }
+
+    protected Theme createDeletedThemeSample() {
+        Member member = createAdminMemberSample();
+
+        AdminInfo adminInfo = createAdminInfoSample(member);
+
+        Franchise franchise = createFranchiseSample(adminInfo);
+
+        Area area = createAreaSample();
+
+        Shop shop = createShopSample(franchise, area);
+
+        Theme theme = Theme.builder()
+                .shop(shop)
+                .name("이방인")
+                .introduction("\" Loading...80%\n" +
+                        "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
+                .numberOfPeople(NumberOfPeople.FIVE)
+                .difficulty(Difficulty.NORMAL)
+                .activity(Activity.LITTLE_ACTIVITY)
+                .playTime(LocalTime.of(1, 0))
+                .deleteYN(true)
+                .build();
+
+        Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
+        theme.addGenre(rsn1);
+
+        return themeRepository.save(theme);
+
     }
 
     protected Member createAdminMemberSample() {
@@ -438,26 +446,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return themeRepository.save(theme);
     }
 
-
-//    protected ReviewCreateRequestDto createDeepReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos, List<String> genreCodes) {
-//        return ReviewCreateRequestDto.builder()
-//                .reviewType(ReviewType.DEEP)
-//                .clearYN(true)
-//                .clearTime(LocalTime.of(0, 45, 11))
-//                .hintUsageCount(1)
-//                .rating(6)
-//                .friendIds(friendIds)
-//                .reviewImages(reviewImageRequestDtos)
-//                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
-//                .genreCodes(genreCodes)
-//                .perceivedDifficulty(Difficulty.EASY)
-//                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
-//                .perceivedActivity(Activity.NORMAL)
-//                .scenarioSatisfaction(Satisfaction.NORMAL)
-//                .interiorSatisfaction(Satisfaction.GOOD)
-//                .problemConfigurationSatisfaction(Satisfaction.BAD)
-//                .build();
-//    }
 
     protected List<ReviewImageRequestDto> createReviewImageRequestDtos() throws IOException {
         MockMultipartFile files1 = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);

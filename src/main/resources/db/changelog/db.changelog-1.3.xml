@@ -1,13 +1,24 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <!-- 리뷰 테이블에 like_count 칼럼 추가 -->
     <changeSet author="jgm (alternated)" id="add-column-like-count-to-review">
         <addColumn
-                   tableName="review" >
+                tableName="review">
             <column afterColumn="problem_configuration_satisfaction"
                     name="like_count"
-                    type="BIGINT" >
-                <constraints nullable="false" />
+                    type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn
+                tableName="review">
+            <column afterColumn="like_count"
+                    name="delete_yn"
+                    type="BIT(1)">
+                <constraints nullable="false"/>
             </column>
         </addColumn>
     </changeSet>
@@ -37,7 +48,10 @@
 
     <!-- member table 과 review_like table 외례키 연결 -->
     <changeSet author="jgm (generated)" id="add-foreign-key-review-like-to-member">
-        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="review_like" constraintName="FK_review_like_TO_member_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="review_like"
+                                 constraintName="FK_review_like_TO_member_1" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="member_id" referencedTableName="member" validate="true"/>
     </changeSet>
 
     <!-- review_like table 의 review_id 컬럼에 생성될 외례키 인덱스 생성-->
@@ -49,7 +63,10 @@
 
     <!-- review table 과 review_like table 외례키 연결 -->
     <changeSet author="jgm (generated)" id="add-foreign-key-review-like-to-review">
-        <addForeignKeyConstraint baseColumnNames="review_id" baseTableName="review_like" constraintName="FK_review_like_TO_review_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="review_id" referencedTableName="review" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="review_id" baseTableName="review_like"
+                                 constraintName="FK_review_like_TO_review_1" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="review_id" referencedTableName="review" validate="true"/>
     </changeSet>
 
     <!-- 리뷰 설문 테이블 생성 -->
@@ -93,14 +110,19 @@
 
     <!-- 리뷰 체감 장르 테이블과 리뷰 설문 테이블 사이의 외례키를 위한 인덱스 생성 -->
     <changeSet author="jgm (generated)" id="createIndex-FK_review_survey_TO_review_perceived_theme_genre_1">
-        <createIndex indexName="FK_review_survey_TO_review_perceived_theme_genre_1" tableName="review_perceived_theme_genre">
+        <createIndex indexName="FK_review_survey_TO_review_perceived_theme_genre_1"
+                     tableName="review_perceived_theme_genre">
             <column name="review_survey_id"/>
         </createIndex>
     </changeSet>
 
     <!-- 리뷰 체감 장르 테이블과 리뷰 설문 테이블 사이의 외례키 생성 -->
     <changeSet author="jgm (generated)" id="addForeignKeyConstraint-FK_review_survey_TO_review_perceived_theme_genre_1">
-        <addForeignKeyConstraint baseColumnNames="review_survey_id" baseTableName="review_perceived_theme_genre" constraintName="FK_review_survey_TO_review_perceived_theme_genre_1" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="review_survey_id" referencedTableName="review_survey" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="review_survey_id" baseTableName="review_perceived_theme_genre"
+                                 constraintName="FK_review_survey_TO_review_perceived_theme_genre_1" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="review_survey_id" referencedTableName="review_survey"
+                                 validate="true"/>
     </changeSet>
 
 </databaseChangeLog>

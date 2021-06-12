@@ -21,10 +21,10 @@ class ReviewQueryRepositoryTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(null);
-        reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long member1Review1Id = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
         reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         simpleReviewCreateRequestDto.setClearYN(false);
@@ -44,15 +44,19 @@ class ReviewQueryRepositoryTest extends BaseJGMServiceTest {
         em.flush();
         em.clear();
 
+        reviewService.deleteReview(member1Review1Id);
+        em.flush();
+        em.clear();
+
         //when
         ReviewRecodesCountsDto reviewRecodesCountsDto = reviewQueryRepository.findRecodesCountsByMember(signUpId).orElse(new ReviewRecodesCountsDto());
         ReviewRecodesCountsDto recodesCountsByMember2 = reviewQueryRepository.findRecodesCountsByMember(signUp2).orElse(new ReviewRecodesCountsDto());
 
         //then
-        assertEquals(5, reviewRecodesCountsDto.getTotalRecodesCount(),
-                "총 리뷰는 5개 생성했으므로 totalRecodesCount 는 5가 나와야한다.");
-        assertEquals(2, reviewRecodesCountsDto.getSuccessRecodesCount(),
-                "성공한 리뷰는 2개 생성했으므로 successRecodesCount 는 2가 나와야한다.");
+        assertEquals(4, reviewRecodesCountsDto.getTotalRecodesCount(),
+                "총 리뷰는 5개 생성하고 1개 삭제했으므로 totalRecodesCount 는 4가 나와야한다.");
+        assertEquals(1, reviewRecodesCountsDto.getSuccessRecodesCount(),
+                "성공한 리뷰는 2개 생성하고 1개 삭제했으므로 successRecodesCount 는 1이 나와야한다.");
         assertEquals(3, reviewRecodesCountsDto.getFailRecodesCount(),
                 "실패한 리뷰는 3개 생성했으므로 failRecodesCount 는 3이 나와야한다.");
 

@@ -19,14 +19,9 @@ import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewPerceivedThemeGenreRepository;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
+import bbangduck.bd.bbangduck.domain.review.repository.*;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
@@ -134,6 +129,9 @@ public class BaseJGMServiceTest extends BaseTest {
     @Autowired
     protected ShopRepository shopRepository;
 
+    @Autowired
+    protected ReviewImageRepository reviewImageRepository;
+
     protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
 
     protected final String IMAGE_FILE_CLASS_PATH = "/static/test/puppy.jpg";
@@ -154,6 +152,7 @@ public class BaseJGMServiceTest extends BaseTest {
 
     private void deleteAll() {
         reviewLikeRepository.deleteAll();
+        reviewImageRepository.deleteAll();
         reviewRepository.deleteAll();
         themeRepository.deleteAll();
         shopRepository.deleteAll();
@@ -290,6 +289,34 @@ public class BaseJGMServiceTest extends BaseTest {
                 .build();
     }
 
+    protected ReviewCreateRequestDto createDetailReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos) {
+        return ReviewCreateRequestDto.builder()
+                .reviewType(ReviewType.DETAIL)
+                .clearYN(true)
+                .clearTime(LocalTime.of(0, 45, 11))
+                .hintUsageCount(1)
+                .rating(6)
+                .friendIds(friendIds)
+                .reviewImages(reviewImageRequestDtos)
+                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
+                .build();
+    }
+
+    protected List<ReviewImageRequestDto> createReviewImageRequestDtos() throws IOException {
+        MockMultipartFile files1 = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFileId1 = fileStorageService.uploadImageFile(files1);
+        FileStorage storedFile1 = fileStorageService.getStoredFile(uploadImageFileId1);
+
+        MockMultipartFile files2 = createMockMultipartFile("files", IMAGE_FILE2_CLASS_PATH);
+        Long uploadImageFileId2 = fileStorageService.uploadImageFile(files2);
+        FileStorage storedFile2 = fileStorageService.getStoredFile(uploadImageFileId2);
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = new ArrayList<>();
+        reviewImageRequestDtos.add(new ReviewImageRequestDto(storedFile1.getId(), storedFile1.getFileName()));
+        reviewImageRequestDtos.add(new ReviewImageRequestDto(storedFile2.getId(), storedFile2.getFileName()));
+        return reviewImageRequestDtos;
+    }
+
     protected List<String> createGenreCodes() {
         List<String> genreCodes = new ArrayList<>();
         genreCodes.add("RSN1");
@@ -297,7 +324,7 @@ public class BaseJGMServiceTest extends BaseTest {
         return genreCodes;
     }
 
-    protected Theme createTheme() {
+    protected Theme createThemeSample() {
 
         Member member = createAdminMemberSample();
 
@@ -447,6 +474,62 @@ public class BaseJGMServiceTest extends BaseTest {
                 .interiorSatisfaction(Satisfaction.VERY_GOOD)
                 .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                 .build();
+    }
+
+    protected ReviewUpdateRequestDto createDetailReviewUpdateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos) {
+        return ReviewUpdateRequestDto.builder()
+                .reviewType(ReviewType.DETAIL)
+                .clearYN(false)
+                .clearTime(null)
+                .hintUsageCount(3)
+                .rating(8)
+                .friendIds(friendIds)
+                .reviewImages(reviewImageRequestDtos)
+                .comment("new comment")
+                .build();
+    }
+
+    protected ReviewUpdateRequestDto createSimpleReviewUpdateRequestDto(List<Long> friendIds) {
+        return ReviewUpdateRequestDto.builder()
+                .reviewType(ReviewType.SIMPLE)
+                .clearYN(false)
+                .clearTime(null)
+                .hintUsageCount(3)
+                .rating(8)
+                .friendIds(friendIds)
+                .reviewImages(null)
+                .comment(null)
+                .build();
+    }
+
+    protected Theme createDeletedThemeSample() {
+        Member member = createAdminMemberSample();
+
+        AdminInfo adminInfo = createAdminInfoSample(member);
+
+        Franchise franchise = createFranchiseSample(adminInfo);
+
+        Area area = createAreaSample();
+
+        Shop shop = createShopSample(franchise, area);
+
+        Theme theme = Theme.builder()
+                .shop(shop)
+                .name("이방인")
+                .introduction("\" Loading...80%\n" +
+                        "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
+                .numberOfPeople(NumberOfPeople.FIVE)
+                .difficulty(Difficulty.NORMAL)
+                .activity(Activity.LITTLE_ACTIVITY)
+                .playTime(LocalTime.of(1, 0))
+                .deleteYN(true)
+                .build();
+
+        Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
+        theme.addGenre(rsn1);
+
+        return themeRepository.save(theme);
+
     }
 
 

@@ -40,7 +40,7 @@ class ReviewMockServiceTest extends BaseJGMServiceTest {
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
         Member signUpMember = memberService.getMember(signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         Review review = Review.builder()
                 .id(1L)
@@ -79,7 +79,7 @@ class ReviewMockServiceTest extends BaseJGMServiceTest {
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
         Member signUpMember = memberService.getMember(signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         Review review = Review.builder()
                 .id(1L)

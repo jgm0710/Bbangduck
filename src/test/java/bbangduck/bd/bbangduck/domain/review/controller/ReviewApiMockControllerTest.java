@@ -53,7 +53,7 @@ class ReviewApiMockControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
         Member signUpMember = memberService.getMember(signUpId);
 
         Review review = Review.builder()
@@ -130,7 +130,7 @@ class ReviewApiMockControllerTest extends BaseJGMApiControllerTest {
 
         Member signUpMember = memberService.getMember(signUpId);
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         Review review = Review.builder()
                 .id(1L)
@@ -201,7 +201,7 @@ class ReviewApiMockControllerTest extends BaseJGMApiControllerTest {
 
         memberService.updateProfileImage(signUpId, new MemberProfileImageDto(storedFile.getId(), storedFile.getFileName()));
 
-        Theme theme = createTheme();
+        Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 

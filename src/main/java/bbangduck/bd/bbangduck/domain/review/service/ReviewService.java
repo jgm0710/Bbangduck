@@ -13,25 +13,20 @@ import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQuer
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
-import bbangduck.bd.bbangduck.domain.review.exception.ExpirationOfReviewSurveyAddPeriodException;
-import bbangduck.bd.bbangduck.domain.review.exception.NoGenreToRegisterForReviewSurveyException;
-import bbangduck.bd.bbangduck.domain.review.exception.ReviewHasNotSurveyException;
-import bbangduck.bd.bbangduck.domain.review.exception.ReviewNotFoundException;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewPerceivedThemeGenreRepository;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyCreateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.exception.*;
+import bbangduck.bd.bbangduck.domain.review.repository.*;
+import bbangduck.bd.bbangduck.domain.review.service.dto.*;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.exception.ManipulateDeletedThemeException;
 import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +45,7 @@ import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -72,10 +68,15 @@ public class ReviewService {
 
     private final ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
 
+    private final ReviewImageRepository reviewImageRepository;
+
+    private final ReviewPlayTogetherRepository reviewPlayTogetherRepository;
+
     @Transactional
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         Theme findTheme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+        throwExceptionIfThemeHasBeenDeleted(findTheme);
         ReviewRecodesCountsDto recodesCountsDto = reviewQueryRepository.findRecodesCountsByMember(memberId).orElse(new ReviewRecodesCountsDto());
 
         Review review = Review.create(findMember, findTheme, recodesCountsDto.getNextRecodeNumber(), reviewCreateDto);
@@ -88,7 +89,92 @@ public class ReviewService {
     }
 
     public Review getReview(Long reviewId) {
-        return reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+        throwExceptionIfReviewHasBeenDeleted(review);
+        return review;
+    }
+
+    public QueryResults<Review> getThemeReviewList(Long themeId, ReviewSearchDto reviewSearchDto) {
+        return reviewQueryRepository.findListByTheme(themeId, reviewSearchDto);
+    }
+
+    @Transactional
+    public void addSurveyToReview(Long reviewId, ReviewSurveyCreateDto reviewSurveyCreateDto) {
+        Review review = getReview(reviewId);
+        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
+        ReviewSurvey reviewSurvey = ReviewSurvey.create(reviewSurveyCreateDto);
+        List<String> genreCodes = reviewSurveyCreateDto.getGenreCodes();
+        addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
+        review.setReviewSurvey(reviewSurvey);
+    }
+
+    @Transactional
+    public void updateSurveyFromReview(Long reviewId, ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
+        Review review = getReview(reviewId);
+        if (!isNotNull(review.getReviewSurvey())) {
+            throw new ReviewHasNotSurveyException();
+        }
+
+        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
+
+        review.updateSurvey(reviewSurveyUpdateDto);
+        updatePerceivedGenresFromReviewSurvey(review.getReviewSurvey(), reviewSurveyUpdateDto.getGenreCodes());
+    }
+
+    /**
+     * 테스트 목록
+     *
+     * 기능 테스트
+     * - 변경 사항이 잘 저장되는지 o
+     * - 간단 리뷰에서 상세 리뷰로 잘 변경되는지 확인 o
+     * - 상세 리뷰에서 간단 리뷰로 변경될 경우 reviewImage, comment 가 제대로 null 로 기입되는지 확인 o
+     *
+     * - 새로 등록한 친구들이 잘 들어 있는지 o
+     * - 기존에 있었지만 수정했을 때 등록되지 않는 친구들이 잘 사라져 있는지 o
+     *
+     * - 새로 등록한 리뷰 이미지가 잘 등록되어 있는지 o
+     * - 기존에 등록되어 있었지만 수정했을 때 등록되지 않은 리뷰 이미지들이 잘 사라져 있는지 o
+     *
+     * 실패
+     * - 삭제된 리뷰일 경우 수정 불가 o
+     * - 리뷰를 찾을 수 없는 경우 o
+     * - 수정 시 등록하는 친구와 리뷰를 작성한 회원이 실제 친구 관계가 아닐 경우 o
+     */
+    @Transactional
+    public void updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
+        Review review = getReview(reviewId);
+        Member reviewMember = review.getMember();
+
+        List<ReviewImage> reviewImages = review.getReviewImages();
+
+        reviewImageRepository.deleteInBatch(reviewImages);
+        reviewPlayTogetherRepository.deleteInBatch(review.getReviewPlayTogetherEntities());
+
+        review.update(reviewUpdateDto);
+        addPlayTogetherFriendsToReview(review, reviewMember.getId(), reviewUpdateDto.getFriendIds());
+    }
+
+    // TODO: 2021-06-12 test
+    /**
+     * 테스트 목록
+     *
+     * 기능 테스트
+     * - 리뷰가 제대로 삭제 상태가 되는지 확인
+     * -- 삭제된 리뷰의 레코드 번호가 -1 로 잘 저장되는지 확인
+     *
+     * - 해당 회원이 생성한 리뷰의 레코드 번호만 잘 감소하는지 확인
+     * -- 다른 회원의 레코드 번호는 감소하면 안됨
+     *
+     * 오류 테스트
+     * - 리뷰를 찾을 수 없는 경우
+     * - 이미 삭제된 리뷰일 경우
+     */
+    @Transactional
+    public void deleteReview(Long reviewId) {
+        Review review = getReview(reviewId);
+        long updateCount = reviewQueryRepository.decreaseRecodeNumberWhereInGreaterThenThisRecodeNumber(reviewId, review.getRecodeNumber());
+        log.debug("decreaseRecodeNumberWhereInGreaterThenThisRecodeNumber update count : {}", updateCount);
+        review.delete();
     }
 
     private void addPlayTogetherFriendsToReview(Review review, Long memberId, List<Long> friendIds) {
@@ -126,18 +212,10 @@ public class ReviewService {
         });
     }
 
-    public QueryResults<Review> getThemeReviewList(Long themeId, ReviewSearchDto reviewSearchDto) {
-        return reviewQueryRepository.findListByTheme(themeId, reviewSearchDto);
-    }
-
-    @Transactional
-    public void addSurveyToReview(Long reviewId, ReviewSurveyCreateDto reviewSurveyCreateDto) {
-        Review review = getReview(reviewId);
-        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
-        ReviewSurvey reviewSurvey = ReviewSurvey.create(reviewSurveyCreateDto);
-        List<String> genreCodes = reviewSurveyCreateDto.getGenreCodes();
-        addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
-        review.setReviewSurvey(reviewSurvey);
+    private void throwExceptionIfReviewHasBeenDeleted(Review review) {
+        if (review.isDeleteYN()) {
+            throw new ManipulateDeletedReviewsException();
+        }
     }
 
     private void checkIfReviewCanAddSurvey(LocalDateTime reviewRegisterTimes,long periodForAddingSurveys) {
@@ -161,23 +239,15 @@ public class ReviewService {
         }
     }
 
-    @Transactional
-    public void updateSurveyFromReview(Long reviewId, ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
-        Review review = getReview(reviewId);
-
-        if (!isNotNull(review.getReviewSurvey())) {
-            throw new ReviewHasNotSurveyException();
-        }
-
-        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
-
-        review.updateSurvey(reviewSurveyUpdateDto);
-        updatePerceivedGenresFromReviewSurvey(review.getReviewSurvey(), reviewSurveyUpdateDto.getGenreCodes());
-    }
-
     private void updatePerceivedGenresFromReviewSurvey(ReviewSurvey reviewSurvey, List<String> genreCodes) {
         checkIfGenreCodeExists(genreCodes);
-        reviewPerceivedThemeGenreRepository.deleteByReviewSurvey(reviewSurvey);
+        reviewPerceivedThemeGenreRepository.deleteInBatch(reviewSurvey.getPerceivedThemeGenreEntities());
         addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
+    }
+
+    private void throwExceptionIfThemeHasBeenDeleted(Theme theme) {
+        if (theme.isDeleteYN()) {
+            throw new ManipulateDeletedThemeException();
+        }
     }
 }
