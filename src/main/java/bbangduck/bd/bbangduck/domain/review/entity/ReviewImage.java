@@ -23,16 +23,16 @@ public class ReviewImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
-    private Review review;
+    private ReviewDetail reviewDetail;
 
     private Long fileStorageId;
 
     private String fileName;
 
     @Builder
-    public ReviewImage(Long id, Review review, Long fileStorageId, String fileName) {
+    public ReviewImage(Long id, ReviewDetail reviewDetail, Long fileStorageId, String fileName) {
         this.id = id;
-        this.review = review;
+        this.reviewDetail = reviewDetail;
         this.fileStorageId = fileStorageId;
         this.fileName = fileName;
     }
@@ -44,16 +44,16 @@ public class ReviewImage {
                 .build();
     }
 
-    public void setReview(Review review) {
-        this.review = review;
+    public void setReviewDetail(ReviewDetail reviewDetail) {
+        this.reviewDetail = reviewDetail;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Review getReview() {
-        return review;
+    public ReviewDetail getReviewDetail() {
+        return reviewDetail;
     }
 
     public Long getFileStorageId() {

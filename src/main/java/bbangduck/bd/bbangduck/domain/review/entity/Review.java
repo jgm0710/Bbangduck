@@ -1,10 +1,8 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyUpdateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewUpdateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -19,8 +17,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -64,18 +60,18 @@ public class Review extends BaseEntityDateTime {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewPlayTogether> reviewPlayTogethers = new ArrayList<>();
 
-    /**
-     * 상세 리뷰
-     */
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    private List<ReviewImage> reviewImages = new ArrayList<>();
+//    /**
+//     * 상세 리뷰
+//     */
+//    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+//    private List<ReviewImage> reviewImages = new ArrayList<>();
+//
+//    @Column(length = 3000)
+//    private String comment;
 
-    @Column(length = 3000)
-    private String comment;
+    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
+    private ReviewDetail reviewDetail;
 
-    /**
-     * common
-     */
     @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
     private ReviewSurvey reviewSurvey;
 
@@ -85,7 +81,7 @@ public class Review extends BaseEntityDateTime {
     private boolean deleteYN;
 
     @Builder
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, String comment, long likeCount, LocalDateTime registerTimes, LocalDateTime updateTimes, boolean deleteYN) {
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, long likeCount, LocalDateTime registerTimes, LocalDateTime updateTimes, boolean deleteYN) {
         this.id = id;
         this.member = member;
         this.theme = theme;
@@ -95,7 +91,7 @@ public class Review extends BaseEntityDateTime {
         this.clearTime = clearTime;
         this.hintUsageCount = hintUsageCount;
         this.rating = rating;
-        this.comment = comment;
+//        this.comment = comment;
         this.likeCount = likeCount;
         this.deleteYN = deleteYN;
         super.registerTimes = registerTimes;
@@ -112,15 +108,15 @@ public class Review extends BaseEntityDateTime {
                 .clearTime(reviewCreateDto.getClearTime())
                 .hintUsageCount(reviewCreateDto.getHintUsageCount())
                 .rating(reviewCreateDto.getRating())
-                .comment(reviewCreateDto.getComment())
+//                .comment(reviewCreateDto.getComment())
                 .likeCount(0)
                 .deleteYN(false)
                 .build();
 
-        if (reviewCreateDto.reviewImagesExists()) {
-            List<ReviewImageDto> reviewImages = reviewCreateDto.getReviewImages();
-            reviewImages.forEach(reviewImageDto -> review.addReviewImage(ReviewImage.create(reviewImageDto)));
-        }
+//        if (reviewCreateDto.reviewImagesExists()) {
+//            List<ReviewImageDto> reviewImages = reviewCreateDto.getReviewImages();
+//            reviewImages.forEach(reviewImageDto -> review.addReviewImage(ReviewImage.create(reviewImageDto)));
+//        }
 
         return review;
     }
@@ -138,19 +134,10 @@ public class Review extends BaseEntityDateTime {
         this.reviewPlayTogethers.add(reviewPlayTogether);
     }
 
-    public void addReviewImage(ReviewImage reviewImage) {
-        this.reviewImages.add(reviewImage);
-        reviewImage.setReview(this);
-    }
-
-    public void addPerceivedThemeGenre(Genre genre) {
-//        ReviewPerceivedThemeGenre perceivedThemeGenre = ReviewPerceivedThemeGenre.builder()
-//                .review(this)
-//                .genre(genre)
-//                .build();
-//
-//        this.perceivedThemeGenres.add(perceivedThemeGenre);
-    }
+//    public void addReviewImage(ReviewImage reviewImage) {
+//        this.reviewImages.add(reviewImage);
+//        reviewImage.setReviewDetail(this);
+//    }
 
     public Long getId() {
         return id;
@@ -180,13 +167,13 @@ public class Review extends BaseEntityDateTime {
         return rating;
     }
 
-    public List<ReviewImage> getReviewImages() {
-        return reviewImages;
-    }
-
-    public String getComment() {
-        return comment;
-    }
+//    public List<ReviewImage> getReviewImages() {
+//        return reviewImages;
+//    }
+//
+//    public String getComment() {
+//        return comment;
+//    }
 
 
     public int getRecodeNumber() {
@@ -236,13 +223,13 @@ public class Review extends BaseEntityDateTime {
         this.clearTime = reviewUpdateDto.getClearTime();
         this.hintUsageCount = reviewUpdateDto.getHintUsageCount();
         this.rating = reviewUpdateDto.getRating();
-        this.comment = reviewUpdateDto.getComment();
+//        this.comment = reviewUpdateDto.getComment();
 
-        List<ReviewImageDto> reviewImageDtos = reviewUpdateDto.getReviewImages();
-        if (existsList(reviewImageDtos)) {
-            List<ReviewImage> reviewImages = reviewImageDtos.stream().map(ReviewImage::create).collect(Collectors.toList());
-            reviewImages.forEach(this::addReviewImage);
-        }
+//        List<ReviewImageDto> reviewImageDtos = reviewUpdateDto.getReviewImages();
+//        if (existsList(reviewImageDtos)) {
+//            List<ReviewImage> reviewImages = reviewImageDtos.stream().map(ReviewImage::create).collect(Collectors.toList());
+//            reviewImages.forEach(this::addReviewImage);
+//        }
     }
 
     public List<ReviewPlayTogether> getReviewPlayTogetherEntities() {
@@ -252,5 +239,14 @@ public class Review extends BaseEntityDateTime {
     public void delete() {
         this.deleteYN = true;
         this.recodeNumber = -1;
+    }
+
+    public ReviewDetail getReviewDetail() {
+        return reviewDetail;
+    }
+
+    public void setReviewDetail(ReviewDetail reviewDetail) {
+        this.reviewDetail = reviewDetail;
+        reviewDetail.setReview(this);
     }
 }

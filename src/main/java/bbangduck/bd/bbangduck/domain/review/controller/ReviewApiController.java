@@ -2,14 +2,9 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewResponseDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewUpdateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
-import bbangduck.bd.bbangduck.domain.review.exception.AddSurveysToReviewsCreatedByOtherMembersException;
-import bbangduck.bd.bbangduck.domain.review.exception.UpdateReviewCreatedByOtherMembersException;
-import bbangduck.bd.bbangduck.domain.review.exception.UpdateSurveyFromReviewCreatedByOtherMembersException;
+import bbangduck.bd.bbangduck.domain.review.exception.ReviewCreatedByOtherMembersException;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
@@ -47,16 +42,72 @@ public class ReviewApiController {
 
     private final ReviewProperties reviewProperties;
 
-//    @PostMapping("/details")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    public ResponseEntity addDetailToReview(
-//            @PathVariable Long reviewId,
-//            @RequestBody @Valid ReviewDetailCreateRequestDto requestDto,
-//            Errors errors,
-//            @CurrentUser Member currentMember
-//    ) {
-//
-//    }
+    // TODO: 2021-06-13 test
+    /**
+     * 기능 테스트
+     * - 201
+     * - 응답 코드 및 메시지 확인
+     * - 문서화
+     *
+     * 오류 테스트
+     * - validation
+     * -- 파일 저장소 ID 는 있으나 파일 이름이 없는 경우
+     * -- 파일 이름이 있으나 파일 저장소 ID 가 없는 경우
+     * - 다른 회원이 생성한 리뷰에 상세를 등록하는 경우
+     * - 인증되지 않은 사용자가 접근하는 경우
+     * - 탈퇴된 사용자가 접근하는 경우
+     */
+    @PostMapping("/details")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<Object>> addDetailToReview(
+            @PathVariable Long reviewId,
+            @RequestBody @Valid ReviewDetailCreateRequestDto requestDto,
+            Errors errors,
+            @CurrentUser Member currentMember
+    ) {
+        reviewValidator.validateAddDetailToReview(requestDto, errors);
+
+        Review findReview = reviewService.getReview(reviewId);
+        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.ADD_DETAIL_TO_REVIEW_CREATED_BY_OTHER_MEMBERS);
+
+        reviewService.addDetailToReview(reviewId, requestDto.toServiceDto());
+        URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(reviewId, currentMember)).toUri();
+
+        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.ADD_SURVEY_TO_REVIEW_SUCCESS, null));
+    }
+
+    // TODO: 2021-06-13 test
+    /**
+     * 기능 테스트
+     * - 204
+     * - 응답 코드, 메시지 확인
+     *
+     * 실패 테스트
+     * - validation
+     * -- 파일 저장소 ID 는 있으나 파일 이름이 없는 경우
+     * -- 파일 이름이 있으나 파일 저장소 ID 가 없는 경우
+     * - 다른 회원이 생성한 리뷰의 리뷰 상세를 수정하는 경우
+     * - 인증되지 않은 사용자가 접근하는 경우
+     * - 탈퇴된 사용자가 접근하는 경우
+     */
+    @PutMapping("/details")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<Object>> updateDetailFromReview(
+            @PathVariable Long reviewId,
+            @RequestBody @Valid ReviewDetailUpdateRequestDto requestDto,
+            Errors errors,
+            @CurrentUser Member currentMember
+    ) {
+        reviewValidator.validateUpdateDetailFromReview(requestDto, errors);
+
+        Review findReview = reviewService.getReview(reviewId);
+        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.UPDATE_DETAIL_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS);
+
+        reviewService.updateDetailFromReview(reviewId, requestDto.toServiceDto());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_DETAIL_FROM_REVIEW_SUCCESS, null));
+    }
+
 
     @GetMapping
     public ResponseEntity<ResponseDto<ReviewResponseDto>> getReview(
@@ -102,7 +153,7 @@ public class ReviewApiController {
      */
     @PutMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity updateReview(
+    public ResponseEntity<ResponseDto<Object>> updateReview(
             @PathVariable Long reviewId,
             @RequestBody @Valid ReviewUpdateRequestDto requestDto,
             Errors errors,
@@ -111,14 +162,18 @@ public class ReviewApiController {
         reviewValidator.validateUpdateReview(requestDto, errors);
 
         Review review = reviewService.getReview(reviewId);
-        Member reviewMember = review.getMember();
-        if (!reviewMember.getId().equals(currentMember.getId())) {
-            throw new UpdateReviewCreatedByOtherMembersException();
-        }
+        checkIsReviewCreatedByMe(currentMember, review, ResponseStatus.UPDATE_REVIEW_CREATED_BY_OTHER_MEMBERS);
 
         reviewService.updateReview(reviewId, requestDto.toServiceDto());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_REVIEW_SUCCESS, null));
+    }
+
+    private void checkIsReviewCreatedByMe(Member currentMember, Review review, ResponseStatus responseStatus) {
+        Member reviewMember = review.getMember();
+        if (!reviewMember.getId().equals(currentMember.getId())) {
+            throw new ReviewCreatedByOtherMembersException(responseStatus);
+        }
     }
 
 
@@ -133,10 +188,7 @@ public class ReviewApiController {
         reviewValidator.validateAddSurveyToReview(requestDto, errors);
 
         Review findReview = reviewService.getReview(reviewId);
-        Member reviewMember = findReview.getMember();
-        if (!reviewMember.getId().equals(currentMember.getId())) {
-            throw new AddSurveysToReviewsCreatedByOtherMembersException();
-        }
+        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.ADD_SURVEYS_TO_REVIEWS_CREATED_BY_OTHER_MEMBERS);
 
         reviewService.addSurveyToReview(reviewId, requestDto.toServiceDto());
 
@@ -155,10 +207,7 @@ public class ReviewApiController {
         reviewValidator.validateUpdateSurveyFromReview(requestDto, errors);
 
         Review findReview = reviewService.getReview(reviewId);
-        Member reviewMember = findReview.getMember();
-        if (!reviewMember.getId().equals(currentMember.getId())) {
-            throw new UpdateSurveyFromReviewCreatedByOtherMembersException();
-        }
+        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS);
 
         reviewService.updateSurveyFromReview(reviewId, requestDto.toServiceDto());
 

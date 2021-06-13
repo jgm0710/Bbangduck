@@ -13,7 +13,7 @@ import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQuer
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.exception.*;
@@ -145,9 +145,9 @@ public class ReviewService {
         Review review = getReview(reviewId);
         Member reviewMember = review.getMember();
 
-        List<ReviewImage> reviewImages = review.getReviewImages();
+//        List<ReviewImage> reviewImages = review.getReviewImages();
 
-        reviewImageRepository.deleteInBatch(reviewImages);
+//        reviewImageRepository.deleteInBatch(reviewImages);
         reviewPlayTogetherRepository.deleteInBatch(review.getReviewPlayTogetherEntities());
 
         review.update(reviewUpdateDto);
@@ -249,5 +249,46 @@ public class ReviewService {
         if (theme.isDeleteYN()) {
             throw new ManipulateDeletedThemeException();
         }
+    }
+
+    // TODO: 2021-06-13 test
+    /**
+     * 기능 테스트
+     * - 리뷰에 리뷰 상세가 잘 등록 되는지 확인
+     * -- 이미지가 잘 등록되는지 확인
+     * -- 코멘트가 잘 등록되는지 확인
+     *
+     * 실패 테스트
+     * - 리뷰가 삭제된 리뷰일 경우
+     * - 리뷰를 찾을 수 없는 경우
+     */
+    @Transactional
+    public void addDetailToReview(Long reviewId, ReviewDetailCreateDto reviewDetailCreateDto) {
+        Review review = getReview(reviewId);
+        ReviewDetail reviewDetail = ReviewDetail.create(reviewDetailCreateDto);
+        review.setReviewDetail(reviewDetail);
+    }
+
+    // TODO: 2021-06-13 test
+    /**
+     * 기능 테스트
+     * - 리뷰 상세가 잘 변경되는지 확인
+     * -- 기존에 있던 리뷰 이미지가 잘 삭제되는지
+     * -- 기존에 있었고 수정 후에도 있는 이미지가 잘 등록되어 있는지
+     * -- 새로 입력한 이미지가 잘 등록되어 있는지 확인
+     * -- 코멘트가 잘 변경되어 있는지 확인
+     *
+     * 실패 테스트
+     * - 리뷰를 찾을 수 없는 경우
+     * - 삭제된 리뷰일 경우
+     */
+    @Transactional
+    public void updateDetailFromReview(Long reviewId, ReviewDetailUpdateDto reviewDetailUpdateDto) {
+        Review review = getReview(reviewId);
+        ReviewDetail reviewDetail = review.getReviewDetail();
+
+        reviewImageRepository.deleteInBatch(reviewDetail.getReviewImages());
+
+        reviewDetail.update(reviewDetailUpdateDto);
     }
 }

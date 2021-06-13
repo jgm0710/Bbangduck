@@ -9,7 +9,6 @@ import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDt
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -1256,14 +1255,14 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .clearTime(LocalTime.of(1, 2, 19))
                 .hintUsageCount(5)
                 .rating(8)
-                .comment("테마가 너무 어렵네요 다음에는 꼭 성공하고 싶어요~")
+//                .comment("테마가 너무 어렵네요 다음에는 꼭 성공하고 싶어요~")
                 .likeCount(1027)
                 .build();
 
         member1DetailReview1.addPlayTogether(friends.get(0));
         member1DetailReview1.addPlayTogether(friends.get(1));
-        member1DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member1DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+//        member1DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+//        member1DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
         Review member2DetailReview1 = Review.builder()
                 .member(member2)
@@ -1274,14 +1273,14 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .clearTime(LocalTime.of(0, 38, 23))
                 .hintUsageCount(0)
                 .rating(6)
-                .comment("어렵다는 평이 있어서 걱정했는데 생각보다 시시해서 아쉬웠어요. 테마 자체는 재밌습니다 :)")
+//                .comment("어렵다는 평이 있어서 걱정했는데 생각보다 시시해서 아쉬웠어요. 테마 자체는 재밌습니다 :)")
                 .likeCount(682)
                 .build();
 
         member2DetailReview1.addPlayTogether(friends.get(3));
         member2DetailReview1.addPlayTogether(friends.get(4));
-        member2DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member2DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+//        member2DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+//        member2DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
         Review member3DetailReview1 = Review.builder()
                 .member(member3)
@@ -1292,14 +1291,14 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .clearTime(LocalTime.of(0, 58, 11))
                 .hintUsageCount(4)
                 .rating(9)
-                .comment("어렵긴 하지만 운이 좋아서 간신히 성공했네요 ㅎㅎ. 너무 재밌었습니다.")
+//                .comment("어렵긴 하지만 운이 좋아서 간신히 성공했네요 ㅎㅎ. 너무 재밌었습니다.")
                 .likeCount(721)
                 .build();
 
         member3DetailReview1.addPlayTogether(friends.get(0));
         member3DetailReview1.addPlayTogether(friends.get(1));
-        member3DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member3DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+//        member3DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+//        member3DetailReview1.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
         Review member1DetailReview2 = Review.builder()
                 .member(member1)
@@ -1310,14 +1309,14 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .clearTime(LocalTime.of(0, 47, 34))
                 .hintUsageCount(0)
                 .rating(6)
-                .comment("스토리가 풍부하고, 재밌었어요")
+//                .comment("스토리가 풍부하고, 재밌었어요")
                 .likeCount(556)
                 .build();
 
         member1DetailReview2.addPlayTogether(friends.get(0));
         member1DetailReview2.addPlayTogether(friends.get(1));
-        member1DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member1DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+//        member1DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+//        member1DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
         Review member2DetailReview2 = Review.builder()
                 .member(member2)
@@ -1328,14 +1327,14 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .clearTime(LocalTime.of(0, 34, 11))
                 .hintUsageCount(0)
                 .rating(4)
-                .comment("너무 시시했어요. 조금 더 어려운 난이도를 바랍니다.")
+//                .comment("너무 시시했어요. 조금 더 어려운 난이도를 바랍니다.")
                 .likeCount(10)
                 .build();
 
         member2DetailReview2.addPlayTogether(friends.get(0));
         member2DetailReview2.addPlayTogether(friends.get(1));
-        member2DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member2DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+//        member2DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+//        member2DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
         Review member3DetailReview2 = Review.builder()
                 .member(member3)
@@ -1346,14 +1345,14 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .clearTime(LocalTime.of(0, 59, 11))
                 .hintUsageCount(3)
                 .rating(6)
-                .comment("생각보다 어려워서 힘들었어요.")
+//                .comment("생각보다 어려워서 힘들었어요.")
                 .likeCount(45)
                 .build();
 
         member3DetailReview2.addPlayTogether(friends.get(0));
         member3DetailReview2.addPlayTogether(friends.get(1));
-        member3DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
-        member3DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
+//        member3DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile1.getId(), storedFile1.getFileName()));
+//        member3DetailReview2.addReviewImage(new ReviewImage(null, null, storedFile2.getId(), storedFile2.getFileName()));
 
         reviewRepository.save(member1SimpleReview1);
         reviewRepository.save(member2SimpleReview1);

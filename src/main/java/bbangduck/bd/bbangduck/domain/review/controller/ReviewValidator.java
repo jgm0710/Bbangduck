@@ -37,18 +37,6 @@ public class ReviewValidator {
         hasErrorsThrow(ResponseStatus.CREATE_REVIEW_NOT_VALID, errors);
     }
 
-    private void checkClearTime(Boolean clearYN, LocalTime clearTime, Errors errors) {
-        if (clearYN == true) {
-            if (!isNotNull(clearTime)) {
-                errors.rejectValue("clearTime", "NotNull", "테마를 클리어 했을 경우 클리어 시간을 기입해 주세요.");
-            }
-        } else {
-            if (isNotNull(clearTime)) {
-                errors.rejectValue("clearTime", "NotNeeded", "테마를 클리어하지 않았을 경우 클리어 시간을 필요로 하지 않습니다.");
-            }
-        }
-    }
-
     public void validateUpdateReview(ReviewUpdateRequestDto requestDto, Errors errors) {
         hasErrorsThrow(ResponseStatus.UPDATE_REVIEW_NOT_VALID, errors);
 
@@ -57,6 +45,18 @@ public class ReviewValidator {
         validateAccordingToReviewType(requestDto.getReviewType(), requestDto.getReviewImages(), requestDto.getComment(), errors);
 
         hasErrorsThrow(ResponseStatus.UPDATE_REVIEW_NOT_VALID, errors);
+    }
+
+    public void validateAddDetailToReview(ReviewDetailCreateRequestDto requestDto, Errors errors) {
+        validateReviewImages(requestDto.getReviewImages(), errors);
+
+        hasErrorsThrow(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID, errors);
+    }
+
+    public void validateUpdateDetailFromReview(ReviewDetailUpdateRequestDto requestDto, Errors errors) {
+        validateReviewImages(requestDto.getReviewImages(), errors);
+
+        hasErrorsThrow(ResponseStatus.UPDATE_DETAIL_FROM_REVIEW_NOT_VALID, errors);
     }
 
     public void validateAddSurveyToReview(ReviewSurveyCreateRequestDto requestDto, Errors errors) {
@@ -81,6 +81,18 @@ public class ReviewValidator {
 
 
 
+
+    private void checkClearTime(Boolean clearYN, LocalTime clearTime, Errors errors) {
+        if (clearYN) {
+            if (!isNotNull(clearTime)) {
+                errors.rejectValue("clearTime", "NotNull", "테마를 클리어 했을 경우 클리어 시간을 기입해 주세요.");
+            }
+        } else {
+            if (isNotNull(clearTime)) {
+                errors.rejectValue("clearTime", "NotNeeded", "테마를 클리어하지 않았을 경우 클리어 시간을 필요로 하지 않습니다.");
+            }
+        }
+    }
 
     private void validateAccordingToReviewType(ReviewType reviewType, List<ReviewImageRequestDto> reviewImages, String comment, Errors errors) {
         switch (reviewType) {
@@ -146,5 +158,6 @@ public class ReviewValidator {
             }
         }
     }
+
 }
 

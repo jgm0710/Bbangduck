@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.controller.dto;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import lombok.*;
 
@@ -29,9 +30,10 @@ public class DetailReviewResponseDto extends SimpleReviewResponseDto {
 
     protected DetailReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
         super(review, currentMember, existReviewLike, periodForAddingSurveys);
+        ReviewDetail reviewDetail = review.getReviewDetail();
 
-        this.reviewImages = convertReviewImages(review.getReviewImages());
-        this.comment = review.getComment();
+        this.reviewImages = convertReviewImages(reviewDetail.getReviewImages());
+        this.comment = reviewDetail.getComment();
     }
 
     private List<ReviewImageResponseDto> convertReviewImages(List<ReviewImage> reviewImages) {
