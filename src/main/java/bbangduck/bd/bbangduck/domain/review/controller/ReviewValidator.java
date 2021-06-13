@@ -31,8 +31,6 @@ public class ReviewValidator {
 
         checkClearTime(requestDto.getClearYN(), requestDto.getClearTime(), errors);
         checkPlayTogetherFriendsCount(requestDto.getFriendIds(), reviewProperties.getPlayTogetherFriendsCountLimit(), errors);
-        ReviewType reviewType = requestDto.getReviewType();
-        validateAccordingToReviewType(reviewType, requestDto.getReviewImages(), requestDto.getComment(), errors);
 
         hasErrorsThrow(ResponseStatus.CREATE_REVIEW_NOT_VALID, errors);
     }
@@ -96,7 +94,7 @@ public class ReviewValidator {
 
     private void validateAccordingToReviewType(ReviewType reviewType, List<ReviewImageRequestDto> reviewImages, String comment, Errors errors) {
         switch (reviewType) {
-            case SIMPLE:
+            case BASE:
                 simpleReviewValidate(errors, reviewImages, comment);
                 break;
             case DETAIL:

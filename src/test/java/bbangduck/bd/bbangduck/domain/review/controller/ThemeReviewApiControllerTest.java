@@ -54,7 +54,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -80,16 +80,11 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         requestFields(
-                                fieldWithPath("reviewType").description("생성하는 리뷰가 간단 리뷰인지, 상세 리뷰인지, 추가 설문 작성 리뷰인지 명시합니다. +\n" +
-                                        "ReviewType 에 따라서 입력 규칙이 달라집니다. +\n" +
-                                        REVIEW_TYPE_ENUM_LIST),
                                 fieldWithPath("clearYN").description("테마 클리어 여부를 기입"),
                                 fieldWithPath("clearTime").description("테마를 클리어하는데 걸린 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입"),
                                 fieldWithPath("rating").description("테마에 대한 평점 기입"),
-                                fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입"),
-                                fieldWithPath("reviewImages").description("[null]"),
-                                fieldWithPath("comment").description("[null]")
+                                fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입")
                         ),
                         responseFields(
                                 fieldWithPath("status").description(STATUS_DESCRIPTION),
@@ -114,7 +109,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
         reviewCreateRequestDto.setClearYN(true);
         reviewCreateRequestDto.setClearTime(null);
 
@@ -152,7 +147,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
         reviewCreateRequestDto.setClearYN(false);
         reviewCreateRequestDto.setClearTime(LocalTime.of(0, 29, 44));
 
@@ -189,7 +184,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createDeletedThemeSample();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -219,7 +214,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(null);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -240,68 +235,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         ;
 
     }
-
-    @Test
-    @DisplayName("상세 리뷰 생성")
-    public void createDetailReview() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createThemeSample();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-        //then
-        perform
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
-                .andDo(document(
-                        "create-detail-review-success",
-                        requestHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
-                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
-                        ),
-                        requestFields(
-                                fieldWithPath("reviewType").description("생성하는 리뷰가 간단 리뷰인지, 상세 리뷰인지, 추가 설문 작성 리뷰인지 명시합니다. +\n" +
-                                        "ReviewType 에 따라서 입력 규칙이 달라집니다. +\n" +
-                                        REVIEW_TYPE_ENUM_LIST),
-                                fieldWithPath("clearYN").description("테마 클리어 여부를 기입"),
-                                fieldWithPath("clearTime").description("테마를 클리어하는데 걸린 시간 기입"),
-                                fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입"),
-                                fieldWithPath("rating").description("테마에 대한 평점 기입"),
-                                fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입"),
-                                fieldWithPath("reviewImages[0].fileStorageId").description("리뷰에 등록할 이미지 파일의 파일 저장소 ID 기입"),
-                                fieldWithPath("reviewImages[0].fileName").description("리뷰에 등록할 이미지 파일의 파일 이름 기입"),
-                                fieldWithPath("comment").description("테마에 대한 상세 코멘트 기입")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-                        )
-                ))
-        ;
-
-    }
-
 
 
     @Test
@@ -358,310 +291,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
     }
 
     @Test
-    @DisplayName("간단 리뷰 생성 - 리뷰 생성 시 심플 리뷰인데 그보다 상위 리뷰의 정보를 입력했을 경우")
-    public void createSimpleReview_NotSimple() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createThemeSample();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
-        reviewCreateRequestDto.setReviewType(ReviewType.SIMPLE);
-
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
-                .andDo(document(
-                        "create-simple-review-request-over-data",
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
-                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
-                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
-                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-                        )
-                ))
-        ;
-
-    }
-
-//    @Test
-//    @DisplayName("상세 리뷰 생성 - 추가 설문에 관한 정보가 입력 됐을 경우")
-//    public void createDetailReview_IsDetailReview() throws Exception {
-//        //given
-//        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-//        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-//
-//        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-//
-//
-//        Theme theme = createTheme();
-//
-//        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-//
-//        List<String> genreCodes = createGenreCodes();
-//
-//        ReviewCreateRequestDto reviewCreateRequestDto = createDeepReviewCreateRequestDto(friendIds, reviewImageRequestDtos, genreCodes);
-//        reviewCreateRequestDto.setReviewType(ReviewType.DETAIL);
-//
-//        TokenDto tokenDto = authenticationService.signIn(signUpId);
-//
-//        //when
-//        ResultActions perform = mockMvc.perform(
-//                post("/api/themes/" + theme.getId() + "/reviews")
-//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-//        ).andDo(print());
-//
-//
-//        //then
-//        perform
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getStatus()))
-//                .andExpect(jsonPath("data[0].objectName").exists())
-//                .andExpect(jsonPath("data[0].code").exists())
-//                .andExpect(jsonPath("data[0].defaultMessage").exists())
-//                .andExpect(jsonPath("data[0].field").doesNotExist())
-//                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getMessage()))
-//                .andDo(document(
-//                        "create-detail-review-request-over-data",
-//                        responseFields(
-//                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-//                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
-//                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
-//                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
-//                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
-//                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-//                        )
-//                ))
-//        ;
-//
-//    }
-
-    @Test
-    @DisplayName("상세 리뷰 생성 - 리뷰 생성 시 디테일 리뷰인데 코멘트를 입력하지 않았을 경우")
-    public void createDetailReview_CommentIsBlank() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createThemeSample();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
-        reviewCreateRequestDto.setComment("");
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
-                .andDo(document(
-                        "create-detail-review-comment-empty",
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
-                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
-                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
-                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-                        )
-                ))
-        ;
-
-    }
-
-    @Test
-    @DisplayName("상세 리뷰 생성 - 리뷰 생성 시 디테일 리뷰인데 이미지에 관한 정보를 아예 입력하지 않았을 경우 - 성공해야함")
-    public void createDetailReview_ReviewImagesIsEmpty() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createThemeSample();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
-        reviewCreateRequestDto.setReviewImages(null);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
-        ;
-
-
-    }
-
-    @Test
-    @DisplayName("상세 리뷰 생성 - 리뷰 생성 시 디테일 리뷰인데 이미지에 관한 정보 입력 시 파일 저장소 ID 를 빼먹은 경우")
-    public void createDetailReview_ReviewImageFileStorageIdIsNull() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createThemeSample();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        reviewImageRequestDtos.get(0).setFileStorageId(null);
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
-        ;
-
-    }
-
-    @Test
-    @DisplayName("상세 리뷰 생성 - 리뷰 생성 시 디테일 리뷰인데 이미지에 관한 정보 입력 시 파일 이름만 빼먹은 경우")
-    public void createDetailReview_ReviewImageFileNameIsBlank() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-
-
-        Theme theme = createThemeSample();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        reviewImageRequestDtos.get(0).setFileName("");
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/themes/" + theme.getId() + "/reviews")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
-        ).andDo(print());
-
-
-        //then
-        perform
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
-                .andExpect(jsonPath("data[0].objectName").exists())
-                .andExpect(jsonPath("data[0].code").exists())
-                .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
-                .andDo(document(
-                        "create-detail-review-image-info-wrong",
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data[0].objectName").description(OBJECT_NAME_DESCRIPTION),
-                                fieldWithPath("data[0].code").description(CODE_DESCRIPTION),
-                                fieldWithPath("data[0].defaultMessage").description(DEFAULT_MESSAGE_DESCRIPTION),
-                                fieldWithPath("data[0].field").description(FIELD_DESCRIPTION),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
-                        )
-                ))
-        ;
-
-    }
-
-
-
-    @Test
     @DisplayName("리뷰 생성 - 인증되지 않은 회원이 리뷰 작성")
     public void createReview_Unauthorized() throws Exception {
         //given
@@ -677,7 +306,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<String> genreCodes = createGenreCodes();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -718,7 +347,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<String> genreCodes = createGenreCodes();
 
-        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -766,11 +395,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -807,11 +432,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -848,11 +469,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        List<String> genreCodes = createGenreCodes();
-
-        ReviewCreateRequestDto reviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -1154,7 +771,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         Review member1SimpleReview1 = Review.builder()
                 .member(member1)
                 .theme(theme)
-                .reviewType(ReviewType.SIMPLE)
+                .reviewType(ReviewType.BASE)
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 41, 19))
@@ -1168,7 +785,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         Review member2SimpleReview1 = Review.builder()
                 .member(member2)
                 .theme(theme)
-                .reviewType(ReviewType.SIMPLE)
+                .reviewType(ReviewType.BASE)
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 51, 11))
@@ -1182,7 +799,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         Review member3SimpleReview1 = Review.builder()
                 .member(member3)
                 .theme(theme)
-                .reviewType(ReviewType.SIMPLE)
+                .reviewType(ReviewType.BASE)
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 41, 19))
@@ -1197,7 +814,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         Review member1SimpleReview2 = Review.builder()
                 .member(member1)
                 .theme(theme)
-                .reviewType(ReviewType.SIMPLE)
+                .reviewType(ReviewType.BASE)
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 46, 29))
@@ -1211,7 +828,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         Review member2SimpleReview2 = Review.builder()
                 .member(member2)
                 .theme(theme)
-                .reviewType(ReviewType.SIMPLE)
+                .reviewType(ReviewType.BASE)
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 59, 12))
@@ -1225,7 +842,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         Review member3SimpleReview2 = Review.builder()
                 .member(member3)
                 .theme(theme)
-                .reviewType(ReviewType.SIMPLE)
+                .reviewType(ReviewType.BASE)
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 51, 29))

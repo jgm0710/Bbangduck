@@ -21,7 +21,7 @@ public class ReviewResponseUtils {
         ReviewSurvey reviewSurvey = review.getReviewSurvey();
 
         switch (review.getReviewType()) {
-            case SIMPLE:
+            case BASE:
                 return isNotNull(reviewSurvey) ?
                         SimpleAndSurveyReviewResponseDto.convert(review, currentMember, existsReviewLike, periodForAddingSurveys) :
                         SimpleReviewResponseDto.convert(review, currentMember, existsReviewLike, periodForAddingSurveys);

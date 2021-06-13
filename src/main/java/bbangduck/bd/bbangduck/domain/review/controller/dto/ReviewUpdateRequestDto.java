@@ -37,7 +37,6 @@ public class ReviewUpdateRequestDto {
     @NotNull(message = "게임 클리어 여부를 기입해주세요.")
     private Boolean clearYN;
 
-    // TODO: 2021-06-12 clearYN 에 따른 validation 규칙 추가
     private LocalTime clearTime;
 
     @NotNull(message = "사용한 힌트 개수를 기입해 주세요.")

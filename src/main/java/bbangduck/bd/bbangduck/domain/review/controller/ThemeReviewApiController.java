@@ -57,11 +57,6 @@ public class ThemeReviewApiController {
             Errors errors,
             @CurrentUser Member currentMember
     ) {
-        // TODO: 2021-06-12 validation 규칙 변경 및 문서화 적용
-        /**
-         * clearYN 이 true 이면 clear time 이 있어야하고,
-         * clearYN 이 false 이면 clear time 이 없어도 됨
-         */
         reviewValidator.validateCreateView(requestDto, errors);
 
         Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());

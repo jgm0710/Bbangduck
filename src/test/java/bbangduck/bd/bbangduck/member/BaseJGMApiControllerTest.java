@@ -53,8 +53,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Disabled
 public class BaseJGMApiControllerTest extends BaseControllerTest {
@@ -133,12 +131,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
     @Autowired
     protected ShopRepository shopRepository;
-
-    protected final List<String> REVIEW_TYPE_ENUM_LIST = Stream.of(ReviewType.values()).map(Enum::name).collect(Collectors.toList());
-    protected final List<String> DIFFICULTY_ENUM_LIST = Stream.of(Difficulty.values()).map(Enum::name).collect(Collectors.toList());
-    protected final List<String> HORROR_GRADE_ENUM_LIST = Stream.of(HorrorGrade.values()).map(Enum::name).collect(Collectors.toList());
-    protected final List<String> ACTIVITY_ENUM_LIST = Stream.of(Activity.values()).map(Enum::name).collect(Collectors.toList());
-    protected final List<String> SATISFACTION_ENUM_LIST = Stream.of(Satisfaction.values()).map(Enum::name).collect(Collectors.toList());
 
     protected static int REFRESH_TOKEN_EXPIRED_DATE;
 
@@ -459,9 +451,9 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return reviewImageRequestDtos;
     }
 
-    protected ReviewCreateRequestDto createSimpleReviewCreateRequestDto(List<Long> friendIds) {
+    protected ReviewCreateRequestDto createReviewCreateRequestDto(List<Long> friendIds) {
         return ReviewCreateRequestDto.builder()
-                .reviewType(ReviewType.SIMPLE)
+//                .reviewType(ReviewType.BASE)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
                 .hintUsageCount(1)
@@ -470,18 +462,18 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .build();
     }
 
-    protected ReviewCreateRequestDto createDetailReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos) {
-        return ReviewCreateRequestDto.builder()
-                .reviewType(ReviewType.DETAIL)
-                .clearYN(true)
-                .clearTime(LocalTime.of(0, 45, 11))
-                .hintUsageCount(1)
-                .rating(6)
-                .friendIds(friendIds)
-                .reviewImages(reviewImageRequestDtos)
-                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
-                .build();
-    }
+//    protected ReviewCreateRequestDto createDetailReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos) {
+//        return ReviewCreateRequestDto.builder()
+//                .reviewType(ReviewType.DETAIL)
+//                .clearYN(true)
+//                .clearTime(LocalTime.of(0, 45, 11))
+//                .hintUsageCount(1)
+//                .rating(6)
+//                .friendIds(friendIds)
+//                .reviewImages(reviewImageRequestDtos)
+//                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
+//                .build();
+//    }
 
     protected ReviewSurveyCreateRequestDto createReviewSurveyCreateRequestDto(List<String> genreCodes) {
         return ReviewSurveyCreateRequestDto.builder()
@@ -522,7 +514,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
     protected ReviewUpdateRequestDto createSimpleReviewUpdateRequestDto(List<Long> friendIds) {
         return ReviewUpdateRequestDto.builder()
-                .reviewType(ReviewType.SIMPLE)
+                .reviewType(ReviewType.BASE)
                 .clearYN(false)
                 .clearTime(null)
                 .hintUsageCount(3)
@@ -534,7 +526,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     }
 
     protected String createMacroComment() {
-        String macroComment = "this is macro \n" +
+        return "this is macro \n" +
                 "this is macro \n" +
                 "this is macro \n" +
                 "this is macro \n" +
@@ -791,6 +783,12 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 "this is macro \n" +
                 "this is macro \n" +
                 "this is macro ";
-        return macroComment;
+    }
+
+    protected ReviewDetailCreateRequestDto createReviewDetailCreateRequestDto(List<ReviewImageRequestDto> reviewImageRequestDtos) {
+        return ReviewDetailCreateRequestDto.builder()
+                .reviewImages(reviewImageRequestDtos)
+                .comment("test review detail comment")
+                .build();
     }
 }

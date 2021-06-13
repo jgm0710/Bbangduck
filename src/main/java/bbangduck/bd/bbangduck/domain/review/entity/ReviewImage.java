@@ -22,7 +22,7 @@ public class ReviewImage {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "review_detail_id")
     private ReviewDetail reviewDetail;
 
     private Long fileStorageId;

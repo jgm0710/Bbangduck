@@ -87,6 +87,19 @@
         </createTable>
     </changeSet>
 
+    <!-- 리뷰 테이블에서 리뷰 설문에 해당하는 컬럼 제거-->
+    <changeSet  author="jgm (generated)-docs"  id="dropColumn-review-survey-from-review">
+        <dropColumn
+                     tableName="review">
+            <column  name="perceived_difficulty"/>
+            <column  name="perceived_horror_grade"/>
+            <column  name="perceived_activity"/>
+            <column  name="scenario_satisfaction"/>
+            <column  name="interior_satisfaction"/>
+            <column  name="problem_configuration_satisfaction"/>
+        </dropColumn>
+    </changeSet>
+
     <!-- 리뷰 체감 장르 테이블의 review_id 와 연결된 외례키를 review_survey 테이블의 review_survey_id 와 연걸하기 위해 컬럼명 변경 -->
     <changeSet author="jgm (alternated)" id="renameColumn-review_id-To-review_survey_id">
         <renameColumn columnDataType="BIGINT"
@@ -103,7 +116,7 @@
     </changeSet>
 
     <!-- 리뷰 체감 장르 테이블과 리뷰 테이블 사이의 외례키 인덱스 삭제 -->
-    <changeSet author="liquibase-docs" id="dropIndex-example">
+    <changeSet author="jgm (alternated)" id="dropIndex-FK_review_TO_review_perceived_theme_genre_1">
         <dropIndex indexName="FK_review_TO_review_perceived_theme_genre_1"
                    tableName="review_perceived_theme_genre"/>
     </changeSet>
@@ -122,6 +135,82 @@
                                  constraintName="FK_review_survey_TO_review_perceived_theme_genre_1" deferrable="false"
                                  initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
                                  referencedColumnNames="review_survey_id" referencedTableName="review_survey"
+                                 validate="true"/>
+    </changeSet>
+
+    <!-- 리뷰 상세 테이블 생성 -->
+    <changeSet author="jgm (generated)" id="createTable-review_detail">
+        <createTable tableName="review_detail">
+            <column autoIncrement="true" name="review_detail_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="review_id" type="BIGINT"/>
+            <column name="comment" type="VARCHAR(4000)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="register_times" type="timestamp"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="update_times" type="timestamp"/>
+        </createTable>
+    </changeSet>
+
+    <!-- 리뷰에서 리뷰 상세에 해당하는 컬럼 제거 -->
+    <changeSet  author="jgm (generated)-docs"  id="dropColumn-review-detail-from-review">
+        <dropColumn
+                tableName="review">
+            <column  name="comment"/>
+        </dropColumn>
+    </changeSet>
+
+    <!-- 리뷰 to 리뷰 상세 외례키 인덱스 생성-->
+    <changeSet author="jgm (generated)" id="createIndex-FK_review_TO_review_detail_1">
+        <createIndex indexName="FK_review_TO_review_detail_1"
+                     tableName="review_detail">
+            <column name="review_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 리뷰 to 리뷰 상세 외례키 생성-->
+    <changeSet author="jgm (generated)" id="addForeignKeyConstraint-FK_review_TO_review_detail_1">
+        <addForeignKeyConstraint baseColumnNames="review_id" baseTableName="review_detail"
+                                 constraintName="FK_review_TO_review_detail_1" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="review_id" referencedTableName="review"
+                                 validate="true"/>
+    </changeSet>
+
+    <!-- 리뷰 이미지 테이블의 review_id 외례키를 review_detail_id 외례키로 변경하기 위해 컬럼 이름 변경 -->
+    <changeSet author="jgm (alternated)" id="renameColumn-review_id-To-review_detail_id">
+        <renameColumn columnDataType="BIGINT"
+                      newColumnName="review_detail_id"
+                      oldColumnName="review_id"
+                      tableName="review_image"/>
+    </changeSet>
+
+    <!-- 리뷰 to 리뷰 이미지 외례키 제거-->
+    <changeSet author="jgm (alternated)" id="dropForeignKeyConstraint-FK_review_TO_review_image_1">
+        <dropForeignKeyConstraint
+                baseTableName="review_image"
+                constraintName="FK_review_TO_review_image_1"/>
+    </changeSet>
+
+    <!-- 리뷰 to 리뷰 이미지 외례키 인덱스 제거-->
+    <changeSet author="jgm (alternated)" id="dropIndex-FK_review_TO_review_image_1">
+        <dropIndex indexName="FK_review_TO_review_image_1"
+                   tableName="review_image"/>
+    </changeSet>
+
+    <!-- 리뷰 상세 to 리뷰 이미지 외례키 인덱스 생성-->
+    <changeSet author="jgm (generated)" id="createIndex-FK_review_detail_TO_review_image_1">
+        <createIndex indexName="FK_review_detail_TO_review_image_1"
+                     tableName="review_image">
+            <column name="review_detail_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 리뷰 상세 to 리뷰 이미지 외례키 생성 -->
+    <changeSet author="jgm (generated)" id="addForeignKeyConstraint-FK_review_detail_TO_review_image_1">
+        <addForeignKeyConstraint baseColumnNames="review_detail_id" baseTableName="review_image"
+                                 constraintName="FK_review_detail_TO_review_image_1" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="review_detail_id" referencedTableName="review_detail"
                                  validate="true"/>
     </changeSet>
 

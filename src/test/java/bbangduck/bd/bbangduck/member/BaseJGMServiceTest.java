@@ -277,28 +277,11 @@ public class BaseJGMServiceTest extends BaseTest {
         storedFiles.forEach(storedFile -> reviewImageDtoList.add(new ReviewImageDto(storedFile.getId(), storedFile.getFileName())));
 
         return ReviewCreateDto.builder()
-                .reviewType(ReviewType.DETAIL)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
                 .hintUsageCount(1)
                 .rating(6)
                 .friendIds(friendIds)
-                .reviewImages(reviewImageDtoList)
-                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n" +
-                        "일반모드로 하실분들은 2인이 최적입니다.")
-                .build();
-    }
-
-    protected ReviewCreateRequestDto createDetailReviewCreateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos) {
-        return ReviewCreateRequestDto.builder()
-                .reviewType(ReviewType.DETAIL)
-                .clearYN(true)
-                .clearTime(LocalTime.of(0, 45, 11))
-                .hintUsageCount(1)
-                .rating(6)
-                .friendIds(friendIds)
-                .reviewImages(reviewImageRequestDtos)
-                .comment("2인. 입장전에 해주신 설명에대한 믿음으로 함정에빠져버림..\n 일반모드로 하실분들은 2인이 최적입니다.")
                 .build();
     }
 
@@ -441,9 +424,8 @@ public class BaseJGMServiceTest extends BaseTest {
         return themeRepository.save(theme);
     }
 
-    protected ReviewCreateRequestDto createSimpleReviewCreateRequestDto(List<Long> friendIds) {
+    protected ReviewCreateRequestDto createReviewCreateRequestDto(List<Long> friendIds) {
         return ReviewCreateRequestDto.builder()
-                .reviewType(ReviewType.SIMPLE)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
                 .hintUsageCount(1)
@@ -491,7 +473,7 @@ public class BaseJGMServiceTest extends BaseTest {
 
     protected ReviewUpdateRequestDto createSimpleReviewUpdateRequestDto(List<Long> friendIds) {
         return ReviewUpdateRequestDto.builder()
-                .reviewType(ReviewType.SIMPLE)
+                .reviewType(ReviewType.BASE)
                 .clearYN(false)
                 .clearTime(null)
                 .hintUsageCount(3)
@@ -532,6 +514,11 @@ public class BaseJGMServiceTest extends BaseTest {
 
     }
 
-
+    protected ReviewDetailCreateRequestDto createReviewDetailCreateRequestDto(List<ReviewImageRequestDto> reviewImageRequestDtos) {
+        return ReviewDetailCreateRequestDto.builder()
+                .reviewImages(reviewImageRequestDtos)
+                .comment("test review detail comment")
+                .build();
+    }
 
 }

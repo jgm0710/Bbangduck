@@ -10,6 +10,8 @@ import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.exception.ManipulateDeletedReviewsException;
@@ -714,7 +716,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -765,7 +767,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -803,7 +805,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -837,7 +839,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -872,7 +874,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -906,7 +908,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -939,7 +941,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> oldFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(1));
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Theme theme = createThemeSample();
 
@@ -972,15 +974,16 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         assertEquals(reviewUpdateRequestDto.getClearTime(), findReview.getClearTime());
         assertEquals(reviewUpdateRequestDto.getHintUsageCount(), findReview.getHintUsageCount());
         assertEquals(reviewUpdateRequestDto.getRating(), findReview.getRating());
-//        assertEquals(reviewUpdateRequestDto.getComment(), findReview.getComment());
+        ReviewDetail findReviewReviewDetail = findReview.getReviewDetail();
+        assertEquals(reviewUpdateRequestDto.getComment(), findReviewReviewDetail.getComment());
 
         List<Member> playTogetherMembers = findReview.getPlayTogetherMembers();
         assertTrue(playTogetherMembers.stream().anyMatch(member -> member.getId().equals(signUpMemberFriendsIds.get(0))), "수정된 리뷰에 등록된 친구 목록에는 0 번 친구가 포함되어 있어야 한다.");
         assertTrue(playTogetherMembers.stream().noneMatch(member -> member.getId().equals(signUpMemberFriendsIds.get(1))), "수정된 리뷰에 등록된 친구 목록에는 1 번 친구가 포함되어 있지 않아야 한다.");
         assertTrue(playTogetherMembers.stream().anyMatch(member -> member.getId().equals(signUpMemberFriendsIds.get(2))), "수정된 리뷰에 등록된 친구 목록에는 2 번 친구가 포함되어 있어야 한다.");
 
-//        List<ReviewImage> reviewImages = findReview.getReviewImages();
-//        assertTrue(reviewImages.stream().anyMatch(reviewImage -> reviewImage.getFileStorageId().equals(storedFile.getId())), "수정된 리뷰에 등록된 이미지에는 수정 요청 시 기입한 이미지 파일에 대한 정보가 있어야 한다.");
+        List<ReviewImage> reviewImages = findReviewReviewDetail.getReviewImages();
+        assertTrue(reviewImages.stream().anyMatch(reviewImage -> reviewImage.getFileStorageId().equals(storedFile.getId())), "수정된 리뷰에 등록된 이미지에는 수정 요청 시 기입한 이미지 파일에 대한 정보가 있어야 한다.");
 
     }
 
@@ -996,9 +999,12 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
+        reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
 
         ReviewUpdateRequestDto reviewUpdateRequestDto = createSimpleReviewUpdateRequestDto(friendIds);
 
@@ -1046,9 +1052,12 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<Long> oldFriendIds = List.of(friendIds.get(0), friendIds.get(1));
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(oldFriendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
+        reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendIds.get(1), friendIds.get(2));
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
@@ -1096,7 +1105,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> oldFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(1));
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Theme theme = createThemeSample();
 
@@ -1140,7 +1149,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> oldFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(1));
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Theme theme = createThemeSample();
 
@@ -1177,7 +1186,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<Long> oldFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(1));
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Theme theme = createThemeSample();
 

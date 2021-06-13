@@ -12,10 +12,9 @@ import bbangduck.bd.bbangduck.domain.member.repository.MemberFriendQueryReposito
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.domain.review.entity.Review;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
+import bbangduck.bd.bbangduck.domain.review.entity.*;
 import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.*;
 import bbangduck.bd.bbangduck.domain.review.repository.*;
 import bbangduck.bd.bbangduck.domain.review.service.dto.*;
@@ -72,6 +71,8 @@ public class ReviewService {
 
     private final ReviewPlayTogetherRepository reviewPlayTogetherRepository;
 
+    private final ReviewDetailRepository reviewDetailRepository;
+
     @Transactional
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
@@ -88,6 +89,48 @@ public class ReviewService {
         return review.getId();
     }
 
+    // TODO: 2021-06-13 test
+    /**
+     * 기능 테스트
+     * - 리뷰에 리뷰 상세가 잘 등록 되는지 확인
+     * -- 이미지가 잘 등록되는지 확인
+     * -- 코멘트가 잘 등록되는지 확인
+     * - 리뷰 타입이 바뀌는지 확인
+     *
+     * 실패 테스트
+     * - 리뷰가 삭제된 리뷰일 경우
+     * - 리뷰를 찾을 수 없는 경우
+     * - 이미 리뷰 상세가 등록되어 있는 리뷰일 경우
+     */
+    @Transactional
+    public void addDetailToReview(Long reviewId, ReviewDetailCreateDto reviewDetailCreateDto) {
+        Review review = getReview(reviewId);
+
+        if (isNotNull(review.getReviewDetail())) {
+            throw new DetailIsAlreadyRegisteredInReviewException();
+        }
+
+        ReviewDetail reviewDetail = ReviewDetail.create(reviewDetailCreateDto);
+        review.addReviewDetail(reviewDetail);
+    }
+
+    // TODO: 2021-06-13 이미 설문이 등록된 리뷰일 경우 예외 발생 테스트 구현
+    @Transactional
+    public void addSurveyToReview(Long reviewId, ReviewSurveyCreateDto reviewSurveyCreateDto) {
+        Review review = getReview(reviewId);
+
+        if (isNotNull(review.getReviewSurvey())) {
+            throw new SurveyIsAlreadyRegisteredInReviewException();
+        }
+
+        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
+
+        ReviewSurvey reviewSurvey = ReviewSurvey.create(reviewSurveyCreateDto);
+        addPerceivedGenresToReviewSurvey(reviewSurvey, reviewSurveyCreateDto.getGenreCodes());
+
+        review.setReviewSurvey(reviewSurvey);
+    }
+
     public Review getReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
         throwExceptionIfReviewHasBeenDeleted(review);
@@ -96,29 +139,6 @@ public class ReviewService {
 
     public QueryResults<Review> getThemeReviewList(Long themeId, ReviewSearchDto reviewSearchDto) {
         return reviewQueryRepository.findListByTheme(themeId, reviewSearchDto);
-    }
-
-    @Transactional
-    public void addSurveyToReview(Long reviewId, ReviewSurveyCreateDto reviewSurveyCreateDto) {
-        Review review = getReview(reviewId);
-        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
-        ReviewSurvey reviewSurvey = ReviewSurvey.create(reviewSurveyCreateDto);
-        List<String> genreCodes = reviewSurveyCreateDto.getGenreCodes();
-        addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
-        review.setReviewSurvey(reviewSurvey);
-    }
-
-    @Transactional
-    public void updateSurveyFromReview(Long reviewId, ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
-        Review review = getReview(reviewId);
-        if (!isNotNull(review.getReviewSurvey())) {
-            throw new ReviewHasNotSurveyException();
-        }
-
-        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
-
-        review.updateSurvey(reviewSurveyUpdateDto);
-        updatePerceivedGenresFromReviewSurvey(review.getReviewSurvey(), reviewSurveyUpdateDto.getGenreCodes());
     }
 
     /**
@@ -145,16 +165,75 @@ public class ReviewService {
         Review review = getReview(reviewId);
         Member reviewMember = review.getMember();
 
-//        List<ReviewImage> reviewImages = review.getReviewImages();
+        review.clearDetail(reviewDetailRepository);
+        review.clearPlayTogether(reviewPlayTogetherRepository);
 
-//        reviewImageRepository.deleteInBatch(reviewImages);
-        reviewPlayTogetherRepository.deleteInBatch(review.getReviewPlayTogetherEntities());
-
-        review.update(reviewUpdateDto);
+        review.updateBase(reviewUpdateDto);
         addPlayTogetherFriendsToReview(review, reviewMember.getId(), reviewUpdateDto.getFriendIds());
+
+        ReviewType newReviewType = reviewUpdateDto.getReviewType();
+        if (newReviewType == ReviewType.DETAIL) {
+            ReviewDetailCreateDto reviewDetailCreateDto = ReviewDetailCreateDto.builder()
+                    .reviewImageDtos(reviewUpdateDto.getReviewImages())
+                    .comment(reviewUpdateDto.getComment())
+                    .build();
+
+            addDetailToReview(reviewId, reviewDetailCreateDto);
+        }
     }
 
-    // TODO: 2021-06-12 test
+    // TODO: 2021-06-13 필요 없으면 삭제
+    // TODO: 2021-06-13 test
+    /**
+     * 기능 테스트
+     * - 리뷰 상세가 잘 변경되는지 확인
+     * -- 기존에 있던 리뷰 이미지가 잘 삭제되는지
+     * -- 기존에 있었고 수정 후에도 있는 이미지가 잘 등록되어 있는지
+     * -- 새로 입력한 이미지가 잘 등록되어 있는지 확인
+     * -- 코멘트가 잘 변경되어 있는지 확인
+     *
+     * 실패 테스트
+     * - 리뷰를 찾을 수 없는 경우
+     * - 삭제된 리뷰일 경우
+     * - 리뷰 상세가 등록되어 있지 않을 경우
+     */
+    @Transactional
+    public void updateDetailFromReview(Long reviewId, ReviewDetailUpdateDto reviewDetailUpdateDto) {
+        Review review = getReview(reviewId);
+        ReviewDetail reviewDetail = review.getReviewDetail();
+
+        if (!isNotNull(reviewDetail)) {
+            throw new ReviewHasNotDetailException();
+        }
+
+        clearReviewImages(reviewDetail);
+
+        reviewDetail.update(reviewDetailUpdateDto);
+    }
+    // TODO: 2021-06-13 필요 없으면 삭제
+    private void clearReviewImages(ReviewDetail reviewDetail) {
+        if (isNotNull(reviewDetail)) {
+            List<ReviewImage> reviewImages = reviewDetail.getReviewImages();
+            reviewImageRepository.deleteInBatch(reviewImages);
+        }
+    }
+
+    // TODO: 2021-06-13 우선은 사용하지 않는 기능
+    @Transactional
+    public void updateSurveyFromReview(Long reviewId, ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
+        Review review = getReview(reviewId);
+
+        if (!isNotNull(review.getReviewSurvey())) {
+            throw new ReviewHasNotSurveyException();
+        }
+
+        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
+
+        review.updateSurvey(reviewSurveyUpdateDto);
+        updatePerceivedGenresFromReviewSurvey(review.getReviewSurvey(), reviewSurveyUpdateDto.getGenreCodes());
+    }
+
+    // TODO: 2021-06-12 리뷰 삭제 기능 test
     /**
      * 테스트 목록
      *
@@ -176,6 +255,9 @@ public class ReviewService {
         log.debug("decreaseRecodeNumberWhereInGreaterThenThisRecodeNumber update count : {}", updateCount);
         review.delete();
     }
+
+
+
 
     private void addPlayTogetherFriendsToReview(Review review, Long memberId, List<Long> friendIds) {
         if (friendIdsExists(friendIds)) {
@@ -240,7 +322,6 @@ public class ReviewService {
     }
 
     private void updatePerceivedGenresFromReviewSurvey(ReviewSurvey reviewSurvey, List<String> genreCodes) {
-        checkIfGenreCodeExists(genreCodes);
         reviewPerceivedThemeGenreRepository.deleteInBatch(reviewSurvey.getPerceivedThemeGenreEntities());
         addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
     }
@@ -251,44 +332,4 @@ public class ReviewService {
         }
     }
 
-    // TODO: 2021-06-13 test
-    /**
-     * 기능 테스트
-     * - 리뷰에 리뷰 상세가 잘 등록 되는지 확인
-     * -- 이미지가 잘 등록되는지 확인
-     * -- 코멘트가 잘 등록되는지 확인
-     *
-     * 실패 테스트
-     * - 리뷰가 삭제된 리뷰일 경우
-     * - 리뷰를 찾을 수 없는 경우
-     */
-    @Transactional
-    public void addDetailToReview(Long reviewId, ReviewDetailCreateDto reviewDetailCreateDto) {
-        Review review = getReview(reviewId);
-        ReviewDetail reviewDetail = ReviewDetail.create(reviewDetailCreateDto);
-        review.setReviewDetail(reviewDetail);
-    }
-
-    // TODO: 2021-06-13 test
-    /**
-     * 기능 테스트
-     * - 리뷰 상세가 잘 변경되는지 확인
-     * -- 기존에 있던 리뷰 이미지가 잘 삭제되는지
-     * -- 기존에 있었고 수정 후에도 있는 이미지가 잘 등록되어 있는지
-     * -- 새로 입력한 이미지가 잘 등록되어 있는지 확인
-     * -- 코멘트가 잘 변경되어 있는지 확인
-     *
-     * 실패 테스트
-     * - 리뷰를 찾을 수 없는 경우
-     * - 삭제된 리뷰일 경우
-     */
-    @Transactional
-    public void updateDetailFromReview(Long reviewId, ReviewDetailUpdateDto reviewDetailUpdateDto) {
-        Review review = getReview(reviewId);
-        ReviewDetail reviewDetail = review.getReviewDetail();
-
-        reviewImageRepository.deleteInBatch(reviewDetail.getReviewImages());
-
-        reviewDetail.update(reviewDetailUpdateDto);
-    }
 }

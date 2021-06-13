@@ -76,6 +76,7 @@ public class ReviewApiController {
         return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.ADD_SURVEY_TO_REVIEW_SUCCESS, null));
     }
 
+    // TODO: 2021-06-13 기능 삭제
     // TODO: 2021-06-13 test
     /**
      * 기능 테스트
@@ -108,6 +109,7 @@ public class ReviewApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_DETAIL_FROM_REVIEW_SUCCESS, null));
     }
 
+    // TODO: 2021-06-14 리뷰에 리뷰 상세와 설문 동시에 추가하는 api 구현
 
     @GetMapping
     public ResponseEntity<ResponseDto<ReviewResponseDto>> getReview(

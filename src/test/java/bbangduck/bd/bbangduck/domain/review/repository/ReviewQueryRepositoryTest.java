@@ -23,7 +23,7 @@ class ReviewQueryRepositoryTest extends BaseJGMServiceTest {
 
         Theme theme = createThemeSample();
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(null);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(null);
         Long member1Review1Id = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
         reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 

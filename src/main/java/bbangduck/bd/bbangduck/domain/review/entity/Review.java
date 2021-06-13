@@ -2,7 +2,10 @@ package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewDetailRepository;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewPlayTogetherRepository;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
+import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewDetailUpdateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyUpdateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewUpdateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -17,6 +20,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -99,26 +105,18 @@ public class Review extends BaseEntityDateTime {
     }
 
     public static Review create(Member member, Theme theme, int recodeNumber, ReviewCreateDto reviewCreateDto) {
-        Review review = Review.builder()
+        return Review.builder()
                 .member(member)
                 .theme(theme)
-                .reviewType(reviewCreateDto.getReviewType())
+                .reviewType(ReviewType.BASE)
                 .recodeNumber(recodeNumber)
                 .clearYN(reviewCreateDto.isClearYN())
                 .clearTime(reviewCreateDto.getClearTime())
                 .hintUsageCount(reviewCreateDto.getHintUsageCount())
                 .rating(reviewCreateDto.getRating())
-//                .comment(reviewCreateDto.getComment())
                 .likeCount(0)
                 .deleteYN(false)
                 .build();
-
-//        if (reviewCreateDto.reviewImagesExists()) {
-//            List<ReviewImageDto> reviewImages = reviewCreateDto.getReviewImages();
-//            reviewImages.forEach(reviewImageDto -> review.addReviewImage(ReviewImage.create(reviewImageDto)));
-//        }
-
-        return review;
     }
 
     public List<Member> getPlayTogetherMembers() {
@@ -133,11 +131,6 @@ public class Review extends BaseEntityDateTime {
 
         this.reviewPlayTogethers.add(reviewPlayTogether);
     }
-
-//    public void addReviewImage(ReviewImage reviewImage) {
-//        this.reviewImages.add(reviewImage);
-//        reviewImage.setReviewDetail(this);
-//    }
 
     public Long getId() {
         return id;
@@ -166,15 +159,6 @@ public class Review extends BaseEntityDateTime {
     public int getRating() {
         return rating;
     }
-
-//    public List<ReviewImage> getReviewImages() {
-//        return reviewImages;
-//    }
-//
-//    public String getComment() {
-//        return comment;
-//    }
-
 
     public int getRecodeNumber() {
         return recodeNumber;
@@ -217,19 +201,12 @@ public class Review extends BaseEntityDateTime {
         return deleteYN;
     }
 
-    public void update(ReviewUpdateDto reviewUpdateDto) {
+    public void updateBase(ReviewUpdateDto reviewUpdateDto) {
         this.reviewType = reviewUpdateDto.getReviewType();
         this.clearYN = reviewUpdateDto.isClearYN();
         this.clearTime = reviewUpdateDto.getClearTime();
         this.hintUsageCount = reviewUpdateDto.getHintUsageCount();
         this.rating = reviewUpdateDto.getRating();
-//        this.comment = reviewUpdateDto.getComment();
-
-//        List<ReviewImageDto> reviewImageDtos = reviewUpdateDto.getReviewImages();
-//        if (existsList(reviewImageDtos)) {
-//            List<ReviewImage> reviewImages = reviewImageDtos.stream().map(ReviewImage::create).collect(Collectors.toList());
-//            reviewImages.forEach(this::addReviewImage);
-//        }
     }
 
     public List<ReviewPlayTogether> getReviewPlayTogetherEntities() {
@@ -245,8 +222,27 @@ public class Review extends BaseEntityDateTime {
         return reviewDetail;
     }
 
-    public void setReviewDetail(ReviewDetail reviewDetail) {
+    public void addReviewDetail(ReviewDetail reviewDetail) {
+        this.reviewType = ReviewType.DETAIL;
         this.reviewDetail = reviewDetail;
         reviewDetail.setReview(this);
+    }
+
+    public void updateDetail(ReviewDetailUpdateDto reviewDetailUpdateDto) {
+        this.reviewDetail.update(reviewDetailUpdateDto);
+    }
+
+    public void clearDetail(ReviewDetailRepository reviewDetailRepository) {
+        if (isNotNull(this.reviewDetail)) {
+            reviewDetailRepository.delete(this.reviewDetail);
+            this.reviewDetail = null;
+        }
+    }
+
+    public void clearPlayTogether(ReviewPlayTogetherRepository reviewPlayTogetherRepository) {
+        if (existsList(this.reviewPlayTogethers)) {
+            reviewPlayTogetherRepository.deleteInBatch(this.reviewPlayTogethers);
+            this.reviewPlayTogethers.clear();
+        }
     }
 }

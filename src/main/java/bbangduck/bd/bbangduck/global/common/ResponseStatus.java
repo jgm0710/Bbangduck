@@ -122,6 +122,9 @@ public enum ResponseStatus {
     ADD_DETAIL_TO_REVIEW_CREATED_BY_OTHER_MEMBERS(4418, "다른 회원이 생성한 리뷰에는 리뷰 상세를 추가할 수 없습니다.", "다른 회원이 생성한 리뷰에 리뷰 상세를 추가하는 경우"),
     UPDATE_DETAIL_FROM_REVIEW_NOT_VALID(4419, "리뷰 상세 수정 시 기입 사항이 올바르게 기입되지 않았습니다.", "리뷰 상세 수정 시 기입 사항일 올바르게 기입되지 않은 경우"),
     UPDATE_DETAIL_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS(4420, "다른 회원이 생성한 리뷰의 리뷰 상세는 수정할 수 없습니다.", "다른 회원이 생성한 리뷰의 리뷰 상세를 수정하는 경우"),
+    SURVEY_IS_ALREADY_REGISTERED_IN_REVIEW(4421, "리뷰에 이미 설문이 등록되어 있습니다.", "리뷰에 설문을 등록 시 리뷰가 이미 설문이 등록된 리뷰일 경우"),
+    DETAIL_IS_ALREADY_REGISTERED_IN_REVIEW(4422, "리뷰에 이미 리뷰 상세가 등록되어 있습니다.", "리뷰에 리뷰 상세 등록 시 이미 리뷰 상세가 등록된 리뷰일 경우"),
+    REVIEW_HAS_NOT_DETAIL(4423, "리뷰에 리뷰 상세가 등록되어 있지 않습니다.", "리뷰 상세 수정 등에서 리뷰에 리뷰 상세가 등록되어 있지 않은 경우"),
 
     EXISTS_REVIEW_LIKE(4431, "해당 리뷰에 이미 좋아요가 등록되어 있습니다.", "리뷰에 좋아요 등록 시 이미 좋아요를 등록한 리뷰인 경우"),
     ADD_LIKE_TO_MY_REVIEW(4432, "본인이 생성한 리뷰에는 좋아요를 등록할 수 없습니다.", "자신이 생성한 리뷰에 좋아요를 등록하는 경우"),

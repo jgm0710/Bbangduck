@@ -11,6 +11,7 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
@@ -29,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -56,7 +58,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -87,7 +89,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data.writerInfo.memberId").value(signUpId))
                 .andExpect(jsonPath("data.writerInfo.profileImageUrl").exists())
                 .andExpect(jsonPath("data.themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("data.reviewType").value(simpleReviewCreateRequestDto.getReviewType().name()))
+                .andExpect(jsonPath("data.reviewType").value(ReviewType.BASE.name()))
                 .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
                 .andExpect(jsonPath("data.themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
                 .andExpect(jsonPath("data.themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
@@ -119,7 +121,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
                                 fieldWithPath("data.themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
                                 fieldWithPath("data.reviewType").description("조회된 리뷰의 Type +\n" +
-                                        REVIEW_TYPE_ENUM_LIST),
+                                        ReviewType.getNameList()),
                                 fieldWithPath("data.reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
                                 fieldWithPath("data.themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
@@ -164,7 +166,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -214,7 +216,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -249,7 +251,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data.writerInfo.memberId").value(signUpId))
                 .andExpect(jsonPath("data.writerInfo.profileImageUrl").exists())
                 .andExpect(jsonPath("data.themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("data.reviewType").value(simpleReviewCreateRequestDto.getReviewType().name()))
+                .andExpect(jsonPath("data.reviewType").value(ReviewType.BASE.name()))
                 .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
                 .andExpect(jsonPath("data.themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
                 .andExpect(jsonPath("data.themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
@@ -290,7 +292,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
                                 fieldWithPath("data.themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
                                 fieldWithPath("data.reviewType").description("조회된 리뷰의 Type +\n" +
-                                        REVIEW_TYPE_ENUM_LIST),
+                                        ReviewType.getNameList()),
                                 fieldWithPath("data.reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
                                 fieldWithPath("data.themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
@@ -343,10 +345,14 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Theme theme = createThemeSample();
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
+
+        reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@emailcom");
         memberSocialSignUpRequestDto.setNickname("member2");
@@ -375,7 +381,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data.writerInfo.memberId").value(signUpId))
                 .andExpect(jsonPath("data.writerInfo.profileImageUrl").exists())
                 .andExpect(jsonPath("data.themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("data.reviewType").value(detailReviewCreateRequestDto.getReviewType().name()))
+                .andExpect(jsonPath("data.reviewType").value(ReviewType.DETAIL.name()))
                 .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
                 .andExpect(jsonPath("data.themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
                 .andExpect(jsonPath("data.themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
@@ -409,7 +415,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
                                 fieldWithPath("data.themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
                                 fieldWithPath("data.reviewType").description("조회된 리뷰의 Type +\n" +
-                                        REVIEW_TYPE_ENUM_LIST),
+                                        ReviewType.getNameList()),
                                 fieldWithPath("data.reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
                                 fieldWithPath("data.themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
@@ -456,9 +462,13 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
+
+        reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -491,7 +501,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data.writerInfo.memberId").value(signUpId))
                 .andExpect(jsonPath("data.writerInfo.profileImageUrl").exists())
                 .andExpect(jsonPath("data.themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("data.reviewType").value(detailReviewCreateRequestDto.getReviewType().name()))
+                .andExpect(jsonPath("data.reviewType").value(ReviewType.DETAIL.name()))
                 .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
                 .andExpect(jsonPath("data.themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
                 .andExpect(jsonPath("data.themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
@@ -534,7 +544,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
                                 fieldWithPath("data.themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
                                 fieldWithPath("data.reviewType").description("조회된 리뷰의 Type +\n" +
-                                        REVIEW_TYPE_ENUM_LIST),
+                                        ReviewType.getNameList()),
                                 fieldWithPath("data.reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
                                 fieldWithPath("data.themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
@@ -590,7 +600,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -636,7 +646,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        ReviewCreateRequestDto deepReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto deepReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), deepReviewCreateRequestDto.toServiceDto());
 
@@ -681,7 +691,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -757,7 +767,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -807,7 +817,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -874,7 +884,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -923,7 +933,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -972,7 +982,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -1094,7 +1104,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -1147,7 +1157,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -1195,7 +1205,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(friendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
@@ -1243,7 +1253,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1307,7 +1317,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1352,7 +1362,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1479,7 +1489,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1540,7 +1550,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1587,7 +1597,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1629,7 +1639,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1672,7 +1682,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1715,7 +1725,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1759,7 +1769,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
 
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1806,7 +1816,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1873,7 +1883,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1914,7 +1924,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -1958,9 +1968,12 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(oldFriendIds, reviewImageRequestDtos);
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
+        reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendId1, friendId3);
         ReviewUpdateRequestDto simpleReviewUpdateRequestDto = createSimpleReviewUpdateRequestDto(newFriendIds);
@@ -2021,14 +2034,13 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
-        List<Long> newFriendIds = friendIds;
-        newFriendIds.add(10000L);
+        friendIds.add(10000L);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(friendIds, reviewImageRequestDtos);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
         //when
@@ -2069,7 +2081,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -2118,7 +2130,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -2165,7 +2177,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -2211,7 +2223,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
@@ -2253,7 +2265,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long friendId3 = friendIds.get(2);
 
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
         Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
