@@ -30,6 +30,9 @@
 | 1403
 | 해당 리소스에 접근할 수 없는 회원입니다.
 
+
+
+
 | <<resources-create-review>>
 | 리뷰를 생성할 테마를 찾을 수 없는 경우
 | 404
@@ -49,22 +52,13 @@
 | 요청된 두 회원은 서로 친구 관계가 아닙니다.
 
 | <<resources-create-review>>
-| 리뷰 생성 시 리뷰의 종류에 상관없이 필수적으로 기입해야하는 사항을 기입하지 않은 경우
+| 리뷰 생성 시 기입 사항을 올바르게 기입하지 않은 경우
 | 400
 | 4401
 | 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
 
-| <<resources-create-simple-review>>
-| 간단 리뷰 생성 시 간단 리뷰와는 무관한 정보를 기입한 경우
-| 400
-| 4402
-| 간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
 
-| <<resources-create-detail-review>>
-| 상세 리뷰 생성 시 필요한 값을 규칙에 맞게 기입하지 않은 경우
-| 400
-| 4403
-| 상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.
+
 
 | <<resources-add-survey-to-review>>
 | 설문을 추가할 리뷰를 찾을 수 없는 경우
@@ -75,14 +69,14 @@
 | <<resources-add-survey-to-review>>
 | 삭제된 리뷰에 설문을 추가할 경우
 | 400
-| 4405
-| 해당 리뷰가 존재하지 않습니다.
+| 4416
+| 삭제된 리뷰입니다.
 
 | <<resources-add-survey-to-review>>
 | 설문에 체감 테마 장르 등록 시 해당 장르를 찾을 수 없는 경우
-| 400
-| 4416
-| 삭제된 리뷰입니다.
+| 404
+| 6401
+| 해당 장르가 존재하지 않습니다.
 
 | <<resources-add-survey-to-review-not-valid>>
 | 리뷰에 설문 등록 시 입력 규칙에 맞게 값을 기입하지 않은 경우
@@ -95,6 +89,9 @@
 | 403
 | 4408
 | 다른 회원이 생성한 리뷰에는 설문을 추가할 수 없습니다.
+
+
+
 
 | <<resources-update-survey-from-review-not-valid>>
 | 리뷰에 등록된 설문 수정 시 입력 규칙을 지키지 않은 경우
@@ -131,6 +128,10 @@
 | 400
 | 4412
 | 리뷰에 설문이 등록되어 있지 않으므로, 설문을 수정할 수 없습니다.
+
+
+
+
 
 | <<resources-get-an-review>>
 | 리뷰 조회 시 리뷰를 찾을 수 없는 경우
@@ -204,6 +205,10 @@
 ** 2 종류의 리뷰 생성을 하나의 API 요청을 통해 관리합니다.
 ** 각 리뷰의 종류에 따라 입력 규칙이 달라집니다.
 
+* 리뷰 생성 시 `clearYN` 과 `clearTime` 이 일치해야 합니다.
+** `clearYN` 이 `true` 일 경우 `clearTime` 은 반드시 기입해야 합니다.
+** `clearYN` 이 `false` 일 셩우 `clearTime` 은 반드시 기입하지 않아야 합니다.
+
 * 인증된 회원이 테마에 대한 리뷰를 생성합니다.
 ** 리뷰를 작성하는 회원에 대한 정보는 X-AUTH-TOKEN 을 통해서 얻어집니다.
 ** 인증되지 않은 사용자는 해당 리소스에 접근이 불가능합니다.
@@ -211,6 +216,8 @@
 * 요청이 성공하면 status, message 가 응됩니다. 별도의 data 는 응답되지 않습니다.
 ** 생성된 리뷰에 대한 정보를 조회하려면 리뷰 조회 리소스를 통해 조회하면 됩니다.
 ** 응답 Header 에 Location 부분에 리뷰 조회 API 요청에 대한 URL 값이 있습니다.
+
+* 함께 플레이한 친구로 등록될 수 있는 인원은 최대 5명 입니다.
 
 * 리뷰에 함께한 친구를 등록할 경우 인증된 회원과 실제 친구 관계인 회원이 아니면 해당 요청은 실패합니다.
 
@@ -267,6 +274,8 @@ operation::create-simple-review-request-over-data[snippets='response-fields,curl
 
 * 상세 리뷰 생성의 경우 리뷰 타입, 테마 클리어 여부, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록, 이미지 파일 목록에 대한 정보, 코멘트 만을 기입할 수 있습니다.
 ** 함께 플레이한 친구 ID 목록과 이미지 파일에 대한 정보는 기입하지 않아도 상관없으나, 다른 정보는 반드시 기입해야 합니다.
+
+* 코멘트는 2000 자 이내에만 기입이 가능합니다.
 
 [[resources-create-detail-review-success]]
 ==== 상세 리뷰 생성 성공
@@ -412,9 +421,9 @@ operation::update-survey-from-review-period-expiration[snippets='response-fields
 *** `surveyYN` 가 `true` 인 경우 설문이 등록된 것입니다.
 *** `surveyYN` 가 `false` 인 경우 설문이 등록되지 않은 것입니다.
 ** 리뷰에 설문 등록은 리뷰를 생성한지 7일 이내에 가능합니다.
-*** 리뷰에 설문을 등록할 수 있는지 여부는 possibleRegisterForSurveyYN 를 통해 확인이 가능합니다.
-**** `possibleRegisterForSurveyYN` 가 true 인 경우 설문 등록이 가능한 리뷰입니다.
-**** `possibleRegisterForSurveyYN` 가 false 인 경우 설문 등록이 가능하지 않은 리뷰입니다.
+*** 리뷰에 설문을 등록할 수 있는지 여부는 `possibleRegisterForSurveyYN` 를 통해 확인이 가능합니다.
+**** `possibleRegisterForSurveyYN` 가 `true` 인 경우 설문 등록이 가능한 리뷰입니다.
+**** `possibleRegisterForSurveyYN` 가 `false` 인 경우 설문 등록이 가능하지 않은 리뷰입니다.
 **** 추가로 설문 등록이 가능한 시기이더라도, 자신이 생성한 리뷰가 아니면 설문 등록이 불가능합니다.
 
 * 리뷰 조회의 경우 인증되지 않은 사용자도 리뷰를 조회할 수 있습니다.

@@ -71,9 +71,9 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_SIMPLE_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_SIMPLE_REVIEW_SUCCESS.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "create-simple-review-success",
                         requestHeaders(
@@ -100,6 +100,82 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 ))
         ;
 
+    }
+
+    // TODO: 2021-06-13 문서 반영
+    @Test
+    @DisplayName("리뷰 생성 - 클리어 했지만 클리어 시간을 기입하지 않은 경우")
+    public void createReview_ClearButClearTimeIsNull() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+
+        Theme theme = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        reviewCreateRequestDto.setClearYN(true);
+        reviewCreateRequestDto.setClearTime(null);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/themes/" + theme.getId() + "/reviews")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 생성 - 클리어하지 않았지만 클리어 시간을 기입한 경우")
+    public void createReview_NotClearButClearTimeIsNotNull() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+
+        Theme theme = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createSimpleReviewCreateRequestDto(friendIds);
+        reviewCreateRequestDto.setClearYN(false);
+        reviewCreateRequestDto.setClearTime(LocalTime.of(0, 29, 44));
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/themes/" + theme.getId() + "/reviews")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewCreateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()));
     }
 
     @Test
@@ -159,9 +235,9 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_SIMPLE_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_SIMPLE_REVIEW_SUCCESS.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
         ;
 
     }
@@ -195,9 +271,9 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DETAIL_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DETAIL_REVIEW_SUCCESS.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "create-detail-review-success",
                         requestHeaders(
@@ -315,12 +391,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_SIMPLE_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_SIMPLE_REVIEW_NOT_VALID.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
                 .andDo(document(
                         "create-simple-review-request-over-data",
                         responseFields(
@@ -423,12 +499,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
                 .andDo(document(
                         "create-detail-review-comment-empty",
                         responseFields(
@@ -477,9 +553,9 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DETAIL_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DETAIL_REVIEW_SUCCESS.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
         ;
 
 
@@ -519,12 +595,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
         ;
 
     }
@@ -563,12 +639,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
                 .andExpect(jsonPath("data[0].field").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_DETAIL_REVIEW_NOT_VALID.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_NOT_VALID.getMessage()))
                 .andDo(document(
                         "create-detail-review-image-info-wrong",
                         responseFields(

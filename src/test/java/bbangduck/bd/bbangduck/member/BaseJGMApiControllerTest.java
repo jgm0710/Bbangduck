@@ -20,10 +20,7 @@ import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.controller.ReviewValidator;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
@@ -508,5 +505,292 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .interiorSatisfaction(Satisfaction.VERY_GOOD)
                 .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                 .build();
+    }
+
+    protected ReviewUpdateRequestDto createDetailReviewUpdateRequestDto(List<Long> friendIds, List<ReviewImageRequestDto> reviewImageRequestDtos) {
+        return ReviewUpdateRequestDto.builder()
+                .reviewType(ReviewType.DETAIL)
+                .clearYN(false)
+                .clearTime(null)
+                .hintUsageCount(3)
+                .rating(8)
+                .friendIds(friendIds)
+                .reviewImages(reviewImageRequestDtos)
+                .comment("new comment")
+                .build();
+    }
+
+    protected ReviewUpdateRequestDto createSimpleReviewUpdateRequestDto(List<Long> friendIds) {
+        return ReviewUpdateRequestDto.builder()
+                .reviewType(ReviewType.SIMPLE)
+                .clearYN(false)
+                .clearTime(null)
+                .hintUsageCount(3)
+                .rating(8)
+                .friendIds(friendIds)
+                .reviewImages(null)
+                .comment(null)
+                .build();
+    }
+
+    protected String createMacroComment() {
+        String macroComment = "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro \n" +
+                "this is macro ";
+        return macroComment;
     }
 }

@@ -47,6 +47,17 @@ public class ReviewApiController {
 
     private final ReviewProperties reviewProperties;
 
+//    @PostMapping("/details")
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    public ResponseEntity addDetailToReview(
+//            @PathVariable Long reviewId,
+//            @RequestBody @Valid ReviewDetailCreateRequestDto requestDto,
+//            Errors errors,
+//            @CurrentUser Member currentMember
+//    ) {
+//
+//    }
+
     @GetMapping
     public ResponseEntity<ResponseDto<ReviewResponseDto>> getReview(
             @PathVariable Long reviewId,
@@ -69,16 +80,25 @@ public class ReviewApiController {
 
     // TODO: 2021-05-22 리뷰 수정 기능 구현
     /**
+     * 기능 테스트 - 문서화
+     * - 204
+     * - 응답 코드 및 메세지
      *
      * 요청 실패 경우
      * - Validation - bad request
-     * -- 간단 리뷰 검증
-     * -- 상세 리뷰 검증
-     * - 리뷰에 등록하는 친구가 5명 이상일 경우
-     * - 리뷰를 찾을 수 없는 경우
-     * - 리뷰에 등록하는 친구가 실제 친구 관계가 아닐 경우
-     * - 다른 회원이 생성한 리뷰를 수정하는 경우
-     * - 삭제된 리뷰에 대한 테스트 진행
+     * -- 간단 리뷰 검증 o
+     * -- 상세 리뷰 검증 o
+     * -- 리뷰에 등록하는 친구가 5명 이상일 경우 o
+     * -- clearYN 이 false 이면 clearTime 이 기입되지 않아도 됨 o
+     * -- clearYN 이 false 이면 clearTime 이 기입되지 않아도 됨 o
+     * -- 코멘트가 3000자를 넘긴 경우
+     *
+     * - 리뷰에 등록하는 친구가 실제 친구 관계가 아닐 경우 - bad request o
+     * - 다른 회원이 생성한 리뷰를 수정하는 경우 - forbidden o
+     * - 삭제된 리뷰일 경우 수정 불가  - bad request o
+     * - 인증되지 않은 회원이 리뷰 수정 - unauthorized o
+     * - 탈퇴된 회원이 리뷰 수정 - forbidden o
+     * - 리뷰를 찾을 수 없는 경우 o
      */
     @PutMapping
     @PreAuthorize("hasRole('ROLE_USER')")

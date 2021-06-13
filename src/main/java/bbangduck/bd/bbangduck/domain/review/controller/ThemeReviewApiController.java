@@ -66,10 +66,8 @@ public class ThemeReviewApiController {
 
         Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
         URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId, currentMember)).toUri();
-        ResponseStatus responseStatus = getCreateReviewResponseStatus(requestDto.getReviewType());
 
-        assert responseStatus != null;
-        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(responseStatus, null));
+        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.CREATE_REVIEW_SUCCESS, null));
 
     }
 

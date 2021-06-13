@@ -93,8 +93,8 @@ public enum ResponseStatus {
      * 리뷰 관련 응답 코드
      * 시작 코드 4
      */
-    CREATE_SIMPLE_REVIEW_SUCCESS(4201, "간단 리뷰 생성에 성공했습니다.", "간단 리뷰 생성에 성공한 경우"),
-    CREATE_DETAIL_REVIEW_SUCCESS(4202, "상세 리뷰 생성에 성공했습니다.", "상세 리뷰 생성에 성공한 경우"),
+    CREATE_REVIEW_SUCCESS(4201, "리뷰 생성에 성공했습니다.", "리뷰 생성에 성공한 경우"),
+//    CREATE_DETAIL_REVIEW_SUCCESS(4202, "상세 리뷰 생성에 성공했습니다.", "상세 리뷰 생성에 성공한 경우"),
     GET_REVIEW_SUCCESS(4204, "리뷰 조회에 성공했습니다.", "리뷰 1건 조회에 성공한 경우"),
     GET_REVIEW_LIST_SUCCESS(4205, "리뷰 목록 조회에 성공했습니다.", "리뷰 목록 조회에 성공한 경우"),
     UPDATE_REVIEW_SUCCESS(4206, "리뷰 수정에 성공했습니다.", "리뷰 수정에 성공한 경우"),
@@ -102,8 +102,8 @@ public enum ResponseStatus {
     UPDATE_SURVEY_FROM_REVIEW_SUCCESS(4208, "리뷰에 등록된 설문 수정 요청에 성공했습니다.", "리뷰에 등록된 설문 수정 요청을 성공한 경우"),
 
     CREATE_REVIEW_NOT_VALID(4401, "리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰 생성 요청 시 공통적으로 필요한 필수 기입 사항을 올바르게 기입하지 않은 경우"),
-    CREATE_SIMPLE_REVIEW_NOT_VALID(4402, "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),
-    CREATE_DETAIL_REVIEW_NOT_VALID(4403, "상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),
+//    CREATE_SIMPLE_REVIEW_NOT_VALID(4402, "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),
+//    CREATE_DETAIL_REVIEW_NOT_VALID(4403, "상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),
     REVIEW_NOT_FOUND(4405, "해당 리뷰가 존재하지 않습니다.", "요청된 리뷰를 조회했을 때 DB에 해당 리뷰가 존재하지 않는 경우"),
     ADD_SURVEY_TO_REVIEW_NOT_VALID(4406, "리뷰에 설문 추가 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 설문 추가 시 기입 사항을 올바르게 기입하지 않은 경우"),
     EXPIRATION_OF_REVIEW_SURVEY_ADD_PERIOD_EXCEPTION(4407, "리뷰 설문 조사 등록 가능 기간이 만료되었습니다.", "리뷰에 설문 조사 등록 시 등록 가능 기간을 지난 경우"),

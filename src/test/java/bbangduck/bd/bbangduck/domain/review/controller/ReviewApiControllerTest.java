@@ -4,18 +4,17 @@ import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpReque
 import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyUpdateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,8 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -1790,4 +1788,498 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.REVIEW_HAS_NOT_SURVEY.getMessage()));
     }
+
+    // TODO: 2021-06-12 문서화
+    @Test
+    @DisplayName("리뷰 수정 - 간단 리뷰 to 상세 리뷰")
+    public void updateReview_SimpleToDetail() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getMessage()))
+                .andDo(document(
+                        "update-review-simple-to-detail-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("reviewType").description("수정할 ReviewType 기입"),
+                                fieldWithPath("clearYN").description("수정할 클리어 여부 기입"),
+                                fieldWithPath("clearTime").description("수정할 클리어 시간 기입"),
+                                fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입"),
+                                fieldWithPath("rating").description("수정할 테마에 대한 평점 기입"),
+                                fieldWithPath("friendIds").description("수정 시 리뷰에 등록할 친구 ID 목록 기입"),
+                                fieldWithPath("reviewImages[0].fileStorageId").description("수정 시 리뷰에 등록할 이미지 목록의 파일 저장소 ID 기입"),
+                                fieldWithPath("reviewImages[0].fileName").description("수정 시 리뷰에 등록할 이미지 목록의 파일 이름 기입"),
+                                fieldWithPath("comment").description("수정할 코멘트 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    // TODO: 2021-06-13 문서 1줄 반영
+    @Test
+    @DisplayName("리뷰 수정 - 코멘트가 2000자를 넘긴 경우")
+    public void updateReview_CommentOverLength() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+        String macroComment = createMacroComment();
+        detailReviewUpdateRequestDto.setComment(macroComment);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 리뷰를 찾을 수 없는 경우")
+    public void updateReview_ReviewNotFound() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + 10000000L)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("status").value(ResponseStatus.REVIEW_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.REVIEW_NOT_FOUND.getMessage()));
+
+    }
+
+    // TODO: 2021-06-12 문서화
+    @Test
+    @DisplayName("리뷰 수정 - 상세 리뷰 to 간단 리뷰")
+    public void updateReview_DetailToSimple() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewCreateRequestDto detailReviewCreateRequestDto = createDetailReviewCreateRequestDto(oldFriendIds, reviewImageRequestDtos);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), detailReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        ReviewUpdateRequestDto simpleReviewUpdateRequestDto = createSimpleReviewUpdateRequestDto(newFriendIds);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(simpleReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getMessage()))
+                .andDo(document(
+                        "update-review-detail-to-simple-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("reviewType").description("수정할 ReviewType 기입"),
+                                fieldWithPath("clearYN").description("수정할 클리어 여부 기입"),
+                                fieldWithPath("clearTime").description("수정할 클리어 시간 기입"),
+                                fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입"),
+                                fieldWithPath("rating").description("수정할 테마에 대한 평점 기입"),
+                                fieldWithPath("friendIds").description("수정 시 리뷰에 등록할 친구 ID 목록 기입"),
+                                fieldWithPath("reviewImages").description("[null]"),
+                                fieldWithPath("comment").description("[null]")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 리뷰에 등록하는 친구가 5명 이상일 경우")
+    public void updateReview_OverPlayTogether() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = friendIds;
+        newFriendIds.add(10000L);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_REVIEW_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("data[0].objectName").exists())
+                .andExpect(jsonPath("data[0].code").exists())
+                .andExpect(jsonPath("data[0].field").exists())
+                .andExpect(jsonPath("data[0].defaultMessage").exists())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_REVIEW_NOT_VALID.getMessage()))
+        ;
+
+    }
+
+
+    @Test
+    @DisplayName("리뷰 수정 - 리뷰에 등록하는 친구가 실제 친구 관계가 아닐 경우")
+    public void updateReview_FriendIsNotFriend() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+//        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        List<Long> newFriendIds = new ArrayList<>();
+        newFriendIds.add(friendId1);
+        newFriendIds.add(friendId3);
+
+        Member requestStateFriendToMember = createRequestStateFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        newFriendIds.add(requestStateFriendToMember.getId());
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(Matchers.containsString(ResponseStatus.RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND.getMessage())));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 다른 회원이 생성한 리뷰를 수정하는 경우")
+    public void updateReview_ReviewCreatedByOtherMembers() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        memberSocialSignUpRequestDto.setEmail("member2@email.com");
+        memberSocialSignUpRequestDto.setNickname("member2");
+        memberSocialSignUpRequestDto.setSocialId("1321097897");
+        Long member2Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(member2Id);
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_REVIEW_CREATED_BY_OTHER_MEMBERS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_REVIEW_CREATED_BY_OTHER_MEMBERS.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 삭제된 리뷰일 경우 수정 불가 ")
+    public void updateReview_DeletedReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        reviewService.deleteReview(createdReviewId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.MANIPULATE_DELETED_REVIEW.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MANIPULATE_DELETED_REVIEW.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 인증되지 않은 경우")
+    public void updateReview_Unauthorized() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+//                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 수정 - 탈퇴한 회원이 리소스 접근")
+    public void updateReview_Forbidden() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Long friendId1 = friendIds.get(0);
+        Long friendId2 = friendIds.get(1);
+        Long friendId3 = friendIds.get(2);
+
+        List<Long> oldFriendIds = List.of(friendId1, friendId2);
+        ReviewCreateRequestDto simpleReviewCreateRequestDto = createSimpleReviewCreateRequestDto(oldFriendIds);
+
+        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+
+        List<Long> newFriendIds = List.of(friendId1, friendId3);
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewUpdateRequestDto detailReviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        authenticationService.withdrawal(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                put("/api/reviews/" + createdReviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(detailReviewUpdateRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.FORBIDDEN.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.FORBIDDEN.getMessage()));
+
+    }
+
 }

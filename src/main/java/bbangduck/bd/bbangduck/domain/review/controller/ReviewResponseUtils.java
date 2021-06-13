@@ -4,9 +4,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -31,17 +29,6 @@ public class ReviewResponseUtils {
                 return isNotNull(reviewSurvey) ?
                         DetailAndSurveyReviewResponseDto.convert(review, currentMember, existsReviewLike, periodForAddingSurveys) :
                         DetailReviewResponseDto.convert(review, currentMember, existsReviewLike, periodForAddingSurveys);
-            default:
-                return null;
-        }
-    }
-
-    public static ResponseStatus getCreateReviewResponseStatus(ReviewType reviewType) {
-        switch (reviewType) {
-            case SIMPLE:
-                return ResponseStatus.CREATE_SIMPLE_REVIEW_SUCCESS;
-            case DETAIL:
-                return ResponseStatus.CREATE_DETAIL_REVIEW_SUCCESS;
             default:
                 return null;
         }
