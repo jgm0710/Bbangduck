@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.review.controller.dto;
+package bbangduck.bd.bbangduck.domain.review.controller.dto.response;
 
 /**
  * 작성자 : 정구민 <br><br>

@@ -2,7 +2,9 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewCreatedByOtherMembersException;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
@@ -42,20 +44,27 @@ public class ReviewApiController {
 
     private final ReviewProperties reviewProperties;
 
-    // TODO: 2021-06-13 test
     /**
-     * 기능 테스트
-     * - 201
-     * - 응답 코드 및 메시지 확인
-     * - 문서화
-     *
+     * 문서화 완료, 테스트 미완
+     * 기능 테스트 o
+     * - 201 o
+     * - 응답 코드 및 메시지 확인 o
+     * - 문서화 0
+     * <p>
+     * TODO: 2021-06-13 요청 실패 테스트 미완
      * 오류 테스트
-     * - validation
+     * - validation - bad request
      * -- 파일 저장소 ID 는 있으나 파일 이름이 없는 경우
      * -- 파일 이름이 있으나 파일 저장소 ID 가 없는 경우
-     * - 다른 회원이 생성한 리뷰에 상세를 등록하는 경우
-     * - 인증되지 않은 사용자가 접근하는 경우
-     * - 탈퇴된 사용자가 접근하는 경우
+     *
+     * - 다른 회원이 생성한 리뷰에 상세를 등록하는 경우 - forbidden
+     * - 인증되지 않은 사용자가 접근하는 경우 - unauthorized
+     * - 탈퇴된 사용자가 접근하는 경우 - forbidden
+     *
+     * - service 실패
+     * -- 리뷰가 삭제된 리뷰일 경우 - bad request
+     * -- 리뷰를 찾을 수 없는 경우 - not found
+     * -- 이미 리뷰 상세가 등록되어 있는 리뷰일 경우 -bad request
      */
     @PostMapping("/details")
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -71,22 +80,27 @@ public class ReviewApiController {
         checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.ADD_DETAIL_TO_REVIEW_CREATED_BY_OTHER_MEMBERS);
 
         reviewService.addDetailToReview(reviewId, requestDto.toServiceDto());
-        URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(reviewId, currentMember)).toUri();
+        URI linkToGetReviewsUri = getLinkToGetReviewsUri(reviewId, currentMember);
 
-        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.ADD_SURVEY_TO_REVIEW_SUCCESS, null));
+        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.ADD_DETAIL_TO_REVIEW_SUCCESS, null));
+    }
+
+    private URI getLinkToGetReviewsUri(@PathVariable Long reviewId, @CurrentUser Member currentMember) {
+        return linkTo(methodOn(ReviewApiController.class).getReview(reviewId, currentMember)).toUri();
     }
 
     // TODO: 2021-06-13 기능 삭제
     // TODO: 2021-06-13 test
     /**
-     * 기능 테스트
+     * 기능 테스트 - 문서화 필요
      * - 204
      * - 응답 코드, 메시지 확인
-     *
+     * <p>
      * 실패 테스트
      * - validation
      * -- 파일 저장소 ID 는 있으나 파일 이름이 없는 경우
      * -- 파일 이름이 있으나 파일 저장소 ID 가 없는 경우
+     *
      * - 다른 회원이 생성한 리뷰의 리뷰 상세를 수정하는 경우
      * - 인증되지 않은 사용자가 접근하는 경우
      * - 탈퇴된 사용자가 접근하는 경우
@@ -109,8 +123,57 @@ public class ReviewApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_DETAIL_FROM_REVIEW_SUCCESS, null));
     }
 
-    // TODO: 2021-06-14 리뷰에 리뷰 상세와 설문 동시에 추가하는 api 구현
+    /**
+     * 문서화 완료, 테스트 미완
+     *
+     * 기능 테스트
+     * -201
+     * -응답 코드, 메세지 확인
+     *
+     * TODO: 2021-06-14 실패 테스트 미완
+     * 실패 테스트
+     * - validation
+     * -- 이미지를 올바르게 기입하지 않은 경우
+     * --- 파일 저장소 id 는 있으나 파일 이름은 없는 경우
+     * --- 파일 이름은 있으나 파일 저장소 id 는 없는 경우
+     * -- 장르코드를 기입하지 않은 경우
+     * -- 장르코드를 정해진 개수보다 많이 기입한 경우
+     * -- 난이도, 공포도, 활동성, 만족도 등을 기입하지 않은 경우
+     *
+     * - 다른 회원이 생성한 리뷰에 리뷰 상세 및 설문을 추가하는 경우
+     * - 인증되지 않은 경우
+     * - 탈퇴한 사용자인 경우
+     *
+     * - service 실패
+     * -- 리뷰를 찾을 수 없는 경우
+     * -- 장르를 찾을 수 없는 경우
+     * -- 이미 리뷰 상세가 등록된 설문일 경우
+     * -- 이미 설문이 등록된 리뷰일 경우
+     * -- 설문 등록 가능 기간이 지난 경우
+     */
+    @PostMapping("/details-and-surveys")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<Object>> addDetailAndSurveyToReview(
+            @PathVariable Long reviewId,
+            @RequestBody @Valid ReviewDetailAndSurveyCreateDtoRequestDto requestDto,
+            Errors errors,
+            @CurrentUser Member currentMember
+    ) {
+        reviewValidator.validateAddDetailAndSurveyToReview(requestDto, errors);
 
+        Review findReview = reviewService.getReview(reviewId);
+        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_CREATED_BY_OTHER_MEMBERS);
+
+        reviewService.addDetailAndSurveyToReview(reviewId, requestDto.toDetailServiceDto(), requestDto.toSurveyServiceDto());
+        URI linkToGetReviewsUri = getLinkToGetReviewsUri(reviewId, currentMember);
+
+        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS, null));
+
+    }
+
+    /**
+     * 테스느 완료, 문서화 완료
+     */
     @GetMapping
     public ResponseEntity<ResponseDto<ReviewResponseDto>> getReview(
             @PathVariable Long reviewId,
@@ -131,8 +194,9 @@ public class ReviewApiController {
         return false;
     }
 
-    // TODO: 2021-05-22 리뷰 수정 기능 구현
     /**
+     * 문서화 완료, 테스트 완료
+     *
      * 기능 테스트 - 문서화
      * - 204
      * - 응답 코드 및 메세지
@@ -179,6 +243,28 @@ public class ReviewApiController {
     }
 
 
+    /**
+     * 테스트, 문서화 완료
+     *
+     * 기능 테스트
+     * - 201
+     * - 문서화 o
+     *
+     * 실패 테스트
+     * - validation - bad request o
+     * --체감 장르 수가 제한된 개수보다 많이 기입될 경우 o
+     * --체감 난이도, 체감 공포도, 체감 활동성, 시나리오 만족도, 인테리어 만족도, o
+     *   문제 구성 만족도를 기입하지 않은 경우
+     *
+     * - 다른 회원이 생성한 리뷰에 설문을 등록하는 경우 - forbidden o
+     * - 인증되지 않은 사용자가 설문을 등록하는 경우 - unauthorized o
+     * - 탈퇴된 사용자가 설문을 등록하는 경우  - forbidden o
+     *
+     * - service 실패
+     * -- 리뷰가 삭제된 리뷰일 경우 - bad request o
+     * -- 리뷰를 찾을 수 없는 경우 - not found o
+     * -- 장르를 찾을 수 없는 경우 - not found o
+     */
     @PostMapping("/surveys")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> addSurveyToReview(
@@ -194,10 +280,13 @@ public class ReviewApiController {
 
         reviewService.addSurveyToReview(reviewId, requestDto.toServiceDto());
 
-        URI linkToGetReviewUri = linkTo(methodOn(ReviewApiController.class).getReview(reviewId, currentMember)).toUri();
+        URI linkToGetReviewUri = getLinkToGetReviewsUri(reviewId, currentMember);
         return ResponseEntity.created(linkToGetReviewUri).body(new ResponseDto<>(ResponseStatus.ADD_SURVEY_TO_REVIEW_SUCCESS, null));
     }
 
+    /**
+     * 문서화 완료, 테스트 완료
+     */
     @PutMapping("/surveys")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<Object>> updateSurveyFromReview(
@@ -216,9 +305,92 @@ public class ReviewApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_SUCCESS, null));
     }
 
-    // TODO: 2021-05-22 리뷰 삭제 기능 구현
+    /**
+     * 문서화 완료, 테스트 미완
+     *
+     * 기능 테스트 o
+     * - 200
+     * - 응답 코드, 메시지 확인
+     *
+     * 실패 테스트
+     * todo : 실패 테스트 미완
+     * - 다른 회원이 생성한 리뷰를 삭제하는 경우 - forbidden
+     * - 인증되지 않은 경우 - unauthorized
+     * - 탈퇴된 사용자가 접근하는 경우 - forbidden
+     *
+     * - service 실패 테스트
+     * -- 리뷰를 찾을 수 없는 경우 - not found
+     * -- 이미 삭제된 리뷰일 경우 - bad request
+     */
+    @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<Object>> deleteReview(
+            @PathVariable Long reviewId,
+            @CurrentUser Member currentMember
+    ) {
+        Review findReview = reviewService.getReview(reviewId);
+        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.DELETE_REVIEW_CREATED_BY_OTHER_MEMBERS);
 
-    // TODO: 2021-06-07 리뷰 좋아요 등록 기능 구현
+        reviewService.deleteReview(reviewId);
 
-    // TODO: 2021-06-07 리뷰 좋아요 등록 해제 기능 구현
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.DELETE_REVIEW_SUCCESS, null));
+    }
+
+    /**
+     * 문서화 완료, 테스트 미완
+     *
+     * 기능 테스트 o
+     * - 200
+     * - 응답 코드, 메시지 확인
+     * - 문서화 x
+     *
+     * todo : 실패 테스트 미완
+     * 실패 테스트
+     * - 인증되지 않은 경우 - unauthorized
+     * - 탈퇴된 사용자일 경우  - forbidden
+     *
+     * - service 실패 테스트
+     * -- 이미 좋아요가 등록된 경우 - conflict
+     * -- 회원을 찾을 수 없는 경우 - not found
+     * -- 리뷰를 찾을 수 없는 경우 - not found
+     * -- 자신이 생성한 리뷰에 좋아요를 등록하는 경우 - bad request
+     */
+    @PostMapping("/likes")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<Object>> addLikeToReview(
+            @PathVariable Long reviewId,
+            @CurrentUser Member currentMember
+    ) {
+        reviewLikeService.addLikeToReview(currentMember.getId(), reviewId);
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.ADD_LIKE_TO_REVIEW_SUCCESS, null));
+    }
+
+    /**
+     * 문서화 완료, 테스트 미완
+     * 기능 테스트 o
+     * - 200
+     * - 응답 코드, 메세지 확인
+     * - 문서화 x
+     *
+     * 실패 테스트
+     * todo : 실패 테스트 미완
+     * - service 실패
+     * -- 리뷰에 좋아요가 등록되어 있지 않은 경우
+     * -- 회원을 찾을 수 없는 경우
+     * -- 리뷰를 찾을 수 없는 경우
+     */
+    @DeleteMapping("/likes")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<Object>> removeLikeFromReview(
+            @PathVariable Long reviewId,
+            @CurrentUser Member currentMember
+    ) {
+        reviewLikeService.removeLikeFromReview(currentMember.getId(), reviewId);
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.REMOVE_LIKE_FROM_REVIEW_SUCCESS, null));
+    }
+
+
+
 }

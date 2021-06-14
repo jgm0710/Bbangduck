@@ -19,9 +19,11 @@ import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.*;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
@@ -53,6 +55,9 @@ import java.util.Set;
 
 @Disabled
 public class BaseJGMServiceTest extends BaseTest {
+
+    @Autowired
+    protected ReviewLikeService reviewLikeService;
 
     @Autowired
     protected ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
@@ -518,6 +523,20 @@ public class BaseJGMServiceTest extends BaseTest {
         return ReviewDetailCreateRequestDto.builder()
                 .reviewImages(reviewImageRequestDtos)
                 .comment("test review detail comment")
+                .build();
+    }
+
+    protected ReviewDetailAndSurveyCreateDtoRequestDto createReviewDetailAndSurveyCreateDtoRequestDto(List<ReviewImageRequestDto> reviewImageRequestDtos, List<String> genreCodes) {
+        return ReviewDetailAndSurveyCreateDtoRequestDto.builder()
+                .reviewImages(reviewImageRequestDtos)
+                .comment("test review detail comment")
+                .genreCodes(genreCodes)
+                .perceivedDifficulty(Difficulty.EASY)
+                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
+                .perceivedActivity(Activity.NORMAL)
+                .scenarioSatisfaction(Satisfaction.GOOD)
+                .interiorSatisfaction(Satisfaction.BAD)
+                .problemConfigurationSatisfaction(Satisfaction.VERY_BAD)
                 .build();
     }
 

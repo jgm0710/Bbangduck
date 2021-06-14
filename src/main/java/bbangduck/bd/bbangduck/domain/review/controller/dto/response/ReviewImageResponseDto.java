@@ -1,7 +1,6 @@
-package bbangduck.bd.bbangduck.domain.review.controller.dto;
+package bbangduck.bd.bbangduck.domain.review.controller.dto.response;
 
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
-import bbangduck.bd.bbangduck.global.common.LinkToUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

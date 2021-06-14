@@ -20,7 +20,8 @@ import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.controller.ReviewValidator;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
@@ -789,6 +790,20 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return ReviewDetailCreateRequestDto.builder()
                 .reviewImages(reviewImageRequestDtos)
                 .comment("test review detail comment")
+                .build();
+    }
+
+    protected ReviewDetailAndSurveyCreateDtoRequestDto createReviewDetailAndSurveyCreateDtoRequestDto(List<ReviewImageRequestDto> reviewImageRequestDtos, List<String> genreCodes) {
+        return ReviewDetailAndSurveyCreateDtoRequestDto.builder()
+                .reviewImages(reviewImageRequestDtos)
+                .comment("test review detail comment")
+                .genreCodes(genreCodes)
+                .perceivedDifficulty(Difficulty.EASY)
+                .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
+                .perceivedActivity(Activity.NORMAL)
+                .scenarioSatisfaction(Satisfaction.GOOD)
+                .interiorSatisfaction(Satisfaction.BAD)
+                .problemConfigurationSatisfaction(Satisfaction.VERY_BAD)
                 .build();
     }
 }

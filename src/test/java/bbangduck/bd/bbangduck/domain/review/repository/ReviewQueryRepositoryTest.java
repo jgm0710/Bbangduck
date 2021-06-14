@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.repository;
 
 import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;

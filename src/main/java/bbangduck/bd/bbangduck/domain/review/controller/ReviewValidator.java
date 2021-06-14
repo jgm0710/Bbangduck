@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
-import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
@@ -157,5 +158,11 @@ public class ReviewValidator {
         }
     }
 
+    public void validateAddDetailAndSurveyToReview(ReviewDetailAndSurveyCreateDtoRequestDto requestDto, Errors errors) {
+        validateReviewImages(requestDto.getReviewImages(), errors);
+        checkPerceivedThemeGenresCount(requestDto.getGenreCodes(), reviewProperties.getPerceivedThemeGenresCountLimit(), errors);
+
+        hasErrorsThrow(ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_NOT_VALID, errors);
+    }
 }
 

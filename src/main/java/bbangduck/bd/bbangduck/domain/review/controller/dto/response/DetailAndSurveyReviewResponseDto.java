@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.review.controller.dto;
+package bbangduck.bd.bbangduck.domain.review.controller.dto.response;
 
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;

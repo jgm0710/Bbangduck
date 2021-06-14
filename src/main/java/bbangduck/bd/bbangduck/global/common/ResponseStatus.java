@@ -102,6 +102,10 @@ public enum ResponseStatus {
     UPDATE_SURVEY_FROM_REVIEW_SUCCESS(4208, "리뷰에 등록된 설문 수정 요청에 성공했습니다.", "리뷰에 등록된 설문 수정 요청을 성공한 경우"),
     ADD_DETAIL_TO_REVIEW_SUCCESS(4209, "리뷰에 리뷰 상세를 추가하는데 성공했습니다.", "리뷰에 리뷰 상세를 추가하는데 성공한 경우"),
     UPDATE_DETAIL_FROM_REVIEW_SUCCESS(4210, "리뷰의 리뷰 상세 수정에 성공했습니다.", "리뷰에 등록된 리뷰 상세를 수정하는데 성공한 경우"),
+    ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS(4211, "리뷰에 리뷰 상세 및 설문을 추가하는데 성공했습니다.", "리뷰에 리뷰 상세 및 설문을 추가하는데 성공한 경우"),
+    DELETE_REVIEW_SUCCESS(4212, "리뷰 삭제에 성공했습니다.", "리뷰 삭제에 성공한 경우"),
+    ADD_LIKE_TO_REVIEW_SUCCESS(4213, "리뷰 좋아요 등록에 성공했습니다.", "리뷰 좋아요 등록에 성공한 경우"),
+    REMOVE_LIKE_FROM_REVIEW_SUCCESS(4214, "리뷰에 등록된 좋아요 삭제에 성공했습니다.", "리뷰에 등록된 좋아요 삭제에 성공한 경우"),
 
     CREATE_REVIEW_NOT_VALID(4401, "리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰 생성 요청 시 공통적으로 필요한 필수 기입 사항을 올바르게 기입하지 않은 경우"),
 //    CREATE_SIMPLE_REVIEW_NOT_VALID(4402, "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),
@@ -120,13 +124,18 @@ public enum ResponseStatus {
     MANIPULATE_DELETED_REVIEW(4416, "삭제된 리뷰입니다.", "삭제된 리뷰의 데이터를 조작하거나 삭제된 리뷰를 사용하여 데이터를 조작하는 경우"),
     ADD_DETAIL_TO_REVIEW_NOT_VALID(4417, "리뷰에 리뷰 상세 추가 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 리뷰 상세 추가 시 기입 사항을 올바르게 기입하지 않은 경우"),
     ADD_DETAIL_TO_REVIEW_CREATED_BY_OTHER_MEMBERS(4418, "다른 회원이 생성한 리뷰에는 리뷰 상세를 추가할 수 없습니다.", "다른 회원이 생성한 리뷰에 리뷰 상세를 추가하는 경우"),
+    // FIXME: 2021-06-14 리뷰 상세 수정 기능 필요 없을 시 삭제
     UPDATE_DETAIL_FROM_REVIEW_NOT_VALID(4419, "리뷰 상세 수정 시 기입 사항이 올바르게 기입되지 않았습니다.", "리뷰 상세 수정 시 기입 사항일 올바르게 기입되지 않은 경우"),
     UPDATE_DETAIL_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS(4420, "다른 회원이 생성한 리뷰의 리뷰 상세는 수정할 수 없습니다.", "다른 회원이 생성한 리뷰의 리뷰 상세를 수정하는 경우"),
     SURVEY_IS_ALREADY_REGISTERED_IN_REVIEW(4421, "리뷰에 이미 설문이 등록되어 있습니다.", "리뷰에 설문을 등록 시 리뷰가 이미 설문이 등록된 리뷰일 경우"),
     DETAIL_IS_ALREADY_REGISTERED_IN_REVIEW(4422, "리뷰에 이미 리뷰 상세가 등록되어 있습니다.", "리뷰에 리뷰 상세 등록 시 이미 리뷰 상세가 등록된 리뷰일 경우"),
+    // FIXME: 2021-06-14 리뷰 상세 수정 기능 필요 없을 시 삭제
     REVIEW_HAS_NOT_DETAIL(4423, "리뷰에 리뷰 상세가 등록되어 있지 않습니다.", "리뷰 상세 수정 등에서 리뷰에 리뷰 상세가 등록되어 있지 않은 경우"),
+    ADD_DETAIL_AND_SURVEY_TO_REVIEW_CREATED_BY_OTHER_MEMBERS(4424, "다른 회원이 생성한 리뷰에는 리뷰 상세 및 설문을 추가할 수 없습니다.", "다른 회원이 생성한 리뷰에 리뷰 상세 및 설문을 추가하는 경우"),
+    ADD_DETAIL_AND_SURVEY_TO_REVIEW_NOT_VALID(4425, "리뷰에 리뷰 상세 및 설문 추가 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 리뷰 상세 및 설문 추가 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    DELETE_REVIEW_CREATED_BY_OTHER_MEMBERS(4426, "다른 회원이 생성한 리뷰는 삭제할 수 없습니다.", "다른 회원이 생성한 리뷰를 삭제하는 경우"),
 
-    EXISTS_REVIEW_LIKE(4431, "해당 리뷰에 이미 좋아요가 등록되어 있습니다.", "리뷰에 좋아요 등록 시 이미 좋아요를 등록한 리뷰인 경우"),
+    REVIEW_HAS_ALREADY_BEEN_LIKED(4431, "해당 리뷰에 이미 좋아요가 등록되어 있습니다.", "리뷰에 좋아요 등록 시 이미 좋아요를 등록한 리뷰인 경우"),
     ADD_LIKE_TO_MY_REVIEW(4432, "본인이 생성한 리뷰에는 좋아요를 등록할 수 없습니다.", "자신이 생성한 리뷰에 좋아요를 등록하는 경우"),
     REVIEW_LIKE_NOT_FOUND(4433, "해당 회원은 해당 리뷰에 좋아요를 등록하지 않았습니다.", "리뷰 좋아요 조회 시 해당 회원이 해당 리뷰에 등록한 좋아요를 찾을 수 없는 경우"),
 

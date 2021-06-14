@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.review.controller.dto;
+package bbangduck.bd.bbangduck.domain.review.controller.dto.request;
 
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;

@@ -8,12 +8,14 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
+import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.ManipulateDeletedReviewsException;
 import bbangduck.bd.bbangduck.domain.review.exception.NoGenreToRegisterForReviewSurveyException;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewHasNotSurveyException;
@@ -1214,6 +1216,164 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         //then
         assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto()));
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 리뷰 상세 추가")
+    public void addDetailToReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
+
+        em.flush();
+        em.clear();
+        //when
+        reviewService.addDetailToReview(reviewId, reviewDetailCreateRequestDto.toServiceDto());
+
+        em.flush();
+        em.clear();
+        //then
+
+        Review findReview = reviewService.getReview(reviewId);
+        ReviewDetail findReviewReviewDetail = findReview.getReviewDetail();
+        findReviewReviewDetail.getReviewImages().forEach(reviewImage -> {
+            List<ReviewImageRequestDto> reviewImageRequestDtoList = reviewDetailCreateRequestDto.getReviewImages();
+            assertTrue(reviewImageRequestDtoList.stream().anyMatch(reviewImageRequestDto -> reviewImageRequestDto.getFileStorageId().equals(reviewImage.getFileStorageId())),
+                    "조회된 리뷰에는 리슈 상세 추가 요청 시 기입한 이미지 파일 저장소의 ID 가 모두 있어야 한다.");
+        });
+        assertEquals(reviewDetailCreateRequestDto.getComment(), findReviewReviewDetail.getComment(), "조회된 리뷰에는 리뷰 상세 추가 시 기입한 코멘트가 있어야 한다.");
+        assertEquals(ReviewType.DETAIL, findReview.getReviewType(), "리뷰 상세가 추가된 리뷰는 ReviewType 이 Detail 이어야 한다.");
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 리뷰 상세 및 설문 추가")
+    public void addDetailAndSurveyToReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        List<String> genreCodes = createGenreCodes();
+
+        ReviewDetailAndSurveyCreateDtoRequestDto reviewDetailAndSurveyCreateDtoRequestDto = createReviewDetailAndSurveyCreateDtoRequestDto(reviewImageRequestDtos, genreCodes);
+
+        //when
+        reviewService.addDetailAndSurveyToReview(reviewId, reviewDetailAndSurveyCreateDtoRequestDto.toDetailServiceDto(), reviewDetailAndSurveyCreateDtoRequestDto.toSurveyServiceDto());
+
+        //then
+        Review findReview = reviewService.getReview(reviewId);
+
+        assertEquals(reviewCreateRequestDto.getClearYN(), findReview.isClearYN());
+        assertEquals(reviewCreateRequestDto.getClearTime(), findReview.getClearTime());
+        assertEquals(reviewCreateRequestDto.getHintUsageCount(), findReview.getHintUsageCount());
+        assertEquals(reviewCreateRequestDto.getRating(), findReview.getRating());
+
+        ReviewDetail findReviewReviewDetail = findReview.getReviewDetail();
+        findReviewReviewDetail.getReviewImages().forEach(reviewImage -> {
+            List<ReviewImageRequestDto> reviewImageRequestDtoList = reviewDetailAndSurveyCreateDtoRequestDto.getReviewImages();
+            assertTrue(reviewImageRequestDtoList.stream().anyMatch(reviewImageRequestDto -> reviewImageRequestDto.getFileStorageId().equals(reviewImage.getFileStorageId())),
+                    "조회된 리뷰에는 리슈 상세 추가 요청 시 기입한 이미지 파일 저장소의 ID 가 모두 있어야 한다.");
+        });
+        assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getComment(), findReviewReviewDetail.getComment(), "조회된 리뷰에는 리뷰 상세 추가 시 기입한 코멘트가 있어야 한다.");
+        assertEquals(ReviewType.DETAIL, findReview.getReviewType(), "리뷰 상세가 추가된 리뷰는 ReviewType 이 Detail 이어야 한다.");
+
+        ReviewSurvey findReviewReviewSurvey = findReview.getReviewSurvey();
+        findReviewReviewSurvey.getPerceivedThemeGenres().forEach(genre -> assertTrue(genreCodes.stream().anyMatch(genreCode -> genreCode.equals(genre.getCode())),
+                "조회된 리뷰에 등록된 체감 장르 목록에는 리뷰 설문 추가 시 등록한 장르코드에 해당하는 장르가 있어야 한다."));
+        assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getPerceivedDifficulty(), findReviewReviewSurvey.getPerceivedDifficulty());
+        assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getPerceivedHorrorGrade(), findReviewReviewSurvey.getPerceivedHorrorGrade());
+        assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getPerceivedActivity(), findReviewReviewSurvey.getPerceivedActivity());
+        assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getScenarioSatisfaction(), findReviewReviewSurvey.getScenarioSatisfaction());
+        assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getInteriorSatisfaction(), findReviewReviewSurvey.getInteriorSatisfaction());
+        assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getProblemConfigurationSatisfaction(), findReviewReviewSurvey.getProblemConfigurationSatisfaction());
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제")
+    public void deleteReview() {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long member1Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        memberSignUpRequestDto.setEmail("member2@email.com");
+        memberSignUpRequestDto.setNickname("member2");
+        memberSignUpRequestDto.setSocialId("3198696876");
+        Long member2Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+
+        Long member1review1Id = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member1review2Id = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member1review3Id = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member1review4Id = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member2review1Id = reviewService.createReview(member2Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member2review2Id = reviewService.createReview(member2Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        Review member1review1 = reviewService.getReview(member1review1Id);
+        Review member1review2 = reviewService.getReview(member1review2Id);
+        Review member1review3 = reviewService.getReview(member1review3Id);
+        Review member1review4 = reviewService.getReview(member1review4Id);
+        Review member2review1 = reviewService.getReview(member2review1Id);
+        Review member2review2 = reviewService.getReview(member2review2Id);
+
+        assertEquals(1, member1review1.getRecodeNumber());
+        assertEquals(2, member1review2.getRecodeNumber());
+        assertEquals(3, member1review3.getRecodeNumber());
+        assertEquals(4, member1review4.getRecodeNumber());
+        assertEquals(1, member2review1.getRecodeNumber());
+        assertEquals(2, member2review2.getRecodeNumber());
+
+        em.flush();
+        em.clear();
+
+        //when
+        System.out.println("============================================================================================");
+        reviewService.deleteReview(member1review2Id);
+
+        em.flush();
+        em.clear();
+        System.out.println("============================================================================================");
+
+        //then
+        Review findMember1Review1 = reviewService.getReview(member1review1Id);
+        Review findMember1Review3 = reviewService.getReview(member1review3Id);
+        Review findMember1Review4 = reviewService.getReview(member1review4Id);
+        Review findMember2Review1 = reviewService.getReview(member2review1Id);
+        Review findMember2Review2 = reviewService.getReview(member2review2Id);
+
+        assertEquals(1, findMember1Review1.getRecodeNumber());
+        assertEquals(2, findMember1Review3.getRecodeNumber());
+        assertEquals(3, findMember1Review4.getRecodeNumber());
+        assertEquals(1, findMember2Review1.getRecodeNumber());
+        assertEquals(2, findMember2Review2.getRecodeNumber());
+
+        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.getReview(member1review2Id));
+        Review findMember1Review2 = em.find(Review.class, member1review2Id);
+        assertEquals(-1, findMember1Review2.getRecodeNumber(), "삭제된 리뷰의 레코드 번호는 -1 이 나와야 한다.");
+        assertTrue(findMember1Review2.isDeleteYN(), "삭제될 리뷰의 deleteYN 은 true 가 나와야 한다.");
 
     }
 

@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.review.controller.dto;
+package bbangduck.bd.bbangduck.domain.review.controller.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

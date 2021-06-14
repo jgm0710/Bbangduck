@@ -97,7 +97,6 @@ public class Review extends BaseEntityDateTime {
         this.clearTime = clearTime;
         this.hintUsageCount = hintUsageCount;
         this.rating = rating;
-//        this.comment = comment;
         this.likeCount = likeCount;
         this.deleteYN = deleteYN;
         super.registerTimes = registerTimes;
@@ -244,5 +243,25 @@ public class Review extends BaseEntityDateTime {
             reviewPlayTogetherRepository.deleteInBatch(this.reviewPlayTogethers);
             this.reviewPlayTogethers.clear();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+//                ", member=" + member +
+//                ", theme=" + theme +
+                ", reviewType=" + reviewType +
+                ", recodeNumber=" + recodeNumber +
+                ", clearYN=" + clearYN +
+                ", clearTime=" + clearTime +
+                ", hintUsageCount=" + hintUsageCount +
+                ", rating=" + rating +
+//                ", reviewPlayTogethers=" + reviewPlayTogethers +
+//                ", reviewDetail=" + reviewDetail +
+//                ", reviewSurvey=" + reviewSurvey +
+                ", likeCount=" + likeCount +
+                ", deleteYN=" + deleteYN +
+                '}';
     }
 }

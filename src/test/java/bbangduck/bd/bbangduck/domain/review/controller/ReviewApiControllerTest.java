@@ -10,7 +10,8 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.*;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.*;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -1802,7 +1804,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
     // TODO: 2021-06-12 문서화
     @Test
     @DisplayName("리뷰 수정 - 간단 리뷰 to 상세 리뷰")
-    public void updateReview_SimpleToDetail() throws Exception {
+    public void updateReview_BaseToDetail() throws Exception {
         //given
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
@@ -1840,7 +1842,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
-                        "update-review-simple-to-detail-success",
+                        "update-review-base-to-detail-success",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
@@ -1953,7 +1955,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
     // TODO: 2021-06-12 문서화
     @Test
     @DisplayName("리뷰 수정 - 상세 리뷰 to 간단 리뷰")
-    public void updateReview_DetailToSimple() throws Exception {
+    public void updateReview_DetailToBase() throws Exception {
         //given
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
@@ -1994,7 +1996,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
-                        "update-review-detail-to-simple-success",
+                        "update-review-detail-to-base-success",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
@@ -2294,4 +2296,261 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
+    // TODO: 2021-06-14 문서화 적용
+    @Test
+    @DisplayName("리뷰에 리뷰 상세 추가")
+    public void addDetailToReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/reviews/" + reviewId + "/details")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewDetailCreateRequestDto))
+        );
+
+        //then
+        perform
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("status").value(ResponseStatus.ADD_DETAIL_TO_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.ADD_DETAIL_TO_REVIEW_SUCCESS.getMessage()))
+                .andDo(document(
+                        "add-detail-to-review-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 적용")
+                        ),
+                        requestFields(
+                                fieldWithPath("reviewImages[0].fileStorageId").description("리뷰 상세에 추가할 이미지 파일의 파일 저장소 ID 기입"),
+                                fieldWithPath("reviewImages[0].fileName").description("리뷰 상세에 추가할 이미지 파일의 파일 이름 기입"),
+                                fieldWithPath("comment").description("리뷰 상세에 추가할 코멘트 기입 +\n" +
+                                        "최대 2000자 제한")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 리뷰 상세 및 설문 추가")
+    public void addDetailAndSurveyToReview() throws Exception {
+        //given
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+
+        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+        List<String> genreCodes = createGenreCodes();
+
+        ReviewDetailAndSurveyCreateDtoRequestDto reviewDetailAndSurveyCreateDtoRequestDto = createReviewDetailAndSurveyCreateDtoRequestDto(reviewImageRequestDtos, genreCodes);
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/reviews/" + reviewId + "/details-and-surveys")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewDetailAndSurveyCreateDtoRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("status").value(ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS.getMessage()))
+                .andDo(document(
+                        "add-detail-and-survey-to-review-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정")
+                        ),
+                        requestFields(
+                                fieldWithPath("reviewImages[0].fileStorageId").description("리뷰 상세에 등록할 이미지 파일의 파일 저장소 ID 기입"),
+                                fieldWithPath("reviewImages[0].fileName").description("리뷰 상세에 등록할 이미지 파일의 파일 이름 기입"),
+                                fieldWithPath("comment").description("리뷰 상세에 등록할 코멘트 기입"),
+                                fieldWithPath("genreCodes").description("리뷰 설문에 등록할 체감 테마 장르 목록에 대한 코드값 기입"),
+                                fieldWithPath("perceivedDifficulty").description("리뷰 설문에 등록할 체감 난이도 기입"),
+                                fieldWithPath("perceivedHorrorGrade").description("리뷰 설문에 등록할 체감 공포도 기입"),
+                                fieldWithPath("perceivedActivity").description("리뷰 설문에 등록할 체감 활동성 기입"),
+                                fieldWithPath("scenarioSatisfaction").description("리뷰 설문에 등록할 시나리오 만족도 기입"),
+                                fieldWithPath("interiorSatisfaction").description("리뷰 설문에 등록할 인테리어 만족도 기입"),
+                                fieldWithPath("problemConfigurationSatisfaction").description("리뷰 설문에 등록할 문제 구성 만족도 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+
+                ))
+        ;
+
+    }
+
+    // TODO: 2021-06-14 문서화 필요
+    @Test
+    @DisplayName("리뷰 삭제")
+    public void deleteReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/reviews/" + reviewId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.DELETE_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.DELETE_REVIEW_SUCCESS.getMessage()))
+                .andDo(document(
+                        "delete-review-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 좋아요 등록")
+    public void addLikeToReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long member1Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        memberSignUpRequestDto.setEmail("member2@email.com");
+        memberSignUpRequestDto.setNickname("member2");
+        memberSignUpRequestDto.setSocialId("382109321789");
+        Long member2Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+        Long reviewId = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(member2Id);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/reviews/" + reviewId + "/likes")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.ADD_LIKE_TO_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.ADD_LIKE_TO_REVIEW_SUCCESS.getMessage()))
+                .andDo(document(
+                        "add-like-to-review-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("리뷰에 등록된 좋아요 제거")
+    public void removeLikeFromReview() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long member1Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        memberSignUpRequestDto.setEmail("member2@email.com");
+        memberSignUpRequestDto.setNickname("member2");
+        memberSignUpRequestDto.setSocialId("382109321789");
+        Long member2Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+        Long reviewId = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        reviewLikeService.addLikeToReview(member2Id, reviewId);
+
+        boolean existsReviewLike = reviewLikeService.getExistsReviewLike(member2Id, reviewId);
+        assertTrue(existsReviewLike, "리뷰에 좋아요가 등록되어 있어야 한다.");
+
+        TokenDto tokenDto = authenticationService.signIn(member2Id);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/api/reviews/" + reviewId + "/likes")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.REMOVE_LIKE_FROM_REVIEW_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.REMOVE_LIKE_FROM_REVIEW_SUCCESS.getMessage()))
+                .andDo(document(
+                        "remove-like-from-review-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("[null]"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
 }

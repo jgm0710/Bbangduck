@@ -12,7 +12,10 @@ import bbangduck.bd.bbangduck.domain.member.repository.MemberFriendQueryReposito
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.domain.review.entity.*;
+import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.*;
@@ -89,14 +92,14 @@ public class ReviewService {
         return review.getId();
     }
 
-    // TODO: 2021-06-13 test
     /**
-     * 기능 테스트
+     * 기능 테스트 o
      * - 리뷰에 리뷰 상세가 잘 등록 되는지 확인
      * -- 이미지가 잘 등록되는지 확인
      * -- 코멘트가 잘 등록되는지 확인
      * - 리뷰 타입이 바뀌는지 확인
      *
+     * TODO: 2021-06-13 실패 테스트 미완
      * 실패 테스트
      * - 리뷰가 삭제된 리뷰일 경우
      * - 리뷰를 찾을 수 없는 경우
@@ -233,17 +236,17 @@ public class ReviewService {
         updatePerceivedGenresFromReviewSurvey(review.getReviewSurvey(), reviewSurveyUpdateDto.getGenreCodes());
     }
 
-    // TODO: 2021-06-12 리뷰 삭제 기능 test
     /**
      * 테스트 목록
      *
-     * 기능 테스트
+     * 기능 테스트 o
      * - 리뷰가 제대로 삭제 상태가 되는지 확인
      * -- 삭제된 리뷰의 레코드 번호가 -1 로 잘 저장되는지 확인
      *
      * - 해당 회원이 생성한 리뷰의 레코드 번호만 잘 감소하는지 확인
      * -- 다른 회원의 레코드 번호는 감소하면 안됨
      *
+     * TODO: 2021-06-12 실패 테스트 미완
      * 오류 테스트
      * - 리뷰를 찾을 수 없는 경우
      * - 이미 삭제된 리뷰일 경우
@@ -332,4 +335,25 @@ public class ReviewService {
         }
     }
 
+    /**
+     * 기능 테스트 o
+     * - 기존 리뷰 내용이 변경되지는 않았는지 확인
+     * - 리뷰 타입이 detail 로 잘 바뀌었는지 확인
+     * - 추가한 detail 값들이 잘 들어가 있는지 확인
+     * - 추가한 survey 값들이 잘 들어가 있는지 확인
+     *
+     * TODO: 2021-06-13 실패 테스트 미완
+     * 실패 테스트
+     * * 다른 메서드들을 그대로 가져와서 사용하는 것이므로 해당 메서드들 검증이 완료되면 굳이 안해도 됨
+     * - 리뷰를 찾을 수 없는 경우
+     * - 장르를 찾을 수 없는 경우
+     * - 이미 리뷰 상세가 등록된 설문일 경우
+     * - 이미 설문이 등록된 리뷰일 경우
+     * - 설문 등록 가능 기간이 지난 경우
+     */
+    @Transactional
+    public void addDetailAndSurveyToReview(Long reviewId, ReviewDetailCreateDto reviewDetailCreateDto, ReviewSurveyCreateDto reviewSurveyCreateDto) {
+        addDetailToReview(reviewId, reviewDetailCreateDto);
+        addSurveyToReview(reviewId, reviewSurveyCreateDto);
+    }
 }

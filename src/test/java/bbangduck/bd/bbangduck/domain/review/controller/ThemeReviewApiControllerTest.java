@@ -5,9 +5,9 @@ import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewImageRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewSurveyCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewImageRequestDto;
+import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
@@ -74,7 +74,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
-                        "create-simple-review-success",
+                        "create-review-success",
                         requestHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)

@@ -18,13 +18,13 @@
 |===
 | 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
 
-| <<resources-create-review>> / <<resources-add-survey-to-review>> / <<resources-update-survey-from-review>>
+| <<resources-create-review>> / <<resources-add-detail-to-review>> / <<resources-add-survey-to-review>> / <<resources-add-detail-and-survey-to-review>> / <<resources-update-survey-from-review>> / <<resources-update-review>>
 | 인증되지 않은 사용자가 리소스에 접근하는 경우
 | 401
 | 1401
 | 인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.
 
-| <<resources-create-review>> / <<resources-add-survey-to-review>> / <<resources-update-survey-from-review>>
+| <<resources-create-review>> / <<resources-add-detail-to-review>> / <<resources-add-survey-to-review>> / <<resources-add-detail-and-survey-to-review>> / <<resources-update-survey-from-review>> / <<resources-update-review>>
 | 탈퇴하거나 활동이 정지된 회원이 리소스에 접근하는 경우
 | 403
 | 1403
@@ -60,6 +60,45 @@
 
 
 
+
+| <<resources-add-detail-to-review>>
+| 리뷰 상세 추가 시 기입 사항을 올바르게 기입하지 않은 경우
+| 400
+| 4417
+| 리뷰에 리뷰 상세 추가 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-add-detail-to-review>>
+| 다른 회원이 생성한 리뷰에 리뷰 상세를 등록하는 경우
+| 403
+| 4418
+| 다른 회원이 생성한 리뷰에는 리뷰 상세를 추가할 수 없습니다.
+
+| <<resources-add-detail-to-review>>
+| 리뷰 상세를 추가할 리뷰가 삭제된 리뷰일 경우
+| 400
+| 4416
+| 삭제된 리뷰입니다.
+
+| <<resources-add-detail-to-review>>
+| 리뷰를 찾을 수 없는 경우
+| 404
+| 4405
+| 해당 리뷰가 존재하지 않습니다.
+
+| <<resources-add-detail-to-review>>
+| 이미 리뷰 상세가 등록된 리뷰일 경우
+| 400
+| 4422
+| 리뷰에 이미 리뷰 상세가 등록되어 있습니다.
+
+
+
+
+
+
+
+
+
 | <<resources-add-survey-to-review>>
 | 설문을 추가할 리뷰를 찾을 수 없는 경우
 | 404
@@ -89,6 +128,63 @@
 | 403
 | 4408
 | 다른 회원이 생성한 리뷰에는 설문을 추가할 수 없습니다.
+
+
+
+
+
+| <<resources-add-detail-and-survey-to-review>>
+| 리뷰 상세 및 설문 등록 시 필요한 정보들을 올바르게 기입하지 않은 경우
+| 400
+| 4425
+| 리뷰에 리뷰 상세 및 설문 추가 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-add-detail-and-survey-to-review>>
+| 다른 회원이 생성한 리뷰에 리뷰 상세 및 설문을 등록하는 경우
+| 403
+| 4424
+| 다른 회원이 생성한 리뷰에는 리뷰 상세 및 설문을 추가할 수 없습니다.
+
+| <<resources-add-detail-and-survey-to-review>>
+| 리뷰를 찾을 수 없는 경우
+| 404
+| 4405
+| 해당 리뷰가 존재하지 않습니다.
+
+| <<resources-add-detail-and-survey-to-review>>
+| 삭제된 리뷰에 리뷰 상세 및 설문을 추가할 경우
+| 400
+| 4416
+| 삭제된 리뷰입니다.
+
+| <<resources-add-detail-and-survey-to-review>>
+| 장르를 찾을 수 없는 경우
+| 404
+| 6401
+| 해당 장르가 존재하지 않습니다.
+
+| <<resources-add-detail-and-survey-to-review>>
+| 이미 리뷰 상세가 등록되어 있는 경우
+| 400
+| 4422
+| 리뷰에 이미 리뷰 상세가 등록되어 있습니다.
+
+| <<resources-add-detail-and-survey-to-review>>
+| 이미 리뷰에 설문이 등록되어 있는 경우
+| 400
+| 4421
+| 리뷰에 이미 설문이 등록되어 있습니다.
+
+| <<resources-add-detail-and-survey-to-review>>
+| 설문의 등록 가능 기간이 지난 경우
+| 409
+| 4407
+| 리뷰 설문 조사 등록 가능 기간이 만료되었습니다.
+
+
+
+
+
 
 
 
@@ -132,6 +228,41 @@
 
 
 
+| <<resources-update-review>>
+| 리뷰 수정 시 요청 시 필요한 값들을 올바르게 기입하지 않은 경우
+| 400
+| 4415
+| 리뷰 수정 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-update-review>>
+| 리뷰 수정 시 함께 플레이한 친구로 등록된 회원이 인증된 회원과 실제 친구 관계가 아닐 경우
+| 400
+| 2412
+| 요청된 두 회원은 서로 친구 관계가 아닙니다.
+
+| <<resources-update-review>>
+| 다른 회원이 생성한 리뷰를 수정하는 경우
+| 403
+| 4414
+| 다른 회원이 생성한 리뷰는 수정할 수 없습니다.
+
+| <<resources-update-review>>
+| 삭제된 리뷰를 수정하는 경우
+| 400
+| 4416
+| 삭제된 리뷰입니다.
+
+| <<resources-update-review>>
+| 리뷰를 찾을 수 없는 경우
+| 404
+| 4405
+| 해당 리뷰가 존재하지 않습니다.
+
+
+
+
+
+
 
 | <<resources-get-an-review>>
 | 리뷰 조회 시 리뷰를 찾을 수 없는 경우
@@ -145,6 +276,26 @@
 | 4416
 | 삭제된 리뷰입니다.
 
+
+| <<resources-delete-review>>
+| 다른 회원이 생성한 리뷰를 삭제하는 경우
+| 403
+| 4426
+| 다른 회원이 생성한 리뷰는 삭제할 수 없습니다.
+
+| <<resources-delete-review>>
+| 리뷰를 찾을 수 없는 경우
+| 404
+| 4405
+| 해당 리뷰가 존재하지 않습니다.
+
+| <<resources-delete-review>>
+| 이미 삭제된 리뷰일 경우
+| 400
+| 4416
+| 삭제된 리뷰입니다.
+
+
 |===
 
 == 히스토리
@@ -156,8 +307,8 @@
 
 2021-05-31:::
 * <<resources-create-review>> 수정
-** 리뷰 생성 시 테마 클리어 여부를 요청 body 로 받도록 변경
-** 변경 사항 문서 반영
+    ** 리뷰 생성 시 테마 클리어 여부를 요청 body 로 받도록 변경
+    ** 변경 사항 문서 반영
 
 2021-06-01:::
 * <<resources-get-an-review>> 기능 구현
@@ -167,13 +318,9 @@
 
 2021-06-07:::
 * <<resources-create-review>> 기능 기능 변경
-** 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 리뷰로 나누어 생성 요청을 보내던 것을
-간단 리뷰, 상세 리뷰로만 나누어 요청
-** 설문에 대한 부분은 별도의 요청을 통해서 진행하도록 변경
-
-2021-06-09:::
-* <<resources-create-review-over-play-together>> 추가
-** 함께한 친구가 많을 경우에 대한 입력값 제한 설정
+    ** 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 리뷰로 나누어 생성 요청을 보내던 것을
+    간단 리뷰, 상세 리뷰로만 나누어 요청
+    ** 설문에 대한 부분은 별도의 요청을 통해서 진행하도록 변경
 
 2021-06-10:::
 * <<resources-add-survey-to-review>> 기능 구현
@@ -181,122 +328,120 @@
 2021-06-11:::
 * <<resources-update-survey-from-review>> 기능 구현
 * <<resources-get-an-review>> 기능 수정
-** 기존 리뷰 조회 시 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 리뷰에 대한 조회 로직을 변경
-** 간단 리뷰, 설문이 등록된 간단 리뷰, 상세 리뷰, 설문이 등록된 상세 리뷰의 형태로 나눔
+    ** 기존 리뷰 조회 시 간단 리뷰, 상세 리뷰, 상세 및 추가 설문 리뷰에 대한 조회 로직을 변경
+    ** 간단 리뷰, 설문이 등록된 간단 리뷰, 상세 리뷰, 설문이 등록된 상세 리뷰의 형태로 나눔
 * <<resources-get-theme-review-list>> 설명 수정
 
 2021-06-12:::
 * 리뷰에 deleteYN 컬럼 추가
-** 삭제된 리뷰를 조작하거나, 삭제된 리뷰를 사용하여 데이터를 조작하는 경우 요청이 실패하도록 변경
-*** <<resources-create-review>>
-*** <<resources-add-survey-to-review>>
-*** <<resources-update-survey-from-review>>
-*** <<resources-get-an-review>>
+    ** 삭제된 리뷰를 조작하거나, 삭제된 리뷰를 사용하여 데이터를 조작하는 경우 요청이 실패하도록 변경
+        *** <<resources-create-review>>
+        *** <<resources-add-survey-to-review>>
+        *** <<resources-update-survey-from-review>>
+        *** <<resources-get-an-review>>
+
+2021-06-14:::
+* <<resources-create-review>> 기능 수정
+    ** 리뷰를 처음 생성하는 시점에는 기본적인 형태의 리뷰만 생성하도록 변경
+    ** `ReviewType` -> `BASE`
+
+2021-06-15:::
+* <<resources-add-detail-to-review>> 기능 구현
+* <<resources-add-detail-and-survey-to-review>> 기능 구현
+* <<resources-update-review>> 기능 구현
+* <<resources-delete-review>> 기능 구현
+* <<resources-add-like-to-review>> 기능 구현
+* <<resources-remove-like-from-review>> 기능 구현
+
+
+
+
 
 [[resources-review]]
 = 리뷰 관련 리소스
 
+
+
+
+
+
+
 [[resources-create-review]]
-== 리뷰 생성
+== 테마에 리뷰 생성
 
 * `POST` `/api/themes/{themeId}/reviews`
 
-* 리뷰의 종류는 간단 리뷰, 상세 리뷰로 나뉩니다.
-** 2 종류의 리뷰 생성을 하나의 API 요청을 통해 관리합니다.
-** 각 리뷰의 종류에 따라 입력 규칙이 달라집니다.
-
-* 리뷰 생성 시 `clearYN` 과 `clearTime` 이 일치해야 합니다.
-** `clearYN` 이 `true` 일 경우 `clearTime` 은 반드시 기입해야 합니다.
-** `clearYN` 이 `false` 일 셩우 `clearTime` 은 반드시 기입하지 않아야 합니다.
+* 테마에 리뷰를 등록합니다.
+    ** 생성된 리뷰의 `ReviewType` 은 `BASE` 입니다.
 
 * 인증된 회원이 테마에 대한 리뷰를 생성합니다.
-** 리뷰를 작성하는 회원에 대한 정보는 X-AUTH-TOKEN 을 통해서 얻어집니다.
-** 인증되지 않은 사용자는 해당 리소스에 접근이 불가능합니다.
+    ** 리뷰를 작성하는 회원에 대한 정보는 `X-AUTH-TOKEN` 을 통해서 얻어집니다.
+    ** 인증되지 않은 사용자는 해당 리소스에 접근이 불가능합니다.
 
-* 요청이 성공하면 status, message 가 응됩니다. 별도의 data 는 응답되지 않습니다.
-** 생성된 리뷰에 대한 정보를 조회하려면 리뷰 조회 리소스를 통해 조회하면 됩니다.
-** 응답 Header 에 Location 부분에 리뷰 조회 API 요청에 대한 URL 값이 있습니다.
-
-* 함께 플레이한 친구로 등록될 수 있는 인원은 최대 5명 입니다.
+* 입력 규칙
+    ** 리뷰 생성 시 `clearYN` 과 `clearTime` 이 일치해야 합니다.
+        *** `clearYN` 이 `true` 일 경우 `clearTime` 은 반드시 기입해야 합니다.
+        *** `clearYN` 이 `false` 일 셩우 `clearTime` 은 반드시 기입하지 않아야 합니다.
+    ** 함께 플레이한 친구로 등록될 수 있는 인원은 최대 5명 입니다.
 
 * 리뷰에 함께한 친구를 등록할 경우 인증된 회원과 실제 친구 관계인 회원이 아니면 해당 요청은 실패합니다.
 
-* 리뷰에 이미지를 등록할 경우 이미지 파일 업로드 리소스를 통해 이미지 파일을 업로드 하고, 해당 요청에 응답으로 나온 파일 정보를 통해
-리뷰에 등록힐 이미지 파일에 대한 정보를 기입합니다.
+* 추후 리뷰 상세나 테마 설문을 추가할 수 있습니다.
 
-[[resources-create-review-fail]]
-=== 리뷰 생성 실패
+* 요청이 성공하면 `status`, `message` 가 응됩니다. 별도의 `data` 는 응답되지 않습니다.
+    ** 생성된 리뷰에 대한 정보를 조회하려면 리뷰 조회 리소스를 통해 조회하면 됩니다.
+    ** 응답 `Header` 에 `Location` 부분에 리뷰 조회 API 요청에 대한 URL 값이 있습니다.
 
-[[resources-create-review-empty]]
-==== 리뷰 생성 실패 - 아무 정보도 입력하지 않은 경우
-
-* 응답 HttpStatus : `400 Bad Request`
-
-operation::create-review-empty[snippets='response-fields,curl-request,http-response']
-
-[[resources-create-review-over-play-together]]
-==== 리뷰 생성 실패 - 함께 플레이 한 친구의 수가 제한된 수보다 많을 경우
-
-* 응답 HttpStatus : `400 Bad Request`
-
-* 리뷰 생성 시 함께 플레이 한 친구로 등록된 친구의 수가 제한된 개수보다 많을 경우 요청에 실패합니다.
-
-operation::create-review-over-play-together[snippets='response-fields,curl-request,http-response']
-
-[[resources-create-simple-review]]
-=== 간단 리뷰 생성
-
-* 간단 리뷰 생성의 경우 Review Type 을 `SIMPLE` 로 기입해야 합니다.
-
-* 간단 리뷰 생성의 경우 리뷰 타입, 테마 클리어 여부, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록 만을 기입할 수 있습니다.
-** 함께 플레이한 친구 ID 목록은 기입하지 않아도 상관없으나, 다른 정보는 반드시 기입해야 합니다.
-
-[[resources-create-simple-review-success]]
-==== 간단 리뷰 생성 성공
+[[resources-create-review-success]]
+== 테마에 리뷰 생성 성공
 
 * 응답 HttpStatus : `201 Created`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::create-simple-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::create-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
-[[resources-create-simple-review-request-over-data]]
-==== 간단 리뷰 생성 시 간단 리뷰와는 무관한 정보를 기입한 경우
 
-* 응답 HttpStatus : `400 Bad Request`
 
-* Review Type 이 `SIMPLE` 일 경우 상세 리뷰에 해당하는 정보를 기입하면 요청에 실패합니다.
 
-operation::create-simple-review-request-over-data[snippets='response-fields,curl-request,http-response']
 
-[[resources-create-detail-review]]
-=== 상세 리뷰 생성
 
-* 상세 리뷰 생성의 경우 Review Type 을 `DETAIL` 로 기입해야 합니다.
 
-* 상세 리뷰 생성의 경우 리뷰 타입, 테마 클리어 여부, 테마 클리어 시간, 힌트 사용 개수, 테마 평점, 함께 플레이한 친구 ID 목록, 이미지 파일 목록에 대한 정보, 코멘트 만을 기입할 수 있습니다.
-** 함께 플레이한 친구 ID 목록과 이미지 파일에 대한 정보는 기입하지 않아도 상관없으나, 다른 정보는 반드시 기입해야 합니다.
 
-* 코멘트는 2000 자 이내에만 기입이 가능합니다.
 
-[[resources-create-detail-review-success]]
-==== 상세 리뷰 생성 성공
+
+
+[[resources-add-detail-to-review]]
+== 리뷰에 리뷰 상세 추가
+
+* `POST` `/api/reviews/{reviewId}/details`
+
+* 리뷰에 리뷰 상세를 등록합니다.
+    ** 리뷰에 등록할 이미지, 코멘트 기입
+
+* 인증된 사용자만이 접근 가능하고, 자신이 생성한 리뷰에만 리뷰 상세를 추가할 수 있습니다.
+    ** 탈퇴된 회원도 접근이 불가능 합니다.
+
+* 입력 규칙
+    ** 이미지 파일에 대한 정보를 등록하는 경우 파일 저장소 ID 와 파일 이름을 동시에 입력해야 합니다.
+    ** 코멘트는 반드시 1 글자라도 기입해야 합니다.
+    ** 입력 가능한 코멘트의 크기는 최대 2000자 입니다.
+        *** 해당 입력 크기는 추후에 변경될 수 있습니다.
+
+[[resources-add-detail-to-review-success]]
+=== 리뷰에 리뷰 상세 추가 성공
 
 * 응답 HttpStatus : `201 Created`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::create-detail-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::add-detail-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
-[[resources-create-detail-review-request-over-data]]
-==== 상세 리뷰 생성 시 관련된 정보를 제대로 기입하지 않은 경우
 
-* 응답 HttpStatus : `400 Bad Request`
 
-* 상세 리뷰 생성 시 상세 리뷰에 대한 입력 규칙을 맞추지 않았을 경우 해당 응답이 나타납니다.
 
-* 다음의 경우에 해당 응답이 나타납니다.
-** 코멘트에 대한 정보를 기입하지 않은 경우
-** 이미지 파일 목록 등록 시, 파일 저장소 ID 는 기입하였으나, 파일 이름을 기입하지 않은 경우
-** 이미지 파일 목록 등록 시, 파일 이름은 기입하였으나, 파일 저장소 ID 는 기입하지 않은 경우
 
-operation::create-detail-review-comment-empty[snippets='response-fields,curl-request,http-response']
+
+
+
 
 [[resources-add-survey-to-review]]
 == 리뷰에 설문 추가
@@ -309,17 +454,16 @@ operation::create-detail-review-comment-empty[snippets='response-fields,curl-req
 
 * 해당 리소스는 인증된 사용자만 접근이 가능하며, 다른 회원이 생성한 리뷰에는 설문을 등록할 수 없습니다.
 
-* 설문 등록 시 주어진 모든 값을 기입해야 하며, 입력하지 않았을 경우 요청에 실패합니다.
-** 추가로 설문 등록 시 체감 테마 장르는 제한된 개수 이내에만 등록이 가능합니다.
-** 체감 테마 장르 기입 시 제한된 개수 이상을 기입할 경우 요청에 실패합니다.
-
+* 입력 규칙
+    ** 체감 장르는 5 개 까지만 기입이 가능합니다.
+        *** 장르를 찾을 수 없는 경우 요청에 실패합니다.
+    ** 체감 난이도, 체감 공포도, 체감 활동성, 시나리오 만족도, 인테리어 만족도, 문제 구성 만족도는 반드시 기입해야 합니다.
 
 [[resources-add-survey-to-review-success]]
 === 리뷰에 설문 추가 성공
 
-* 응답 HttpStatus : `No Content`
-
-* 별도의 응답 Body Data 는 없습니다.
+* 응답 HttpStatus : `201 Created`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
 
 operation::add-survey-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
@@ -327,32 +471,51 @@ operation::add-survey-to-review-success[snippets='request-headers,request-fields
 === 리뷰에 설문 추가 시 값을 제대로 기입하지 않은 경우
 
 * 응답 HttpStatus : `400 Bad Request`
-
 * 리뷰에 설문 추가 시 주어진 값을 모두, 정해진 값대로 기입하지 않은 경우 요청에 실패합니다.
 
 operation::add-survey-to-review-not-valid[snippets='response-fields,curl-request,http-response']
 
-[[resources-add-survey-to-review-over-perceived-theme-genres-count]]
-=== 리뷰에 설문 추가 시 등록하는 체감 테마 장르의 수가 제한된 개수보다 많을 경우
 
-* 응답 HttpStatus : `400 Bad Request`
 
-* 설문 등록 시 체감 테마 장르를 기입하게 되는데, 제한된 개수보다 많은 수의 장르 코드를 기입한 경우 요청에 실패합니다.
 
-operation::add-survey-to-review-over-perceived-theme-genres-count[snippets='response-fields,curl-request,http-response']
 
-[[resources-add-survey-to-review-period-expiration]]
-=== 리뷰에 설문 추가 시 설문 추가 가능 기간이 지난 경우
 
-* 응답 HttpStatus : `400 Bad Request`
 
-* 리뷰에 설문 추가는 리뷰를 생성한지 7일 이내에만 진행할 수 있습니다.
+[[resources-add-detail-and-survey-to-review]]
+== 리뷰에 리뷰 상세 및 설문 추가
 
-* 리뷰를 생성한 지 7일 이후 설문을 등록할 경우 요청에 실패합니다.
+* `POST` `/api/reviews/{reviewId}/details-and-surveys`
 
-* 해당 기간은 추후 변동될 수 있습니다.
+* 리뷰에 리뷰 상세 및 설문을 한 번에 추가합니다.
 
-operation::add-survey-to-review-period-expiration[snippets='response-fields,curl-request,http-response']
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+    ** 다른 회원이 생성한 리뷰에는 리뷰 상세 및 설문을 추가할 수 없습니다.
+    ** 탈퇴된 사용자 역시 리소스 접근이 불가능합니다.
+
+* 이미 리뷰 상세나 테마 설문이 등록된 리뷰일 경우 해당 요청에 실패합니다.
+* 리뷰를 생성한지 7일이 지나 테마 설문 등록이 불가능할 경우 요청에 실패합니다.
+
+* 입력 규칙
+    ** 리뷰 상세에 등록할 이미지 정보를 올바르게 기입해야 합니다.
+        *** 파일 저장소 ID, 파일 이름을 모두 기입해야 합니다.
+    ** 설문에 등록할 체감 테마 장르의 코드값은 최소 1개 이상 입력해야 합니다.
+        *** 체감 테마 장르 코드는 최대 5개 까지 입력이 가능합니다.
+    ** 설문에 등록할 체감 난이도, 체감 공포도, 체감 활동성, 시나리오 만족도, 인테리어 만족도, 문제 구성 만족도는
+    반드시 기입해야 합니다.
+
+[[resources-add-detail-and-survey-to-review-success]]
+=== 리뷰에 리뷰 상세 및 설문 추가 성공
+
+* 응답 HttpStatus : `201 Created`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
+
+operation::add-detail-and-survey-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+
+
+
+
+
 
 [[resources-update-survey-from-review]]
 == 리뷰에 등록된 설문 수정
@@ -366,7 +529,7 @@ operation::add-survey-to-review-period-expiration[snippets='response-fields,curl
 * 설문 수정 시 등록하는 체감 테마 장르는 제한된 개수 만큼만 기입할 수 있습니다.
 
 * 설문 수정은 리뷰를 생성한 지 7일 이내에만 가능합니다.
-** 해당 기간은 추후 변경될 수 있습니다.
+    ** 해당 기간은 추후 변경될 수 있습니다.
 
 * 리뷰에 설문이 등록되어 있지 않았을 경우 요청은 실패합니다.
 
@@ -407,6 +570,14 @@ operation::update-survey-from-review-over-perceived-theme-genres-count[snippets=
 operation::update-survey-from-review-period-expiration[snippets='response-fields,curl-request,http-response']
 
 
+
+
+
+
+
+
+
+
 [[resources-get-an-review]]
 == 리뷰 1건 조회
 
@@ -416,27 +587,27 @@ operation::update-survey-from-review-period-expiration[snippets='response-fields
 
 * 간단 리뷰의 경우 `ReviewType` 은 `SIMPLE`, 상세 리뷰의 경우 `ReviewType` 은 `DETAIL`, 상세 및 추가 설문 작성 리뷰의 경우 `ReviewType` 은 `DEEP`
 의 값으로 나타납니다.
-** 설문이 등록된 리뷰인 경우 설문에 대한 추가적인 데이터가 응답됩니다.
-** 설문이 추가 되었는지 여부는 `surveyYN` 을 통해서 확인이 가능합니다.
-*** `surveyYN` 가 `true` 인 경우 설문이 등록된 것입니다.
-*** `surveyYN` 가 `false` 인 경우 설문이 등록되지 않은 것입니다.
-** 리뷰에 설문 등록은 리뷰를 생성한지 7일 이내에 가능합니다.
-*** 리뷰에 설문을 등록할 수 있는지 여부는 `possibleRegisterForSurveyYN` 를 통해 확인이 가능합니다.
-**** `possibleRegisterForSurveyYN` 가 `true` 인 경우 설문 등록이 가능한 리뷰입니다.
-**** `possibleRegisterForSurveyYN` 가 `false` 인 경우 설문 등록이 가능하지 않은 리뷰입니다.
-**** 추가로 설문 등록이 가능한 시기이더라도, 자신이 생성한 리뷰가 아니면 설문 등록이 불가능합니다.
+    ** 설문이 등록된 리뷰인 경우 설문에 대한 추가적인 데이터가 응답됩니다.
+    ** 설문이 추가 되었는지 여부는 `surveyYN` 을 통해서 확인이 가능합니다.
+        *** `surveyYN` 가 `true` 인 경우 설문이 등록된 것입니다.
+        *** `surveyYN` 가 `false` 인 경우 설문이 등록되지 않은 것입니다.
+    ** 리뷰에 설문 등록은 리뷰를 생성한지 7일 이내에 가능합니다.
+        *** 리뷰에 설문을 등록할 수 있는지 여부는 `possibleRegisterForSurveyYN` 를 통해 확인이 가능합니다.
+            **** `possibleRegisterForSurveyYN` 가 `true` 인 경우 설문 등록이 가능한 리뷰입니다.
+            **** `possibleRegisterForSurveyYN` 가 `false` 인 경우 설문 등록이 가능하지 않은 리뷰입니다.
+            **** 추가로 설문 등록이 가능한 시기이더라도, 자신이 생성한 리뷰가 아니면 설문 등록이 불가능합니다.
 
 * 리뷰 조회의 경우 인증되지 않은 사용자도 리뷰를 조회할 수 있습니다.
-** 다만 인증되지 않은 사용자의 경우 리뷰에 좋아요를 등록하는 등의 요청을 하기 위해서는 인증의 단계를 거쳐야 합니다.
-** 인증되지 않은 회원의 `myReview` 는 `false`, `like` 도 `false` 가 나타납니다.
+    ** 다만 인증되지 않은 사용자의 경우 리뷰에 좋아요를 등록하는 등의 요청을 하기 위해서는 인증의 단계를 거쳐야 합니다.
+    ** 인증되지 않은 회원의 `myReview` 는 `false`, `like` 도 `false` 가 나타납니다.
 
 * 인증된 회원이 자신이 생성한 리뷰를 조회하는 경우 `myReview` 는 `true` 가 됩니다.
-** 자신이 생성한 리뷰에 대해서는 좋아요를 등록하는 등의 요청이 불가능합니다.
-** 자신이 생성한 리뷰는 좋아요 버튼이 나오지 않도록 하는 등의 구현이 가능할 것 입니다.
+    ** 자신이 생성한 리뷰에 대해서는 좋아요를 등록하는 등의 요청이 불가능합니다.
+    ** 자신이 생성한 리뷰는 좋아요 버튼이 나오지 않도록 하는 등의 구현이 가능할 것 입니다.
 
 * 인증된 회원이 다른 회원이 생성한 리뷰를 조회하는 경우 리뷰에 좋아요를 등록하는 등의 요청을 수행할 수 있습니다.
-** 인증된 회원이 해당 리뷰에 좋아요를 등록했을 경우, `like` 는 `true` 가 나타납니다.
-** 인증된 회원이 해당 리뷰에 좋아요를 등록하지 않았을 경우, `like` 는 `false` 가 나타납니다.
+    ** 인증된 회원이 해당 리뷰에 좋아요를 등록했을 경우, `like` 는 `true` 가 나타납니다.
+    ** 인증된 회원이 해당 리뷰에 좋아요를 등록하지 않았을 경우, `like` 는 `false` 가 나타납니다.
 
 [[resources-get-simple-review]]
 === 간단 리뷰가 조회된 경우
@@ -489,13 +660,23 @@ operation::get-detail-review-of-different-member-success[snippets='request-heade
 
 operation::get-detail-and-survey-review-success[snippets='request-headers,response-fields,curl-request,http-response']
 
+
+
+
+
+
+
+
+
+
+
 [[resources-get-theme-review-list]]
 == 테마에 등록된 리뷰 목록 조회
 
 * `GET` `/api/themes/{themeId}/reviews?{parameters}`
 
 * 테마에 등록된 리뷰 목록 조회의 경우, 간단 리뷰, 설문이 등록된 간단 리뷰, 상세 리뷰, 설문이 등록된 상세 리뷰가 모두 응답됩니다.
-** `ReviewType`, `surveyYN` 에 따라 다른 응답 형태를 띕니다.
+    ** `ReviewType`, `surveyYN` 에 따라 다른 응답 형태를 띕니다.
 
 NOTE: 각 응답 형태에 대한 부분은 리뷰 1건 조회 리소스를 참고하세요.
 
@@ -503,12 +684,12 @@ NOTE: 각 응답 형태에 대한 부분은 리뷰 1건 조회 리소스를 참�
 
 * 인증된 사용자는 리뷰 목록 조회 중 해당 리뷰가 자신이 생성한 리뷰인지, 다른 회원이 생성한 리뷰인지를
 `myReview` 를 통해 알 수 있습니다.
-** 자신이 생성한 리뷰는 `myReview` 가 `true`, 다른 회원이 생성한 리뷰는 `myReview` 가 `false` 로 나타납니다.
+    ** 자신이 생성한 리뷰는 `myReview` 가 `true`, 다른 회원이 생성한 리뷰는 `myReview` 가 `false` 로 나타납니다.
 
 * 리뷰 목록 조회에 성공한 경우, 간단한 페이징 정보와 이전, 다음 페이지 요청에 해당하는 URL 을 응답 받습니다.
-** 총 페이지 개수 기준 이전 페이지가 없다면 (이전 페이지가 0 페이지 이거나, 아예 잘못된 요청을 통해 이전 페이지가 총 페이지 수 보다 클 경우)
-`prevPageUrl` 은 `null` 이 나옵니다.
-** 마찬가지로 총 페이지 개수 기준 다음 페이지가 없다면 (다음 페이지가 총 페이지 수 보다 클 경우) `nextPageUrl` 은 `null` 이 나옵니다.
+    ** 총 페이지 개수 기준 이전 페이지가 없다면 (이전 페이지가 0 페이지 이거나, 아예 잘못된 요청을 통해 이전 페이지가 총 페이지 수 보다 클 경우)
+    `prevPageUrl` 은 `null` 이 나옵니다.
+    ** 마찬가지로 총 페이지 개수 기준 다음 페이지가 없다면 (다음 페이지가 총 페이지 수 보다 클 경우) `nextPageUrl` 은 `null` 이 나옵니다.
 
 
 [[resources-get-theme-review-list-success]]
@@ -519,3 +700,141 @@ NOTE: 각 응답 형태에 대한 부분은 리뷰 1건 조회 리소스를 참�
 operation::get-theme-review-list-success[snippets='request-headers,request-parameters,response-fields,curl-request,http-response']
 
 
+
+
+
+[[resources-update-review]]
+== 리뷰 수정
+
+* `PUT` `/api/reviews/{reviewId}`
+
+* 리뷰를 수정합니다.
+    ** 기본 리뷰에서 기본 리뷰 정보를 수정할 수 있습니다.
+    ** 기본 리뷰에서 상세리뷰로 수정할 수 있습니다.
+        *** 해당 기능은 기본 리뷰에 리뷰 상세 추가 기능과 비슷합니다. +
+        리뷰를 처음 생성하는 시점에는 리뷰 상세 추가 리소스를 사용하여 리뷰 상세를 등록하는 것을 추천합니다.
+    ** 상세 리뷰에서 상세 리뷰 정보를 수정할 수 있습니다.
+    ** 상세 리뷰에서 기본 리뷰로 수정할 수 있습니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+    ** 또한 다른 회원이 생성한 리뷰는 수정할 수 없습니다.
+    ** 탈퇴된 사용자도 해당 리소스에 접근할 수 없습니다.
+
+* ReviewType 을 지정하여 수정할 ReviewType 을 지정합니다.
+    ** ReviewType 이 BASE 일 경우 기본 리뷰로 수정하게 됩니다.
+    ** ReviewType 이 DETAIL 일 경우 상세 리뷰로 수정하게 됩니다.
+
+* 리뷰 수정 리소스를 사용하여 리뷰에 등록된 설문은 수정이 불가능 합니다.
+
+* 입력 규칙
+    ** 리뷰 타입, 클리여 여부, 힌스 사용 개수, 테마에 대한 평점은 수정할 리뷰 타입에 상관없이 반드시 기입해야 합니다.
+    ** 함께 플레이한 친구는 등록해도 되고, 등록하지 않아도 됩니다.
+        *** 다만 등록할 수 있는 친구의 수는 최대 5명 입니다.
+    ** 간단 리뷰로 수정하는 경우
+        *** 이미지, 코멘트 등의 값을 기입할 경우 요청에 실패합니다.
+    ** 상세 리뷰로 수정하는 경우
+        *** 리뷰 상세에 등록할 이미지는 등록해도 되고, 등록하지 않아도 됩니다.
+            **** 다만 이미지를 등록할 경우 파일 저장소 ID, 파일 이름을 모두 기입해야 합니다.
+        *** 코멘트는 반드시 기입해야 합니다.
+
+* 리뷰에 등록하는 함께 플레이한 친구가 인증된 회원과 실제 친구 관계가 아닐 경우 요청에 실패합니다.
+
+
+
+[[resources-update-review-base-to-detail-success]]
+=== 기본 생성 리뷰에서 상세 리뷰로 수정
+
+* 응답 HttpStatus : `204 No Content`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
+
+* 간단하게 기록으로 남기는 리뷰에서 이미지, 코멘트를 등록하는 상세 리뷰로 수정하는 예시입니다.
+* 상세 리뷰에서 상세 리뷰로 수정하는 요청 역시 가능합니다.
+    ** 주목할 점은 상세 리뷰로 수정한다는 것 입니다.
+
+operation::update-review-base-to-detail-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[reousrces-update-review-detail-to-base-success]]
+=== 상세 리뷰에서 기본 리뷰로 수정
+
+* 응답 HttpStatus : `204 No Content`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
+
+* 상세 리뷰에서 이미지, 코멘트 등을 제거하고, 간단한 정보들만 남도록 수정하는 예시입니다.
+* 기본 리뷰에서 기본 리뷰로 수정하는 요청 역시 가능합니다.
+    ** 주목할 점은 기본 리뷰로 수정한다는 것 입니다.
+
+operation::update-review-detail-to-base-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+
+
+
+
+[[resources-delete-review]]
+== 리뷰 삭제
+
+* `delete` `/api/reviews/{reviewId}`
+
+* 리뷰를 삭제합니다.
+    ** 리뷰를 삭제하는 순간 해당 리뷰 이후에 생성한 리뷰들은 기록 번호가 1씩 감소하게 됩니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+    ** 다른 회원이 생성한 리뷰는 삭제할 수 없습니다.
+    ** 탈퇴된 회원은 해당 리소스에 접근이 불가능합니다.
+
+[[resources-delete-review-success]]
+=== 리뷰 삭제 성공
+
+* 응답 HttpStatus : `200 OK`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
+
+operation::delete-review-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+
+
+
+
+
+[[resources-add-like-to-review]]
+== 리뷰에 좋아요 등록
+
+* `POST` `/api/reviews/{reviewId}/likes`
+
+* 리뷰에 좋아요를 등록합니다.
+** 인증된 사용자가 리뷰에 좋아요를 등록합니다.
+** 이미 좋아요가 등록된 리뷰일 경우 다시 좋아요를 등록할 수 없습니다.
+** 자신이 생성한 리뷰에는 좋아요를 등록할 수 없습니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+** 탈퇴된 사용자 또한 해당 리소스에 접근이 불가능 합니다.
+
+
+[[resources-add-like-to-review-success]]
+== 리뷰에 좋아요 등록 성공
+
+* 응답 HttpStatus : `200 OK`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
+
+operation::add-like-to-review-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+
+
+
+
+
+
+[[resources-remove-like-from-review]]
+== 리뷰에 등록된 좋아요 해제
+
+* `DELETE` `/api/reviews/{reviewId}/likes`
+
+* 리뷰에 등록된 좋아요를 해제합니다.
+** 인증된 사용자가 해당 리뷰에 등록했던 좋아요를 삭제합니다.
+** 리뷰에 좋아요가 등록되어 있지 않은 경우 요청에 실패합니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+** 탈퇴된 사용자는 해당 리소스에 접근이 불가능 합니다.
+
+[[resources-remove-like-from-review-success]]
+== 리뷰에 등록된 좋아요 해제 성공
+
+operation::remove-like-from-review-success[snippets='request-headers,response-fields,curl-request,http-response']
