@@ -1,15 +1,17 @@
 package bbangduck.bd.bbangduck.domain.shop.entity;
 
 import bbangduck.bd.bbangduck.domain.model.embeded.Location;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Getter
+@Table
 public class Shop {
 
     @Id
@@ -21,6 +23,7 @@ public class Shop {
     @JoinColumn(name = "franchise_id")
     private Franchise franchise;
 
+    @Setter
     @OneToOne(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ShopImage shopImage;
 
@@ -34,6 +37,7 @@ public class Shop {
     @Column(length = 3000)
     private String shopInfo;
 
+    @Setter
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<ShopPrice> shopPrices;
 
@@ -48,20 +52,6 @@ public class Shop {
 
     @Column(name = "delete_yn")
     private boolean deleteYN;
-
-    @Builder
-    public Shop(Long id, Franchise franchise, ShopImage shopImage, String name, String shopUrl, String shopInfo, Location location, String address, Area area, boolean deleteYN) {
-        this.id = id;
-        this.franchise = franchise;
-        this.shopImage = shopImage;
-        this.name = name;
-        this.shopUrl = shopUrl;
-        this.shopInfo = shopInfo;
-        this.location = location;
-        this.address = address;
-        this.area = area;
-        this.deleteYN = deleteYN;
-    }
 
     public void addShopPrices(ShopPrice shopPrice) {
         this.shopPrices.add(shopPrice);

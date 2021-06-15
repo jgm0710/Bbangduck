@@ -3,13 +3,16 @@ package bbangduck.bd.bbangduck.domain.board.entity;
 import bbangduck.bd.bbangduck.domain.board.entity.enumerate.BoardType;
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Getter
+@Table
 public class Board extends BaseEntityDateTime {
 
     @Id

@@ -2,6 +2,8 @@ package bbangduck.bd.bbangduck.domain.shop.entity;
 
 import bbangduck.bd.bbangduck.domain.shop.entity.enumerate.ShopPriceUnit;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -10,6 +12,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Table
 public class ShopPrice {
 
     @Id
