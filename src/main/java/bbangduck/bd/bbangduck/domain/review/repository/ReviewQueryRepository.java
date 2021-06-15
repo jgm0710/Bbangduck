@@ -1,9 +1,9 @@
 package bbangduck.bd.bbangduck.domain.review.repository;
 
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
-import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
+import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;

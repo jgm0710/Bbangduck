@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewDetailCreateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewDetailUpdateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewDetailCreateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewDetailUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -1,12 +1,12 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.TokenResponseDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.KakaoUserInfoDto;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.SocialAuthFailResponseAdaptorDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.TokenResponseDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.KakaoUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.SocialAuthFailResponseAdaptorDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.KakaoAuthFailException;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;

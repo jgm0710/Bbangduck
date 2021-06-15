@@ -1,10 +1,10 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.response.*;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSearchDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;

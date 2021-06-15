@@ -1,13 +1,13 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewDetailRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewPlayTogetherRepository;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewCreateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewDetailUpdateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewSurveyUpdateDto;
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewDetailUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSurveyUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;

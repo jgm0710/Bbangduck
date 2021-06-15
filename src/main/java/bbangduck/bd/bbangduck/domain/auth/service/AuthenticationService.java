@@ -1,10 +1,10 @@
 package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenExpiredException;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenNotFoundException;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;

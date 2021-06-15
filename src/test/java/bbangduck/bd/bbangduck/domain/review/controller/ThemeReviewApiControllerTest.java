@@ -1,16 +1,16 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewImageRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewSurveyCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewImageRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewSortCondition;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;

@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.member;
 
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.file.exception.StoredFileNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -9,7 +9,7 @@ import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateExc
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
-import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

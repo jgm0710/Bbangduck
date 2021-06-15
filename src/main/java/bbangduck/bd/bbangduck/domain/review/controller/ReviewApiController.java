@@ -2,9 +2,9 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewDetailAndSurveyCreateDtoRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.request.*;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.response.ReviewResponseDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewCreatedByOtherMembersException;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;

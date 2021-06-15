@@ -1,10 +1,10 @@
 package bbangduck.bd.bbangduck.domain.member.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateDescriptionRequestDto;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateNicknameRequestDto;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileImageRequestDto;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateDescriptionRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateNicknameRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateProfileImageRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.MyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.exception.UpdateDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;

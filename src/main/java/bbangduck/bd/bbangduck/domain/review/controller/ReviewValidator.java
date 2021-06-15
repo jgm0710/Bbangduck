@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
-import bbangduck.bd.bbangduck.domain.review.controller.dto.ReviewDetailAndSurveyCreateDtoRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.request.*;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import lombok.RequiredArgsConstructor;

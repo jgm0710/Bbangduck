@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.auth.exception;
 
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.SocialAuthFailResponseAdaptorDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.SocialAuthFailResponseAdaptorDto;
 
 /**
  * 작성자 : 정구민 <br><br>

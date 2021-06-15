@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.review.repository;
 
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.entity.dto.ReviewRecodesCountsDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
 import org.junit.jupiter.api.DisplayName;

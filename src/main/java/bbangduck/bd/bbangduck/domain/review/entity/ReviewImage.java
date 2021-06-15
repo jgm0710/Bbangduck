@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
-import bbangduck.bd.bbangduck.domain.review.service.dto.ReviewImageDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

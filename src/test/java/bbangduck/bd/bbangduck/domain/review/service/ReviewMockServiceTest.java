@@ -1,12 +1,12 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewSurveyCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.controller.dto.request.ReviewSurveyUpdateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyUpdateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.ExpirationOfReviewSurveyAddPeriodException;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;

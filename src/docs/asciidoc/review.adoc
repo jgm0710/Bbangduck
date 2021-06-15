@@ -703,6 +703,11 @@ operation::get-theme-review-list-success[snippets='request-headers,request-param
 
 
 
+
+
+
+
+
 [[resources-update-review]]
 == 리뷰 수정
 
