@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.shop.entity.repository;
+package bbangduck.bd.bbangduck.domain.shop.repository;
 
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import org.springframework.data.jpa.repository.JpaRepository;
