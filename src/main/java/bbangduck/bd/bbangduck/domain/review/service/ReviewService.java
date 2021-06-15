@@ -145,7 +145,7 @@ public class ReviewService {
     }
 
     /**
-     * 테스트 목록
+     * 테스트 완료
      *
      * 기능 테스트
      * - 변경 사항이 잘 저장되는지 o
@@ -237,8 +237,6 @@ public class ReviewService {
     }
 
     /**
-     * 테스트 목록
-     *
      * 기능 테스트 o
      * - 리뷰가 제대로 삭제 상태가 되는지 확인
      * -- 삭제된 리뷰의 레코드 번호가 -1 로 잘 저장되는지 확인
@@ -355,5 +353,20 @@ public class ReviewService {
     public void addDetailAndSurveyToReview(Long reviewId, ReviewDetailCreateDto reviewDetailCreateDto, ReviewSurveyCreateDto reviewSurveyCreateDto) {
         addDetailToReview(reviewId, reviewDetailCreateDto);
         addSurveyToReview(reviewId, reviewSurveyCreateDto);
+    }
+
+    /**
+     * 테스트 완료
+     *
+     * 기능 테스트
+     * - 삭제된 목록은 나오지 않는지 확인
+     * - total 이면 전체 리뷰가 나오는지 확인
+     * - success 이면 성공한 리뷰만 나오는지 확인
+     * - fail 이면 실패한 리뷰만 나오는지 확인
+     * - 레코드 번호 역순으로 나오는지 확인
+     * - 특정 회원의 리뷰 목록만 나오는지 확인
+     */
+    public QueryResults<Review> getMemberReviewList(Long memberId, ReviewSearchDto reviewSearchDto) {
+        return reviewQueryRepository.findListByMember(memberId, reviewSearchDto);
     }
 }

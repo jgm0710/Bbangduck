@@ -14,6 +14,7 @@ import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSearchType;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.ManipulateDeletedReviewsException;
@@ -40,9 +41,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -363,10 +366,14 @@ class ReviewServiceTest extends BaseJGMServiceTest {
                 .sortCondition(sortCondition)
                 .build();
 
-        List<Review> tmpReviewList = createTmpReviewList(theme);
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member member = memberService.getMember(signUpId);
+
+        List<Review> tmpReviewList = createTmpReviewList(member, theme);
 
         Theme theme2 = createThemeSample();
-        createTmpReviewList(theme2);
+        createTmpReviewList(member, theme2);
 
         em.flush();
         em.clear();
@@ -513,15 +520,19 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
     }
 
-    private List<Review> createTmpReviewList(Theme theme) {
-        Member adminMemberSample = createAdminMemberSample();
+    private List<Review> createTmpReviewList(Member member, Theme theme) {
         List<Review> reviewList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
+            boolean clearYN = true;
+            if (i % 2 == 0) {
+                clearYN = false;
+            }
             Review newReview = Review.builder()
                     .theme(theme)
-                    .member(adminMemberSample)
+                    .member(member)
                     .rating(new Random().nextInt(10))
                     .likeCount(new Random().nextInt(20))
+                    .clearYN(clearYN)
                     .build();
 
             Review savedReview = reviewRepository.save(newReview);
@@ -1375,6 +1386,101 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         assertEquals(-1, findMember1Review2.getRecodeNumber(), "삭제된 리뷰의 레코드 번호는 -1 이 나와야 한다.");
         assertTrue(findMember1Review2.isDeleteYN(), "삭제될 리뷰의 deleteYN 은 true 가 나와야 한다.");
 
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideParametersForGetMemberReviewList")
+    @DisplayName("특정 회원이 생성한 리뷰 목록 조회")
+    public void getMemberReviewList(ReviewSearchType searchType) {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long member1Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        memberSignUpRequestDto.setEmail("member2@email.com");
+        memberSignUpRequestDto.setNickname("member2");
+        memberSignUpRequestDto.setSocialId("37218372189");
+        Long member2Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        createReviewSampleList(member1Id, themeSample.getId());
+        createReviewSampleList(member2Id, themeSample.getId());
+
+        ReviewSearchDto reviewSearchDto = ReviewSearchDto.builder()
+                .criteria(new CriteriaDto(1, 100))
+                .searchType(searchType)
+                .sortCondition(null)
+                .build();
+
+        //when
+        System.out.println("==============================================================================================================");
+        QueryResults<Review> reviewQueryResults = reviewService.getMemberReviewList(member1Id, reviewSearchDto);
+        List<Review> findReviews = reviewQueryResults.getResults();
+        System.out.println("==============================================================================================================");
+
+        //then
+        findReviews.forEach(review -> System.out.println("review = " + review));
+
+        findReviews.forEach(review -> {
+            assertFalse(review.isDeleteYN(), "조회된 리뷰들은 모두 삭지되지 않은 리뷰들이 나와야 한다.");
+            Member reviewMember = review.getMember();
+            assertEquals(member1Id, reviewMember.getId(), "조회된 리뷰는 모드 member1 이 생성한 리뷰가 조회되어야 한다.");
+        });
+
+        for (int i = 0; i < findReviews.size()-1; i++) {
+            Review nowReview = findReviews.get(i);
+            Review nextReview = findReviews.get(i + 1);
+            assertTrue(nowReview.getRecodeNumber() > nextReview.getRecodeNumber(), "조회된 리뷰의 기록 번호는 내림차순 정렬이어야 한다.");
+        }
+
+        switch (searchType) {
+            case FAIL:
+                findReviews.forEach(review -> assertFalse(review.isClearYN(), "클리어 실패 리뷰 목록 조회 시 조회된 모든 리뷰는 실패한 리뷰가 조회되어야 한다."));
+                break;
+            case SUCCESS:
+                findReviews.forEach(review -> assertTrue(review.isClearYN(), "클리어 성공 리뷰 목록 조회 시 조회된 모든 리뷰는 성공한 리뷰가 조회되어야 한다."));
+                break;
+            default:
+                List<Boolean> clearYnList = findReviews.stream().map(Review::isClearYN).collect(Collectors.toList());
+                boolean containsTrue = clearYnList.contains(true);
+                boolean containsFalse = clearYnList.contains(false);
+                assertTrue(containsTrue, "조회된 리뷰 목록에는 클리어 성공한 리뷰가 있어야 한다.");
+                assertTrue(containsFalse, "조회된 리뷰 목록에는 클리어 실패한 리뷰가 있어야 한다.");
+        }
+
+    }
+
+    private void createReviewSampleList(Long member1Id, Long themeSampleId) {
+        for (int i = 0; i < 30; i++) {
+            boolean clearYN = true;
+            LocalTime clearTime = LocalTime.of(0, new Random().nextInt(15) + 30, new Random().nextInt(59));
+            if (i % 2 == 0) {
+                clearYN = false;
+                clearTime = null;
+            }
+
+            ReviewCreateRequestDto reviewCreateRequestDto = ReviewCreateRequestDto.builder()
+                    .clearYN(clearYN)
+                    .clearTime(clearTime)
+                    .hintUsageCount(new Random().nextInt(4) + 1)
+                    .rating(new Random().nextInt(8) + 2)
+                    .friendIds(null)
+                    .build();
+
+            Long reviewId = reviewService.createReview(member1Id, themeSampleId, reviewCreateRequestDto.toServiceDto());
+
+            if (i % 3 == 0) {
+                reviewService.deleteReview(reviewId);
+            }
+        }
+    }
+
+    private static Stream<Arguments> provideParametersForGetMemberReviewList() {
+        return Stream.of(
+                Arguments.of(ReviewSearchType.TOTAL),
+                Arguments.of(ReviewSearchType.SUCCESS),
+                Arguments.of(ReviewSearchType.FAIL)
+        );
     }
 
 }

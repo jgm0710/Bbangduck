@@ -2,7 +2,6 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
@@ -34,7 +33,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/reviews/{reviewId}")
-public class ReviewApiController {
+public class ReviewApiController{
 
     private final ReviewService reviewService;
 

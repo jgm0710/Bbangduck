@@ -2,13 +2,11 @@ package bbangduck.bd.bbangduck.domain.review.repository;
 
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSearchType;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -32,13 +30,6 @@ import static bbangduck.bd.bbangduck.domain.review.entity.QReview.review;
 public class ReviewQueryRepository {
 
     private final JPAQueryFactory queryFactory;
-
-    public List<Review> findByMember(Long memberId) {
-        return queryFactory
-                .selectFrom(review)
-                .where(review.member.id.eq(memberId))
-                .fetch();
-    }
 
     public QueryResults<Review> findListByTheme(Long themeId, ReviewSearchDto searchDto) {
         return queryFactory
@@ -177,5 +168,32 @@ public class ReviewQueryRepository {
                 )
                 .execute()
         ;
+    }
+
+    public QueryResults<Review> findListByMember(Long memberId, ReviewSearchDto reviewSearchDto) {
+        return queryFactory
+                .selectFrom(review)
+                .where(
+                        memberIdEq(memberId),
+                        searchTypeEq(reviewSearchDto.getSearchType()),
+                        deleteYnEq(false)
+                )
+                .orderBy(
+                        review.recodeNumber.desc()
+                )
+                .offset(reviewSearchDto.getOffset())
+                .limit(reviewSearchDto.getAmount())
+                .fetchResults();
+    }
+
+    private BooleanExpression searchTypeEq(ReviewSearchType searchType) {
+        switch (searchType) {
+            case SUCCESS:
+                return clearYnEq(true);
+            case FAIL:
+                return clearYnEq(false);
+            default:
+                return null;
+        }
     }
 }

@@ -546,14 +546,14 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_LIST_SUCCESS.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data.list").exists())
                 .andExpect(jsonPath("data.pageNum").exists())
                 .andExpect(jsonPath("data.amount").exists())
                 .andExpect(jsonPath("data.totalPagesCount").exists())
                 .andExpect(jsonPath("data.prevPageUrl").exists())
                 .andExpect(jsonPath("data.nextPageUrl").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_LIST_SUCCESS.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS.getMessage()))
                 .andDo(document(
                         "get-theme-review-list-success",
                         requestHeaders(
@@ -571,7 +571,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                         relaxedResponseFields(
                                 fieldWithPath("status").description(STATUS_DESCRIPTION),
                                 fieldWithPath("data.list").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
-                                        "간단 리뷰, 상세 리뷰, 상세 및 추가 설문 작성 리뷰가 모두 응답됨 -> 각 응답 형태는 리뷰 1건 조회 리소스를 통해 참조"),
+                                        "간단 리뷰, 간단 및 설문 작성 리뷰, 상세 리뷰, 상세 및 설문 작성 리뷰가 모두 응답됨 -> 각 응답 형태는 리뷰 1건 조회 리소스를 통해 참조"),
                                 fieldWithPath("data.pageNum").description("현재 요청한 페이지 번호"),
                                 fieldWithPath("data.amount").description("현재 요청한 수량"),
                                 fieldWithPath("data.totalPagesCount").description("요청 시 입력한 pageNum, amount, sortCondition 에 의해 조회된 결과의 총 페이지 수"),
@@ -617,12 +617,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_THEME_REVIEW_LIST_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].field").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_THEME_REVIEW_LIST_NOT_VALID.getMessage()))
         ;
 
     }
@@ -658,12 +658,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_THEME_REVIEW_LIST_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].field").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_THEME_REVIEW_LIST_NOT_VALID.getMessage()))
         ;
 
     }
@@ -699,12 +699,12 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_THEME_REVIEW_LIST_NOT_VALID.getStatus()))
                 .andExpect(jsonPath("data[0].objectName").exists())
                 .andExpect(jsonPath("data[0].code").exists())
                 .andExpect(jsonPath("data[0].field").exists())
                 .andExpect(jsonPath("data[0].defaultMessage").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_LIST_NOT_VALID.getMessage()))
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_THEME_REVIEW_LIST_NOT_VALID.getMessage()))
         ;
 
     }

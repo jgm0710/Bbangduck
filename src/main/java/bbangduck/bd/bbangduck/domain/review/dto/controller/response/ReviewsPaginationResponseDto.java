@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReviewPaginationResponseDto<T> {
+public class ReviewsPaginationResponseDto<T> {
 
     private T list;
 

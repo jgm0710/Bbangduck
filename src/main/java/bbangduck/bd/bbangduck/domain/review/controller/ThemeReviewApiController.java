@@ -3,13 +3,13 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ThemeReviewSearchRequestDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewPaginationResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.common.ThrowUtils;
@@ -39,7 +39,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/themes/{themeId}/reviews")
-public class ThemeReviewApiController {
+public class ThemeReviewApiController{
 
     private final ReviewService reviewService;
 
@@ -92,27 +92,27 @@ public class ThemeReviewApiController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<ReviewPaginationResponseDto<Object>>> getReviewList(
+    public ResponseEntity<ResponseDto<ReviewsPaginationResponseDto<Object>>> getReviewList(
             @PathVariable Long themeId,
             @ModelAttribute @Valid ThemeReviewSearchRequestDto requestDto,
             BindingResult bindingResult,
             @CurrentUser Member currentMember
     ) {
-        ThrowUtils.hasErrorsThrow(ResponseStatus.GET_REVIEW_LIST_NOT_VALID, bindingResult);
+        ThrowUtils.hasErrorsThrow(ResponseStatus.GET_THEME_REVIEW_LIST_NOT_VALID, bindingResult);
+
         ReviewSearchDto reviewSearchDto = requestDto.toServiceDto();
-
         QueryResults<Review> reviewQueryResults = reviewService.getThemeReviewList(themeId, reviewSearchDto);
-        long totalResultsCount = reviewQueryResults.getTotal();
-        List<Review> findReviews = reviewQueryResults.getResults();
 
+        List<Review> findReviews = reviewQueryResults.getResults();
         List<ReviewResponseDto> reviewResponseDtos = findReviews.stream().map(review -> {
             boolean existsReviewLike = getExistsReviewLike(review.getId(), currentMember);
             return convertReviewToResponseDto(review, currentMember, existsReviewLike, reviewProperties.getPeriodForAddingSurveys());
         }).collect(Collectors.toList());
 
+        long totalResultsCount = reviewQueryResults.getTotal();
         long totalPagesCount = calculateTotalPagesCount(totalResultsCount, reviewSearchDto.getAmount());
 
-        ReviewPaginationResponseDto<Object> reviewsReviewPaginationResponseDto = ReviewPaginationResponseDto.builder()
+        ReviewsPaginationResponseDto<Object> reviewsPaginationResponseDto = ReviewsPaginationResponseDto.builder()
                 .list(reviewResponseDtos)
                 .pageNum(requestDto.getPageNum())
                 .amount(requestDto.getAmount())
@@ -122,7 +122,7 @@ public class ThemeReviewApiController {
                 .build();
 
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_REVIEW_LIST_SUCCESS, reviewsReviewPaginationResponseDto));
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS, reviewsPaginationResponseDto));
     }
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {
@@ -130,6 +130,29 @@ public class ThemeReviewApiController {
             return reviewLikeService.getExistsReviewLike(currentMember.getId(), reviewId);
         }
         return false;
+    }
+
+    private String getThemeReviewListNextPageUrlString(Long themeId, ReviewSearchDto searchDto, long totalPagesCount) {
+        if (nextPageExists(totalPagesCount, searchDto.getNextPageNum())) {
+            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, null, null, null))
+                    .toUriComponentsBuilder()
+                    .queryParam("pageNum", searchDto.getNextPageNum())
+                    .queryParam("amount", searchDto.getAmount())
+                    .queryParam("sortCondition", searchDto.getSortCondition())
+                    .toUriString();
+        }
+        return null;
+    }
+
+    private String getThemeReviewListPrevPageUriString(Long themeId, ReviewSearchDto searchDto, long totalPagesCount) {
+        if (prevPageExists(totalPagesCount, searchDto.getPrevPageNum())) {
+            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, null, null, null)).toUriComponentsBuilder()
+                    .queryParam("pageNum", searchDto.getPrevPageNum())
+                    .queryParam("amount", searchDto.getAmount())
+                    .queryParam("sortCondition", searchDto.getSortCondition()).toUriString();
+        }
+
+        return null;
     }
 
 }

@@ -4,11 +4,8 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -34,28 +31,7 @@ public class ReviewResponseUtils {
         }
     }
 
-    public static String getThemeReviewListNextPageUrlString(Long themeId, ReviewSearchDto searchDto, long totalPagesCount) {
-        int nextPageNum = searchDto.getNextPageNum();
-        if (nextPageNum <= totalPagesCount) {
-            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, null, null, null)).toUriComponentsBuilder()
-                    .queryParam("pageNum", searchDto.getNextPageNum())
-                    .queryParam("amount", searchDto.getAmount())
-                    .queryParam("sortCondition", searchDto.getSortCondition()).toUriString();
-        }
-        return null;
-    }
 
-    public static String getThemeReviewListPrevPageUriString(Long themeId, ReviewSearchDto searchDto, long totalPagesCount) {
-        Integer prevPageNum = searchDto.getPrevPageNum();
-        if (prevPageNum != null && totalPagesCount >= prevPageNum) {
-            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, null, null, null)).toUriComponentsBuilder()
-                    .queryParam("pageNum", searchDto.getPrevPageNum())
-                    .queryParam("amount", searchDto.getAmount())
-                    .queryParam("sortCondition", searchDto.getSortCondition()).toUriString();
-        }
-
-        return null;
-    }
 
     public static long calculateTotalPagesCount(long totalResultsCount, int amount) {
         long totalPagesCount = totalResultsCount / amount;
@@ -63,5 +39,13 @@ public class ReviewResponseUtils {
             totalPagesCount++;
         }
         return totalPagesCount;
+    }
+
+    public static boolean nextPageExists(long totalPagesCount, int nextPageNum) {
+        return nextPageNum <= totalPagesCount;
+    }
+
+    public static boolean prevPageExists(long totalPagesCount, Integer prevPageNum) {
+        return prevPageNum != null && totalPagesCount >= prevPageNum;
     }
 }

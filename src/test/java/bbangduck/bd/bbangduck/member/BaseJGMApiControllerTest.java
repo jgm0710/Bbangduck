@@ -53,6 +53,7 @@ import java.net.URLConnection;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 @Disabled
@@ -805,5 +806,42 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .interiorSatisfaction(Satisfaction.BAD)
                 .problemConfigurationSatisfaction(Satisfaction.VERY_BAD)
                 .build();
+    }
+
+    protected void createReviewSampleList(Long memberId, List<Long> friendIds, Long themeId) throws IOException {
+        List<String> genreCodes = createGenreCodes();
+        for (int i = 0; i < 30; i++) {
+            boolean clearYN = true;
+            LocalTime clearTime = LocalTime.of(0, new Random().nextInt(15) + 30, new Random().nextInt(59));
+            if (i % 2 == 0) {
+                clearYN = false;
+                clearTime = null;
+            }
+
+            ReviewCreateRequestDto reviewCreateRequestDto = ReviewCreateRequestDto.builder()
+                    .clearYN(clearYN)
+                    .clearTime(clearTime)
+                    .hintUsageCount(new Random().nextInt(4) + 1)
+                    .rating(new Random().nextInt(8) + 2)
+                    .friendIds(friendIds)
+                    .build();
+
+            Long reviewId = reviewService.createReview(memberId, themeId, reviewCreateRequestDto.toServiceDto());
+
+            if (i % 2 == 0) {
+                List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
+                ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
+                reviewService.addDetailToReview(reviewId, reviewDetailCreateRequestDto.toServiceDto());
+            }
+
+            if (i % 4 == 0) {
+                ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+                reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+            }
+
+            if (i % 3 == 0) {
+                reviewService.deleteReview(reviewId);
+            }
+        }
     }
 }

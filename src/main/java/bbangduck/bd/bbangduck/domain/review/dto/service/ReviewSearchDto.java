@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.dto.service;
 
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSearchType;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import lombok.Builder;
@@ -15,11 +16,14 @@ public class ReviewSearchDto {
 
     private CriteriaDto criteria;
 
+    private ReviewSearchType searchType;
+
     private ReviewSortCondition sortCondition;
 
     @Builder
-    public ReviewSearchDto(CriteriaDto criteria, ReviewSortCondition sortCondition) {
+    public ReviewSearchDto(CriteriaDto criteria, ReviewSearchType searchType, ReviewSortCondition sortCondition) {
         this.criteria = criteria;
+        this.searchType = searchType;
         this.sortCondition = sortCondition;
     }
 
@@ -33,6 +37,10 @@ public class ReviewSearchDto {
 
     public ReviewSortCondition getSortCondition() {
         return sortCondition;
+    }
+
+    public ReviewSearchType getSearchType() {
+        return searchType;
     }
 
     public Integer getPrevPageNum() {
