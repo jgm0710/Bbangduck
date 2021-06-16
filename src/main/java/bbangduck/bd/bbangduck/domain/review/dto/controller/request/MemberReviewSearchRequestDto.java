@@ -12,7 +12,14 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-// TODO: 2021-06-15 주석
+/**
+ * 작성자 : Gumin Jeong
+ * <p>
+ * 작성 일자 : 2021-06-15
+ * <p>
+ * 특정 회원이 생성한 리뷰 목록 조회 시 검색 조건으로 기입될
+ * 요청 Body Data 를 담을 Dto
+ */
 @Data
 @Builder
 @AllArgsConstructor
