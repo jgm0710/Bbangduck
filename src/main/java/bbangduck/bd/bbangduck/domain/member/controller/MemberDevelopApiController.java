@@ -2,7 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSignInRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.MyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberDevelopService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;

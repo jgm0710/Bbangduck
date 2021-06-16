@@ -1,7 +1,11 @@
 package bbangduck.bd.bbangduck.domain.member.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.*;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberRoomEscapeRecodesOpenStatusUpdateRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateDescriptionRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateNicknameRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateProfileImageRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.exception.UpdateDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -35,6 +39,32 @@ public class MemberApiController {
 
     // TODO: 2021-05-06 프로필 조회에 방탈출 현황, 성향, 배지 등의 정보 추가로 응답하도록 구현
     // TODO: 2021-05-06 리뷰에 대한 구현이 끝난 뒤 추가 구현
+    /**
+     * 기능 테스트
+     * - 다른 회원의 프로필을 조회할 경우
+     * -- 회원 ID
+     * -- 프로필 이미지
+     * -- 닉네임
+     * -- 자기소개
+     * -- 방탈출 현황
+     * -- 방탈출 기록 공개 상태
+     *
+     * - 자신의 프로필을 조회할 경우
+     * -- 회원 ID
+     * -- 프로필 이미지
+     * -- 닉네임
+     * -- 자기소개
+     * -- 방탈출 현황
+     * -- 이메일
+     * -- 어떤 소셜 계정으로 가입된 회원인지
+     * -- 생성 일자
+     * -- 개인정보 수정 일자
+     *
+     * 실패 테스트
+     * - 조회된 회원이 탈퇴하거나, 계정이 정지된 회원일 경우 조회 불가
+     * - 인증되지 않은 회원일 경우 리소스 접근 불가
+     * - 탈퇴한 회원일 경우 리소스 접근 불가
+     */
     @GetMapping("/{memberId}/profiles")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<MyProfileResponseDto>> getProfile(

@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.member.dto.controller;
+package bbangduck.bd.bbangduck.domain.member.dto.controller.response;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;

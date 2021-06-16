@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.member.dto.controller;
+package bbangduck.bd.bbangduck.domain.member.dto.controller.request;
 
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import lombok.AllArgsConstructor;

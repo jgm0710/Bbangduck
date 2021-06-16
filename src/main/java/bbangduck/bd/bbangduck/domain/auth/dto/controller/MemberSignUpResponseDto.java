@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.auth.dto.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.MyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import lombok.*;
 

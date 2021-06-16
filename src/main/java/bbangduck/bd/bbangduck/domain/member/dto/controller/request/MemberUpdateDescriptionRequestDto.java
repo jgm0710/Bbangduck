@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.member.dto.controller;
+package bbangduck.bd.bbangduck.domain.member.dto.controller.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

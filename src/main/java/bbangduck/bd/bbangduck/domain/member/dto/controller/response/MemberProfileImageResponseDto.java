@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.member.dto.controller;
+package bbangduck.bd.bbangduck.domain.member.dto.controller.response;
 
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import lombok.*;

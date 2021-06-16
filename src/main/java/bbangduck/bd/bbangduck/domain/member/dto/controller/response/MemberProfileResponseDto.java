@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.member.dto.controller;
+package bbangduck.bd.bbangduck.domain.member.dto.controller.response;
 
 // TODO: 2021-06-16 완성 후 주석
 public class MemberProfileResponseDto {
