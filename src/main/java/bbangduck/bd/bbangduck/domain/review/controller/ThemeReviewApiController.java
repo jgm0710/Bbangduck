@@ -49,7 +49,6 @@ public class ThemeReviewApiController{
 
     private final ReviewProperties reviewProperties;
 
-    // TODO: 2021-06-14 문서 수정
     /**
      * 기능 테스트
      * - 201
@@ -64,6 +63,7 @@ public class ThemeReviewApiController{
      * -- 클리어하지 않았는데 클리어 시간을 기입한 경우 o
      * -- 요청 시 아무런 정보도 기입하지 않았을 경우 o
      * -- 함께 플레이한 친구의 수가 제한된 수보다 많을 경우 (친구 수 제한은 properties 를 통해 관리) o
+     * -- todo : 플레이 시간 10 시간 이상일 경우 test 미완
      *
      *
      * - 인증되지 않은 사용자가 리뷰를 생성할 경우 - unauthorized o

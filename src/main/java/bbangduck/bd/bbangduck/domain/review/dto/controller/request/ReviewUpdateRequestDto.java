@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.dto.controller.request;
 
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
@@ -40,9 +42,10 @@ public class ReviewUpdateRequestDto {
     private LocalTime clearTime;
 
     @NotNull(message = "사용한 힌트 개수를 기입해 주세요.")
-    private Integer hintUsageCount;
+    private ReviewHintUsageCount hintUsageCount;
 
     @NotNull(message = "테마에 대한 평점을 기입해 주세요.")
+    @Range(min = 1, max = 5, message = "테마에 대한 평점은 1~5점만 기입이 가능합니다.")
     private Integer rating;
 
     private List<Long> friendIds;

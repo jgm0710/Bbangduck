@@ -85,6 +85,10 @@ public class ReviewValidator {
         if (clearYN) {
             if (!isNotNull(clearTime)) {
                 errors.rejectValue("clearTime", "NotNull", "테마를 클리어 했을 경우 클리어 시간을 기입해 주세요.");
+            } else {
+                if (clearTime.isAfter(LocalTime.of(10, 0))) {
+                    errors.rejectValue("clearTime", "MaxClearTime", "클리어 시간은 최대 10시간까지만 입력이 가능합니다.");
+                }
             }
         } else {
             if (isNotNull(clearTime)) {

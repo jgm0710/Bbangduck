@@ -1,13 +1,13 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSurveyUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewDetailRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewPlayTogetherRepository;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewDetailUpdateDto;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSurveyUpdateDto;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
@@ -33,9 +33,6 @@ import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review extends BaseEntityDateTime {
 
-    /**
-     * 간단 리뷰 (공통 기입)
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
@@ -59,21 +56,13 @@ public class Review extends BaseEntityDateTime {
 
     private LocalTime clearTime;
 
-    private int hintUsageCount;
+    @Enumerated(EnumType.STRING)
+    private ReviewHintUsageCount hintUsageCount;
 
     private int rating;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewPlayTogether> reviewPlayTogethers = new ArrayList<>();
-
-//    /**
-//     * 상세 리뷰
-//     */
-//    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-//    private List<ReviewImage> reviewImages = new ArrayList<>();
-//
-//    @Column(length = 3000)
-//    private String comment;
 
     @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
     private ReviewDetail reviewDetail;
@@ -87,7 +76,7 @@ public class Review extends BaseEntityDateTime {
     private boolean deleteYN;
 
     @Builder
-    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, int hintUsageCount, int rating, long likeCount, LocalDateTime registerTimes, LocalDateTime updateTimes, boolean deleteYN) {
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, ReviewHintUsageCount hintUsageCount, int rating, long likeCount, LocalDateTime registerTimes, LocalDateTime updateTimes, boolean deleteYN) {
         this.id = id;
         this.member = member;
         this.theme = theme;
@@ -151,7 +140,7 @@ public class Review extends BaseEntityDateTime {
         return clearTime;
     }
 
-    public int getHintUsageCount() {
+    public ReviewHintUsageCount getHintUsageCount() {
         return hintUsageCount;
     }
 
@@ -208,10 +197,6 @@ public class Review extends BaseEntityDateTime {
         this.rating = reviewUpdateDto.getRating();
     }
 
-    public List<ReviewPlayTogether> getReviewPlayTogetherEntities() {
-        return reviewPlayTogethers;
-    }
-
     public void delete() {
         this.deleteYN = true;
         this.recodeNumber = -1;
@@ -225,10 +210,6 @@ public class Review extends BaseEntityDateTime {
         this.reviewType = ReviewType.DETAIL;
         this.reviewDetail = reviewDetail;
         reviewDetail.setReview(this);
-    }
-
-    public void updateDetail(ReviewDetailUpdateDto reviewDetailUpdateDto) {
-        this.reviewDetail.update(reviewDetailUpdateDto);
     }
 
     public void clearDetail(ReviewDetailRepository reviewDetailRepository) {

@@ -22,6 +22,7 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.controller.ReviewValidator;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
@@ -458,8 +459,8 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 //                .reviewType(ReviewType.BASE)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
-                .hintUsageCount(1)
-                .rating(6)
+                .hintUsageCount(ReviewHintUsageCount.ONE)
+                .rating(3)
                 .friendIds(friendIds)
                 .build();
     }
@@ -469,7 +470,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 //                .reviewType(ReviewType.DETAIL)
 //                .clearYN(true)
 //                .clearTime(LocalTime.of(0, 45, 11))
-//                .hintUsageCount(1)
+//                .hintUsageCount(ReviewHintUsageCount.ONE)
 //                .rating(6)
 //                .friendIds(friendIds)
 //                .reviewImages(reviewImageRequestDtos)
@@ -506,8 +507,8 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .reviewType(ReviewType.DETAIL)
                 .clearYN(false)
                 .clearTime(null)
-                .hintUsageCount(3)
-                .rating(8)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
+                .rating(4)
                 .friendIds(friendIds)
                 .reviewImages(reviewImageRequestDtos)
                 .comment("new comment")
@@ -519,8 +520,8 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .reviewType(ReviewType.BASE)
                 .clearYN(false)
                 .clearTime(null)
-                .hintUsageCount(3)
-                .rating(8)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
+                .rating(4)
                 .friendIds(friendIds)
                 .reviewImages(null)
                 .comment(null)
@@ -821,7 +822,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
             ReviewCreateRequestDto reviewCreateRequestDto = ReviewCreateRequestDto.builder()
                     .clearYN(clearYN)
                     .clearTime(clearTime)
-                    .hintUsageCount(new Random().nextInt(4) + 1)
+                    .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                     .rating(new Random().nextInt(8) + 2)
                     .friendIds(friendIds)
                     .build();

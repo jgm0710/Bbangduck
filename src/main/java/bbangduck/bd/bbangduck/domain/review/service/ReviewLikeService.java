@@ -34,22 +34,25 @@ public class ReviewLikeService {
 
     private final MemberRepository memberRepository;
 
+    private final ReviewService reviewService;
+
     public boolean getExistsReviewLike(Long memberId, Long reviewId) {
         return reviewLikeQueryRepository.findByMemberAndReview(memberId, reviewId).isPresent();
     }
 
-    // TODO: 2021-06-01 test
-    // TODO: 2021-06-12 삭제된 리뷰일 경우에 대한 처리 추가
     /**
-     * 기능 테스트
-     * - 리뷰 좋아요가 잘 등록되는지 확인
-     * - 리뷰의 likeCount 가 잘 증가하는지 확인
+     * 기능 테스트 o
+     * - 리뷰 좋아요가 잘 등록되는지 확인 o
+     * - 리뷰의 likeCount 가 잘 증가하는지 확인 o
+     *
+     * todo : 실패 테스트 미완
      *
      * 실패 테스트
      * - 이미 좋아요가 등록된 경우
      * - 회원을 찾을 수 없는 경우
      * - 리뷰를 찾을 수 없는 경우
      * - 자신이 생성한 리뷰에 좋아요를 등록하는 경우
+     * - 삭제될 리뷰일 경우
      */
     @Transactional
     public Long addLikeToReview(Long memberId, Long reviewId) {
@@ -58,7 +61,8 @@ public class ReviewLikeService {
         }
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+//        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+        Review review = reviewService.getReview(reviewId);
 
         if (review.isMyReview(member)) {
             throw new AddLikeToMyReviewException();

@@ -21,6 +21,7 @@ import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.*;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
@@ -284,7 +285,7 @@ public class BaseJGMServiceTest extends BaseTest {
         return ReviewCreateDto.builder()
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
-                .hintUsageCount(1)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(6)
                 .friendIds(friendIds)
                 .build();
@@ -433,7 +434,7 @@ public class BaseJGMServiceTest extends BaseTest {
         return ReviewCreateRequestDto.builder()
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 45, 11))
-                .hintUsageCount(1)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(6)
                 .friendIds(friendIds)
                 .build();
@@ -468,7 +469,7 @@ public class BaseJGMServiceTest extends BaseTest {
                 .reviewType(ReviewType.DETAIL)
                 .clearYN(false)
                 .clearTime(null)
-                .hintUsageCount(3)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(8)
                 .friendIds(friendIds)
                 .reviewImages(reviewImageRequestDtos)
@@ -481,7 +482,7 @@ public class BaseJGMServiceTest extends BaseTest {
                 .reviewType(ReviewType.BASE)
                 .clearYN(false)
                 .clearTime(null)
-                .hintUsageCount(3)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(8)
                 .friendIds(friendIds)
                 .reviewImages(null)

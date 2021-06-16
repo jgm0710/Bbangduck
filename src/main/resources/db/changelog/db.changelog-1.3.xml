@@ -214,4 +214,12 @@
                                  validate="true"/>
     </changeSet>
 
+    <!-- 리뷰 테이블의 힌트 사용 개수를 int 값에서 String 값으로 변경 -->
+    <changeSet  author="jgm (alternated)"  id="modifyDataType-hint_usage_count-INT-TO-VARCHAR">
+        <modifyDataType
+                         columnName="hint_usage_count"
+                         newDataType="VARCHAR(50)"
+                         tableName="review"/>
+    </changeSet>
+
 </databaseChangeLog>

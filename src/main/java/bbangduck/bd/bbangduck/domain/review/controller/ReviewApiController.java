@@ -88,8 +88,7 @@ public class ReviewApiController{
         return linkTo(methodOn(ReviewApiController.class).getReview(reviewId, currentMember)).toUri();
     }
 
-    // TODO: 2021-06-13 기능 삭제
-    // TODO: 2021-06-13 test
+    // TODO: 2021-06-13 기능 삭제, 테스트 미완
     /**
      * 기능 테스트 - 문서화 필요
      * - 204

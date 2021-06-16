@@ -14,6 +14,7 @@ import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSearchType;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
@@ -1462,7 +1463,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
             ReviewCreateRequestDto reviewCreateRequestDto = ReviewCreateRequestDto.builder()
                     .clearYN(clearYN)
                     .clearTime(clearTime)
-                    .hintUsageCount(new Random().nextInt(4) + 1)
+                    .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                     .rating(new Random().nextInt(8) + 2)
                     .friendIds(null)
                     .build();

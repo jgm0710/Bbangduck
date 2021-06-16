@@ -6,6 +6,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyC
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyUpdateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.ExpirationOfReviewSurveyAddPeriodException;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
@@ -50,7 +51,7 @@ class ReviewMockServiceTest extends BaseJGMServiceTest {
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 44, 44))
-                .hintUsageCount(2)
+                .hintUsageCount(ReviewHintUsageCount.TWO)
                 .rating(5)
 //                .comment("아무 코멘트")
                 .likeCount(0)
@@ -89,7 +90,7 @@ class ReviewMockServiceTest extends BaseJGMServiceTest {
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 44, 44))
-                .hintUsageCount(2)
+                .hintUsageCount(ReviewHintUsageCount.TWO)
                 .rating(5)
 //                .comment("아무 코멘트")
                 .likeCount(0)

@@ -12,6 +12,7 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -95,7 +96,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
                 .andExpect(jsonPath("data.themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
                 .andExpect(jsonPath("data.themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("data.hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount()))
+                .andExpect(jsonPath("data.hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount().name()))
                 .andExpect(jsonPath("data.rating").value(simpleReviewCreateRequestDto.getRating()))
                 .andExpect(jsonPath("data.playTogetherFriends").exists())
                 .andExpect(jsonPath("data.likeCount").value(1))
@@ -257,7 +258,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
                 .andExpect(jsonPath("data.themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
                 .andExpect(jsonPath("data.themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("data.hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount()))
+                .andExpect(jsonPath("data.hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount().name()))
                 .andExpect(jsonPath("data.rating").value(simpleReviewCreateRequestDto.getRating()))
                 .andExpect(jsonPath("data.playTogetherFriends").exists())
                 .andExpect(jsonPath("data.likeCount").value(1))
@@ -387,7 +388,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
                 .andExpect(jsonPath("data.themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
                 .andExpect(jsonPath("data.themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("data.hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount()))
+                .andExpect(jsonPath("data.hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount().name()))
                 .andExpect(jsonPath("data.rating").value(detailReviewCreateRequestDto.getRating()))
                 .andExpect(jsonPath("data.playTogetherFriends").exists())
                 .andExpect(jsonPath("data.reviewImages").exists())
@@ -507,7 +508,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
                 .andExpect(jsonPath("data.themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
                 .andExpect(jsonPath("data.themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("data.hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount()))
+                .andExpect(jsonPath("data.hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount().name()))
                 .andExpect(jsonPath("data.rating").value(detailReviewCreateRequestDto.getRating()))
                 .andExpect(jsonPath("data.playTogetherFriends").exists())
                 .andExpect(jsonPath("data.reviewImages").exists())
@@ -1801,7 +1802,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("message").value(ResponseStatus.REVIEW_HAS_NOT_SURVEY.getMessage()));
     }
 
-    // TODO: 2021-06-12 문서화
     @Test
     @DisplayName("리뷰 수정 - 간단 리뷰 to 상세 리뷰")
     public void updateReview_BaseToDetail() throws Exception {
@@ -1851,8 +1851,10 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewType").description("수정할 ReviewType 기입"),
                                 fieldWithPath("clearYN").description("수정할 클리어 여부 기입"),
                                 fieldWithPath("clearTime").description("수정할 클리어 시간 기입"),
-                                fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입"),
-                                fieldWithPath("rating").description("수정할 테마에 대한 평점 기입"),
+                                fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입 +\n" +
+                                        ReviewHintUsageCount.getNameList()),
+                                fieldWithPath("rating").description("수정할 테마에 대한 평점 기입 +\n" +
+                                        "테마에 대한 평점은 1~5 점 사이의 점수만 기입이 가능합니다."),
                                 fieldWithPath("friendIds").description("수정 시 리뷰에 등록할 친구 ID 목록 기입"),
                                 fieldWithPath("reviewImages[0].fileStorageId").description("수정 시 리뷰에 등록할 이미지 목록의 파일 저장소 ID 기입"),
                                 fieldWithPath("reviewImages[0].fileName").description("수정 시 리뷰에 등록할 이미지 목록의 파일 이름 기입"),
@@ -1868,7 +1870,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-06-13 문서 1줄 반영
     @Test
     @DisplayName("리뷰 수정 - 코멘트가 2000자를 넘긴 경우")
     public void updateReview_CommentOverLength() throws Exception {
@@ -1952,7 +1953,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-06-12 문서화
     @Test
     @DisplayName("리뷰 수정 - 상세 리뷰 to 간단 리뷰")
     public void updateReview_DetailToBase() throws Exception {
@@ -2005,8 +2005,10 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewType").description("수정할 ReviewType 기입"),
                                 fieldWithPath("clearYN").description("수정할 클리어 여부 기입"),
                                 fieldWithPath("clearTime").description("수정할 클리어 시간 기입"),
-                                fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입"),
-                                fieldWithPath("rating").description("수정할 테마에 대한 평점 기입"),
+                                fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입 +\n" +
+                                        ReviewHintUsageCount.getNameList()),
+                                fieldWithPath("rating").description("수정할 테마에 대한 평점 기입 +\n" +
+                                        "테마에 대한 평점은 1~5 점 사이의 점수만 기입이 가능합니다."),
                                 fieldWithPath("friendIds").description("수정 시 리뷰에 등록할 친구 ID 목록 기입"),
                                 fieldWithPath("reviewImages").description("[null]"),
                                 fieldWithPath("comment").description("[null]")
@@ -2296,7 +2298,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-06-14 문서화 적용
     @Test
     @DisplayName("리뷰에 리뷰 상세 추가")
     public void addDetailToReview() throws Exception {
@@ -2415,7 +2416,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-06-14 문서화 필요
     @Test
     @DisplayName("리뷰 삭제")
     public void deleteReview() throws Exception {

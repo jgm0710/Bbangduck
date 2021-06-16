@@ -9,6 +9,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateR
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewImageRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -82,8 +83,10 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                         requestFields(
                                 fieldWithPath("clearYN").description("테마 클리어 여부를 기입"),
                                 fieldWithPath("clearTime").description("테마를 클리어하는데 걸린 시간 기입"),
-                                fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입"),
-                                fieldWithPath("rating").description("테마에 대한 평점 기입"),
+                                fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입 +\n" +
+                                        ReviewHintUsageCount.getNameList()),
+                                fieldWithPath("rating").description("테마에 대한 평점 기입 +\n" +
+                                        "테마에 대한 평점은 1~5 점 사이의 점수로만 평가가 가능합니다."),
                                 fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입")
                         ),
                         responseFields(
@@ -96,7 +99,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
-    // TODO: 2021-06-13 문서 반영
     @Test
     @DisplayName("리뷰 생성 - 클리어 했지만 클리어 시간을 기입하지 않은 경우")
     public void createReview_ClearButClearTimeIsNull() throws Exception {
@@ -775,7 +777,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 41, 19))
-                .hintUsageCount(3)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(6)
                 .likeCount(312)
                 .build();
@@ -789,7 +791,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 51, 11))
-                .hintUsageCount(5)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(4)
                 .likeCount(411)
                 .build();
@@ -803,7 +805,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 41, 19))
-                .hintUsageCount(3)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(6)
                 .likeCount(214)
                 .build();
@@ -818,7 +820,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 46, 29))
-                .hintUsageCount(3)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(6)
                 .likeCount(192)
                 .build();
@@ -832,7 +834,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 59, 12))
-                .hintUsageCount(5)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(4)
                 .likeCount(442)
                 .build();
@@ -846,7 +848,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(1)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 51, 29))
-                .hintUsageCount(3)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(6)
                 .likeCount(143)
                 .build();
@@ -870,7 +872,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(2)
                 .clearYN(false)
                 .clearTime(LocalTime.of(1, 2, 19))
-                .hintUsageCount(5)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(8)
 //                .comment("테마가 너무 어렵네요 다음에는 꼭 성공하고 싶어요~")
                 .likeCount(1027)
@@ -888,7 +890,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(2)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 38, 23))
-                .hintUsageCount(0)
+                .hintUsageCount(ReviewHintUsageCount.NONE)
                 .rating(6)
 //                .comment("어렵다는 평이 있어서 걱정했는데 생각보다 시시해서 아쉬웠어요. 테마 자체는 재밌습니다 :)")
                 .likeCount(682)
@@ -906,7 +908,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(2)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 58, 11))
-                .hintUsageCount(4)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(9)
 //                .comment("어렵긴 하지만 운이 좋아서 간신히 성공했네요 ㅎㅎ. 너무 재밌었습니다.")
                 .likeCount(721)
@@ -924,7 +926,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(3)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 47, 34))
-                .hintUsageCount(0)
+                .hintUsageCount(ReviewHintUsageCount.NONE)
                 .rating(6)
 //                .comment("스토리가 풍부하고, 재밌었어요")
                 .likeCount(556)
@@ -942,7 +944,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(3)
                 .clearYN(true)
                 .clearTime(LocalTime.of(0, 34, 11))
-                .hintUsageCount(0)
+                .hintUsageCount(ReviewHintUsageCount.NONE)
                 .rating(4)
 //                .comment("너무 시시했어요. 조금 더 어려운 난이도를 바랍니다.")
                 .likeCount(10)
@@ -960,7 +962,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .recodeNumber(3)
                 .clearYN(false)
                 .clearTime(LocalTime.of(0, 59, 11))
-                .hintUsageCount(3)
+                .hintUsageCount(ReviewHintUsageCount.THREE_OR_MORE)
                 .rating(6)
 //                .comment("생각보다 어려워서 힘들었어요.")
                 .likeCount(45)

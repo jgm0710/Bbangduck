@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.dto.service;
 
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -20,14 +21,14 @@ public class ReviewCreateDto {
 
     private LocalTime clearTime;
 
-    private Integer hintUsageCount;
+    private ReviewHintUsageCount hintUsageCount;
 
     private Integer rating;
 
     private List<Long> friendIds;
 
     @Builder
-    public ReviewCreateDto(boolean clearYN, LocalTime clearTime, Integer hintUsageCount, Integer rating, List<Long> friendIds) {
+    public ReviewCreateDto(boolean clearYN, LocalTime clearTime, ReviewHintUsageCount hintUsageCount, Integer rating, List<Long> friendIds) {
         this.clearYN = clearYN;
         this.clearTime = clearTime;
         this.hintUsageCount = hintUsageCount;
@@ -39,7 +40,7 @@ public class ReviewCreateDto {
         return clearTime;
     }
 
-    public Integer getHintUsageCount() {
+    public ReviewHintUsageCount getHintUsageCount() {
         return hintUsageCount;
     }
 

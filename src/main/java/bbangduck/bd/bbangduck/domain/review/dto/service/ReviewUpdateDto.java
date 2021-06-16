@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.dto.service;
 
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,7 +28,7 @@ public class ReviewUpdateDto {
 
     private LocalTime clearTime;
 
-    private Integer hintUsageCount;
+    private ReviewHintUsageCount hintUsageCount;
 
     private Integer rating;
 
@@ -42,7 +43,7 @@ public class ReviewUpdateDto {
     private String comment;
 
     @Builder
-    public ReviewUpdateDto(ReviewType reviewType, boolean clearYN, LocalTime clearTime, Integer hintUsageCount, Integer rating, List<Long> friendIds, List<ReviewImageDto> reviewImages, String comment) {
+    public ReviewUpdateDto(ReviewType reviewType, boolean clearYN, LocalTime clearTime, ReviewHintUsageCount hintUsageCount, Integer rating, List<Long> friendIds, List<ReviewImageDto> reviewImages, String comment) {
         this.reviewType = reviewType;
         this.clearYN = clearYN;
         this.clearTime = clearTime;
@@ -65,7 +66,7 @@ public class ReviewUpdateDto {
         return clearTime;
     }
 
-    public Integer getHintUsageCount() {
+    public ReviewHintUsageCount getHintUsageCount() {
         return hintUsageCount;
     }
 

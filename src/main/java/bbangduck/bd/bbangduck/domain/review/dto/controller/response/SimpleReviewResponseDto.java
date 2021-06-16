@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.dto.controller.response;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,7 +37,7 @@ public class SimpleReviewResponseDto implements ReviewResponseDto {
 
     private LocalTime themeClearTime;
 
-    private Integer hintUsageCount;
+    private ReviewHintUsageCount hintUsageCount;
 
     private Integer rating;
 
