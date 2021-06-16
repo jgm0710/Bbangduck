@@ -1,10 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateDescriptionRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateNicknameRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateProfileImageRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.MyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.*;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.exception.UpdateDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -38,7 +35,7 @@ public class MemberApiController {
 
     // TODO: 2021-05-06 프로필 조회에 방탈출 현황, 성향, 배지 등의 정보 추가로 응답하도록 구현
     // TODO: 2021-05-06 리뷰에 대한 구현이 끝난 뒤 추가 구현
-    @GetMapping("/{memberId}")
+    @GetMapping("/{memberId}/profiles")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ResponseDto<MyProfileResponseDto>> getProfile(
             @PathVariable Long memberId,
@@ -46,6 +43,11 @@ public class MemberApiController {
     ) {
         log.debug("currentMember : {}", currentMember.toString());
         Member findMember = memberService.getMember(memberId);
+        if (currentMember.getId().equals(memberId)) {
+
+        } else {
+
+        }
         MyProfileResponseDto myProfileResponseDto = MyProfileResponseDto.convert(findMember);
         // TODO: 2021-05-05 다른 회원의 프로필을 조회할 경우에 대한 처리 추가
         // TODO: 2021-05-06 다른 회원의 프로필을 조회할 경우 해당 회원의 프로필 공개 여부에 따라 분기 처리 및 별도의 Dto 를 통해 응답
@@ -114,14 +116,15 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS, null));
     }
 
-    @PutMapping("/{memberId}/room-escape/recodes/open-yn")
+    @PutMapping("/{memberId}/room-escape-recodes-open-status")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> toggleRoomEscapeRecodesOpen(
+    public ResponseEntity<ResponseDto<Object>> updateRoomEscapeRecodesOpenStatus(
             @PathVariable Long memberId,
+            @RequestBody @Valid MemberRoomEscapeRecodesOpenStatusUpdateRequestDto requestDto,
             @CurrentUser Member currentMember
     ) {
         ifUpdateDifferentMemberThrows(memberId, currentMember);
-        memberService.toggleRoomEscapeRecodesOpenYN(memberId);
+        memberService.updateRoomEscapeRecodesOpenStatus(memberId, requestDto.getRoomEscapeRecodesOpenStatus());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS, null));
     }

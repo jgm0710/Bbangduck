@@ -13,9 +13,10 @@ import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendState;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberFriendState;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
@@ -363,7 +364,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .password("hong")
                 .nickname("hong")
                 .description("hong")
-                .roomEscapeRecordsOpenYN(true)
+                .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.CLOSE)
                 .refreshInfo(RefreshInfo.init(securityJwtProperties.getRefreshTokenExpiredDate()))
                 .roles(Set.of(MemberRole.ADMIN))
                 .build();

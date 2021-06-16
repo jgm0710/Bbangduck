@@ -5,6 +5,7 @@ import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.file.exception.StoredFileNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
@@ -393,36 +394,14 @@ class MemberServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
         Member savedMember = memberService.getMember(signUpId);
-        assertTrue(savedMember.isRoomEscapeRecordsOpenYN());
+        assertEquals(MemberRoomEscapeRecodesOpenStatus.OPEN, savedMember.getRoomEscapeRecodesOpenStatus());
 
         //when
-        memberService.toggleRoomEscapeRecodesOpenYN(signUpId);
+        memberService.updateRoomEscapeRecodesOpenStatus(signUpId, MemberRoomEscapeRecodesOpenStatus.CLOSE);
 
         //then
         Member findMember = memberService.getMember(signUpId);
-        assertFalse(findMember.isRoomEscapeRecordsOpenYN());
-
-    }
-
-    @Test
-    @DisplayName("회원 방탈출 기록 공개 여부 변경 - false to true")
-    public void toggleRoomEscapeRecodesOpenYN_FalseToTrue() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        memberService.toggleRoomEscapeRecodesOpenYN(signUpId);
-
-        Member savedMember = memberService.getMember(signUpId);
-        assertFalse(savedMember.isRoomEscapeRecordsOpenYN());
-
-        //when
-        memberService.toggleRoomEscapeRecodesOpenYN(signUpId);
-
-        //then
-        Member findMember = memberService.getMember(signUpId);
-        assertTrue(findMember.isRoomEscapeRecordsOpenYN());
-
+        assertEquals(MemberRoomEscapeRecodesOpenStatus.CLOSE, findMember.getRoomEscapeRecodesOpenStatus());
 
     }
 
@@ -433,12 +412,12 @@ class MemberServiceTest extends BaseJGMServiceTest {
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
         Member savedMember = memberService.getMember(signUpId);
-        assertTrue(savedMember.isRoomEscapeRecordsOpenYN());
+        assertEquals(MemberRoomEscapeRecodesOpenStatus.OPEN, savedMember.getRoomEscapeRecodesOpenStatus());
 
         //when
 
         //then
-        assertThrows(MemberNotFoundException.class, () -> memberService.toggleRoomEscapeRecodesOpenYN(10000L));
+        assertThrows(MemberNotFoundException.class, () -> memberService.updateRoomEscapeRecodesOpenStatus(10000L, MemberRoomEscapeRecodesOpenStatus.CLOSE));
 
     }
 

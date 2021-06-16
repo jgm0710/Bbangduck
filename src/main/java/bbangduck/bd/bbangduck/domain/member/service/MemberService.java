@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.member.service;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
@@ -87,8 +88,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void toggleRoomEscapeRecodesOpenYN(Long memberId) {
+    public void updateRoomEscapeRecodesOpenStatus(Long memberId, MemberRoomEscapeRecodesOpenStatus memberRoomEscapeRecodesOpenStatus) {
         Member findMember = getMember(memberId);
-        findMember.toggleRoomEscapeRecodesOpenYN();
+        findMember.updateRoomEscapeRecodesOpenStatus(memberRoomEscapeRecodesOpenStatus);
     }
 }

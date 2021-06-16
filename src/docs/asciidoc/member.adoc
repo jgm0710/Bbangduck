@@ -20,7 +20,7 @@
 
 | <<resources-member-update-profile-image>> / <<resources-member-delete-profile-image>> /
 <<resources-member-update-nickname>> / <<resources-member-update-description>> /
-<<resources-member-toggle-room-escape-recodes-open-yn>>
+<<resources-member-update-room-escape-recodes-open-status>>
 | 인증되지 않은 회원이 리소스에 접근할 경우
 | 401
 | 1401
@@ -28,7 +28,7 @@
 
 | <<resources-member-update-profile-image>> / <<resources-member-delete-profile-image>> /
 <<resources-member-update-nickname>> / <<resources-member-update-description>> /
-<<resources-member-toggle-room-escape-recodes-open-yn>>
+<<resources-member-update-room-escape-recodes-open-status>>
 | 다른 회원의 프로필을 수정하는 경우
 | 403
 | 2406
@@ -63,8 +63,12 @@
 * <<resources-member-delete-profile-image>> 기능 구현
 * <<resources-member-update-nickname>> 기능 구현
 * <<resources-member-update-description>> 기능 구현
-* <<resources-member-toggle-room-escape-recodes-open-yn>> 기능 구현
+* <<resources-member-update-room-escape-recodes-open-status>> 기능 구현
 
+2021-06-16 :::
+* <<resources-member-update-room-escape-recodes-open-status>> 기능 변경
+    ** 기존 공개 여부만 변경하던 부분을 변경
+        *** 공개, 친구에게만 공개, 비공개 상태를 지정할 수 있도록 변경
 
 [[resources-member]]
 = 회원 관련 리소스
@@ -154,18 +158,25 @@ operation::update-description-success[snippets='request-headers,request-fields,r
 
 operation::update-description-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
-[[resources-member-toggle-room-escape-recodes-open-yn]]
-== 회원 방탈출 기록 공개 여부 변경
+[[resources-member-update-room-escape-recodes-open-status]]
+== 회원 방탈출 기록 공개 상태 변경
 
-* `PUT` `/api/members/{memberId}/room-escape/recodes/open-yn`
+* `PUT` `/api/members/{memberId}/room-escape-recodes-open-status`
+
 * 회원의 방탈출 기록 공개 여부를 변경합니다.
-** 해당 요청은 토글 형태로 방탈출 기록 공개 여부를 변경합니다.
-** 기존에 방탈출 기록을 공개했다면, 해당 요청 시 방탈출 기록 비공개 상태가 됩니다.
-** 기존에 방탈출 기록을 비공개했다면, 해당 요청 시 방탈출 기록 공개 상태가 됩니다.
-* 해당 리소스는 인증된 사용자만 접근이 가능하고, 인증된 사용자는 다른 회원의 닉네임을 변경할 수 없습니다.
-* 별도의 응답 Data 는 없습니다.
+    ** `roomEscapeRecodesOpenStatus` 에 값을 수정할 상태값을 기입합니다.
+    ** `roomEscapeRecodesOpenStatus` 는 `Enum` 값으로 정확한 문자를 입력해야 합니다.
+    ** 공개 상태, 친구에게만 공개 상태, 비공개 상태를 지정할 수 있습니다.
 
-[[resources-member-toggle-room-escape-recodes-open-yn-success]]
-=== 회원 방탈출 기록 공개 여부 변경 성공
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+    ** 인증되지 않은 사용자일 경우 요청에 실패합니다.
+    ** 탈퇴된 사용자일 경우 요청에 실패합니다.
+    ** 다른 회원의 방탈출 기록 공개 상태를 변경할 경우 요청에 실패합니다.
 
-operation::toggle-room-escape-recodes-open-yn-success[snippets='request-headers,response-fields,curl-request,http-response']
+[[resources-member-update-room-escape-recodes-open-status-success]]
+=== 회원 방탈출 기록 공개 상태 변경 성공
+
+* 응답 HttpStatus : `204 No Content`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
+
+operation::update-room-escape-recodes-open-status-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']

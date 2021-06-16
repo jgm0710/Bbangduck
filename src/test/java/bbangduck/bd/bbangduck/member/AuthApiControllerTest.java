@@ -5,9 +5,10 @@ import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberSocialInfoDuplicateException;
@@ -86,7 +87,8 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.memberInfo.socialAccounts[0].socialId").description("Social 인증을 통해 가입된 회원의 Social ID"),
                                 fieldWithPath("data.memberInfo.socialAccounts[0].socialType").description("Social 인증을 통해 가입된 회원이 사용한 Social 매체"),
                                 fieldWithPath("data.memberInfo.description").description("간략한 자기 소개 (null)"),
-                                fieldWithPath("data.memberInfo.roomEscapeRecordVisible").description("방탈출 기록 공개 여부 (Default True)"),
+                                fieldWithPath("data.memberInfo.roomEscapeRecodesOpenStatus").description("방탈출 기록 공개 여부 +\n" +
+                                        MemberRoomEscapeRecodesOpenStatus.getNameList()),
                                 fieldWithPath("data.memberInfo.registerTimes").description("가입 날짜"),
                                 fieldWithPath("data.memberInfo.updateTimes").description("회원 정보 최종 수정 날짜"),
                                 fieldWithPath("data.tokenInfo.memberId").description("가입된 회원의 식별 ID"),

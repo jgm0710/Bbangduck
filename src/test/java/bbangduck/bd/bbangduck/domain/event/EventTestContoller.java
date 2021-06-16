@@ -11,7 +11,8 @@ import bbangduck.bd.bbangduck.domain.event.repository.ShopEventRepository;
 import bbangduck.bd.bbangduck.domain.event.service.EventService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.model.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.entity.*;
@@ -85,7 +86,7 @@ public class EventTestContoller {
                 .password("1234")
                 .nickname("developer")
                 .description("개발자")
-                .roomEscapeRecordsOpenYN(false)
+                .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.CLOSE)
                 .refreshInfo(RefreshInfo.init(1000))
                 .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
                 .build();

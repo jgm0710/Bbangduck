@@ -5,8 +5,9 @@ import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpReque
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.service.MemberDevelopService;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -51,7 +52,7 @@ class MemberDevelopApiControllerTest extends BaseJGMApiControllerTest {
                     .password(encodedPassword)
                     .nickname("developer")
                     .description("개발자")
-                    .roomEscapeRecordsOpenYN(false)
+                    .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.CLOSE)
                     .refreshInfo(RefreshInfo.init(1000))
                     .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
                     .build();

@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSearchType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -49,7 +50,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         createReviewSampleList(signUpId, friendIds, themeSample.getId());
 
-        memberService.toggleRoomEscapeRecodesOpenYN(signUpId);
+        memberService.updateRoomEscapeRecodesOpenStatus(signUpId, MemberRoomEscapeRecodesOpenStatus.CLOSE);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
         //when
@@ -106,7 +107,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
 
     @Test
     @DisplayName("특정 회원의 리뷰 목록 조회 - 다른 회원이 생성한 리뷰를 조회하는데 해당 회원이 방탈출 기록을 공개하지 않은 경우")
-    public void getMemberReviewList_DifferentMembersReview_RecodesOpenFalse() throws Exception {
+    public void getMemberReviewList_DifferentMembersReview_RecodesOpenClose() throws Exception {
         //given
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long member1Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
@@ -122,7 +123,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         memberSocialSignUpRequestDto.setSocialId("3218390708");
         Long member2Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        memberService.toggleRoomEscapeRecodesOpenYN(member1Id);
+        memberService.updateRoomEscapeRecodesOpenStatus(member1Id,MemberRoomEscapeRecodesOpenStatus.CLOSE);
 
         TokenDto tokenDto = authenticationService.signIn(member2Id);
 
@@ -137,7 +138,84 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_ROOM_ESCAPE_RECODES_ARE_NOT_OPEN.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_ROOM_ESCAPE_RECODES_ARE_NOT_OPEN.getMessage()))
+        ;
+
+    }
+
+
+    @Test
+    @DisplayName("특정 회원이 생성한 리뷰 목록 조회 - 다른 회원이 생성한 리뷰 조회, 해당 회원이 친구에게만 조회를 허락한 경우, 성공")
+    public void getMemberReviewList_DifferentMembersReview_RecodesOnlyFriendOpen_Success() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Theme themeSample = createThemeSample();
+
+        createReviewSampleList(signUpId, friendIds, themeSample.getId());
+
+        memberService.updateRoomEscapeRecodesOpenStatus(signUpId, MemberRoomEscapeRecodesOpenStatus.ONLY_FRIENDS_OPEN);
+
+        TokenDto tokenDto = authenticationService.signIn(friendIds.get(0));
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/reviews", signUpId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .param("pageNum", "2")
+                        .param("amount", "8")
+                        .param("searchType", ReviewSearchType.TOTAL.name())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    @DisplayName("특정 회원이 생성한 리뷰 목록 조회 - 다른 회원이 생성한 리뷰 조회, 해당 회원이 친구에게만 조회를 허락한 경우, 실패")
+    public void getMemberReviewList_DifferentMembersReview_RecodesOnlyFriendOpen_Fail() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+
+        Theme themeSample = createThemeSample();
+
+        createReviewSampleList(signUpId, friendIds, themeSample.getId());
+
+        memberService.updateRoomEscapeRecodesOpenStatus(signUpId, MemberRoomEscapeRecodesOpenStatus.ONLY_FRIENDS_OPEN);
+
+        memberSocialSignUpRequestDto.setEmail("member2@email.com");
+        memberSocialSignUpRequestDto.setNickname("member2");
+        memberSocialSignUpRequestDto.setSocialId("38210371289378");
+        Long member2Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(member2Id);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/reviews", signUpId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .param("pageNum", "2")
+                        .param("amount", "8")
+                        .param("searchType", ReviewSearchType.TOTAL.name())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_ROOM_ESCAPE_RECODES_ARE_ONLY_FRIEND_OPEN.getStatus()))
+                .andExpect(jsonPath("data").doesNotExist())
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_ROOM_ESCAPE_RECODES_ARE_ONLY_FRIEND_OPEN.getMessage()))
+        ;
 
     }
 

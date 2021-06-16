@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.dto.controller;
 
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import lombok.*;
 
 /**

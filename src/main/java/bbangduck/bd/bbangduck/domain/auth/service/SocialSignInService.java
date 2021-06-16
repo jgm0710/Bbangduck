@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.KakaoAuthorizationCodeConfiguration;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
 import bbangduck.bd.bbangduck.domain.auth.exception.SocialAccessTokenRetrievalErrorException;
 import bbangduck.bd.bbangduck.domain.auth.exception.SocialSignInStateMismatchException;

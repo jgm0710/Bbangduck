@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.dto.controller;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ public class MyProfileResponseDto {
 
     private String description;
 
-    private boolean roomEscapeRecordVisible;
+    private MemberRoomEscapeRecodesOpenStatus roomEscapeRecodesOpenStatus;
 
     private LocalDateTime registerTimes;
 
@@ -47,7 +48,7 @@ public class MyProfileResponseDto {
                 .socialAccounts(convertSocialAccounts(member.getSocialAccounts()))
                 .nickname(member.getNickname())
                 .description(member.getDescription())
-                .roomEscapeRecordVisible(member.isRoomEscapeRecordsOpenYN())
+                .roomEscapeRecodesOpenStatus(member.getRoomEscapeRecodesOpenStatus())
                 .registerTimes(member.getRegisterTimes())
                 .updateTimes(member.getUpdateTimes())
                 .build();

@@ -3,10 +3,12 @@ package bbangduck.bd.bbangduck.domain.member.controller;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberRoomEscapeRecodesOpenStatusUpdateRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateDescriptionRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateNicknameRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateProfileImageRequestDto;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
@@ -49,7 +51,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
         //when
         ResultActions perform = mockMvc.perform(
-                get("/api/members/" + signUpMemberId)
+                get("/api/members/{memberId}/profiles",signUpMemberId)
                         .header(securityJwtProperties.getJwtTokenHeader(), totalAccessToken)
         ).andDo(print());
 
@@ -76,7 +78,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
         //when
         ResultActions perform = mockMvc.perform(
-                get("/api/members/" + signUpMemberId)
+                get("/api/members/{memberId}/profiles",signUpMemberId)
                         .header(securityJwtProperties.getJwtTokenHeader(), totalAccessToken+"fjdiajfinwkfndwkl")
         ).andDo(print());
 
@@ -107,7 +109,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
         //when
         ResultActions perform = mockMvc.perform(
-                get("/api/members/" + 10000L)
+                get("/api/members/{memberId}/profiles",10000L)
                         .header(securityJwtProperties.getJwtTokenHeader(), totalAccessToken)
         ).andDo(print());
 
@@ -142,7 +144,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
         //when
         ResultActions perform = mockMvc.perform(
-                get("/api/members/" + signUpMemberId)
+                get("/api/members/{memberId}/profiles",signUpMemberId)
                         .header(securityJwtProperties.getJwtTokenHeader(), totalAccessToken)
         ).andDo(print());
 
@@ -871,17 +873,20 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     @Test
     @DisplayName("회원 방탈출 기록 공개 여부 변경")
-    public void toggleRoomEscapeRecodesOpenTest() throws Exception {
+    public void updateRoomEscapeRecodesOpenStatus() throws Exception {
         //given
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
+        MemberRoomEscapeRecodesOpenStatusUpdateRequestDto memberRoomEscapeRecodesOpenStatusUpdateRequestDto = new MemberRoomEscapeRecodesOpenStatusUpdateRequestDto(MemberRoomEscapeRecodesOpenStatus.CLOSE);
         //when
         ResultActions perform = mockMvc.perform(
-                put("/api/members/" + signUpId + "/room-escape/recodes/open-yn")
+                put("/api/members/{memberId}/room-escape-recodes-open-status", signUpId)
                         .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberRoomEscapeRecodesOpenStatusUpdateRequestDto))
         ).andDo(print());
 
         //then
@@ -891,9 +896,13 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS.getMessage()))
                 .andDo(document(
-                        "toggle-room-escape-recodes-open-yn-success",
+                        "update-room-escape-recodes-open-status-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("roomEscapeRecodesOpenStatus").description("변경할 방탈출 기록 공개 상태 기입 +\n" +
+                                        MemberRoomEscapeRecodesOpenStatus.getNameList())
                         ),
                         responseFields(
                                 fieldWithPath("status").description(STATUS_DESCRIPTION),
@@ -907,17 +916,21 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     @Test
     @DisplayName("회원 방탈출 기록 공개 여부 변경 - 다른 회원의 방탈출 기록 공개 여부 변경")
-    public void toggleRoomEscapeRecodesOpen_DifferentMember() throws Exception {
+    public void updateRoomEscapeRecodesOpenStatus_DifferentMember() throws Exception {
           //given
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
+        MemberRoomEscapeRecodesOpenStatusUpdateRequestDto memberRoomEscapeRecodesOpenStatusUpdateRequestDto = new MemberRoomEscapeRecodesOpenStatusUpdateRequestDto(MemberRoomEscapeRecodesOpenStatus.CLOSE);
+
         //when
         ResultActions perform = mockMvc.perform(
-                put("/api/members/" + 10000L + "/room-escape/recodes/open-yn")
+                put("/api/members/{memberId}/room-escape-recodes-open-status", 10000L)
                         .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberRoomEscapeRecodesOpenStatusUpdateRequestDto))
         ).andDo(print());
 
 
@@ -931,17 +944,20 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     @Test
     @DisplayName("회원 방탈출 기록 공개 여부 변경 - 인증되지 않았을 경우")
-    public void toggleRoomEscapeRecodesOpen_Unauthorized() throws Exception {
+    public void updateRoomEscapeRecodesOpenStatus_Unauthorized() throws Exception {
           //given
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
+        MemberRoomEscapeRecodesOpenStatusUpdateRequestDto memberRoomEscapeRecodesOpenStatusUpdateRequestDto = new MemberRoomEscapeRecodesOpenStatusUpdateRequestDto(MemberRoomEscapeRecodesOpenStatus.CLOSE);
         //when
         ResultActions perform = mockMvc.perform(
-                put("/api/members/" + signUpId + "/room-escape/recodes/open-yn")
+                put("/api/members/{memberId}/room-escape-recodes-open-status", signUpId)
 //                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberRoomEscapeRecodesOpenStatusUpdateRequestDto))
         ).andDo(print());
 
 
