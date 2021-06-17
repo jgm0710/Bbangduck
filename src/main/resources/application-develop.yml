@@ -3,3 +3,14 @@ spring:
     username: root # dev
     password: Qkdejr16)& # dev
     url: jdbc:mysql://13.125.48.96:13306/bbangduck?serverTimezone=UTC&characterEncoding=UTF-8 # dev
+
+file:
+  storage:
+    upload-path: /home/ec2-user/upload
+
+logging:
+  level:
+    bbangduck.bd.bbangduck: info
+    org.hibernate.SQL: info
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.security: info #spring security에 대해 어떤 메세지가 출력이 되는지 확인
