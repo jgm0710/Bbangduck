@@ -1124,5 +1124,53 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
     }
 
+    @Test
+    @DisplayName("회원의 플레이 성향 조회")
+    public void getMemberPlayInclinations() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        Theme themeSample = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+        reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        TokenDto tokenDto = authenticationService.signIn(signUpId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/play-inclinations", signUpId)
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_MEMBER_PLAY_INCLINATIONS_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data.playInclinations").isArray())
+                .andExpect(jsonPath("data.playInclinations[0].genre.genreCode").isString())
+                .andExpect(jsonPath("data.playInclinations[0].genre.genreName").isString())
+                .andExpect(jsonPath("data.playInclinations[0].playCount").isNumber())
+                .andExpect(jsonPath("data.totalThemeEvaluatesCount").isNumber())
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_MEMBER_PLAY_INCLINATIONS_SUCCESS.getMessage()))
+                .andDo(document(
+                        "get-member-play-inclination-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data.playInclinations[0].genre.genreCode").description("회원의 플레이 성향에 등록된 장르의 코드값"),
+                                fieldWithPath("data.playInclinations[0].genre.genreName").description("회원의 플레이 성향에 등록된 장르의 이름"),
+                                fieldWithPath("data.playInclinations[0].playCount").description("회원이 플레이 성향에 등록된 장르를 플레이한 횟수"),
+                                fieldWithPath("data.totalThemeEvaluatesCount").description("회원이 테마를 평가한 총 횟수"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
 
 }

@@ -501,4 +501,71 @@ class MemberServiceTest extends BaseJGMServiceTest {
         assertEquals(memberProperties.getPlayInclinationTopLimit(), memberPlayInclinationTopN.size(), "조회된 회원 성향의 개수는 지정된 개수가 나와야 한다.");
     }
 
+    @Test
+    @DisplayName("회원의 전체 방탈출 성향 조회")
+    public void getMemberPlayInclinations() {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member member = memberService.getMember(signUpId);
+
+        memberSignUpRequestDto.setEmail("member2@email.colm");
+        memberSignUpRequestDto.setNickname("member2");
+        memberSignUpRequestDto.setSocialId("318209381290");
+        Long member2Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member member2 = memberService.getMember(member2Id);
+
+        Theme themeSample = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+
+        List<Genre> genres = new ArrayList<>();
+        genres.add(genreRepository.findByCode("HR1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("CRI1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("ADVT1").orElseThrow(GenreNotFoundException::new));
+
+        genres.forEach(genre -> {
+            MemberPlayInclination memberPlayInclination = MemberPlayInclination.builder()
+                    .member(member)
+                    .genre(genre)
+                    .playCount(new Random().nextInt(8) + 1)
+                    .build();
+            memberPlayInclinationRepository.save(memberPlayInclination);
+
+            MemberPlayInclination member2PlayInclination = MemberPlayInclination.builder()
+                    .member(member2)
+                    .genre(genre)
+                    .playCount(new Random().nextInt(8) + 1)
+                    .build();
+            memberPlayInclinationRepository.save(member2PlayInclination);
+        });
+
+        //when
+        System.out.println("======================================================================================================");
+        List<MemberPlayInclination> memberPlayInclinations = memberService.getMemberPlayInclinations(member.getId());
+        System.out.println("======================================================================================================");
+
+        //then
+        memberPlayInclinations.forEach(memberPlayInclination -> {
+            Member memberPlayInclinationMember = memberPlayInclination.getMember();
+            Genre memberPlayInclinationGenre = memberPlayInclination.getGenre();
+            System.out.println("memberPlayInclinationMember = " + memberPlayInclinationMember);
+            System.out.println("memberPlayInclinationGenre = " + memberPlayInclinationGenre);
+            System.out.println("memberPlayInclination.getPlayCount() = " + memberPlayInclination.getPlayCount());
+
+            assertEquals(member.getId(), memberPlayInclinationMember.getId(), "회원 1의 플레이 성향만 조회되어야 한다.");
+        });
+
+        for (int i = 0; i < memberPlayInclinations.size()-1; i++) {
+            MemberPlayInclination nowPlayInclination = memberPlayInclinations.get(i);
+            MemberPlayInclination nextPlayInclination = memberPlayInclinations.get(i + 1);
+
+            assertTrue(nowPlayInclination.getPlayCount() >= nextPlayInclination.getPlayCount(), "플레이 수 가 많은 성향부터 내림차순으로 정렬되어 있어야 한다.");
+        }
+
+
+    }
+
 }

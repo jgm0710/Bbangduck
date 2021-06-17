@@ -44,12 +44,18 @@ public class MemberPlayInclinationQueryRepository {
     }
 
     public List<MemberPlayInclination> findAllByMember(Long memberId) {
+        QMember member = QMember.member;
+        QGenre genre = QGenre.genre;
         return queryFactory
                 .selectFrom(memberPlayInclination)
+                .join(memberPlayInclination.member, member).fetchJoin()
+                .join(memberPlayInclination.genre, genre).fetchJoin()
                 .where(memberIdEq(memberId))
-                .orderBy(playCountDesc())
+                .orderBy(
+                        playCountDesc(),
+                        genre.name.desc()
+                )
                 .fetch();
-
     }
 
     public Optional<MemberPlayInclination> findOneByMemberAndGenre(Long memberId, Long genreId) {

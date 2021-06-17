@@ -69,6 +69,9 @@ public class MemberService {
     }
 
     // TODO: 2021-06-16 회원 전체 성향 목록 조회 기능 구현
+    public List<MemberPlayInclination> getMemberPlayInclinations(Long memberId) {
+        return memberPlayInclinationQueryRepository.findAllByMember(memberId);
+    }
 
     private void checkDuplicateNickname(String nickname) {
         if (memberRepository.findByNickname(nickname).isPresent()) {

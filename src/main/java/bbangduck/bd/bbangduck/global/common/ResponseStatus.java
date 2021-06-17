@@ -54,6 +54,7 @@ public enum ResponseStatus {
     MEMBER_UPDATE_DESCRIPTION_SUCCESS(2206, "회원 자기소개 변경에 성공했습니다.", "회원 자기소개 변경에 성공한 경우"),
     UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS(2207, "회원 방탈출 기록 공개 상태 변경에 성공했습니다.", "회원 방탈출 기록 공개 상태 변경에 성공한 경우"),
     GET_MY_PROFILE_SUCCESS(2208, "본인의 프로필 조회에 성공했습니다.", "본인의 프로필 조회에 성공한 경우"),
+    GET_MEMBER_PLAY_INCLINATIONS_SUCCESS(2209, "회원의 플레이 성향 조회에 성공했습니다.", "회원의 플레이 성향 조회에 성공한 경우"),
 
 
     MEMBER_NOT_FOUND(2401, "해당 회원이 존재하지 않습니다.", "해당 조건으로 조회된 회원이 존재하지 않는 경우"),

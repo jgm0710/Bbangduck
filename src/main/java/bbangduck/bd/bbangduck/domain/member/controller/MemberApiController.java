@@ -5,7 +5,9 @@ import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberRoomEsc
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateDescriptionRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateNicknameRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateProfileImageRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.GetMemberPlayInclinationsResponseDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberMyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberPlayInclinationResponseDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
 
@@ -46,6 +49,7 @@ public class MemberApiController {
     private final ReviewService reviewService;
 
     /**
+     * 문서화 완료, 테스트 완료
      * 기능 테스트 o
      * - 다른 회원의 프로필을 조회할 경우 o
      * -- 회원 ID o
@@ -110,6 +114,32 @@ public class MemberApiController {
             return MemberProfileResponseDto.convert(findMember, reviewRecodesCounts, memberPlayInclinations);
         }
     }
+
+    // TODO: 2021-06-17 추후 방탈출 기록 공개 상태에 따라 요청이 실패할 수 있도록 변경할 수 있음
+    // TODO: 2021-06-17 추후 성향에 대한 호칭 기능이 생기면 응답 형태가 변할 수 있음
+    /**
+     * 문서화 완료, 테스트 완료
+     * 기능 테스트
+     * - 회원의 플레이 성향이 잘 조회되는지 확인 o
+     * - 회원이 생성한 리뷰 개수가 잘 나오는지 확인 o
+     *
+     * 실페 테스트
+     * - 실패 없음
+     */
+    @GetMapping("/{memberId}/play-inclinations")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<GetMemberPlayInclinationsResponseDto>> getMemberPlayInclination(
+            @PathVariable Long memberId
+    ) {
+        List<MemberPlayInclination> memberPlayInclinations = memberService.getMemberPlayInclinations(memberId);
+        ReviewRecodesCountsDto reviewRecodesCounts = reviewService.getReviewRecodesCounts(memberId);
+        List<MemberPlayInclinationResponseDto> memberPlayInclinationResponseDtos = memberPlayInclinations.stream().map(MemberPlayInclinationResponseDto::convert).collect(Collectors.toList());
+        GetMemberPlayInclinationsResponseDto getMemberPlayInclinationsResponseDto = new GetMemberPlayInclinationsResponseDto(memberPlayInclinationResponseDtos, reviewRecodesCounts.getTotalRecodesCount());
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_PLAY_INCLINATIONS_SUCCESS, getMemberPlayInclinationsResponseDto));
+
+    }
+
 
     @PutMapping("/{memberId}/profiles/images")
     @PreAuthorize("hasRole('ROLE_USER')")
