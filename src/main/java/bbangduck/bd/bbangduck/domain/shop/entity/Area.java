@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: 2021-05-25 clear
 @Entity
 @Table
 @Getter

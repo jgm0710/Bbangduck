@@ -6,7 +6,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-// TODO: 2021-05-25 완료
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -54,4 +53,8 @@ public class Shop {
     @Column(name = "delete_yn")
     private boolean deleteYN;
 
+    public void addShopPrices(ShopPrice shopPrice) {
+        this.shopPrices.add(shopPrice);
+        shopPrice.setShop(this);
+    }
 }

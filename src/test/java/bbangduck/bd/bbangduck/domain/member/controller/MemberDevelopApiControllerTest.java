@@ -1,14 +1,14 @@
 package bbangduck.bd.bbangduck.domain.member.controller;
 
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignInRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSignInRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.service.MemberDevelopService;
-import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.BeforeEach;

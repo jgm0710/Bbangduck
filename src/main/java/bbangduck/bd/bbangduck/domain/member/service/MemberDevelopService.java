@@ -1,9 +1,8 @@
 package bbangduck.bd.bbangduck.domain.member.service;
 
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignInRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignInDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignInDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.SocialAccount;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
@@ -14,7 +13,6 @@ import bbangduck.bd.bbangduck.domain.member.repository.SocialAccountRepository;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

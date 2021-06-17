@@ -2,7 +2,6 @@ package bbangduck.bd.bbangduck.global.common;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -57,7 +56,7 @@ public enum ResponseStatus {
 
 
     MEMBER_NOT_FOUND(2401, "해당 회원이 존재하지 않습니다.", "해당 조건으로 조회된 회원이 존재하지 않는 경우"),
-    MEMBER_SIGN_UP_NOT_VALID(2402, "회원가입 시 기입사항을 올바르게 기입하지 않았습니다.", "회원가입 시 기입사항을 규칙에 맞게 기입하지 않은 경우"),
+    MEMBER_SIGN_UP_NOT_VALID(2402, "회원가입 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원가입 시 기입 사항을 규칙에 맞게 기입하지 않은 경우"),
     MEMBER_EMAIL_DUPLICATE(2403,"해당 Email 을 사용하는 회원이 이미 존재합니다.", "회원가입, 회원 정보 수정 시 기존 사용자와 중복되는 Email 저장을 시도하는 경우"),
     MEMBER_NICKNAME_DUPLICATE(2404, "해당 Nickname 을 사용하는 회원이 이미 존재합니다.", "회원가입, 회원 정보 수정 시 기존 사용자와 중복되는 Nickname 저장을 시도하는 경우"),
     MEMBER_SOCIAL_INFO_DUPLICATE(2405, "해당 소셜 회원은 이미 가입된 회원입니다.", "소셜 회원가입 시 기입한 소셜 정보를 통해 가입한 회원이 이미 존재하는 경우"),
@@ -66,6 +65,8 @@ public enum ResponseStatus {
     MEMBER_UPDATE_NICKNAME_NOT_VALID(2409, "회원 Nickname 변경 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원 Nickname 변경 시 기입 사항을 올바르게 기입하지 않은 경우"),
     MEMBER_UPDATE_DESCRIPTION_NOT_VALID(2410, "회원 자기소개 변경 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원의 자기소개 내용 변경 시 기입 사항을 올바르게 기입하지 않은 경우"),
     MEMBER_PROFILE_IMAGE_NOT_FOUND(2411, "회원의 프로필 이미지가 존재하지 않습니다.", "회원 프로필 이미지 삭제 등의 요청에서 회원 프로필 이미지 요청에 실패한 경우"),
+    RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND(2412, "요청된 두 회원은 서로 친구 관계가 아닙니다.", "특정 회원의 친구 정보를 조회할 경우 두 회원 간의 관계가 친구 수락 상태가 아닐 경우"),
+
 
 
     /**
@@ -87,6 +88,72 @@ public enum ResponseStatus {
     FILE_DOWNLOAD_FAIL_FOR_UNKNOWN_REASON(3409, "요청한 파일이 알 수 없는 이유로 다운로드 할 수 없습니다.", "알 수 없는 이유로 파일 다운로드를 실패한 경우"),
     DOWNLOAD_THUMBNAIL_OF_NON_IMAGE_FILE(3410, "해당 파일은 이미지 파일이 아니므로, 썸네일 이미지 다운로드 요청이 불가능합니다.", "썸네일 이미지 요청 시 해당 파일이 이미지 파일이 아닌 경우"),
     FILE_DELETE_FAIL_FOR_UNKNOWN_REASON(3411, "삭제 요청한 파일이 알 수 없는 이유로 삭제되지 않았습니다. 다시 시도해 주세요.", "알 수 없는 이유로 삭제 요청한 파일이 삭제되지 않았을 경우"),
+
+    /**
+     * 리뷰 관련 응답 코드
+     * 시작 코드 4
+     */
+    CREATE_REVIEW_SUCCESS(4201, "리뷰 생성에 성공했습니다.", "리뷰 생성에 성공한 경우"),
+//    CREATE_DETAIL_REVIEW_SUCCESS(4202, "상세 리뷰 생성에 성공했습니다.", "상세 리뷰 생성에 성공한 경우"),
+    GET_REVIEW_SUCCESS(4204, "리뷰 조회에 성공했습니다.", "리뷰 1건 조회에 성공한 경우"),
+    GET_THEME_REVIEW_LIST_SUCCESS(4205, "테마에 등록된 리뷰 목록 조회에 성공했습니다.", "테마에 등록된 리뷰 목록 조회에 성공한 경우"),
+    UPDATE_REVIEW_SUCCESS(4206, "리뷰 수정에 성공했습니다.", "리뷰 수정에 성공한 경우"),
+    ADD_SURVEY_TO_REVIEW_SUCCESS(4207, "리뷰에 설문 등록 요청을 성공했습니다.", "리뷰에 테마에 관한 설문 정보 등록을 성공한 경우"),
+    UPDATE_SURVEY_FROM_REVIEW_SUCCESS(4208, "리뷰에 등록된 설문 수정 요청에 성공했습니다.", "리뷰에 등록된 설문 수정 요청을 성공한 경우"),
+    ADD_DETAIL_TO_REVIEW_SUCCESS(4209, "리뷰에 리뷰 상세를 추가하는데 성공했습니다.", "리뷰에 리뷰 상세를 추가하는데 성공한 경우"),
+    UPDATE_DETAIL_FROM_REVIEW_SUCCESS(4210, "리뷰의 리뷰 상세 수정에 성공했습니다.", "리뷰에 등록된 리뷰 상세를 수정하는데 성공한 경우"),
+    ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS(4211, "리뷰에 리뷰 상세 및 설문을 추가하는데 성공했습니다.", "리뷰에 리뷰 상세 및 설문을 추가하는데 성공한 경우"),
+    DELETE_REVIEW_SUCCESS(4212, "리뷰 삭제에 성공했습니다.", "리뷰 삭제에 성공한 경우"),
+    ADD_LIKE_TO_REVIEW_SUCCESS(4213, "리뷰 좋아요 등록에 성공했습니다.", "리뷰 좋아요 등록에 성공한 경우"),
+    REMOVE_LIKE_FROM_REVIEW_SUCCESS(4214, "리뷰에 등록된 좋아요 삭제에 성공했습니다.", "리뷰에 등록된 좋아요 삭제에 성공한 경우"),
+    GET_MEMBER_REVIEW_LIST_SUCCESS(4215, "특정 회원이 생성한 리뷰 목록 조회를 성공했습니다.", "특정 회원이 생성한 리뷰 목록 조회에 성공한 경우"),
+
+    CREATE_REVIEW_NOT_VALID(4401, "리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰 생성 요청 시 공통적으로 필요한 필수 기입 사항을 올바르게 기입하지 않은 경우"),
+//    CREATE_SIMPLE_REVIEW_NOT_VALID(4402, "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),
+//    CREATE_DETAIL_REVIEW_NOT_VALID(4403, "상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "상세 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    REVIEW_NOT_FOUND(4405, "해당 리뷰가 존재하지 않습니다.", "요청된 리뷰를 조회했을 때 DB에 해당 리뷰가 존재하지 않는 경우"),
+    ADD_SURVEY_TO_REVIEW_NOT_VALID(4406, "리뷰에 설문 추가 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 설문 추가 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    EXPIRATION_OF_REVIEW_SURVEY_ADD_PERIOD_EXCEPTION(4407, "리뷰 설문 조사 등록 가능 기간이 만료되었습니다.", "리뷰에 설문 조사 등록 시 등록 가능 기간을 지난 경우"),
+    ADD_SURVEYS_TO_REVIEWS_CREATED_BY_OTHER_MEMBERS(4408, "다른 회원이 생성한 리뷰에는 설문을 추가할 수 없습니다.", "다른 회원이 생성한 리뷰에 설문을 추가하는 경우"),
+    UPDATE_SURVEY_FROM_REVIEW_NOT_VALID(4409, "리뷰에 등록된 설문 수정 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 등록된 설문 수정 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    UPDATE_SURVEY_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS(4410, "다른 회원이 생성한 리뷰의 설문은 수정할 수 없습니다.", "다른 회원이 생성한 리뷰의 설문을 수정하는 경우"),
+    NO_GENRE_TO_REGISTER_FOR_REVIEW_SURVEY(4411, "리뷰 설문에 등록할 장르를 반드시 기입해야 합니다.", "리뷰에 설문 등록, 수정 시 장르를 등록해야 하는데, 장르 코드를 기입하지 않은 경우"),
+    REVIEW_HAS_NOT_SURVEY(4412, "리뷰에 설문이 등록되어 있지 않으므로, 설문을 수정할 수 없습니다.", "리뷰 설문 수정 요청 시 리뷰에 설문이 등록되어 있지 않을 경우"),
+    GET_THEME_REVIEW_LIST_NOT_VALID(4413, "테마에 등록된 리뷰 목록 조회 시 기입 사항을 올바르게 기입하지 않았습니다.", "테마에 등록된 리뷰 목록 조회 시 페이징 등의 값을 잘 못 입력한 경우"),
+    UPDATE_REVIEW_CREATED_BY_OTHER_MEMBERS(4414, "다른 회원이 생성한 리뷰는 수정할 수 없습니다.", "다른 회원이 생성한 리뷰를 수정하는 경우"),
+    UPDATE_REVIEW_NOT_VALID(4415, "리뷰 수정 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰 수정 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    MANIPULATE_DELETED_REVIEW(4416, "삭제된 리뷰입니다.", "삭제된 리뷰의 데이터를 조작하거나 삭제된 리뷰를 사용하여 데이터를 조작하는 경우"),
+    ADD_DETAIL_TO_REVIEW_NOT_VALID(4417, "리뷰에 리뷰 상세 추가 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 리뷰 상세 추가 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    ADD_DETAIL_TO_REVIEW_CREATED_BY_OTHER_MEMBERS(4418, "다른 회원이 생성한 리뷰에는 리뷰 상세를 추가할 수 없습니다.", "다른 회원이 생성한 리뷰에 리뷰 상세를 추가하는 경우"),
+    // FIXME: 2021-06-14 리뷰 상세 수정 기능 필요 없을 시 삭제
+    UPDATE_DETAIL_FROM_REVIEW_NOT_VALID(4419, "리뷰 상세 수정 시 기입 사항이 올바르게 기입되지 않았습니다.", "리뷰 상세 수정 시 기입 사항일 올바르게 기입되지 않은 경우"),
+    UPDATE_DETAIL_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS(4420, "다른 회원이 생성한 리뷰의 리뷰 상세는 수정할 수 없습니다.", "다른 회원이 생성한 리뷰의 리뷰 상세를 수정하는 경우"),
+    SURVEY_IS_ALREADY_REGISTERED_IN_REVIEW(4421, "리뷰에 이미 설문이 등록되어 있습니다.", "리뷰에 설문을 등록 시 리뷰가 이미 설문이 등록된 리뷰일 경우"),
+    DETAIL_IS_ALREADY_REGISTERED_IN_REVIEW(4422, "리뷰에 이미 리뷰 상세가 등록되어 있습니다.", "리뷰에 리뷰 상세 등록 시 이미 리뷰 상세가 등록된 리뷰일 경우"),
+    // FIXME: 2021-06-14 리뷰 상세 수정 기능 필요 없을 시 삭제
+    REVIEW_HAS_NOT_DETAIL(4423, "리뷰에 리뷰 상세가 등록되어 있지 않습니다.", "리뷰 상세 수정 등에서 리뷰에 리뷰 상세가 등록되어 있지 않은 경우"),
+    ADD_DETAIL_AND_SURVEY_TO_REVIEW_CREATED_BY_OTHER_MEMBERS(4424, "다른 회원이 생성한 리뷰에는 리뷰 상세 및 설문을 추가할 수 없습니다.", "다른 회원이 생성한 리뷰에 리뷰 상세 및 설문을 추가하는 경우"),
+    ADD_DETAIL_AND_SURVEY_TO_REVIEW_NOT_VALID(4425, "리뷰에 리뷰 상세 및 설문 추가 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰에 리뷰 상세 및 설문 추가 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    DELETE_REVIEW_CREATED_BY_OTHER_MEMBERS(4426, "다른 회원이 생성한 리뷰는 삭제할 수 없습니다.", "다른 회원이 생성한 리뷰를 삭제하는 경우"),
+    GET_MEMBER_REVIEW_LIST_NOT_VALID(4427, "특정 회원의 리뷰 목록 조회 시 기입 사항이 올바르게 기입되지 않았습니다.", "특정 회원의 리뷰 목록 조회 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    MEMBER_ROOM_ESCAPE_RECODES_ARE_NOT_OPEN(4428, "다른 회원의 방탈출 기록을 조회했으나, 해당 회원은 방탈출 기록을 공개하지 않은 회원입니다.", "다른 회원의 방탈출 기록을 조회했으나, 해당 회원이 방탈출 기록을 공개하지 않은 회원일 경우"),
+
+    REVIEW_HAS_ALREADY_BEEN_LIKED(4431, "해당 리뷰에 이미 좋아요가 등록되어 있습니다.", "리뷰에 좋아요 등록 시 이미 좋아요를 등록한 리뷰인 경우"),
+    ADD_LIKE_TO_MY_REVIEW(4432, "본인이 생성한 리뷰에는 좋아요를 등록할 수 없습니다.", "자신이 생성한 리뷰에 좋아요를 등록하는 경우"),
+    REVIEW_LIKE_NOT_FOUND(4433, "해당 회원은 해당 리뷰에 좋아요를 등록하지 않았습니다.", "리뷰 좋아요 조회 시 해당 회원이 해당 리뷰에 등록한 좋아요를 찾을 수 없는 경우"),
+
+    /**
+     * 테마 관련 응답 코드
+     * 시작 코드 5
+     */
+    THEME_NOT_FOUND(5401, "해당 테마가 존재하지 않습니다.", "요청된 테마를 조회했을 때 DB에 해당 테마가 존재하지 않는 경우"),
+    MANIPULATE_DELETED_THEME(5402, "삭제된 테마입니다.", "삭제된 테마의 데이터를 조작하거나 삭제된 테마를 사용하여 데이터를 조작하는 경우"),
+
+    /**
+     * 장르 관련 응답 코드
+     * 시작 코드 6
+     */
+    GENRE_NOT_FOUND(6401, "해당 장르가 존재하지 않습니다.", "요청된 장르를 조회했을 때 DB에 해당 장르가 존재하지 않는 경우"),
 
     /**
      * 개발자 권한 응답 코드

@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
-import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import lombok.*;
 
 import javax.persistence.*;

@@ -27,4 +27,7 @@ public class ThemeOperatingTimes {
 
     private LocalDate runDate;
 
+    public void setTheme(Theme theme) {
+        this.theme = theme;
+    }
 }

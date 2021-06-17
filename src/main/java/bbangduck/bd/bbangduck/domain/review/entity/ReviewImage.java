@@ -1,6 +1,8 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -20,11 +22,55 @@ public class ReviewImage {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
-    private Review review;
+    @JoinColumn(name = "review_detail_id")
+    private ReviewDetail reviewDetail;
 
     private Long fileStorageId;
 
     private String fileName;
 
+    @Builder
+    public ReviewImage(Long id, ReviewDetail reviewDetail, Long fileStorageId, String fileName) {
+        this.id = id;
+        this.reviewDetail = reviewDetail;
+        this.fileStorageId = fileStorageId;
+        this.fileName = fileName;
+    }
+
+    public static ReviewImage create(ReviewImageDto reviewImageDto) {
+        return ReviewImage.builder()
+                .fileStorageId(reviewImageDto.getFileStorageId())
+                .fileName(reviewImageDto.getFileName())
+                .build();
+    }
+
+    public void setReviewDetail(ReviewDetail reviewDetail) {
+        this.reviewDetail = reviewDetail;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public ReviewDetail getReviewDetail() {
+        return reviewDetail;
+    }
+
+    public Long getFileStorageId() {
+        return fileStorageId;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    @Override
+    public String toString() {
+        return "ReviewImage{" +
+                "id=" + id +
+//                ", review=" + review +
+                ", fileStorageId=" + fileStorageId +
+                ", fileName='" + fileName + '\'' +
+                '}';
+    }
 }

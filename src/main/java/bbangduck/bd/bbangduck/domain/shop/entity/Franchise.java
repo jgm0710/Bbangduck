@@ -6,7 +6,6 @@ import lombok.*;
 
 import javax.persistence.*;
 
-// TODO: 2021-05-25 완료
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

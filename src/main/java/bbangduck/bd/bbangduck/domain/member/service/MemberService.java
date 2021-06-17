@@ -8,7 +8,7 @@ import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

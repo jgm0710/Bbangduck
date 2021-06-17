@@ -1,9 +1,9 @@
 package bbangduck.bd.bbangduck.member;
 
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.OnlyRefreshTokenRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.OnlyRefreshTokenRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;

@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
+import bbangduck.bd.bbangduck.domain.genre.entity.QGenre;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -8,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import static bbangduck.bd.bbangduck.domain.genre.entity.QGenre.*;
 import static bbangduck.bd.bbangduck.domain.member.entity.QMemberPlayInclination.memberPlayInclination;
 
 /**
@@ -24,7 +27,7 @@ public class MemberPlayInclinationQueryRepository {
 
     public List<MemberPlayInclination> findTopByMember(Long memberId, long limit) {
         return queryFactory
-                .select(memberPlayInclination)
+                .selectFrom(memberPlayInclination)
                 .where(memberIdEq(memberId))
                 .orderBy(playCountDesc())
                 .offset(0)
@@ -34,11 +37,27 @@ public class MemberPlayInclinationQueryRepository {
 
     public List<MemberPlayInclination> findAllByMember(Long memberId) {
         return queryFactory
-                .select(memberPlayInclination)
+                .selectFrom(memberPlayInclination)
                 .where(memberIdEq(memberId))
                 .orderBy(playCountDesc())
                 .fetch();
 
+    }
+
+    public Optional<MemberPlayInclination> findOneByMemberAndGenre(Long memberId, Long genreId) {
+        MemberPlayInclination result = queryFactory
+                .selectFrom(memberPlayInclination)
+                .where(
+                        memberIdEq(memberId),
+                        genreIdEq(genreId)
+                )
+                .fetchFirst();
+
+        return Optional.ofNullable(result);
+    }
+
+    private BooleanExpression genreIdEq(Long genreId) {
+        return genre.id.eq(genreId);
     }
 
     private OrderSpecifier<Integer> playCountDesc() {

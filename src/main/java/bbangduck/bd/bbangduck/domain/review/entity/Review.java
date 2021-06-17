@@ -1,20 +1,32 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.model.emumerate.*;
-import bbangduck.bd.bbangduck.domain.review.entity.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSurveyUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
+import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewDetailRepository;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewPlayTogetherRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * Review Entity
  */
 @Entity
@@ -44,33 +56,69 @@ public class Review extends BaseEntityDateTime {
 
     private LocalTime clearTime;
 
-    private int hintUsageCount;
+    @Enumerated(EnumType.STRING)
+    private ReviewHintUsageCount hintUsageCount;
 
     private int rating;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
-    private List<ReviewImage> reviewImages;
+    private List<ReviewPlayTogether> reviewPlayTogethers = new ArrayList<>();
 
-    @Column(length = 3000)
-    private String comment;
+    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
+    private ReviewDetail reviewDetail;
 
-    @Enumerated(EnumType.STRING)
-    private Difficulty perceivedDifficulty;
+    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
+    private ReviewSurvey reviewSurvey;
 
-    @Enumerated(EnumType.STRING)
-    private HorrorGrade perceivedHorrorGrade;
+    private long likeCount;
 
-    @Enumerated(EnumType.STRING)
-    private Activity perceivedActivity;
+    @Column(name = "delete_yn")
+    private boolean deleteYN;
 
-    @Enumerated(EnumType.STRING)
-    private ScenarioSatisfaction scenarioSatisfaction;
+    @Builder
+    public Review(Long id, Member member, Theme theme, ReviewType reviewType, int recodeNumber, boolean clearYN, LocalTime clearTime, ReviewHintUsageCount hintUsageCount, int rating, long likeCount, LocalDateTime registerTimes, LocalDateTime updateTimes, boolean deleteYN) {
+        this.id = id;
+        this.member = member;
+        this.theme = theme;
+        this.reviewType = reviewType;
+        this.recodeNumber = recodeNumber;
+        this.clearYN = clearYN;
+        this.clearTime = clearTime;
+        this.hintUsageCount = hintUsageCount;
+        this.rating = rating;
+        this.likeCount = likeCount;
+        this.deleteYN = deleteYN;
+        super.registerTimes = registerTimes;
+        super.updateTimes = updateTimes;
+    }
 
-    @Enumerated(EnumType.STRING)
-    private InteriorSatisfaction interiorSatisfaction;
+    public static Review create(Member member, Theme theme, int recodeNumber, ReviewCreateDto reviewCreateDto) {
+        return Review.builder()
+                .member(member)
+                .theme(theme)
+                .reviewType(ReviewType.BASE)
+                .recodeNumber(recodeNumber)
+                .clearYN(reviewCreateDto.isClearYN())
+                .clearTime(reviewCreateDto.getClearTime())
+                .hintUsageCount(reviewCreateDto.getHintUsageCount())
+                .rating(reviewCreateDto.getRating())
+                .likeCount(0)
+                .deleteYN(false)
+                .build();
+    }
 
-    @Enumerated(EnumType.STRING)
-    private ProblemConfigurationSatisfaction problemConfigurationSatisfaction;
+    public List<Member> getPlayTogetherMembers() {
+        return this.reviewPlayTogethers.stream().map(ReviewPlayTogether::getMember).collect(Collectors.toList());
+    }
+
+    public void addPlayTogether(Member friend) {
+        ReviewPlayTogether reviewPlayTogether = ReviewPlayTogether.builder()
+                .review(this)
+                .member(friend)
+                .build();
+
+        this.reviewPlayTogethers.add(reviewPlayTogether);
+    }
 
     public Long getId() {
         return id;
@@ -92,7 +140,7 @@ public class Review extends BaseEntityDateTime {
         return clearTime;
     }
 
-    public int getHintUsageCount() {
+    public ReviewHintUsageCount getHintUsageCount() {
         return hintUsageCount;
     }
 
@@ -100,36 +148,101 @@ public class Review extends BaseEntityDateTime {
         return rating;
     }
 
-    public List<ReviewImage> getReviewImages() {
-        return reviewImages;
+    public int getRecodeNumber() {
+        return recodeNumber;
     }
 
-    public String getComment() {
-        return comment;
+    public boolean isClearYN() {
+        return clearYN;
     }
 
-    public Difficulty getPerceivedDifficulty() {
-        return perceivedDifficulty;
+    public boolean isMyReview(Member currentMember) {
+        return currentMember != null && this.member.getId().equals(currentMember.getId());
     }
 
-    public HorrorGrade getPerceivedHorrorGrade() {
-        return perceivedHorrorGrade;
+    public long getLikeCount() {
+        return likeCount;
     }
 
-    public Activity getPerceivedActivity() {
-        return perceivedActivity;
+    public void increaseLikeCount() {
+        this.likeCount++;
     }
 
-    public ScenarioSatisfaction getScenarioSatisfaction() {
-        return scenarioSatisfaction;
+    public void decreaseLikeCount() {
+        this.likeCount--;
     }
 
-    public InteriorSatisfaction getInteriorSatisfaction() {
-        return interiorSatisfaction;
+    public void setReviewSurvey(ReviewSurvey reviewSurvey) {
+        reviewSurvey.setReview(this);
+        this.reviewSurvey = reviewSurvey;
     }
 
-    public ProblemConfigurationSatisfaction getProblemConfigurationSatisfaction() {
-        return problemConfigurationSatisfaction;
+    public ReviewSurvey getReviewSurvey() {
+        return reviewSurvey;
     }
 
+    public void updateSurvey(ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
+        this.reviewSurvey.update(reviewSurveyUpdateDto);
+    }
+
+    public boolean isDeleteYN() {
+        return deleteYN;
+    }
+
+    public void updateBase(ReviewUpdateDto reviewUpdateDto) {
+        this.reviewType = reviewUpdateDto.getReviewType();
+        this.clearYN = reviewUpdateDto.isClearYN();
+        this.clearTime = reviewUpdateDto.getClearTime();
+        this.hintUsageCount = reviewUpdateDto.getHintUsageCount();
+        this.rating = reviewUpdateDto.getRating();
+    }
+
+    public void delete() {
+        this.deleteYN = true;
+        this.recodeNumber = -1;
+    }
+
+    public ReviewDetail getReviewDetail() {
+        return reviewDetail;
+    }
+
+    public void addReviewDetail(ReviewDetail reviewDetail) {
+        this.reviewType = ReviewType.DETAIL;
+        this.reviewDetail = reviewDetail;
+        reviewDetail.setReview(this);
+    }
+
+    public void clearDetail(ReviewDetailRepository reviewDetailRepository) {
+        if (isNotNull(this.reviewDetail)) {
+            reviewDetailRepository.delete(this.reviewDetail);
+            this.reviewDetail = null;
+        }
+    }
+
+    public void clearPlayTogether(ReviewPlayTogetherRepository reviewPlayTogetherRepository) {
+        if (existsList(this.reviewPlayTogethers)) {
+            reviewPlayTogetherRepository.deleteInBatch(this.reviewPlayTogethers);
+            this.reviewPlayTogethers.clear();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+//                ", member=" + member +
+//                ", theme=" + theme +
+                ", reviewType=" + reviewType +
+                ", recodeNumber=" + recodeNumber +
+                ", clearYN=" + clearYN +
+                ", clearTime=" + clearTime +
+                ", hintUsageCount=" + hintUsageCount +
+                ", rating=" + rating +
+//                ", reviewPlayTogethers=" + reviewPlayTogethers +
+//                ", reviewDetail=" + reviewDetail +
+//                ", reviewSurvey=" + reviewSurvey +
+                ", likeCount=" + likeCount +
+                ", deleteYN=" + deleteYN +
+                '}';
+    }
 }

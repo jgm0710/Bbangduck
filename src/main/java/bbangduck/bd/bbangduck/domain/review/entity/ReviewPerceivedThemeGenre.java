@@ -2,10 +2,10 @@ package bbangduck.bd.bbangduck.domain.review.entity;
 
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.jdo.annotations.Join;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -24,8 +24,8 @@ public class ReviewPerceivedThemeGenre {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
-    private Review review;
+    @JoinColumn(name = "review_survey_id")
+    private ReviewSurvey reviewSurvey;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id")
@@ -34,4 +34,26 @@ public class ReviewPerceivedThemeGenre {
     @CreationTimestamp
     private LocalDateTime registerTimes;
 
+    @Builder
+    public ReviewPerceivedThemeGenre(Long id, ReviewSurvey reviewSurvey, Genre genre) {
+        this.id = id;
+        this.reviewSurvey = reviewSurvey;
+        this.genre = genre;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public ReviewSurvey getReviewSurvey() {
+        return reviewSurvey;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public LocalDateTime getRegisterTimes() {
+        return registerTimes;
+    }
 }

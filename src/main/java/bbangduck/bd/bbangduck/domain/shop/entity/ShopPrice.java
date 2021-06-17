@@ -35,4 +35,8 @@ public class ShopPrice {
 
     @CreationTimestamp
     private LocalDateTime registerTimes;
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
 }

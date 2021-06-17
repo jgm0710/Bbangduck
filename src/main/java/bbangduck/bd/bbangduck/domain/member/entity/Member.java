@@ -1,11 +1,11 @@
 package bbangduck.bd.bbangduck.domain.member.entity;
 
-import bbangduck.bd.bbangduck.domain.auth.service.dto.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
-import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,7 +37,7 @@ public class Member extends BaseEntityDateTime {
 
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "member", fetch = FetchType.EAGER)
     private MemberProfileImage profileImage = null;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -225,5 +225,9 @@ public class Member extends BaseEntityDateTime {
 
     public void signOut() {
         this.refreshInfo = null;
+    }
+
+    public String getProfileImageFileName() {
+        return profileImage == null ? null : profileImage.getFileName();
     }
 }

@@ -157,7 +157,7 @@ operation::update-description-empty[snippets='request-headers,request-fields,res
 [[resources-member-toggle-room-escape-recodes-open-yn]]
 == 회원 방탈출 기록 공개 여부 변경
 
-* `PUT` `/api/members/1/room-escape/recodes/open-yn`
+* `PUT` `/api/members/{memberId}/room-escape/recodes/open-yn`
 * 회원의 방탈출 기록 공개 여부를 변경합니다.
 ** 해당 요청은 토글 형태로 방탈출 기록 공개 여부를 변경합니다.
 ** 기존에 방탈출 기록을 공개했다면, 해당 요청 시 방탈출 기록 비공개 상태가 됩니다.

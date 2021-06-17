@@ -1,14 +1,14 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSignUpResponseDto;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.OnlyRefreshTokenRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.TokenResponseDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSignUpResponseDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.OnlyRefreshTokenRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.TokenResponseDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.SignOutDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.auth.exception.WithdrawalDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;

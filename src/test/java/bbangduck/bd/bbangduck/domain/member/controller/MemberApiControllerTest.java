@@ -1,15 +1,15 @@
 package bbangduck.bd.bbangduck.domain.member.controller;
 
-import bbangduck.bd.bbangduck.domain.auth.controller.dto.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.dto.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateDescriptionRequestDto;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateNicknameRequestDto;
-import bbangduck.bd.bbangduck.domain.member.controller.dto.MemberUpdateProfileImageRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateDescriptionRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateNicknameRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.MemberUpdateProfileImageRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
-import bbangduck.bd.bbangduck.domain.member.service.dto.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.DisplayName;

@@ -60,3 +60,8 @@ file:
     file-cache-second: 60
     thumbnail-prefix: s_
     upload-path: C:\bbangduck\upload
+
+review:
+  period-for-adding-surveys: 7
+  perceived-theme-genres-count-limit: 5
+  play-together-friends-count-limit: 5
