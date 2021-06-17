@@ -130,7 +130,7 @@ operation::get-different-member-profile-success[snippets='request-headers,respon
 
 
 [[resources-get-member-play-inclinations-success]]
-== 회원의 플레이 성향 조회 성공
+=== 회원의 플레이 성향 조회 성공
 
 * 응답 HttpStatus : `200 OK`
 
