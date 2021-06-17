@@ -323,7 +323,9 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .build();
 
         Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
+        Genre rmc1 = genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new);
         theme.addGenre(rsn1);
+        theme.addGenre(rmc1);
 
         return themeRepository.save(theme);
     }

@@ -65,3 +65,6 @@ review:
   period-for-adding-surveys: 7
   perceived-theme-genres-count-limit: 5
   play-together-friends-count-limit: 5
+
+member:
+  play-inclination-top-limit: 4

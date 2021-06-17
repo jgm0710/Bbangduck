@@ -81,7 +81,9 @@ public class ReviewService {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         Theme findTheme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
         throwExceptionIfThemeHasBeenDeleted(findTheme);
-        ReviewRecodesCountsDto recodesCountsDto = reviewQueryRepository.findRecodesCountsByMember(memberId).orElse(new ReviewRecodesCountsDto());
+        // TODO: 2021-06-16 test 완료되면 주석 삭제
+//        ReviewRecodesCountsDto recodesCountsDto = reviewQueryRepository.findRecodesCountsByMember(memberId).orElse(new ReviewRecodesCountsDto());
+        ReviewRecodesCountsDto recodesCountsDto = getReviewRecodesCounts(memberId);
 
         Review review = Review.create(findMember, findTheme, recodesCountsDto.getNextRecodeNumber(), reviewCreateDto);
         addPlayTogetherFriendsToReview(review, memberId, reviewCreateDto.getFriendIds());
@@ -142,6 +144,10 @@ public class ReviewService {
 
     public QueryResults<Review> getThemeReviewList(Long themeId, ReviewSearchDto reviewSearchDto) {
         return reviewQueryRepository.findListByTheme(themeId, reviewSearchDto);
+    }
+
+    public ReviewRecodesCountsDto getReviewRecodesCounts(Long memberId) {
+        return reviewQueryRepository.findRecodesCountsByMember(memberId).orElse(new ReviewRecodesCountsDto());
     }
 
     /**

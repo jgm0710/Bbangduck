@@ -5,10 +5,14 @@ import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberRoomEsc
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateDescriptionRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateNicknameRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateProfileImageRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberMyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.exception.UpdateDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
 
@@ -37,52 +43,72 @@ public class MemberApiController {
 
     private final MemberService memberService;
 
-    // TODO: 2021-05-06 프로필 조회에 방탈출 현황, 성향, 배지 등의 정보 추가로 응답하도록 구현
-    // TODO: 2021-05-06 리뷰에 대한 구현이 끝난 뒤 추가 구현
+    private final ReviewService reviewService;
+
     /**
-     * 기능 테스트
-     * - 다른 회원의 프로필을 조회할 경우
-     * -- 회원 ID
-     * -- 프로필 이미지
-     * -- 닉네임
-     * -- 자기소개
-     * -- 방탈출 현황
-     * -- 방탈출 기록 공개 상태
+     * 기능 테스트 o
+     * - 다른 회원의 프로필을 조회할 경우 o
+     * -- 회원 ID o
+     * -- 프로필 이미지 o
+     * -- 닉네임 o
+     * -- 자기소개 o
+     * -- 방탈출 현황 o
+     * -- 방탈출 기록 공개 상태 o
+     * -- 회원 성향 o
      *
-     * - 자신의 프로필을 조회할 경우
-     * -- 회원 ID
-     * -- 프로필 이미지
-     * -- 닉네임
-     * -- 자기소개
-     * -- 방탈출 현황
-     * -- 이메일
-     * -- 어떤 소셜 계정으로 가입된 회원인지
-     * -- 생성 일자
-     * -- 개인정보 수정 일자
+     * - 자신의 프로필을 조회할 경우 o
+     * -- 회원 ID o
+     * -- 프로필 이미지 o
+     * -- 닉네임 o
+     * -- 자기소개 o
+     * -- 방탈출 현황 o
+     * -- 방탈출 기록 공개 상태 o
+     * -- 회원 성향 o
+     *
+     * -- 이메일 o
+     * -- 어떤 소셜 계정으로 가입된 회원인지 o
+     * -- 생성 일자 o
+     * -- 개인정보 수정 일자 o
+     *
+     *
      *
      * 실패 테스트
-     * - 조회된 회원이 탈퇴하거나, 계정이 정지된 회원일 경우 조회 불가
-     * - 인증되지 않은 회원일 경우 리소스 접근 불가
-     * - 탈퇴한 회원일 경우 리소스 접근 불가
+     * - 조회된 회원이 탈퇴하거나, 계정이 정지된 회원일 경우 조회 불가 o
+     * - 인증되지 않은 회원일 경우 리소스 접근 불가 o
+     * - 탈퇴한 회원일 경우 리소스 접근 불가 o
      */
     @GetMapping("/{memberId}/profiles")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<MyProfileResponseDto>> getProfile(
+    public ResponseEntity<ResponseDto<MemberProfileResponseDto>> getProfile(
             @PathVariable Long memberId,
             @CurrentUser Member currentMember
     ) {
         log.debug("currentMember : {}", currentMember.toString());
         Member findMember = memberService.getMember(memberId);
-        if (currentMember.getId().equals(memberId)) {
+        List<MemberPlayInclination> memberPlayInclinationTopN = memberService.getMemberPlayInclinationTopN(memberId);
+        ReviewRecodesCountsDto reviewRecodesCounts = reviewService.getReviewRecodesCounts(memberId);
+        boolean myId = findMember.isMyId(currentMember.getId());
 
+        MemberProfileResponseDto memberProfileResponseDto = convertMemberToProfileResponseDto(myId, findMember, reviewRecodesCounts, memberPlayInclinationTopN);
+        ResponseStatus responseStatus = getGetProfileResponseStatus(myId);
+
+        return ResponseEntity.ok(new ResponseDto<>(responseStatus, memberProfileResponseDto));
+    }
+
+    private ResponseStatus getGetProfileResponseStatus(boolean myId) {
+        if (myId) {
+            return ResponseStatus.GET_MY_PROFILE_SUCCESS;
         } else {
-
+            return ResponseStatus.GET_DIFFERENT_MEMBER_PROFILE_SUCCESS;
         }
-        MyProfileResponseDto myProfileResponseDto = MyProfileResponseDto.convert(findMember);
-        // TODO: 2021-05-05 다른 회원의 프로필을 조회할 경우에 대한 처리 추가
-        // TODO: 2021-05-06 다른 회원의 프로필을 조회할 경우 해당 회원의 프로필 공개 여부에 따라 분기 처리 및 별도의 Dto 를 통해 응답
+    }
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.MEMBER_GET_PROFILE_SUCCESS, myProfileResponseDto));
+    private MemberProfileResponseDto convertMemberToProfileResponseDto(boolean myId, Member findMember, ReviewRecodesCountsDto reviewRecodesCounts, List<MemberPlayInclination> memberPlayInclinations) {
+        if (myId) {
+            return MemberMyProfileResponseDto.convert(findMember, reviewRecodesCounts, memberPlayInclinations);
+        } else {
+            return MemberProfileResponseDto.convert(findMember, reviewRecodesCounts, memberPlayInclinations);
+        }
     }
 
     @PutMapping("/{memberId}/profiles/images")
@@ -156,7 +182,7 @@ public class MemberApiController {
         ifUpdateDifferentMemberThrows(memberId, currentMember);
         memberService.updateRoomEscapeRecodesOpenStatus(memberId, requestDto.getRoomEscapeRecodesOpenStatus());
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS, null));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS, null));
     }
 
 

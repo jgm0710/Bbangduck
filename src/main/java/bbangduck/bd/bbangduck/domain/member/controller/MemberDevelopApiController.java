@@ -2,10 +2,13 @@ package bbangduck.bd.bbangduck.domain.member.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSignInRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberMyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.service.MemberDevelopService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -31,6 +34,8 @@ public class MemberDevelopApiController {
 
     private final MemberService memberService;
 
+    private final ReviewService reviewService;
+
     @PostMapping("/sign-in")
     public ResponseEntity<ResponseDto<TokenDto>> signInDeveloper(
             @RequestBody MemberSignInRequestDto requestDto
@@ -42,28 +47,31 @@ public class MemberDevelopApiController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_DEVELOP')")
-    public ResponseEntity<ResponseDto<List<MyProfileResponseDto>>> getMemberListByDeveloper(
+    public ResponseEntity<ResponseDto<List<MemberMyProfileResponseDto>>> getMemberListByDeveloper(
             @ModelAttribute CriteriaDto criteriaDto
     ) {
         List<Member> memberList = memberDevelopService.getMemberList(criteriaDto);
-        List<MyProfileResponseDto> myProfileResponseDtos = new ArrayList<>();
+        List<MemberMyProfileResponseDto> memberMyProfileResponseDtos = new ArrayList<>();
         memberList.forEach(member -> {
-            MyProfileResponseDto myProfileResponseDto = MyProfileResponseDto.convert(member);
-            myProfileResponseDtos.add(myProfileResponseDto);
+            ReviewRecodesCountsDto reviewRecodesCounts = reviewService.getReviewRecodesCounts(member.getId());
+            List<MemberPlayInclination> memberPlayInclinationTopN = memberService.getMemberPlayInclinationTopN(member.getId());
+            MemberMyProfileResponseDto memberMyProfileResponseDto = MemberMyProfileResponseDto.convert(member, reviewRecodesCounts, memberPlayInclinationTopN);
+            memberMyProfileResponseDtos.add(memberMyProfileResponseDto);
         });
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_LIST_BY_DEVELOPER_SUCCESS, myProfileResponseDtos));
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_LIST_BY_DEVELOPER_SUCCESS, memberMyProfileResponseDtos));
     }
 
     @GetMapping("/{memberId}")
     @PreAuthorize("hasRole('ROLE_DEVELOP')")
-    public ResponseEntity<ResponseDto<MyProfileResponseDto>> getMemberByDeveloper(
+    public ResponseEntity<ResponseDto<MemberMyProfileResponseDto>> getMemberByDeveloper(
             @PathVariable Long memberId
     ) {
-        Member member = memberService.getMember(memberId);
+        Member member = memberDevelopService.getMemberByDeveloper(memberId);
+        List<MemberPlayInclination> memberPlayInclinationTopN = memberService.getMemberPlayInclinationTopN(memberId);
+        ReviewRecodesCountsDto reviewRecodesCounts = reviewService.getReviewRecodesCounts(memberId);
+        MemberMyProfileResponseDto memberMyProfileResponseDto = MemberMyProfileResponseDto.convert(member, reviewRecodesCounts, memberPlayInclinationTopN);
 
-        MyProfileResponseDto myProfileResponseDto = MyProfileResponseDto.convert(member);
-
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_BY_DEVELOPER_SUCCESS, myProfileResponseDto));
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_BY_DEVELOPER_SUCCESS, memberMyProfileResponseDto));
     }
 
     @DeleteMapping("/{memberId}")

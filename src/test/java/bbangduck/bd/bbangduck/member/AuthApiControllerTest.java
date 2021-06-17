@@ -89,8 +89,14 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.memberInfo.description").description("간략한 자기 소개 (null)"),
                                 fieldWithPath("data.memberInfo.roomEscapeRecodesOpenStatus").description("방탈출 기록 공개 여부 +\n" +
                                         MemberRoomEscapeRecodesOpenStatus.getNameList()),
+                                fieldWithPath("data.memberInfo.roomEscapeStatus.challengesCount").description("회원의 테마 도전 횟수 [0]"),
+                                fieldWithPath("data.memberInfo.roomEscapeStatus.successCount").description("회원의 테마 클리어에 성공한 횟수 [0]"),
+                                fieldWithPath("data.memberInfo.roomEscapeStatus.failCount").description("회원이 테마 클리어에 실패한 횟수 [0]"),
+                                fieldWithPath("data.memberInfo.playInclinations").description("회원의 방탈출 성향 [null]"),
                                 fieldWithPath("data.memberInfo.registerTimes").description("가입 날짜"),
                                 fieldWithPath("data.memberInfo.updateTimes").description("회원 정보 최종 수정 날짜"),
+
+
                                 fieldWithPath("data.tokenInfo.memberId").description("가입된 회원의 식별 ID"),
                                 fieldWithPath("data.tokenInfo.accessToken.header").description("가입된 회원에게 발급된 인증 JWT 토큰의 Header"),
                                 fieldWithPath("data.tokenInfo.accessToken.payload").description("가입된 회원에게 발급된 인증 JWT 토큰의 Payload"),

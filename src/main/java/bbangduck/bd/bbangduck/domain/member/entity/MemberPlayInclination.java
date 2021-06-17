@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import javax.jdo.annotations.Join;
 import javax.persistence.*;
 
 /**
@@ -59,5 +58,15 @@ public class MemberPlayInclination extends BaseEntityDateTime {
 
     public int getPlayCount() {
         return playCount;
+    }
+
+    @Override
+    public String toString() {
+        return "MemberPlayInclination{" +
+                "id=" + id +
+                ", member=" + member +
+                ", genre=" + genre +
+                ", playCount=" + playCount +
+                '}';
     }
 }

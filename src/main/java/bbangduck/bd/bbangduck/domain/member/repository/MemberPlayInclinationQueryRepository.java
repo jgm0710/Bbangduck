@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.repository;
 
 import bbangduck.bd.bbangduck.domain.genre.entity.QGenre;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
+import bbangduck.bd.bbangduck.domain.member.entity.QMember;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static bbangduck.bd.bbangduck.domain.genre.entity.QGenre.*;
+import static bbangduck.bd.bbangduck.domain.genre.entity.QGenre.genre;
 import static bbangduck.bd.bbangduck.domain.member.entity.QMemberPlayInclination.memberPlayInclination;
 
 /**
@@ -26,10 +27,17 @@ public class MemberPlayInclinationQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<MemberPlayInclination> findTopByMember(Long memberId, long limit) {
+        QMember member = QMember.member;
+        QGenre genre = QGenre.genre;
         return queryFactory
                 .selectFrom(memberPlayInclination)
+                .join(memberPlayInclination.member, member).fetchJoin()
+                .join(memberPlayInclination.genre, genre).fetchJoin()
                 .where(memberIdEq(memberId))
-                .orderBy(playCountDesc())
+                .orderBy(
+                        playCountDesc(),
+                        genre.name.asc()
+                )
                 .offset(0)
                 .limit(limit)
                 .fetch();

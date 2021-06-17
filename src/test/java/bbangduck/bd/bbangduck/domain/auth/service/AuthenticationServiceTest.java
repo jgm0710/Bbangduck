@@ -278,7 +278,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 탈퇴")
-    public void withdrawal() throws Exception {
+    public void withdrawal() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -294,7 +294,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         authenticationService.withdrawal(signUpId);
 
         //then
-        Member findMember = memberService.getMember(signUpId);
+        Member findMember = memberRepository.findById(signUpId).orElseThrow(MemberNotFoundException::new);
 
         assertTrue(findMember.getRoles().contains(MemberRole.WITHDRAWAL));
         assertFalse(findMember.getRoles().contains(MemberRole.USER));
@@ -306,7 +306,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 탈퇴 - 회원을 찾을 수 없는 경우")
-    public void withdrawal_MemberNotFound() throws Exception {
+    public void withdrawal_MemberNotFound() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -324,7 +324,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("로그아웃 테스트")
-    public void signOut() throws Exception {
+    public void signOut() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -348,7 +348,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("로그아웃 - 회원을 찾을 수 없는 경우")
-    public void signOut_MemberNotFound() throws Exception {
+    public void signOut_MemberNotFound() {
         //given
 
         //when
