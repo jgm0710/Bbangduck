@@ -1,8 +1,9 @@
 package bbangduck.bd.bbangduck.domain.auth.dto.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.MyProfileResponseDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberMyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
 import lombok.*;
 
 /**
@@ -17,13 +18,13 @@ import lombok.*;
 @NoArgsConstructor
 public class MemberSignUpResponseDto {
 
-    private MyProfileResponseDto memberInfo;
+    private MemberMyProfileResponseDto memberInfo;
 
     private TokenResponseDto tokenInfo;
 
     public static MemberSignUpResponseDto convert(Member savedMember, TokenDto tokenDto) {
         return MemberSignUpResponseDto.builder()
-                .memberInfo(MyProfileResponseDto.convert(savedMember))
+                .memberInfo(MemberMyProfileResponseDto.convert(savedMember, new ReviewRecodesCountsDto(), null))
                 .tokenInfo(TokenResponseDto.convert(tokenDto))
                 .build();
     }

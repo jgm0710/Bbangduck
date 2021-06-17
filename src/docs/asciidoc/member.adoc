@@ -20,7 +20,7 @@
 
 | <<resources-member-update-profile-image>> / <<resources-member-delete-profile-image>> /
 <<resources-member-update-nickname>> / <<resources-member-update-description>> /
-<<resources-member-toggle-room-escape-recodes-open-yn>>
+<<resources-member-update-room-escape-recodes-open-status>> / <<resources-get-member-profile>>
 | 인증되지 않은 회원이 리소스에 접근할 경우
 | 401
 | 1401
@@ -28,7 +28,7 @@
 
 | <<resources-member-update-profile-image>> / <<resources-member-delete-profile-image>> /
 <<resources-member-update-nickname>> / <<resources-member-update-description>> /
-<<resources-member-toggle-room-escape-recodes-open-yn>>
+<<resources-member-update-room-escape-recodes-open-status>> / <<resources-get-member-profile>>
 | 다른 회원의 프로필을 수정하는 경우
 | 403
 | 2406
@@ -63,11 +63,79 @@
 * <<resources-member-delete-profile-image>> 기능 구현
 * <<resources-member-update-nickname>> 기능 구현
 * <<resources-member-update-description>> 기능 구현
-* <<resources-member-toggle-room-escape-recodes-open-yn>> 기능 구현
+* <<resources-member-update-room-escape-recodes-open-status>> 기능 구현
+
+2021-06-16 :::
+* <<resources-member-update-room-escape-recodes-open-status>> 기능 변경
+    ** 기존 공개 여부만 변경하던 부분을 변경
+        *** 공개, 친구에게만 공개, 비공개 상태를 지정할 수 있도록 변경
+
+2021-06-17 :::
+* <<resources-get-member-profile>> 기능 구현
+    ** 자신의 프로필 조회, 다른 회원의 프로필 조회를 하나의 API 를 통해 구현
+* <<resources-get-member-play-inclinations>> 기능 구현
+    ** 장르별 플레이 횟수, 테마 평가 총 횟수 응답
 
 
 [[resources-member]]
 = 회원 관련 리소스
+
+[[resources-get-member-profile]]
+== 회원 프로필 조회
+
+* `GET` `/api/members/{memberId}/profiles`
+
+* `memberId` 로 지정된 회원의 프로필을 조회합니다.
+    ** 자신의 프로필을 조회하는 경우, 다른 회원의 프로필을 조회하는 경우 모두 해당 리소스를 통해 조회합니다.
+    ** 기본적으로 회원 식별 ID, 회원의 프로필 이미지 정보, 닉네임, 자기소개, 방탈출 현황, 방탈출 기록 공개 상태, 회원의 플레이 성향 (장르별 플레이 횟수) 이 응답됩니다.
+    ** 자신의 프로필을 조회하는 경우, Email, 계정에 등록된 소셜 계정 정보, 가입 일자, 개인정보 수정 일자 등의 민감한 정보도 추가로 응답됩니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+    ** 기획의 변경에 따라 인증되지 않은 사용자도 접근할 수 있을지 고려될 수 있습니다.
+    ** 탈퇴되거나 계정이 정지된 회원도 해당 리소스에 접근할 수 없습니다.
+
+* `memberId` 를 통해 조회되는 회원이 탈퇴되었거나, 계정이 정지된 회원이면 요청에 실패합니다.
+
+* 자신의 프로필을 조회했는지, 다른 회원의 프로필을 조회했는지 구분은 `status` 와 `message` 를 통해 구분할 수 있습니다.
+
+[[resources-get-my-profile]]
+=== 자신의 프로필 조회
+
+* 응답 HttpStatus : `200 OK`
+* 응답 코드 : `2208`
+
+operation::get-my-profile-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+[[resources-get-different-member-profile]]
+=== 다른 회원의 프로필 조회
+
+* 응답 HttpStatus : `200 OK`
+* 응답 코드 : `2202`
+
+operation::get-different-member-profile-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+
+[[resources-get-member-play-inclinations]]
+== 회원의 플레이 성향 조회
+
+* `GET` `/api/members/{memberId}/play-inclinations`
+
+* 회원의 플레이 성향을 조회합니다.
+** 플레이 성향에 해당하는 장르별 플레이 횟수와 총 테마를 평가한 횟수가 응답됩니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+** 탈퇴되거나 계정이 정지된 회원은 해당 리소스에 접근이 불가능합니다.
+** 다른 회원의 플레이 성향을 조회하는 경우 실패에 대한 처리는 아직 구현되어 있지 않습니다.
+*** 기획의 변화에 따라 달라질 수 있는 부분입니다.
+
+
+[[resources-get-member-play-inclinations-success]]
+== 회원의 플레이 성향 조회 성공
+
+* 응답 HttpStatus : `200 OK`
+
+operation::get-member-play-inclination-success[snippets='request-headers,response-fields,curl-request,http-response']
+
 
 [[resources-member-update-profile-image]]
 == 회원 프로필 이미지 수정
@@ -154,18 +222,25 @@ operation::update-description-success[snippets='request-headers,request-fields,r
 
 operation::update-description-empty[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
-[[resources-member-toggle-room-escape-recodes-open-yn]]
-== 회원 방탈출 기록 공개 여부 변경
+[[resources-member-update-room-escape-recodes-open-status]]
+== 회원 방탈출 기록 공개 상태 변경
 
-* `PUT` `/api/members/{memberId}/room-escape/recodes/open-yn`
+* `PUT` `/api/members/{memberId}/room-escape-recodes-open-status`
+
 * 회원의 방탈출 기록 공개 여부를 변경합니다.
-** 해당 요청은 토글 형태로 방탈출 기록 공개 여부를 변경합니다.
-** 기존에 방탈출 기록을 공개했다면, 해당 요청 시 방탈출 기록 비공개 상태가 됩니다.
-** 기존에 방탈출 기록을 비공개했다면, 해당 요청 시 방탈출 기록 공개 상태가 됩니다.
-* 해당 리소스는 인증된 사용자만 접근이 가능하고, 인증된 사용자는 다른 회원의 닉네임을 변경할 수 없습니다.
-* 별도의 응답 Data 는 없습니다.
+    ** `roomEscapeRecodesOpenStatus` 에 값을 수정할 상태값을 기입합니다.
+    ** `roomEscapeRecodesOpenStatus` 는 `Enum` 값으로 정확한 문자를 입력해야 합니다.
+    ** 공개 상태, 친구에게만 공개 상태, 비공개 상태를 지정할 수 있습니다.
 
-[[resources-member-toggle-room-escape-recodes-open-yn-success]]
-=== 회원 방탈출 기록 공개 여부 변경 성공
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+    ** 인증되지 않은 사용자일 경우 요청에 실패합니다.
+    ** 탈퇴된 사용자일 경우 요청에 실패합니다.
+    ** 다른 회원의 방탈출 기록 공개 상태를 변경할 경우 요청에 실패합니다.
 
-operation::toggle-room-escape-recodes-open-yn-success[snippets='request-headers,response-fields,curl-request,http-response']
+[[resources-member-update-room-escape-recodes-open-status-success]]
+=== 회원 방탈출 기록 공개 상태 변경 성공
+
+* 응답 HttpStatus : `204 No Content`
+* 별도의 응답 Body Data 는 제공되지 않습니다.
+
+operation::update-room-escape-recodes-open-status-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']

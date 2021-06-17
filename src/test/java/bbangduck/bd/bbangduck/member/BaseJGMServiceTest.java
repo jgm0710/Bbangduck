@@ -13,9 +13,10 @@ import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberFriendState;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberFriendState;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
@@ -338,7 +339,9 @@ public class BaseJGMServiceTest extends BaseTest {
                 .build();
 
         Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
+        Genre rmc1 = genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new);
         theme.addGenre(rsn1);
+        theme.addGenre(rmc1);
 
         return themeRepository.save(theme);
     }
@@ -349,7 +352,7 @@ public class BaseJGMServiceTest extends BaseTest {
                 .password("hong")
                 .nickname("hong")
                 .description("hong")
-                .roomEscapeRecordsOpenYN(true)
+                .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.OPEN)
                 .refreshInfo(RefreshInfo.init(securityJwtProperties.getRefreshTokenExpiredDate()))
                 .roles(Set.of(MemberRole.ADMIN))
                 .build();

@@ -2,6 +2,8 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.service.MemberFriendService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.MemberReviewSearchRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
@@ -9,6 +11,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPagin
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAreNotOpenException;
+import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAreOnlyFriendOpenException;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
@@ -41,6 +44,8 @@ public class MemberReviewApiController{
 
     private final MemberService memberService;
 
+    private final MemberFriendService memberFriendService;
+
     private final ReviewService reviewService;
 
     private final ReviewLikeService reviewLikeService;
@@ -53,6 +58,7 @@ public class MemberReviewApiController{
      * 기능 테스트 o
      * - 자신의 리뷰 목록을 조회하는 경우 o
      * - 다른 회원의 리뷰 목록을 조회하는 경우 o
+     * - 친구에게만 방탈출 기록을 공개한 회원의 기록을 친구가 조회하는 경우
      * - 간단 리뷰, 간단 및 설문 리뷰 잘 나오는지 확인 o
      * - 상세 리뷰, 상세 및 설문 리뷰 잘 나오는지 확인 o
      * - nextPageUrl 을 통해 다음 페이지 조회가 가능한지 확인 o
@@ -65,7 +71,8 @@ public class MemberReviewApiController{
      * -- amount 가 1보다 작을 경우
      * -- amount 가 200보다 클 경우
      *
-     * - 다른 회원의 방탈출 기록을 조회할 때, 해당 회원이 방탈출 기록을 공개하지 않는 회원일 경우 - bad request o
+     * - 다른 회원의 방탈출 기록을 조회할 때, 해당 회원이 방탈출 기록을 공개하지 않는 회원일 경우 - conflict o
+     * - 다른 회원의 방탈출 기록을 조회할 때, 해당 회원이 방탈출 기록을 친구에게만 공개했는데, 서로 친구 관계가 아닌 경우 - conflict o
      *
      * - service 실패
      * -- 회원을 찾을 수 없는 경우
@@ -80,11 +87,24 @@ public class MemberReviewApiController{
         hasErrorsThrow(ResponseStatus.GET_MEMBER_REVIEW_LIST_NOT_VALID, bindingResult);
 
         Member findMember = memberService.getMember(memberId);
-        if (!findMember.isRoomEscapeRecordsOpenYN()) {
-            if (!currentMember.getId().equals(memberId)) {
-                throw new MemberRoomEscapeRecodesAreNotOpenException();
-            }
+        boolean myId = findMember.isMyId(currentMember.getId());
+        MemberRoomEscapeRecodesOpenStatus roomEscapeRecodesOpenStatus = findMember.getRoomEscapeRecodesOpenStatus();
+
+        switch (roomEscapeRecodesOpenStatus) {
+            case CLOSE:
+                if (!myId) {
+                    throw new MemberRoomEscapeRecodesAreNotOpenException();
+                }
+                break;
+            case ONLY_FRIENDS_OPEN:
+                if (!myId) {
+                    boolean isFriend = memberFriendService.isFriend(memberId, currentMember.getId());
+                    if (!isFriend) {
+                        throw new MemberRoomEscapeRecodesAreOnlyFriendOpenException();
+                    }
+                }
         }
+
 
         ReviewSearchDto reviewSearchDto = requestDto.toServiceDto();
         QueryResults<Review> reviewQueryResults = reviewService.getMemberReviewList(memberId, reviewSearchDto);

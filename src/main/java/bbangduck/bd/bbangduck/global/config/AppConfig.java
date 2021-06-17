@@ -1,8 +1,9 @@
 package bbangduck.bd.bbangduck.global.config;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -97,7 +98,7 @@ public class AppConfig {
                             .password(encodedPassword)
                             .nickname("developer")
                             .description("개발자")
-                            .roomEscapeRecordsOpenYN(false)
+                            .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.OPEN)
                             .refreshInfo(RefreshInfo.init(1000))
                             .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
                             .build();

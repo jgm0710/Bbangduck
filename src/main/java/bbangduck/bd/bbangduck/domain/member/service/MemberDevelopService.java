@@ -41,13 +41,17 @@ public class MemberDevelopService{
 
     private final SecurityJwtProperties securityJwtProperties;
 
+    public Member getMemberByDeveloper(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    }
+
 
     @Transactional
     public void deleteMember(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         List<SocialAccount> socialAccounts = findMember.getSocialAccounts();
         if (!socialAccounts.isEmpty()) {
-            socialAccounts.forEach(socialAccount -> socialAccountRepository.delete(socialAccount));
+            socialAccounts.forEach(socialAccountRepository::delete);
         }
 
         if (findMember.getProfileImage() != null) {

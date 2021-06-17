@@ -2,8 +2,9 @@ package bbangduck.bd.bbangduck.domain.member.entity;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
@@ -47,8 +48,8 @@ public class Member extends BaseEntityDateTime {
 
     private String description;
 
-    @Column(name = "room_escape_records_open_yn")
-    private boolean roomEscapeRecordsOpenYN;
+    @Enumerated(EnumType.STRING)
+    private MemberRoomEscapeRecodesOpenStatus roomEscapeRecodesOpenStatus;
 
     @Embedded
     private RefreshInfo refreshInfo;
@@ -72,12 +73,12 @@ public class Member extends BaseEntityDateTime {
 
 
     @Builder
-    public Member(String email, String password, String nickname, String description, Set<MemberRole> roles, boolean roomEscapeRecordsOpenYN, RefreshInfo refreshInfo) {
+    public Member(String email, String password, String nickname, String description, Set<MemberRole> roles, MemberRoomEscapeRecodesOpenStatus roomEscapeRecodesOpenStatus, RefreshInfo refreshInfo) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.description = description;
-        this.roomEscapeRecordsOpenYN = roomEscapeRecordsOpenYN;
+        this.roomEscapeRecodesOpenStatus = roomEscapeRecodesOpenStatus;
         this.refreshInfo = refreshInfo;
         this.roles = roles;
     }
@@ -88,7 +89,7 @@ public class Member extends BaseEntityDateTime {
                 .nickname(signUpServiceDto.getNickname())
                 .password(signUpServiceDto.getPassword())
                 .description(null)
-                .roomEscapeRecordsOpenYN(true)
+                .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.OPEN)
                 .refreshInfo(RefreshInfo.init(refreshTokenExpiredDate))
                 .roles(Set.of(MemberRole.USER))
                 .build();
@@ -163,7 +164,7 @@ public class Member extends BaseEntityDateTime {
 //                ", socialAccounts=" + socialAccounts +
                 ", nickname='" + nickname + '\'' +
                 ", description='" + description + '\'' +
-                ", roomEscapeRecordsOpenYN=" + roomEscapeRecordsOpenYN +
+                ", roomEscapeRecordsOpenYN=" + roomEscapeRecodesOpenStatus +
                 ", refreshInfo=" + refreshInfo +
                 ", roles=" + roles +
                 ", registerTimes=" + registerTimes +
@@ -171,8 +172,8 @@ public class Member extends BaseEntityDateTime {
                 '}';
     }
 
-    public boolean isRoomEscapeRecordsOpenYN() {
-        return roomEscapeRecordsOpenYN;
+    public MemberRoomEscapeRecodesOpenStatus getRoomEscapeRecodesOpenStatus() {
+        return roomEscapeRecodesOpenStatus;
     }
 
     public List<String> getRoleNameList() {
@@ -214,8 +215,8 @@ public class Member extends BaseEntityDateTime {
         this.description = description;
     }
 
-    public void toggleRoomEscapeRecodesOpenYN() {
-        this.roomEscapeRecordsOpenYN = !this.roomEscapeRecordsOpenYN;
+    public void updateRoomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus memberRoomEscapeRecodesOpenStatus) {
+        this.roomEscapeRecodesOpenStatus = memberRoomEscapeRecodesOpenStatus;
     }
 
     public void deleteProfileImage(MemberProfileImageRepository memberProfileImageRepository) {
@@ -229,5 +230,9 @@ public class Member extends BaseEntityDateTime {
 
     public String getProfileImageFileName() {
         return profileImage == null ? null : profileImage.getFileName();
+    }
+
+    public boolean isMyId(Long memberId) {
+        return this.id.equals(memberId);
     }
 }

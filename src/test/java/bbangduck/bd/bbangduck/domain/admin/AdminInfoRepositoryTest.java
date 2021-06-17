@@ -4,7 +4,8 @@ import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.domain.admin.repository.AdminInfoRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +66,7 @@ public class AdminInfoRepositoryTest {
                 .password("1234")
                 .nickname("developer")
                 .description("개발자")
-                .roomEscapeRecordsOpenYN(false)
+                .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.CLOSE)
                 .refreshInfo(RefreshInfo.init(1000))
                 .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
                 .build();
@@ -75,7 +76,7 @@ public class AdminInfoRepositoryTest {
                 .password("1234")
                 .nickname("developer")
                 .description("개발자")
-                .roomEscapeRecordsOpenYN(false)
+                .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.CLOSE)
                 .refreshInfo(RefreshInfo.init(1000))
                 .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
                 .build();
@@ -86,7 +87,7 @@ public class AdminInfoRepositoryTest {
                 .password("1234")
                 .nickname("developer")
                 .description("개발자")
-                .roomEscapeRecordsOpenYN(false)
+                .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.CLOSE)
                 .refreshInfo(RefreshInfo.init(1000))
                 .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
                 .build();

@@ -3,13 +3,20 @@ package bbangduck.bd.bbangduck.member;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.file.exception.StoredFileNotFoundException;
+import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
+import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
-import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
+import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.global.config.properties.MemberProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +24,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,6 +39,9 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Autowired
     EntityManager entityManager;
+
+    @Autowired
+    MemberProperties memberProperties;
 
     @Test
     @DisplayName("회원 조회 테스트")
@@ -276,7 +290,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 닉네임 변경")
-    public void updateNickname() throws Exception {
+    public void updateNickname() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -293,7 +307,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 닉네임 변경 - 회원을 찾을 수 없는 경우")
-    public void updateNickname_MemberNotFound() throws Exception {
+    public void updateNickname_MemberNotFound() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -308,7 +322,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 닉네임 변경 - 닉네임을 변경하지 않은 경우")
-    public void updateNickname_NicknameNotUpdated() throws Exception {
+    public void updateNickname_NicknameNotUpdated() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId1 = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -330,7 +344,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 닉네임 변경 - 다른 회원의 닉네임과 중복되는 경우")
-    public void updateNickname_NicknameDuplicate() throws Exception {
+    public void updateNickname_NicknameDuplicate() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId1 = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -350,7 +364,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 자기소개 변경")
-    public void updateDescription() throws Exception {
+    public void updateDescription() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -370,7 +384,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 자기소개 변경 - 회원을 찾을 수 없는 경우")
-    public void updateDescription_MemberNotFound() throws Exception {
+    public void updateDescription_MemberNotFound() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -388,57 +402,169 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 방탈출 기록 공개 여부 변경 - true to false")
-    public void toggleRoomEscapeRecodesOpenYN_TrueToFalse() throws Exception {
+    public void toggleRoomEscapeRecodesOpenYN_TrueToFalse() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
         Member savedMember = memberService.getMember(signUpId);
-        assertTrue(savedMember.isRoomEscapeRecordsOpenYN());
+        assertEquals(MemberRoomEscapeRecodesOpenStatus.OPEN, savedMember.getRoomEscapeRecodesOpenStatus());
 
         //when
-        memberService.toggleRoomEscapeRecodesOpenYN(signUpId);
+        memberService.updateRoomEscapeRecodesOpenStatus(signUpId, MemberRoomEscapeRecodesOpenStatus.CLOSE);
 
         //then
         Member findMember = memberService.getMember(signUpId);
-        assertFalse(findMember.isRoomEscapeRecordsOpenYN());
-
-    }
-
-    @Test
-    @DisplayName("회원 방탈출 기록 공개 여부 변경 - false to true")
-    public void toggleRoomEscapeRecodesOpenYN_FalseToTrue() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        memberService.toggleRoomEscapeRecodesOpenYN(signUpId);
-
-        Member savedMember = memberService.getMember(signUpId);
-        assertFalse(savedMember.isRoomEscapeRecordsOpenYN());
-
-        //when
-        memberService.toggleRoomEscapeRecodesOpenYN(signUpId);
-
-        //then
-        Member findMember = memberService.getMember(signUpId);
-        assertTrue(findMember.isRoomEscapeRecordsOpenYN());
-
+        assertEquals(MemberRoomEscapeRecodesOpenStatus.CLOSE, findMember.getRoomEscapeRecodesOpenStatus());
 
     }
 
     @Test
     @DisplayName("회원 방탈출 기록 공개 여부 변경 - 회원을 찾을 수 없는 경우")
-    public void toggleRoomEscapeRecodesOpenYN_MemberNotFound() throws Exception {
+    public void toggleRoomEscapeRecodesOpenYN_MemberNotFound() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
         Member savedMember = memberService.getMember(signUpId);
-        assertTrue(savedMember.isRoomEscapeRecordsOpenYN());
+        assertEquals(MemberRoomEscapeRecodesOpenStatus.OPEN, savedMember.getRoomEscapeRecodesOpenStatus());
 
         //when
 
         //then
-        assertThrows(MemberNotFoundException.class, () -> memberService.toggleRoomEscapeRecodesOpenYN(10000L));
+        assertThrows(MemberNotFoundException.class, () -> memberService.updateRoomEscapeRecodesOpenStatus(10000L, MemberRoomEscapeRecodesOpenStatus.CLOSE));
+
+    }
+
+    @Test
+    @DisplayName("회원의 방탈출 성향 상위 N 개 목록 조회")
+    public void getMemberPlayInclinationTopN() {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member member = memberService.getMember(signUpId);
+
+        memberSignUpRequestDto.setEmail("member2@email.colm");
+        memberSignUpRequestDto.setNickname("member2");
+        memberSignUpRequestDto.setSocialId("318209381290");
+        Long member2Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member member2 = memberService.getMember(member2Id);
+
+        Theme themeSample = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+
+        List<Genre> genres = new ArrayList<>();
+        genres.add(genreRepository.findByCode("HR1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("CRI1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("ADVT1").orElseThrow(GenreNotFoundException::new));
+
+        genres.forEach(genre -> {
+            MemberPlayInclination memberPlayInclination = MemberPlayInclination.builder()
+                    .member(member)
+                    .genre(genre)
+                    .playCount(new Random().nextInt(8) + 1)
+                    .build();
+            memberPlayInclinationRepository.save(memberPlayInclination);
+
+            MemberPlayInclination member2PlayInclination = MemberPlayInclination.builder()
+                    .member(member2)
+                    .genre(genre)
+                    .playCount(new Random().nextInt(8) + 1)
+                    .build();
+            memberPlayInclinationRepository.save(member2PlayInclination);
+        });
+
+        //when
+        System.out.println("======================================================================================================");
+        List<MemberPlayInclination> memberPlayInclinationTopN = memberService.getMemberPlayInclinationTopN(member.getId());
+        System.out.println("======================================================================================================");
+
+        //then
+        memberPlayInclinationTopN.forEach(memberPlayInclination -> {
+            Member memberPlayInclinationMember = memberPlayInclination.getMember();
+            Genre memberPlayInclinationGenre = memberPlayInclination.getGenre();
+            System.out.println("memberPlayInclinationMember = " + memberPlayInclinationMember);
+            System.out.println("memberPlayInclinationGenre = " + memberPlayInclinationGenre);
+            System.out.println("memberPlayInclination.getPlayCount() = " + memberPlayInclination.getPlayCount());
+
+            assertEquals(member.getId(), memberPlayInclinationMember.getId(), "회원 1의 플레이 성향만 조회되어야 한다.");
+        });
+
+        for (int i = 0; i < memberPlayInclinationTopN.size()-1; i++) {
+            MemberPlayInclination nowPlayInclination = memberPlayInclinationTopN.get(i);
+            MemberPlayInclination nextPlayInclination = memberPlayInclinationTopN.get(i + 1);
+
+            assertTrue(nowPlayInclination.getPlayCount() >= nextPlayInclination.getPlayCount(), "플레이 수 가 많은 성향부터 내림차순으로 정렬되어 있어야 한다.");
+        }
+
+        assertEquals(memberProperties.getPlayInclinationTopLimit(), memberPlayInclinationTopN.size(), "조회된 회원 성향의 개수는 지정된 개수가 나와야 한다.");
+    }
+
+    @Test
+    @DisplayName("회원의 전체 방탈출 성향 조회")
+    public void getMemberPlayInclinations() {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member member = memberService.getMember(signUpId);
+
+        memberSignUpRequestDto.setEmail("member2@email.colm");
+        memberSignUpRequestDto.setNickname("member2");
+        memberSignUpRequestDto.setSocialId("318209381290");
+        Long member2Id = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+        Member member2 = memberService.getMember(member2Id);
+
+        Theme themeSample = createThemeSample();
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+
+        List<Genre> genres = new ArrayList<>();
+        genres.add(genreRepository.findByCode("HR1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("CRI1").orElseThrow(GenreNotFoundException::new));
+        genres.add(genreRepository.findByCode("ADVT1").orElseThrow(GenreNotFoundException::new));
+
+        genres.forEach(genre -> {
+            MemberPlayInclination memberPlayInclination = MemberPlayInclination.builder()
+                    .member(member)
+                    .genre(genre)
+                    .playCount(new Random().nextInt(8) + 1)
+                    .build();
+            memberPlayInclinationRepository.save(memberPlayInclination);
+
+            MemberPlayInclination member2PlayInclination = MemberPlayInclination.builder()
+                    .member(member2)
+                    .genre(genre)
+                    .playCount(new Random().nextInt(8) + 1)
+                    .build();
+            memberPlayInclinationRepository.save(member2PlayInclination);
+        });
+
+        //when
+        System.out.println("======================================================================================================");
+        List<MemberPlayInclination> memberPlayInclinations = memberService.getMemberPlayInclinations(member.getId());
+        System.out.println("======================================================================================================");
+
+        //then
+        memberPlayInclinations.forEach(memberPlayInclination -> {
+            Member memberPlayInclinationMember = memberPlayInclination.getMember();
+            Genre memberPlayInclinationGenre = memberPlayInclination.getGenre();
+            System.out.println("memberPlayInclinationMember = " + memberPlayInclinationMember);
+            System.out.println("memberPlayInclinationGenre = " + memberPlayInclinationGenre);
+            System.out.println("memberPlayInclination.getPlayCount() = " + memberPlayInclination.getPlayCount());
+
+            assertEquals(member.getId(), memberPlayInclinationMember.getId(), "회원 1의 플레이 성향만 조회되어야 한다.");
+        });
+
+        for (int i = 0; i < memberPlayInclinations.size()-1; i++) {
+            MemberPlayInclination nowPlayInclination = memberPlayInclinations.get(i);
+            MemberPlayInclination nextPlayInclination = memberPlayInclinations.get(i + 1);
+
+            assertTrue(nowPlayInclination.getPlayCount() >= nextPlayInclination.getPlayCount(), "플레이 수 가 많은 성향부터 내림차순으로 정렬되어 있어야 한다.");
+        }
+
 
     }
 

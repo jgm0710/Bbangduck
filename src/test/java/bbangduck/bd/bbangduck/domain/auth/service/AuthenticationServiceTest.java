@@ -7,8 +7,9 @@ import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.entity.*;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.SocialType;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
@@ -57,7 +58,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         SocialAccount findSocialAccount = socialAccounts.stream().filter(socialAccount -> socialAccount.getSocialId().equals(memberSocialSignUpRequestDto.getSocialId())).findFirst().orElseThrow();
         assertEquals(memberSocialSignUpRequestDto.getSocialId(), findSocialAccount.getSocialId());
         assertEquals(memberSocialSignUpRequestDto.getSocialType(), findSocialAccount.getSocialType());
-        assertTrue(findMember.isRoomEscapeRecordsOpenYN(), "회원가입 시 방탈출 공개 여부는 기본적으로 true 여야 한다.");
+        assertEquals(MemberRoomEscapeRecodesOpenStatus.OPEN, findMember.getRoomEscapeRecodesOpenStatus(), "회원가입 시 방탈출 공개 여부는 기본적으로 OPEN 이 나와야 한다.");
         MemberProfileImage profileImage = findMember.getProfileImage();
         assertNull(profileImage, "회원가입 시 프로필 이미지 정보는 null 이어야 한다.");
         assertNull(findMember.getDescription(), "회원가입 시 자기소개는 null 이어야 한다.");
@@ -277,7 +278,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 탈퇴")
-    public void withdrawal() throws Exception {
+    public void withdrawal() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -293,7 +294,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         authenticationService.withdrawal(signUpId);
 
         //then
-        Member findMember = memberService.getMember(signUpId);
+        Member findMember = memberRepository.findById(signUpId).orElseThrow(MemberNotFoundException::new);
 
         assertTrue(findMember.getRoles().contains(MemberRole.WITHDRAWAL));
         assertFalse(findMember.getRoles().contains(MemberRole.USER));
@@ -305,7 +306,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("회원 탈퇴 - 회원을 찾을 수 없는 경우")
-    public void withdrawal_MemberNotFound() throws Exception {
+    public void withdrawal_MemberNotFound() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -323,7 +324,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("로그아웃 테스트")
-    public void signOut() throws Exception {
+    public void signOut() {
         //given
         MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
@@ -347,7 +348,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     @Test
     @DisplayName("로그아웃 - 회원을 찾을 수 없는 경우")
-    public void signOut_MemberNotFound() throws Exception {
+    public void signOut_MemberNotFound() {
         //given
 
         //when

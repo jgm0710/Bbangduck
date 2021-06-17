@@ -2,7 +2,8 @@ package bbangduck.bd.bbangduck.domain.search;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.search.dto.MemberSearchDto;
@@ -86,7 +87,7 @@ public class MemberSearchTest {
                 .password("1234")
                 .nickname("developer")
                 .description("개발자")
-                .roomEscapeRecordsOpenYN(false)
+                .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.CLOSE)
                 .refreshInfo(RefreshInfo.init(1000))
                 .roles(Set.of(MemberRole.DEVELOP))
                 .build();

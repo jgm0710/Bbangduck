@@ -47,12 +47,14 @@ public enum ResponseStatus {
      * 시작 코드 2
      */
     MEMBER_SIGN_UP_SUCCESS(2201, " 회원가입에 성공했습니다.", "회원가입에 성공했을 경우"),
-    MEMBER_GET_PROFILE_SUCCESS(2202, "회원 조회에 성공했습니다.", "회원 프로필 조회에 성공했을 경우"),
+    GET_DIFFERENT_MEMBER_PROFILE_SUCCESS(2202, "다른 회원의 프로필 조회에 성공했습니다.", "다른 회원의 프로필 조회에 성공한 경우"),
     MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS(2203, "회원 프로필 이미지 변경에 성공했습니다.", "회원 프로필 이미지 변경 요청이 성공했을 경우"),
     MEMBER_DELETE_PROFILE_IMAGE_SUCCESS(2204, "회원 프로필 이미지 삭제에 성공했습니다.", "회원 프로필 이미지 삭제 요청에 성공했을 경우"),
     MEMBER_UPDATE_NICKNAME_SUCCESS(2205, "회원 Nickname 변경에 성공했습니다.", "회원 Nickname 변경에 성공한 경우"),
     MEMBER_UPDATE_DESCRIPTION_SUCCESS(2206, "회원 자기소개 변경에 성공했습니다.", "회원 자기소개 변경에 성공한 경우"),
-    MEMBER_TOGGLE_ROOM_ESCAPE_RECODES_OPEN_SUCCESS(2207, "회원 방탈출 기록 공개 여부 변경에 성공했습니다.", "회원 방탈출 기록 공개 여부 변경에 성공한 경우"),
+    UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS(2207, "회원 방탈출 기록 공개 상태 변경에 성공했습니다.", "회원 방탈출 기록 공개 상태 변경에 성공한 경우"),
+    GET_MY_PROFILE_SUCCESS(2208, "본인의 프로필 조회에 성공했습니다.", "본인의 프로필 조회에 성공한 경우"),
+    GET_MEMBER_PLAY_INCLINATIONS_SUCCESS(2209, "회원의 플레이 성향 조회에 성공했습니다.", "회원의 플레이 성향 조회에 성공한 경우"),
 
 
     MEMBER_NOT_FOUND(2401, "해당 회원이 존재하지 않습니다.", "해당 조건으로 조회된 회원이 존재하지 않는 경우"),
@@ -66,6 +68,7 @@ public enum ResponseStatus {
     MEMBER_UPDATE_DESCRIPTION_NOT_VALID(2410, "회원 자기소개 변경 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원의 자기소개 내용 변경 시 기입 사항을 올바르게 기입하지 않은 경우"),
     MEMBER_PROFILE_IMAGE_NOT_FOUND(2411, "회원의 프로필 이미지가 존재하지 않습니다.", "회원 프로필 이미지 삭제 등의 요청에서 회원 프로필 이미지 요청에 실패한 경우"),
     RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND(2412, "요청된 두 회원은 서로 친구 관계가 아닙니다.", "특정 회원의 친구 정보를 조회할 경우 두 회원 간의 관계가 친구 수락 상태가 아닐 경우"),
+    FIND_MEMBER_WITHDRAWAL_OR_BAN(2413, "조회된 회원은 탈퇴했거나, 계정이 정지된 회원입니다.", "조회된 회원이 탈퇴했거나, 계정이 정지된 회원일 경우"),
 
 
 
@@ -137,6 +140,8 @@ public enum ResponseStatus {
     DELETE_REVIEW_CREATED_BY_OTHER_MEMBERS(4426, "다른 회원이 생성한 리뷰는 삭제할 수 없습니다.", "다른 회원이 생성한 리뷰를 삭제하는 경우"),
     GET_MEMBER_REVIEW_LIST_NOT_VALID(4427, "특정 회원의 리뷰 목록 조회 시 기입 사항이 올바르게 기입되지 않았습니다.", "특정 회원의 리뷰 목록 조회 시 기입 사항을 올바르게 기입하지 않은 경우"),
     MEMBER_ROOM_ESCAPE_RECODES_ARE_NOT_OPEN(4428, "다른 회원의 방탈출 기록을 조회했으나, 해당 회원은 방탈출 기록을 공개하지 않은 회원입니다.", "다른 회원의 방탈출 기록을 조회했으나, 해당 회원이 방탈출 기록을 공개하지 않은 회원일 경우"),
+    MEMBER_ROOM_ESCAPE_RECODES_ARE_ONLY_FRIEND_OPEN(4429, "다른 회원의 방탈출 기록을 조회했으나, 해당 회원은 방탈출 기록을 친구에게만 공개한 회원입니다. 인증된 회원은 방탈출 기록이 조회되는 회원과 친구 관계가 아닙니다.",
+            "다른 회원의 방탈출 기록을 조회했으나, 해당 회원이 방탈출 기록을 친구에게만 공개했고, 인증된 회원과 조회되는 회원이 친구 관계가 아닐 경우"),
 
     REVIEW_HAS_ALREADY_BEEN_LIKED(4431, "해당 리뷰에 이미 좋아요가 등록되어 있습니다.", "리뷰에 좋아요 등록 시 이미 좋아요를 등록한 리뷰인 경우"),
     ADD_LIKE_TO_MY_REVIEW(4432, "본인이 생성한 리뷰에는 좋아요를 등록할 수 없습니다.", "자신이 생성한 리뷰에 좋아요를 등록하는 경우"),

@@ -1,5 +1,5 @@
-#spring:
-#  datasource:
-#    username: root # dev
-#    password: Qkdejr16)& # dev
-#    url: jdbc:mysql://13.125.48.96:13306/bbangduck?serverTimezone=UTC&characterEncoding=UTF-8 # dev
+spring:
+  datasource:
+    username: root # dev
+    password: Qkdejr16)& # dev
+    url: jdbc:mysql://13.125.48.96:13306/bbangduck?serverTimezone=UTC&characterEncoding=UTF-8 # dev
