@@ -24,6 +24,8 @@ public enum ResponseStatus {
     REFRESH_SIGN_IN_SUCCESS(1222, "Refresh Token 을 통한 Access Token 재발급에 성공했습니다.", "Refresh Token 을 통한 Access Token 재발급에 성공했을 경우"),
     WITHDRAWAL_SUCCESS(1223, "회원 탈퇴에 성공했습니다.", "회원 탈퇴에 성공한 경우"),
     SIGN_OUT_SUCCESS(1224, "로그아웃에 성공했습니다.", "로그아웃에 성공한 경우"),
+    CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS(1225, "이메일 중복 체크에 성공했습니다.", "이메일 중복 체크에 성공한 경우"),
+    CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS(1226, "닉네임 중복 체크에 성공했습니다.", "닉테임 중복 체크에 성공한 경우"),
 
     UNAUTHORIZED(1401, "인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.", "인증이 필요한 리소스 요청 시 헤더에 기입된 인증 토큰이 유효하지 않은 경우"),
     FORBIDDEN(1403, "해당 리소스에 접근할 수 없는 회원입니다.", "인증은 되었으나 해당 리소스에 대한 접근 권한을 인가받지 못한 사용자일 경우"),
@@ -41,6 +43,8 @@ public enum ResponseStatus {
     WITHDRAWAL_DIFFERENT_MEMBER(1441, "자신의 계정만 탈퇴가 가능합니다.", "회원 탈퇴 요청 시 자신이 아닌 다른 회원의 계정을 회원 탈퇴하는 경우"),
     SIGN_OUT_DIFFERENT_MEMBER(1442, "자신의 계정만 로그아웃 할 수 있습니다.", "로그아웃 요청 시 다른 회원의 계정을 로그아웃하는 경우"),
 
+    CHECK_IF_EMAIL_IS_AVAILABLE_NOT_VALID(1451, "이메일 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않았습니다.", "이메일 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않은 경우"),
+    CHECK_IF_NICKNAME_IS_AVAILABLE_NOT_VALID(1452, "닉네임 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않았습니다.", "닉네임 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않은 경우"),
 
     /**
      * 회원 관련 응답 코드
@@ -55,7 +59,6 @@ public enum ResponseStatus {
     UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS(2207, "회원 방탈출 기록 공개 상태 변경에 성공했습니다.", "회원 방탈출 기록 공개 상태 변경에 성공한 경우"),
     GET_MY_PROFILE_SUCCESS(2208, "본인의 프로필 조회에 성공했습니다.", "본인의 프로필 조회에 성공한 경우"),
     GET_MEMBER_PLAY_INCLINATIONS_SUCCESS(2209, "회원의 플레이 성향 조회에 성공했습니다.", "회원의 플레이 성향 조회에 성공한 경우"),
-
 
     MEMBER_NOT_FOUND(2401, "해당 회원이 존재하지 않습니다.", "해당 조건으로 조회된 회원이 존재하지 않는 경우"),
     MEMBER_SIGN_UP_NOT_VALID(2402, "회원가입 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원가입 시 기입 사항을 규칙에 맞게 기입하지 않은 경우"),
