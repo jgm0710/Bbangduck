@@ -102,9 +102,6 @@ dependencies {
 //    // https://mvnrepository.com/artifact/org.mockito/mockito-core
 //    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
 
-
-
-
 }
 
 // asciidoctor 플러그인 설정 시작
