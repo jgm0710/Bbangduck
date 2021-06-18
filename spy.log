@@ -3,3 +3,4 @@
 1623471676429|0|rollback|connection 5|url jdbc:h2:mem:testdb||
 1623471728550|0|rollback|connection 5|url jdbc:h2:mem:testdb||
 1623471871933|0|rollback|connection 5|url jdbc:h2:mem:testdb||
+1624015425584|0|rollback|connection 5|url jdbc:h2:mem:testdb||

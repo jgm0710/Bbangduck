@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.global.config;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -33,7 +33,7 @@ import java.util.Set;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * Application 전반에 걸쳐 의존성 주입을 통해 사용할 Class 들을 Bean 으로 등록하기 위해 구현한 Configuration Class
  */
 @Configuration
