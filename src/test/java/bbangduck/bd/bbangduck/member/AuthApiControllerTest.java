@@ -4,6 +4,8 @@ import bbangduck.bd.bbangduck.domain.auth.dto.controller.OnlyRefreshTokenRequest
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.CheckIfEmailIsAvailableRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberCheckIfNicknameIsAvailableRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
@@ -12,6 +14,7 @@ import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberSocialInfoDuplicateException;
+import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -723,6 +726,89 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("status").value(SIGN_OUT_DIFFERENT_MEMBER.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(SIGN_OUT_DIFFERENT_MEMBER.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("이메일, 닉네임 사용 가능 체크")
+    public void checkIfEmailAndNicknameIsAvailable() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        CheckIfEmailIsAvailableRequestDto checkIfEmailIsAvailableRequestDto = new CheckIfEmailIsAvailableRequestDto(memberSocialSignUpRequestDto.getEmail());
+        MemberCheckIfNicknameIsAvailableRequestDto memberCheckIfNicknameIsAvailableRequestDto = new MemberCheckIfNicknameIsAvailableRequestDto(memberSocialSignUpRequestDto.getNickname());
+
+        //when
+        ResultActions perform1 = mockMvc.perform(
+                post("/api/auth/emails/check-availabilities")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(checkIfEmailIsAvailableRequestDto))
+        ).andDo(print());
+
+        ResultActions perform2 = mockMvc.perform(
+                post("/api/auth/nicknames/check-availabilities")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberCheckIfNicknameIsAvailableRequestDto))
+        ).andDo(print());
+
+        //then
+        perform1
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").value(false))
+                .andExpect(jsonPath("message").value(ResponseStatus.CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS.getMessage()))
+                .andDo(document(
+                        "check-if-email-is-available-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정")
+                        ),
+                        requestFields(
+                                fieldWithPath("email").description("사용 가능 확인을 위한 Email 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("Email 사용 가능 여부 응답 \n" +
+                                        "true -> 사용 가능, false -> 사용 불가능"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+        perform2
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS.getStatus()))
+                .andExpect(jsonPath("data").value(false))
+                .andExpect(jsonPath("message").value(ResponseStatus.CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS.getMessage()))
+                .andDo(document(
+                        "check-if-nickname-is-available-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정")
+                        ),
+                        requestFields(
+                                fieldWithPath("nickname").description("사용 가능 확인을 위한 Nickname 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data").description("Nickname 사용 가능 여부 응답 +\n" +
+                                        "true -> 사용 가능, false -> 사용 불가능"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+        checkIfEmailIsAvailableRequestDto.setEmail("member");
+        mockMvc.perform(
+                post("/api/auth/emails/check-availabilities")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(checkIfEmailIsAvailableRequestDto))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(CHECK_IF_EMAIL_IS_AVAILABLE_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("message").value(CHECK_IF_EMAIL_IS_AVAILABLE_NOT_VALID.getMessage()))
+        ;
+
 
     }
 

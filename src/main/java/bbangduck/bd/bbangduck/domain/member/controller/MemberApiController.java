@@ -1,10 +1,7 @@
 package bbangduck.bd.bbangduck.domain.member.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberRoomEscapeRecodesOpenStatusUpdateRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateDescriptionRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateNicknameRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateProfileImageRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.response.GetMemberPlayInclinationsResponseDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberMyProfileResponseDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberPlayInclinationResponseDto;

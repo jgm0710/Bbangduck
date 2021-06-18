@@ -138,4 +138,12 @@ public class AuthenticationService {
             throw new MemberSocialInfoDuplicateException(socialType, socialId);
         }
     }
+
+    public boolean checkIfEmailIsAvailable(String email) {
+        return memberRepository.findByEmail(email).isEmpty();
+    }
+
+    public boolean checkIfNicknameIsAvailable(String nickname) {
+        return memberRepository.findByNickname(nickname).isEmpty();
+    }
 }
