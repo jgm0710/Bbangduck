@@ -228,7 +228,7 @@ operation::sign-out-success[snippets='request-headers,response-fields,curl-reque
 [[resources-check-if-email-is-available]]
 == 이메일 사용 가능 여부 체크
 
-* `POST` `/api/members/emails/check-availabilities`
+* `POST` `/api/auth/emails/check-availabilities`
 
 * 이메일이 사용 가능한지 여부를 체크합니다.
 ** 사용 가능할 경우 응답 `data` 는 `true` 가 응답됩니다.
@@ -255,7 +255,7 @@ operation::check-if-email-is-available-success[snippets='request-headers,request
 [[resources-check-if-nickname-is-available]]
 == 닉네임 사용 가능 여부 체크
 
-* `POST` `/api/members/nicknames/check-availabilities`
+* `POST` `/api/auth/nicknames/check-availabilities`
 
 * 닉네임이 사용 가능한지 여부를 체크합니다.
 ** 사용 가능할 경우 응답 data 는 true 가 응답됩니다.
