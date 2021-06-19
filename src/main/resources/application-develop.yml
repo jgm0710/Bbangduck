@@ -16,3 +16,8 @@ logging:
     org.springframework.security: info #spring security에 대해 어떤 메세지가 출력이 되는지 확인
   file:
     name: /home/ec2-user/dev-logs/bbangduck-dev.log # 로그 파일을 남기기 위함
+
+kakao:
+  sign-in:
+    properties:
+      redirect-uri: http://13.125.48.96:8080/api/auth/kakao/sign-in/callback
