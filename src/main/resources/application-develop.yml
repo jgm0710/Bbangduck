@@ -14,3 +14,5 @@ logging:
     org.hibernate.SQL: info
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.springframework.security: info #spring security에 대해 어떤 메세지가 출력이 되는지 확인
+  file:
+    name: /home/ec2-user/dev-logs/bbangduck-dev.log # 로그 파일을 남기기 위함
