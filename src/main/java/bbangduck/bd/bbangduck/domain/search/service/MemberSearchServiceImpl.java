@@ -5,7 +5,6 @@ import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.search.dto.MemberSearchDto;
 import bbangduck.bd.bbangduck.domain.search.entity.MemberSearch;
-import bbangduck.bd.bbangduck.domain.search.entity.enumerate.MemberSearchType;
 import bbangduck.bd.bbangduck.domain.search.repository.MemberSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

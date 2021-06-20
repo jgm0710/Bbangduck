@@ -2,7 +2,7 @@ package bbangduck.bd.bbangduck.domain.auth.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.KakaoAuthorizationCodeConfiguration;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.SocialSignInService;
+import bbangduck.bd.bbangduck.domain.auth.service.KakaoSignInService;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.KakaoUserInfoDto;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SocialAuthApiControllerTest extends BaseJGMApiControllerTest {
 
     @MockBean
-    SocialSignInService socialSignInService;
+    KakaoSignInService kakaoSignInService;
 
     @Autowired
     KakaoAuthorizationCodeConfiguration kakaoConfiguration;
@@ -52,7 +52,7 @@ class SocialAuthApiControllerTest extends BaseJGMApiControllerTest {
                 .email("rnalrnal999@naver.com")
                 .build();
 
-        given(socialSignInService.connectKakao(authorizationCode, state)).willReturn(kakaoUserInfo);
+        given(kakaoSignInService.connectKakao(authorizationCode, state)).willReturn(kakaoUserInfo);
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -99,7 +99,7 @@ class SocialAuthApiControllerTest extends BaseJGMApiControllerTest {
                 .email(email)
                 .build();
 
-        given(socialSignInService.connectKakao(authorizationCode, state)).willReturn(kakaoUserInfo);
+        given(kakaoSignInService.connectKakao(authorizationCode, state)).willReturn(kakaoUserInfo);
 
         //when
         ResultActions perform = mockMvc.perform(
