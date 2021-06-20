@@ -1,20 +1,9 @@
 package bbangduck.bd.bbangduck.domain.shop.repository;
 
-import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
-import bbangduck.bd.bbangduck.domain.admin.entity.QAdminInfo;
-import bbangduck.bd.bbangduck.domain.shop.entity.QShop;
-import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
-import com.querydsl.core.QueryResults;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -22,6 +11,7 @@ import java.util.List;
 @Slf4j
 public class ShopRepositoryImpl implements ShopRepositoryCustom{
 
+    //
 //    private final JPAQueryFactory queryFactory;
 
 //    @Override

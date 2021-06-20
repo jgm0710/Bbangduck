@@ -44,6 +44,13 @@ kakao:
       authorize-state: bbangduck7
       scope: profile account_email
 
+naver:
+  sign-in:
+    client-id: _SMewO5WRZyuh6baD1d6
+    client-secret: WLle0bzQ1D
+    authorize-state: bbangduck7
+    redirect-uri: http://localhost:8080/api/auth/naver/sign-in/callback
+
 
 security:
   jwt:

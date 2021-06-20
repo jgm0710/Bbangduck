@@ -2,7 +2,6 @@ package bbangduck.bd.bbangduck.domain.model.embeded;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -15,8 +14,8 @@ import javax.persistence.Embeddable;
 public class Location {
 
     @Column(name = "lat")
-    private Float latitude;
+    private Double latitude;
 
     @Column(name = "lon")
-    private Float longitude;
+    private Double longitude;
 }
