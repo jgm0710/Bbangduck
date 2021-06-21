@@ -2,10 +2,15 @@ package bbangduck.bd.bbangduck.domain.auth.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.KakaoAuthorizationCodeConfiguration;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.service.KakaoSignInService;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.KakaoUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.NaverUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.NaverUserInfoResponseDto;
+import bbangduck.bd.bbangduck.domain.auth.service.KakaoSignInService;
+import bbangduck.bd.bbangduck.domain.auth.service.NaverSignService;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
+import bbangduck.bd.bbangduck.global.config.properties.NaverSignInProperties;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +38,12 @@ class SocialAuthApiControllerTest extends BaseJGMApiControllerTest {
 
     @Autowired
     KakaoSignInProperties kakaoSignInProperties;
+
+    @MockBean
+    NaverSignService mockNaverSignInService;
+
+    @Autowired
+    NaverSignInProperties naverSignInProperties;
 
     @Test
     @DisplayName("비회원 Kakao 로그인 콜백 테스트")
@@ -113,5 +124,112 @@ class SocialAuthApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isOk())
                 .andDo(document("member-kakao-sign-up-callback"))
         ;
+    }
+
+    @Test
+    @DisplayName("네이버 로그인 콜백 테스트 - 회원가입이 되어있지 않은 경우")
+    public void naverSignInCallback_NotSignUp() throws Exception {
+        //given
+        String authorizationCode = "olUb6eYQFOPkgjRANl";
+        String state = naverSignInProperties.getAuthorizeState();
+
+
+        NaverUserInfoResponseDto response = NaverUserInfoResponseDto.builder()
+                .id("qtpa_uSX1F9auqlBfkkaTJah93f77jIuHmvMjAWka1M")
+                .nickname("rnalrna****")
+                .name("정구민")
+                .email("rnalrnal999@naver.com")
+                .gender("M")
+                .age("20-29")
+                .birthday("01-04")
+                .profileImage("https://ssl.pstatic.net/static/pwe/address/img_profile.png")
+                .birthYear("1997")
+                .mobile("010-3132-3293")
+                .build();
+
+        NaverUserInfoDto naverUserInfoDto = NaverUserInfoDto.builder()
+                .resultCode("00")
+                .message("success")
+                .response(response)
+                .build();
+
+        given(mockNaverSignInService.connectNaver(authorizationCode, state)).willReturn(naverUserInfoDto);
+
+        //when
+
+        //then
+        mockMvc.perform(
+                get("/api/auth/naver/sign-in/callback")
+                        .param("code", authorizationCode)
+                        .param("state", state)
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "no-member-naver-sign-in-callback"
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("네이버 로그인 콜백 테스트 - 회원가입이 되어있는 경우")
+    public void naverSignInCallback_SignUp() throws Exception {
+        //given
+        String authorizationCode = "olUb6eYQFOPkgjRANl";
+        String state = naverSignInProperties.getAuthorizeState();
+
+
+        String email = "rnalrnal999@naver.com";
+        String nickname = "rnalrna****";
+        String socialId = "qtpa_uSX1F9auqlBfkkaTJah93f77jIuHmvMjAWka1M";
+        SocialType socialType = SocialType.NAVER;
+
+        MemberSignUpDto memberSignUpDto = MemberSignUpDto.builder()
+                .email(email)
+                .nickname(nickname)
+                .password(null)
+                .socialType(socialType)
+                .socialId(socialId)
+                .build();
+
+        authenticationService.signUp(memberSignUpDto);
+
+        NaverUserInfoResponseDto response = NaverUserInfoResponseDto.builder()
+                .id(socialId)
+                .nickname(nickname)
+                .name("정구민")
+                .email(email)
+                .gender("M")
+                .age("20-29")
+                .birthday("01-04")
+                .profileImage("https://ssl.pstatic.net/static/pwe/address/img_profile.png")
+                .birthYear("1997")
+                .mobile("010-3132-3293")
+                .build();
+
+        NaverUserInfoDto naverUserInfoDto = NaverUserInfoDto.builder()
+                .resultCode("00")
+                .message("success")
+                .response(response)
+                .build();
+
+        given(mockNaverSignInService.connectNaver(authorizationCode, state)).willReturn(naverUserInfoDto);
+
+        //when
+
+        //then
+        mockMvc.perform(
+                get("/api/auth/naver/sign-in/callback")
+                        .param("code", authorizationCode)
+                        .param("state", state)
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "member-naver-sign-in-callback"
+                ))
+        ;
+
     }
 }
