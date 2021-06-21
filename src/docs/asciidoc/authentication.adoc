@@ -98,6 +98,9 @@
 * <<resources-withdrawal>> 기능 구현
 * <<resources-sign-out>> 기능 구현
 
+2021-06-21:::
+* <<resources-naver-sign-in>> 기능 구현
+
 [[resources-auth]]
 = 회원 인증 관리 리소스
 
