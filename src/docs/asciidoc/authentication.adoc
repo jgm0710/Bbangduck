@@ -78,6 +78,18 @@
 | 1442
 | 자신의 계정만 로그아웃 할 수 있습니다.
 
+| <<resources-check-if-email-is-available>>
+| 이메일 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않은 경우
+| 400
+| 1451
+| 이메일 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-check-if-nickname-is-available>>
+| 닉네임 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않은 경우
+| 400
+| 1452
+| 닉네임 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않았습니다.
+
 |===
 
 == 히스토리
@@ -97,6 +109,10 @@
 * <<resources-refresh-sign-in>> 기능 구현
 * <<resources-withdrawal>> 기능 구현
 * <<resources-sign-out>> 기능 구현
+
+2021-06-19 :::
+* <<resources-check-if-email-is-available>> 기능 구현
+* <<resources-check-if-nickname-is-available>> 기능 구현
 
 2021-06-21:::
 * <<resources-naver-sign-in>> 기능 구현
@@ -239,6 +255,61 @@ operation::withdrawal-success[snippets='request-headers,response-fields,curl-req
 * 응답 HttpStatus : `200 OK`
 
 operation::sign-out-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+
+[[resources-check-if-email-is-available]]
+== 이메일 사용 가능 여부 체크
+
+* `POST` `/api/auth/emails/check-availabilities`
+
+* 이메일이 사용 가능한지 여부를 체크합니다.
+** 사용 가능할 경우 응답 `data` 는 `true` 가 응답됩니다.
+** 사용이 불가능할 경우 `data` 는 `false` 가 응답됩니다.
+
+* 해당 리소스는 인증을 필요로 하지 않습니다.
+** 이메일 수정 등에서 중복 체크를 하는 경우 자신이 지금 사용하고 있는 email 일 경우라도 사용 불가로 응답됩니다.
+
+* 입력 규칙
+** `email` 을 반드시 기입해야 합니다.
+** `email` 의 값이 Email 형식이 아닌 경우 요청에 실패합니다.
+
+[[resources-check-if-email-is-available-success]]
+=== 이메일 사용 가능 여부 체크 성공
+
+* 응답 HttpStatus : `200 OK`
+
+* data 를 통해 사용 가능 여부가 응답됩니다.
+** true -> 사용 가능
+** false -> 사용 불가능
+
+operation::check-if-email-is-available-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+
+[[resources-check-if-nickname-is-available]]
+== 닉네임 사용 가능 여부 체크
+
+* `POST` `/api/auth/nicknames/check-availabilities`
+
+* 닉네임이 사용 가능한지 여부를 체크합니다.
+** 사용 가능할 경우 응답 data 는 true 가 응답됩니다.
+** 사용이 불가능할 경우 data 는 false 가 응답됩니다.
+
+* 해당 리소스는 인증을 필요로 하지 않습니다.
+** 닉네임 수정 등에서 중복 체크를 하는 경우 자신이 지금 사용하고 있는 nickname 일 경우라도 사용 불가로 응답됩니다.
+
+* 입력 규칙
+** 닉네임을 반드시 기입해야 합니다.
+
+
+[[resources-check-if-nickname-is-available-success]]
+=== 닉네임 사용 가능 여부 체크 성공
+
+* 응답 HttpStatus : `200 OK`
+
+* data 를 통해 사용 가능 여부가 응답됩니다.
+** true -> 사용 가능
+** false -> 사용 불가능
+
+operation::check-if-nickname-is-available-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 
 

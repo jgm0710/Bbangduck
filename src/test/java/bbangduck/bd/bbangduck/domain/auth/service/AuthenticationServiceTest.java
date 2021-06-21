@@ -358,5 +358,22 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
 
     }
 
+    @Test
+    @DisplayName("이메일 중복체크, 닉네임 중복체크 한번에")
+    public void checkIfEmailAndNicknameIsAvailable() {
+        //given
+        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+
+        //when
+        boolean emailDuplicateCheck = authenticationService.checkIfEmailIsAvailable(memberSignUpRequestDto.getEmail());
+        boolean nicknameDuplicateCheck = authenticationService.checkIfNicknameIsAvailable(memberSignUpRequestDto.getNickname());
+
+        //then
+        assertFalse(emailDuplicateCheck, "중복되는 이메일이 있을 경우 false 를 반환해야 한다.");
+        assertFalse(nicknameDuplicateCheck, "중복되는 닉네임이 있을 경우 false 를 반환해야 한다.");
+
+    }
+
 
 }

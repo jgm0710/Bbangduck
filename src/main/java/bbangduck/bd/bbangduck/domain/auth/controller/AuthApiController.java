@@ -10,6 +10,8 @@ import bbangduck.bd.bbangduck.domain.auth.exception.WithdrawalDifferentMemberExc
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.CheckIfEmailIsAvailableRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberCheckIfNicknameIsAvailableRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
@@ -101,6 +103,30 @@ public class AuthApiController {
         authenticationService.signOut(memberId);
 
         return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.SIGN_OUT_SUCCESS, null));
+    }
+
+    @PostMapping("/emails/check-availabilities")
+    public ResponseEntity<ResponseDto<Boolean>> checkIfEmailIsAvailable(
+            @RequestBody @Valid CheckIfEmailIsAvailableRequestDto requestDto,
+            Errors errors
+    ) {
+        hasErrorsThrow(ResponseStatus.CHECK_IF_EMAIL_IS_AVAILABLE_NOT_VALID, errors);
+
+        boolean result = authenticationService.checkIfEmailIsAvailable(requestDto.getEmail());
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS, result));
+    }
+
+    @PostMapping("/nicknames/check-availabilities")
+    public ResponseEntity<ResponseDto<Boolean>> checkIfNicknameIsAvailable(
+            @RequestBody @Valid MemberCheckIfNicknameIsAvailableRequestDto requestDto,
+            Errors errors
+    ) {
+        hasErrorsThrow(ResponseStatus.CHECK_IF_NICKNAME_IS_AVAILABLE_NOT_VALID, errors);
+
+        boolean result = authenticationService.checkIfNicknameIsAvailable(requestDto.getNickname());
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS, result));
     }
 
     // TODO: 2021-05-02 자체 로그인 기능 구현 시 로그인 요청 처리 메서드 등록

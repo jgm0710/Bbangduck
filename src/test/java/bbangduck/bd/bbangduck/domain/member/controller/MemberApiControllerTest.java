@@ -3,10 +3,7 @@ package bbangduck.bd.bbangduck.domain.member.controller;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberRoomEscapeRecodesOpenStatusUpdateRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateDescriptionRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateNicknameRequestDto;
-import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberUpdateProfileImageRequestDto;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
@@ -1171,6 +1168,5 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         ;
 
     }
-
 
 }
