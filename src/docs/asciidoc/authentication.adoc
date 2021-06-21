@@ -191,7 +191,7 @@ operation::no-member-kakao-sign-up-callback[snippets='curl-request,http-response
 === 네이버 계정으로 가입된 회원의 로그인 성공
 
 * 네이버 계정을 통해 인증된 회원이 회원가입이 되어있는 회원일 경우 인증 토큰을 발급합니다.
-** 이 때의 status 값은 `1225` 입니다.
+** 이 때의 status 값은 `1227` 입니다.
 * 인증 토큰의 경우 Header, Payload, Signature 쪼개어 응답합니다.
 * 해당 응답은 페이지를 응답합니다.
 ** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.
