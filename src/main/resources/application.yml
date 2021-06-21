@@ -32,19 +32,6 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
     org.springframework.security: debug #spring security에 대해 어떤 메세지가 출력이 되는지 확인
 
-kakao:
-  sign-in:
-    properties:
-      native-app-key: 51a703abe9cf14386623caad48d40827
-      rest-api-key: d053f45a470a5203cc53bdfb65b69c03
-      java-script-key: d8952e843acd3811283f117ae4669d75
-      admin-key: 1fddc4fda55b89bc7ccfc287cb305db5
-      redirect-uri: http://localhost:8080/api/auth/kakao/sign-in/callback
-      client-secret: R5IwQ9giaSwMLQ7Ta4gvneADq2herZzg
-      authorize-state: bbangduck7
-      scope: profile account_email
-
-
 security:
   jwt:
     jwt-token-header: X-AUTH-TOKEN
@@ -68,3 +55,22 @@ review:
 
 member:
   play-inclination-top-limit: 4
+
+social:
+  sign-in:
+    naver:
+      client-id: _SMewO5WRZyuh6baD1d6
+      client-secret: WLle0bzQ1D
+      authorize-state: bbangduck7
+      redirect-uri: http://localhost:8080/api/auth/naver/sign-in/callback
+      request-access-token-host-uri-string: https://nid.naver.com/oauth2.0/token
+      request-user-info-host-uri-string: https://openapi.naver.com/v1/nid/me
+    kakao:
+      native-app-key: 51a703abe9cf14386623caad48d40827
+      rest-api-key: d053f45a470a5203cc53bdfb65b69c03
+      java-script-key: d8952e843acd3811283f117ae4669d75
+      admin-key: 1fddc4fda55b89bc7ccfc287cb305db5
+      redirect-uri: http://localhost:8080/api/auth/kakao/sign-in/callback
+      client-secret: R5IwQ9giaSwMLQ7Ta4gvneADq2herZzg
+      authorize-state: bbangduck7
+      scope: profile account_email

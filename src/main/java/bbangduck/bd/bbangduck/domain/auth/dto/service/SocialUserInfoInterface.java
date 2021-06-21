@@ -10,4 +10,5 @@ public interface SocialUserInfoInterface {
     String getEmail();
 
     String getNickname();
+
 }
