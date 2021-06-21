@@ -145,7 +145,7 @@ public class EventTestContoller {
                 .area(area)
                 .name("용미니네")
                 .franchise(franchise)
-                .location(Location.builder().latitude(33f).longitude(33f).build())
+                .location(Location.builder().latitude(33.0).longitude(33.0).build())
 //                .shopImage(ShopImage.getInstance())
                 .shopInfo("개발자 세상")
 //                .shopPrices()
