@@ -1,6 +1,6 @@
-package bbangduck.bd.bbangduck.domain.member.repository;
+package bbangduck.bd.bbangduck.domain.friend.repository;
 
-import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
+import bbangduck.bd.bbangduck.domain.friend.entity.MemberFriend;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

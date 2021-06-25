@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.member.exception;
+package bbangduck.bd.bbangduck.domain.friend.exception;
 
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.common.exception.BadRequestException;

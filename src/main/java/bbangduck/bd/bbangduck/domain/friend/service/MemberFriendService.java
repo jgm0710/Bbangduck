@@ -1,6 +1,6 @@
-package bbangduck.bd.bbangduck.domain.member.service;
+package bbangduck.bd.bbangduck.domain.friend.service;
 
-import bbangduck.bd.bbangduck.domain.member.repository.MemberFriendQueryRepository;
+import bbangduck.bd.bbangduck.domain.friend.repository.MemberFriendQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
