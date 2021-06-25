@@ -1,7 +1,7 @@
-package bbangduck.bd.bbangduck.domain.member.repository;
+package bbangduck.bd.bbangduck.domain.friend.repository;
 
-import bbangduck.bd.bbangduck.domain.member.entity.MemberFriend;
-import bbangduck.bd.bbangduck.domain.member.enumerate.MemberFriendState;
+import bbangduck.bd.bbangduck.domain.friend.entity.MemberFriend;
+import bbangduck.bd.bbangduck.domain.friend.enumerate.MemberFriendState;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static bbangduck.bd.bbangduck.domain.member.entity.QMemberFriend.*;
+import static bbangduck.bd.bbangduck.domain.friend.entity.QMemberFriend.memberFriend;
 
 /**
  * 작성자 : 정구민 <br><br>

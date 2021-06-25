@@ -1,6 +1,7 @@
-package bbangduck.bd.bbangduck.domain.member.entity;
+package bbangduck.bd.bbangduck.domain.friend.entity;
 
-import bbangduck.bd.bbangduck.domain.member.enumerate.MemberFriendState;
+import bbangduck.bd.bbangduck.domain.friend.enumerate.MemberFriendState;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
