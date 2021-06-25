@@ -74,7 +74,8 @@ public enum ResponseStatus {
     MEMBER_UPDATE_NICKNAME_NOT_VALID(2409, "회원 Nickname 변경 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원 Nickname 변경 시 기입 사항을 올바르게 기입하지 않은 경우"),
     MEMBER_UPDATE_DESCRIPTION_NOT_VALID(2410, "회원 자기소개 변경 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원의 자기소개 내용 변경 시 기입 사항을 올바르게 기입하지 않은 경우"),
     MEMBER_PROFILE_IMAGE_NOT_FOUND(2411, "회원의 프로필 이미지가 존재하지 않습니다.", "회원 프로필 이미지 삭제 등의 요청에서 회원 프로필 이미지 요청에 실패한 경우"),
-    RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND(2412, "요청된 두 회원은 서로 친구 관계가 아닙니다.", "특정 회원의 친구 정보를 조회할 경우 두 회원 간의 관계가 친구 수락 상태가 아닐 경우"),
+    //패키지 구조 변경으로 인해 응답 status 변경
+//    RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND(2412, "요청된 두 회원은 서로 친구 관계가 아닙니다.", "특정 회원의 친구 정보를 조회할 경우 두 회원 간의 관계가 친구 수락 상태가 아닐 경우"),
     FIND_MEMBER_WITHDRAWAL_OR_BAN(2413, "조회된 회원은 탈퇴했거나, 계정이 정지된 회원입니다.", "조회된 회원이 탈퇴했거나, 계정이 정지된 회원일 경우"),
     SEARCH_MEMBER_NOT_VALID(2414, "회원 검색 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원 검색 시 기입 사항을 올바르게 기입하지 않은 경우"),
 
@@ -167,6 +168,13 @@ public enum ResponseStatus {
      * 시작 코드 6
      */
     GENRE_NOT_FOUND(6401, "해당 장르가 존재하지 않습니다.", "요청된 장르를 조회했을 때 DB에 해당 장르가 존재하지 않는 경우"),
+
+    /**
+     * 친구 관련 응답 코드
+     * 시작 코드 7
+     */
+    RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND(7401, "요청된 두 회원은 서로 친구 관계가 아닙니다.", "특정 회원의 친구 정보를 조회할 경우 두 회원 간의 관계가 친구 수락 상태가 아닐 경우"),
+
 
     /**
      * 개발자 권한 응답 코드

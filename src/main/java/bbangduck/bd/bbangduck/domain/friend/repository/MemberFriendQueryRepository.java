@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static bbangduck.bd.bbangduck.domain.member.entity.QMemberFriend.*;
+import static bbangduck.bd.bbangduck.domain.friend.entity.QMemberFriend.memberFriend;
 
 /**
  * 작성자 : 정구민 <br><br>
