@@ -282,7 +282,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
             MemberFriend memberFriend = MemberFriend.builder()
                     .member(signUpMember)
                     .friend(friendMember)
-                    .state(MemberFriendState.ALLOW)
+                    .state(MemberFriendState.ACCEPT)
                     .build();
 
             MemberFriend savedMemberFriend = memberFriendRepository.save(memberFriend);

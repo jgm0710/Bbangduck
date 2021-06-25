@@ -1,8 +1,10 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberSearchKeywordType;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static bbangduck.bd.bbangduck.domain.member.entity.QMember.*;
+import static bbangduck.bd.bbangduck.domain.member.entity.QMember.member;
 import static bbangduck.bd.bbangduck.domain.member.entity.QSocialAccount.socialAccount;
 
 
@@ -54,4 +56,20 @@ public class MemberQueryRepository {
                 .fetch();
     }
 
+    public Optional<Member> findBySearchTypeAndKeyword(MemberSearchKeywordType searchType, String keyword) {
+        Member findMember = queryFactory
+                .selectFrom(member)
+                .where(
+                        searchTypeAndKeywordEq(searchType, keyword)
+                )
+                .fetchFirst();
+        return Optional.ofNullable(findMember);
+    }
+
+    private BooleanExpression searchTypeAndKeywordEq(MemberSearchKeywordType searchType, String keyword) {
+        if (searchType == MemberSearchKeywordType.EMAIL) {
+            return member.email.eq(keyword);
+        }
+        return member.nickname.eq(keyword);
+    }
 }

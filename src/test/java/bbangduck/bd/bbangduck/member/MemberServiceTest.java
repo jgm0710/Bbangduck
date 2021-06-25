@@ -10,6 +10,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberSearchKeywordType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
@@ -24,7 +25,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -565,6 +565,22 @@ class MemberServiceTest extends BaseJGMServiceTest {
             assertTrue(nowPlayInclination.getPlayCount() >= nextPlayInclination.getPlayCount(), "플레이 수 가 많은 성향부터 내림차순으로 정렬되어 있어야 한다.");
         }
 
+
+    }
+
+    @Test
+    @DisplayName("회원 검색 - 회원을 찾을 수 없는 경우")
+    public void searchMember_MemberNotFound() {
+        //given
+        MemberSearchKeywordType memberSearchKeywordType = MemberSearchKeywordType.NICKNAME;
+        String keyword = "anonymous";
+
+        //when
+
+        //then
+//        Optional<Member> bySearchTypeAndKeyword = memberQueryRepository.findBySearchTypeAndKeyword(memberSearchKeywordType, keyword);
+//        assertTrue(bySearchTypeAndKeyword.isPresent());
+        assertThrows(MemberNotFoundException.class, () -> memberService.searchMember(memberSearchKeywordType, keyword));
 
     }
 

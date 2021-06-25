@@ -19,6 +19,6 @@ public class MemberFriendService {
     private final MemberFriendQueryRepository memberFriendQueryRepository;
 
     public boolean isFriend(Long memberId, Long friendId) {
-        return memberFriendQueryRepository.findAllowedFriendByMemberAndFriend(memberId, friendId).isPresent();
+        return memberFriendQueryRepository.findAcceptedFriendByMemberAndFriend(memberId, friendId).isPresent();
     }
 }

@@ -257,7 +257,7 @@ public class ReviewService {
     private void addPlayTogetherFriendsToReview(Review review, Long memberId, List<Long> friendIds) {
         if (friendIdsExists(friendIds)) {
             friendIds.forEach(friendId -> {
-                Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAllowedFriendByMemberAndFriend(memberId, friendId);
+                Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAcceptedFriendByMemberAndFriend(memberId, friendId);
                 if (optionalMemberFriend.isEmpty()) {
                     throw new RelationOfMemberAndFriendIsNotFriendException(memberId, friendId);
                 }

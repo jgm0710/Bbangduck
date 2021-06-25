@@ -5,6 +5,7 @@ import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberSearchKeywordType;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
@@ -1162,6 +1163,83 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("data.playInclinations[0].genre.genreName").description("회원의 플레이 성향에 등록된 장르의 이름"),
                                 fieldWithPath("data.playInclinations[0].playCount").description("회원이 플레이 성향에 등록된 장르를 플레이한 횟수"),
                                 fieldWithPath("data.totalThemeEvaluatesCount").description("회원이 테마를 평가한 총 횟수"),
+                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("회원 검색 - 닉네임으로 회원 검색")
+    public void searchMember_ByNickname() throws Exception {
+        //given
+        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
+        Long memberId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadFileId);
+
+        MemberProfileImageDto memberProfileImageDto = MemberProfileImageDto.builder()
+                .fileStorageId(storedFile.getId())
+                .fileName(storedFile.getFileName())
+                .build();
+
+        memberService.updateProfileImage(memberId, memberProfileImageDto);
+        memberService.updateDescription(memberId, "sample description");
+
+        ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
+        Theme themeSample = createThemeSample();
+        reviewService.createReview(memberId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+
+        MemberSearchRequestDto memberSearchRequestDto = MemberSearchRequestDto.builder()
+                .searchType(MemberSearchKeywordType.NICKNAME)
+                .keyword(memberSocialSignUpRequestDto.getNickname())
+                .build();
+
+        TokenDto tokenDto = authenticationService.signIn(memberId);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/api/members/search")
+                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberSearchRequestDto))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("status").value(ResponseStatus.SEARCH_MEMBER_SUCCESS.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.SEARCH_MEMBER_SUCCESS.getMessage()))
+                .andDo(document(
+                        "search-member-success",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("[application/json;charset=UTF-8] 지정"),
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
+                        ),
+                        requestFields(
+                                fieldWithPath("searchType").description("회원 검색 시 이메일을 통해 검색할 것인지, 닉네임을 통해 검색할 것인지 기입 +\n" +
+                                        MemberSearchKeywordType.getNameList()),
+                                fieldWithPath("keyword").description("회원 검색 시 필요한 키워드 +\n" +
+                                        "정확한 이메일, 닉네임을 지정해야 검색할 수 있습니다.")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description(STATUS_DESCRIPTION),
+                                fieldWithPath("data.memberId").description("검색된 회원의 식별 ID"),
+                                fieldWithPath("data.profileImage.profileImageId").description("검색된 회원에 등록된 프로필 이미지의 식별 ID"),
+                                fieldWithPath("data.profileImage.profileImageUrl").description("검색된 회원에 등록된 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("data.profileImage.profileImageThumbnailUrl").description("검색된 회원에 등록횐 프로필 이미지의 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("data.nickname").description("검색된 회원의 닉네임"),
+                                fieldWithPath("data.description").description("검색된 회원의 자기소개"),
+                                fieldWithPath("data.roomEscapeStatus.challengesCount").description("검색된 회원이 테마에 도전한 총 횟수"),
+                                fieldWithPath("data.roomEscapeStatus.successCount").description("검색된 회원이 테마 클리어에 성공한 총 횟수"),
+                                fieldWithPath("data.roomEscapeStatus.failCount").description("검색된 회원이 테마 클리어에 실패한 총 횟수"),
+                                fieldWithPath("data.roomEscapeRecodesOpenStatus").description("검색된 회원의 방탈출 공개 상태"),
+                                fieldWithPath("data.playInclinations[0].genre.genreCode").description("검색된 회원이 플레이한 장르의 코드"),
+                                fieldWithPath("data.playInclinations[0].genre.genreName").description("검색된 회원이 플레이한 장르의 이름"),
+                                fieldWithPath("data.playInclinations[0].playCount").description("검색된 회원이 해당 장르 플레이한 횟수"),
                                 fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))

@@ -61,6 +61,7 @@ public enum ResponseStatus {
     UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS(2207, "회원 방탈출 기록 공개 상태 변경에 성공했습니다.", "회원 방탈출 기록 공개 상태 변경에 성공한 경우"),
     GET_MY_PROFILE_SUCCESS(2208, "본인의 프로필 조회에 성공했습니다.", "본인의 프로필 조회에 성공한 경우"),
     GET_MEMBER_PLAY_INCLINATIONS_SUCCESS(2209, "회원의 플레이 성향 조회에 성공했습니다.", "회원의 플레이 성향 조회에 성공한 경우"),
+    SEARCH_MEMBER_SUCCESS(2210, "회원 검색에 성공했습니다.", "이메일, 닉네임 등을 통해 회원 검색에 성공한 경우"),
 
 
     MEMBER_NOT_FOUND(2401, "해당 회원이 존재하지 않습니다.", "해당 조건으로 조회된 회원이 존재하지 않는 경우"),
@@ -75,6 +76,7 @@ public enum ResponseStatus {
     MEMBER_PROFILE_IMAGE_NOT_FOUND(2411, "회원의 프로필 이미지가 존재하지 않습니다.", "회원 프로필 이미지 삭제 등의 요청에서 회원 프로필 이미지 요청에 실패한 경우"),
     RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND(2412, "요청된 두 회원은 서로 친구 관계가 아닙니다.", "특정 회원의 친구 정보를 조회할 경우 두 회원 간의 관계가 친구 수락 상태가 아닐 경우"),
     FIND_MEMBER_WITHDRAWAL_OR_BAN(2413, "조회된 회원은 탈퇴했거나, 계정이 정지된 회원입니다.", "조회된 회원이 탈퇴했거나, 계정이 정지된 회원일 경우"),
+    SEARCH_MEMBER_NOT_VALID(2414, "회원 검색 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원 검색 시 기입 사항을 올바르게 기입하지 않은 경우"),
 
 
 

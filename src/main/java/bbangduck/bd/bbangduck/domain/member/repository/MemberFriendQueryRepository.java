@@ -22,14 +22,14 @@ public class MemberFriendQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Optional<MemberFriend> findAllowedFriendByMemberAndFriend(Long memberId, Long friendId) {
+    public Optional<MemberFriend> findAcceptedFriendByMemberAndFriend(Long memberId, Long friendId) {
         MemberFriend result = queryFactory
                 .select(memberFriend)
                 .from(memberFriend)
                 .where(
                         memberIdEq(memberId),
                         friendIdEq(friendId),
-                        stateEq(MemberFriendState.ALLOW)
+                        stateEq(MemberFriendState.ACCEPT)
                 )
                 .fetchFirst();
 

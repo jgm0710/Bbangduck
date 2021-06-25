@@ -7,12 +7,14 @@ import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberSearchKeywordType;
 import bbangduck.bd.bbangduck.domain.member.exception.FindMemberIsWithdrawalOrBanException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.global.config.properties.MemberProperties;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,8 @@ import java.util.Set;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final MemberQueryRepository memberQueryRepository;
 
     private final MemberProfileImageRepository memberProfileImageRepository;
 
@@ -128,5 +132,19 @@ public class MemberService {
     public void updateRoomEscapeRecodesOpenStatus(Long memberId, MemberRoomEscapeRecodesOpenStatus memberRoomEscapeRecodesOpenStatus) {
         Member findMember = getMember(memberId);
         findMember.updateRoomEscapeRecodesOpenStatus(memberRoomEscapeRecodesOpenStatus);
+    }
+
+    /**
+     * 테스트 o
+     *
+     * 기능 테스트
+     * - 이메일을 통한 회원 조회 성공 ?
+     * - 닉네임을 통한 회원 조회 성공 ?
+     *
+     * 실패 테스트
+     * - 닉네임, 이메일을 통한 회원 조회 실패 o
+     */
+    public Member searchMember(MemberSearchKeywordType searchType, String keyword) {
+        return memberQueryRepository.findBySearchTypeAndKeyword(searchType, keyword).orElseThrow(() -> new MemberNotFoundException(searchType, keyword));
     }
 }
