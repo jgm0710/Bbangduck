@@ -1849,7 +1849,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         requestFields(
-                                fieldWithPath("reviewType").description("수정할 ReviewType 기입"),
+                                fieldWithPath("reviewType").description("수정할 ReviewType 기입 +\n" +
+                                        ReviewType.getNameList()),
                                 fieldWithPath("clearYN").description("수정할 클리어 여부 기입"),
                                 fieldWithPath("clearTime").description("수정할 클리어 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입 +\n" +
@@ -2003,7 +2004,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         requestFields(
-                                fieldWithPath("reviewType").description("수정할 ReviewType 기입"),
+                                fieldWithPath("reviewType").description("수정할 ReviewType 기입 +\n" +
+                                        ReviewType.getNameList()),
                                 fieldWithPath("clearYN").description("수정할 클리어 여부 기입"),
                                 fieldWithPath("clearTime").description("수정할 클리어 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입 +\n" +
