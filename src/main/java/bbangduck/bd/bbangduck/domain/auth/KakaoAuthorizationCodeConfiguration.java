@@ -16,6 +16,7 @@ import java.net.URI;
  *
  * 카카오 로그인 요청 시 인증 토큰 조회 요청, 카카오 회원 정보 요청 시 필요한 Body, Header 에 대한 정보를 반환하기 위한 설정
  */
+// TODO: 2021-06-21 properties 로 옮기기
 @Component
 @RequiredArgsConstructor
 @Slf4j

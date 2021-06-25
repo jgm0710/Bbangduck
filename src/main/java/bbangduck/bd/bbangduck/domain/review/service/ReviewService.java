@@ -51,29 +51,17 @@ import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-
     private final ReviewQueryRepository reviewQueryRepository;
-
     private final MemberRepository memberRepository;
-
     private final MemberPlayInclinationRepository memberPlayInclinationRepository;
-
     private final MemberPlayInclinationQueryRepository memberPlayInclinationQueryRepository;
-
     private final MemberFriendQueryRepository memberFriendQueryRepository;
-
     private final ThemeRepository themeRepository;
-
     private final GenreRepository genreRepository;
-
     private final ReviewProperties reviewProperties;
-
     private final ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
-
     private final ReviewImageRepository reviewImageRepository;
-
     private final ReviewPlayTogetherRepository reviewPlayTogetherRepository;
-
     private final ReviewDetailRepository reviewDetailRepository;
 
     @Transactional
@@ -87,11 +75,11 @@ public class ReviewService {
 
         Review review = Review.create(findMember, findTheme, recodesCountsDto.getNextRecodeNumber(), reviewCreateDto);
         addPlayTogetherFriendsToReview(review, memberId, reviewCreateDto.getFriendIds());
-        reviewRepository.save(review);
+        Review save = reviewRepository.save(review);
 
         reflectingPropensityOfMemberToPlay(findMember, findTheme.getGenres());
 
-        return review.getId();
+        return save.getId();
     }
 
     /**

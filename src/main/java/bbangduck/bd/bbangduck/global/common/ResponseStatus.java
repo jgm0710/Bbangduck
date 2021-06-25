@@ -26,6 +26,7 @@ public enum ResponseStatus {
     SIGN_OUT_SUCCESS(1224, "로그아웃에 성공했습니다.", "로그아웃에 성공한 경우"),
     CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS(1225, "이메일 중복 체크에 성공했습니다.", "이메일 중복 체크에 성공한 경우"),
     CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS(1226, "닉네임 중복 체크에 성공했습니다.", "닉테임 중복 체크에 성공한 경우"),
+    NAVER_SIGN_IN_SUCCESS(1227, "네이버 로그인에 성공했습니다.", "네이버 API 를 통한 로그인에 성공했을 경우"),
 
     UNAUTHORIZED(1401, "인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.", "인증이 필요한 리소스 요청 시 헤더에 기입된 인증 토큰이 유효하지 않은 경우"),
     FORBIDDEN(1403, "해당 리소스에 접근할 수 없는 회원입니다.", "인증은 되었으나 해당 리소스에 대한 접근 권한을 인가받지 못한 사용자일 경우"),
@@ -35,6 +36,7 @@ public enum ResponseStatus {
     SOCIAL_SIGN_IN_STATE_MISMATCH(1413, "소셜 인가 토큰 요청 시 기입한 state 값이 변형되었습니다.", "소셜 API 를 통한 인가 토큰 요청 시 CSRF 방지를 위해 기입한 state 값이 변형된 경우"),
 
     KAKAO_USER_NOT_FOUND(1421, "해당 카카오 계정으로 가입된 회원이 존재하지 않습니다.", "카카오 로그인 시점에 해당 카카오 계정으로 회원가입을 진행하지 않은 회원인 경우"),
+    NAVER_USER_NOT_FOUND(1422, "해당 네이버 계정으로 가입된 회원이 존재하지 않습니다.", "네이버 로그인 시점에 해당 네이버 계정으로 회원가입을 진행하지 않은 회원인 경우"),
 
     REFRESH_NOT_VALID(1431, "Access Token 재발급에 필요한 Refresh Token 을 기입해 주세요.", "Access Token 재발급 요청 시 필요한 Refresh Token 을 기입하지 않은 경우"),
     REFRESH_TOKEN_NOT_FOUND(1432, "해당 Refresh Token 을 통한 Access Token 재발급이 불가능합니다.", "요청을 통해 들어온 Refresh Token 을 통한 회원 조회에 실패했을 경우"),
@@ -59,6 +61,7 @@ public enum ResponseStatus {
     UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS(2207, "회원 방탈출 기록 공개 상태 변경에 성공했습니다.", "회원 방탈출 기록 공개 상태 변경에 성공한 경우"),
     GET_MY_PROFILE_SUCCESS(2208, "본인의 프로필 조회에 성공했습니다.", "본인의 프로필 조회에 성공한 경우"),
     GET_MEMBER_PLAY_INCLINATIONS_SUCCESS(2209, "회원의 플레이 성향 조회에 성공했습니다.", "회원의 플레이 성향 조회에 성공한 경우"),
+
 
     MEMBER_NOT_FOUND(2401, "해당 회원이 존재하지 않습니다.", "해당 조건으로 조회된 회원이 존재하지 않는 경우"),
     MEMBER_SIGN_UP_NOT_VALID(2402, "회원가입 시 기입 사항을 올바르게 기입하지 않았습니다.", "회원가입 시 기입 사항을 규칙에 맞게 기입하지 않은 경우"),

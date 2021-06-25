@@ -114,6 +114,9 @@
 * <<resources-check-if-email-is-available>> 기능 구현
 * <<resources-check-if-nickname-is-available>> 기능 구현
 
+2021-06-21:::
+* <<resources-naver-sign-in>> 기능 구현
+
 [[resources-auth]]
 = 회원 인증 관리 리소스
 
@@ -176,6 +179,35 @@ operation::member-kakao-sign-up-callback[snippets='curl-request,http-response']
 
 operation::no-member-kakao-sign-up-callback[snippets='curl-request,http-response']
 
+
+[[resources-naver-sign-in]]
+== 네이버 로그인
+
+* `GET` `/api/auth/naver/sign-in`
+** 이후 내부적인 처리에 의해 네이버 인증 페이지로 Redirect 됩니다.
+** 네이버 인증 페이지에서 로그인에 성공할 경우 `/api/auth/naver/sign-in/callback` 에 Redirect 됩니다.
+
+[[resources-member-naver-sign-in-callback]]
+=== 네이버 계정으로 가입된 회원의 로그인 성공
+
+* 네이버 계정을 통해 인증된 회원이 회원가입이 되어있는 회원일 경우 인증 토큰을 발급합니다.
+** 이 때의 status 값은 `1227` 입니다.
+* 인증 토큰의 경우 Header, Payload, Signature 쪼개어 응답합니다.
+* 해당 응답은 페이지를 응답합니다.
+** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.
+
+operation::member-naver-sign-in-callback[snippets='curl-request,http-response']
+
+[[resources-no-member-naver-sign-in-callback]]
+=== 네이버 계정으로 가입되지 않은 비회원 로그인 실패
+
+* 네이버 계정을 통해 인증된 회원이 회원가입이 되어있지 않은 회원일 경우 네이버 인증을 통해 넘어온 회원의 정보를 응답합니다.
+** 이 때의 status 값은 `1422` 입니다.
+* 응답되는 Data 는 SocialId, Email, Nickname, SocialType 에 대한 정보가 응답됩니다.
+* 해당 응답은 페이지를 응답합니다.
+** 이후 응답 값들을 window.opener.postMessage 를 통해 부모 페이지 보냅니다.
+
+operation::no-member-naver-sign-in-callback[snippets='curl-request,http-response']
 
 [[resources-refresh-sign-in]]
 == Refresh 로그인
