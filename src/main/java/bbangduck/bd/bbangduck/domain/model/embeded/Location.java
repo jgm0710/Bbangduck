@@ -14,9 +14,13 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Location {
 
+    // 위도
     @Column(name = "lat")
-    private Float latitude;
+    @Getter
+    private Double latitude;
 
+    // 경도
     @Column(name = "lon")
-    private Float longitude;
+    @Getter
+    private Double longitude;
 }

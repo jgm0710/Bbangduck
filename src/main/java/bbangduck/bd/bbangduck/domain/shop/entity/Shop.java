@@ -57,4 +57,12 @@ public class Shop {
         this.shopPrices.add(shopPrice);
         shopPrice.setShop(this);
     }
+
+    public double getLatitude() {
+        return location.getLatitude();
+    }
+
+    public double getLongitude() {
+        return location.getLongitude();
+    }
 }
