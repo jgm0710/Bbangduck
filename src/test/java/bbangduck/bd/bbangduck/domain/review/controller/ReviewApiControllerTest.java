@@ -1802,6 +1802,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("message").value(ResponseStatus.REVIEW_HAS_NOT_SURVEY.getMessage()));
     }
 
+    // TODO: 2021-06-22 리뷰 타입 목록 문서에 반영
     @Test
     @DisplayName("리뷰 수정 - 간단 리뷰 to 상세 리뷰")
     public void updateReview_BaseToDetail() throws Exception {

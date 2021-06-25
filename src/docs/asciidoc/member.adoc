@@ -20,11 +20,21 @@
 
 | <<resources-member-update-profile-image>> / <<resources-member-delete-profile-image>> /
 <<resources-member-update-nickname>> / <<resources-member-update-description>> /
-<<resources-member-update-room-escape-recodes-open-status>> / <<resources-get-member-profile>>
+<<resources-member-update-room-escape-recodes-open-status>> / <<resources-get-member-profile>> /
+<<resources-search-member>>
 | 인증되지 않은 회원이 리소스에 접근할 경우
 | 401
 | 1401
 | 인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.
+
+| <<resources-member-update-profile-image>> / <<resources-member-delete-profile-image>> /
+<<resources-member-update-nickname>> / <<resources-member-update-description>> /
+<<resources-member-update-room-escape-recodes-open-status>> / <<resources-get-member-profile>> /
+<<resources-search-member>>
+| 탈퇴되거나 계정이 정지된 회원이 리소스에 접근하는 경우
+| 403
+| 1403
+| 해당 리소스에 접근할 수 없는 회원입니다.
 
 | <<resources-member-update-profile-image>> / <<resources-member-delete-profile-image>> /
 <<resources-member-update-nickname>> / <<resources-member-update-description>> /
@@ -52,6 +62,18 @@
 | 2404
 | 해당 Nickname 을 사용하는 회원이 이미 존재합니다. Nickname : {nickname}
 
+| <<resources-search-member>>
+| 회원 검색 시 기입 사항을 올바르게 기입하지 않은 경우
+| 404
+| 2414
+| 회원 검색 시 기입 사항을 올바르게 기입하지 않았습니다.
+
+| <<resources-search-member>>
+| 회원 검색 시 회원을 찾을 수 없는 경우
+| 404
+| 2401
+| 해당 회원이 존재하지 않습니다.
+
 
 |===
 
@@ -76,6 +98,9 @@
     ** 자신의 프로필 조회, 다른 회원의 프로필 조회를 하나의 API 를 통해 구현
 * <<resources-get-member-play-inclinations>> 기능 구현
     ** 장르별 플레이 횟수, 테마 평가 총 횟수 응답
+
+2021-06-25 :::
+* <<resources-search-member>> 기능 구현
 
 
 [[resources-member]]
@@ -136,6 +161,32 @@ operation::get-different-member-profile-success[snippets='request-headers,respon
 * 응답 HttpStatus : `200 OK`
 
 operation::get-member-play-inclination-success[snippets='request-headers,response-fields,curl-request,http-response']
+
+
+[[resources-search-member]]
+== 회원 검색
+
+* `POST` `/api/members/search`
+
+* 닉네임, 이메일 중 하나를 통해 회원을 검색합니다.
+    ** 닉네임, 이메일 중 어떤 걸 사용하여 회원을 검색할지 `searchType` 을 통해 지정합니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+    ** 인증되지 않은 사용자는 해당 리소스에 접근이 불가능합니다.
+    ** 탈퇴되거나 게정이 정지된 회원 또한 해당 리소스에 접근이 불가능합니다.
+
+* 입력 규칙
+    ** searchType 을 기입하지 않은 경우 요청에 실패합니다. Enum 값으로 꼭 정확한 값을 기입해야 합니다.
+    ** keyword 를 기입하지 않은 경우 요청에 실패합니다.
+
+* 검색 요청 시 회원을 찾을 수 없는 경우 요청에 실패합니다.
+
+[[resources-search-member-success]]
+=== 회원 검색 성공
+
+* 응답 HttpStatus : `200 OK`
+
+operation::search-member-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 
 [[resources-member-update-profile-image]]

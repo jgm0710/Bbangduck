@@ -59,6 +59,9 @@ import java.util.Set;
 public class BaseJGMServiceTest extends BaseTest {
 
     @Autowired
+    protected MemberQueryRepository memberQueryRepository;
+
+    @Autowired
     protected ReviewLikeService reviewLikeService;
 
     @Autowired
@@ -269,7 +272,7 @@ public class BaseJGMServiceTest extends BaseTest {
             MemberFriend memberFriend = MemberFriend.builder()
                     .member(signUpMember)
                     .friend(friendMember)
-                    .state(MemberFriendState.ALLOW)
+                    .state(MemberFriendState.ACCEPT)
                     .build();
 
             MemberFriend savedMemberFriend = memberFriendRepository.save(memberFriend);

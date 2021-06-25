@@ -212,6 +212,40 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS, null));
     }
 
+    /**
+     * 테스트 x, 문서화 x
+     *
+     * 기능 테스트
+     * - 200
+     * - 코드, 메세지 확인
+     * - 회원이 정상적으로 조회되는지 확인
+     *
+     * todo: 회원 검색 실패 테스트 구현
+     * 실패 테스트
+     * - validation - bad request
+     * -- 검색 조건 기입 x
+     * -- 키워드 기입 x
+     *
+     * - service
+     * - 검색 타입과 키워돌 회원 검색에 실패한 경우 - not found
+     *
+     * - 인증되지 않은 회원 접근 - 401
+     * - 탈퇴된 회원이 접근 - 403
+     */
+    @PostMapping("/search")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto<MemberProfileResponseDto>> searchMember(
+            @RequestBody @Valid MemberSearchRequestDto requestDto,
+            Errors errors
+    ) {
+        hasErrorsThrow(ResponseStatus.SEARCH_MEMBER_NOT_VALID, errors);
+        Member findMember = memberService.searchMember(requestDto.getSearchType(), requestDto.getKeyword());
+        ReviewRecodesCountsDto reviewRecodesCounts = reviewService.getReviewRecodesCounts(findMember.getId());
+        List<MemberPlayInclination> memberPlayInclinationTopN = memberService.getMemberPlayInclinationTopN(findMember.getId());
+        MemberProfileResponseDto memberProfileResponseDto = MemberProfileResponseDto.convert(findMember, reviewRecodesCounts, memberPlayInclinationTopN);
+
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.SEARCH_MEMBER_SUCCESS, memberProfileResponseDto));
+    }
 
 
     // TODO: 2021-05-02 회원 목록 조회 기능 구현(관리자)
