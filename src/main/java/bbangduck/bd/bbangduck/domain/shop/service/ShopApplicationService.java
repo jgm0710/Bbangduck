@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ShopApplicationService {
 
-  private final ShopService shopService;
+  private final ShopFindService shopFindService;
 
   public ShopLocationPageResponseDto findAllByDistance(Location location, @Min(0) Integer distance) {
-    List<Shop> list = shopService.findAllByKmDistance(location, distance);
+    List<Shop> list = shopFindService.findAllByKmDistance(location, distance);
     // TODO 페이징으로 변경
     List<ShopLocationResponseDto> result = list.stream().map(it -> ShopToLocationResponseDto.convert(it, location)).collect(Collectors.toList());
     return new ShopLocationPageResponseDto(result, 1, false, 10000);
