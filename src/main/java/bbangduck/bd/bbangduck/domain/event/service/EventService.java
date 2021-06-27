@@ -1,17 +1,19 @@
 package bbangduck.bd.bbangduck.domain.event.service;
 
-import bbangduck.bd.bbangduck.domain.board.entity.Board;
+import bbangduck.bd.bbangduck.domain.board.dto.BoardDto;
 import bbangduck.bd.bbangduck.domain.event.dto.ShopEventDto;
 import bbangduck.bd.bbangduck.domain.event.entity.ShopEvent;
-import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EventService {
-    void save(ShopEventDto shopEventDto, Board board, Shop shop);
 
-    Optional<ShopEvent> update(Long id, ShopEvent newShopEvent);
+    ShopEvent update(Long id, ShopEventDto newShopEventDto);
 
     List<ShopEvent> runningEvent();
+
+    List<ShopEvent> search(ShopEventDto shopEventDto);
+
+    ShopEvent shopEventSave(ShopEventDto shopEventDto);
 }

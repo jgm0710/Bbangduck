@@ -1,32 +1,31 @@
 package bbangduck.bd.bbangduck.domain.shop.service;
 
-import bbangduck.bd.bbangduck.domain.model.embeded.Location;
+import bbangduck.bd.bbangduck.domain.shop.dto.AreaDto;
+import bbangduck.bd.bbangduck.domain.shop.dto.FranchiseDto;
+import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
+import bbangduck.bd.bbangduck.domain.shop.dto.ShopImageDto;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
-import bbangduck.bd.bbangduck.domain.shop.repository.ShopQueryRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import bbangduck.bd.bbangduck.domain.shop.entity.ShopImage;
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static bbangduck.bd.bbangduck.global.common.util.DistanceUtil.*;
+public interface ShopService {
 
 
-@RequiredArgsConstructor
-@Service
-public class ShopService {
+    List<Shop> search(ShopDto shopDto);
 
-  private final ShopQueryRepository shopQueryRepository;
-  
-  public List<Shop> findAllByKmDistance(Location location, int distance) {
-    List<Shop> byRangeLocation = shopQueryRepository.findByRangeLocation(
-        calculateLatitudeDistance(location.getLatitude(), distance),
-        calculateLatitudeDistance(location.getLatitude(), -distance),
-        calculateLongitudeDistance(location.getLongitude(), distance),
-        calculateLongitudeDistance(location.getLongitude(), -distance));
-    return byRangeLocation
-        .stream().filter(
-            it -> getDistance(location, it.getLocation()) < distance
-        ).collect(Collectors.toList());
-  }
+    List<Shop> findByAll();
+
+    Shop findById(Long id);
+
+    Shop save(ShopDto shopDto, ShopImageDto shopImageDto);
+
+    void save(Shop shop);
+
+
+
+    Shop delete(Long shopId);
+
+    List<Shop> findAllByKmDistance(Location location, int distance);
 }

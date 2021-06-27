@@ -46,7 +46,7 @@ public class AdminInfoRepositoryImpl implements AdminInfoRepositoryCustom {
         return queryFactory.selectFrom(QAdminInfo.adminInfo)
                 .where(
                         eqId(adminInfo.getId()),
-                        eqMember(adminInfo.getMember()),
+                        eqMemberEmail(adminInfo.getMember().getEmail()),
                         eqCompanyName(adminInfo.getCompanyName()),
                         eqOwner(adminInfo.getOwner()),
                         eqAddress(adminInfo.getAddress()),
@@ -84,7 +84,7 @@ public class AdminInfoRepositoryImpl implements AdminInfoRepositoryCustom {
         QueryResults<AdminInfo> adminInfos = queryFactory.selectFrom(QAdminInfo.adminInfo)
                 .where(
                         eqId(adminInfo.getId()),
-                        eqMember(adminInfo.getMember()),
+                        eqMemberEmail(adminInfo.getMember().getEmail()),
                         eqCompanyName(adminInfo.getCompanyName()),
                         eqOwner(adminInfo.getOwner()),
                         eqAddress(adminInfo.getAddress()),
@@ -134,14 +134,11 @@ public class AdminInfoRepositoryImpl implements AdminInfoRepositoryCustom {
         return QAdminInfo.adminInfo.companyName.eq(companyName);
     }
 
-    private BooleanExpression eqMember(Member member) {
-        if (Objects.isNull(member)) {
+    private BooleanExpression eqMemberEmail(String email) {
+        if (StringUtils.isBlank(email)) {
             return null;
         }
-        if (StringUtils.isBlank(member.getEmail())) {
-            return null;
-        }
-        return QAdminInfo.adminInfo.member.email.eq(member.getEmail());
+        return QAdminInfo.adminInfo.member.email.eq(email);
     }
 
     private BooleanExpression eqId(Long id) {

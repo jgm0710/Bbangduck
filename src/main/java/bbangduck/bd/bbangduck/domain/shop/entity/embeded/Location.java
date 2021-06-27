@@ -1,4 +1,4 @@
-package bbangduck.bd.bbangduck.domain.model.embeded;
+package bbangduck.bd.bbangduck.domain.shop.entity.embeded;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

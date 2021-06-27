@@ -1,10 +1,14 @@
 package bbangduck.bd.bbangduck.domain.event.service;
 
+import bbangduck.bd.bbangduck.domain.board.dto.BoardDto;
 import bbangduck.bd.bbangduck.domain.board.entity.Board;
+import bbangduck.bd.bbangduck.domain.board.repository.BoardRepository;
 import bbangduck.bd.bbangduck.domain.event.dto.ShopEventDto;
 import bbangduck.bd.bbangduck.domain.event.entity.ShopEvent;
 import bbangduck.bd.bbangduck.domain.event.repository.ShopEventRepository;
+import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,22 +25,20 @@ import java.util.Optional;
 public class EventServiceImpl implements EventService {
 
     private final ShopEventRepository shopEventRepository;
-    @Override
-    public void save(ShopEventDto shopEventDto, Board board, Shop shop) {
-        this.shopEventRepository.save(ShopEvent.toEntity(shopEventDto, board, shop));
-    }
+    private final BoardRepository boardResposototy;
+    private final ShopRepository shopRepository;
 
     @Override
-    public Optional<ShopEvent> update(Long id, ShopEvent newShopEvent) {
+    public ShopEvent update(Long id, ShopEventDto newShopEventDto) {
         Optional<ShopEvent> oldShopEvent = this.shopEventRepository.findById(id);
         oldShopEvent.ifPresent(shopEventTemp -> {
-            shopEventTemp.setStartTimes(newShopEvent.getStartTimes());
-            shopEventTemp.setEndTimes(newShopEvent.getEndTimes());
+            shopEventTemp.setStartTimes(newShopEventDto.getStartTimes());
+            shopEventTemp.setEndTimes(newShopEventDto.getEndTimes());
             this.shopEventRepository.save(shopEventTemp);
         });
 
 
-        return oldShopEvent;
+        return oldShopEvent.orElseThrow();
 
     }
 
@@ -45,5 +47,26 @@ public class EventServiceImpl implements EventService {
         return this.shopEventRepository.findByStartTimesLessThanEqualAndEndTimesGreaterThanEqual(LocalDateTime.now(),
                 LocalDateTime.now());
     }
+
+    @Override
+    public List<ShopEvent> search(ShopEventDto shopEventDto) {
+        Board board = this.boardResposototy.findById(shopEventDto.getBoardId()).orElseThrow();
+        Shop shop = this.shopRepository.findById(shopEventDto.getShopId()).orElseThrow();
+
+        ShopEvent shopEvent = ShopEvent.toEntity(shopEventDto, board, shop);
+
+        return this.shopEventRepository.search(shopEvent);
+    }
+
+    @Override
+    public ShopEvent shopEventSave(ShopEventDto shopEventDto) {
+        Board board = this.boardResposototy.findById(shopEventDto.getBoardId()).orElseThrow();
+        Shop shop = this.shopRepository.findById(shopEventDto.getShopId()).orElseThrow();
+        ShopEvent shopEvent = ShopEvent.toEntity(shopEventDto, board, shop);
+
+        this.shopEventRepository.save(shopEvent);
+        return shopEvent;
+    }
+
 
 }

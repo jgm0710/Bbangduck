@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.event;
 
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.domain.admin.repository.AdminInfoRepository;
+import bbangduck.bd.bbangduck.domain.board.dto.BoardDto;
 import bbangduck.bd.bbangduck.domain.board.entity.Board;
 import bbangduck.bd.bbangduck.domain.board.entity.enumerate.BoardType;
 import bbangduck.bd.bbangduck.domain.event.dto.ShopEventDto;
@@ -14,7 +15,8 @@ import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.domain.model.embeded.Location;
+import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.entity.*;
 import bbangduck.bd.bbangduck.domain.shop.entity.enumerate.ShopPriceUnit;
 import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
@@ -145,7 +147,7 @@ public class EventTestContoller {
                 .area(area)
                 .name("용미니네")
                 .franchise(franchise)
-                .location(Location.builder().latitude(33.0).longitude(33.0).build())
+                .location(Location.builder().latitude(33.).longitude(33.).build())
 //                .shopImage(ShopImage.getInstance())
                 .shopInfo("개발자 세상")
 //                .shopPrices()
@@ -163,8 +165,6 @@ public class EventTestContoller {
                 .shop(shop)
                 .build();
 
-        shop.setShopPrices(Arrays.asList(shopPrice));
-        shop.setShopImage(shopImage);
 
         this.shopRepository.save(shop);
 
@@ -174,19 +174,24 @@ public class EventTestContoller {
 
         String writer = "용미니";
 
-        Board boardResult = this.boardRepository.findByWriter(writer);
+//        Board boardResult = this.boardRepository.findByWriter(writer);
+
+        BoardDto boardDto = BoardDto.builder()
+                .writer(writer)
+                .build();
 
         String shopName = "용미니네";
-        Shop shopResult = this.shopRepository.findByName(shopName);
+//        Shop shopResult = this.shopRepository.findByName(shopName);
+        ShopDto shopDto = ShopDto.builder().name(shopName).build();
 
         ShopEventDto shopEventDto = ShopEventDto.builder()
-                .boardId(boardResult.getId())
+//                .boardId(boardResult.getId())
                 .startTimes(LocalDateTime.now())
                 .endTimes(LocalDateTime.now().plusMonths(1))
                 .shopId(shop.getId())
                 .build();
 
-        this.eventService.save(shopEventDto, boardResult, shopResult);
+        this.eventService.shopEventSave(shopEventDto);
 
         List<ShopEvent> shopEventRepositoryAll = this.shopEventRepository.findAll();
 
@@ -210,7 +215,7 @@ public class EventTestContoller {
 
         ShopEvent oldShopEvent = Optional.of(shopEventRepositoryAll.get(0)).get();
 
-        ShopEvent newShopEvent = ShopEvent.builder()
+        ShopEventDto newShopEvent = ShopEventDto.builder()
                 .endTimes(LocalDateTime.now())
                 .startTimes(LocalDateTime.now().plusDays(10))
                 .build();
@@ -223,7 +228,7 @@ public class EventTestContoller {
         System.out.println("=======================");
 
 
-        Optional<ShopEvent> update = this.eventService.update(oldShopEvent.getId(), newShopEvent);
+        ShopEvent update = this.eventService.update(oldShopEvent.getId(), newShopEvent);
 
         ShopEvent shopEvent = this.shopEventRepository.findById(oldShopEvent.getId()).orElseThrow();
         System.out.println(shopEvent.toString());

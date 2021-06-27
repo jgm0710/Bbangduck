@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.shop.controller;
 
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
-import bbangduck.bd.bbangduck.domain.model.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopQueryRepository;
 import bbangduck.bd.bbangduck.global.common.util.DistanceUtil;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
@@ -15,6 +15,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;

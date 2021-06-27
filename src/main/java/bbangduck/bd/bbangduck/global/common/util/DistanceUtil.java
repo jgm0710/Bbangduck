@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.global.common.util;
 
-import bbangduck.bd.bbangduck.domain.model.embeded.Location;
+
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 
 public interface DistanceUtil {
   static double getDistance(Location originLocation, Location remoteLocation) {

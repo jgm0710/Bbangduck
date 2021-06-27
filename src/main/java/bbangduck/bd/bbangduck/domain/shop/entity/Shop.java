@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.shop.entity;
 
-import bbangduck.bd.bbangduck.domain.model.embeded.Location;
+import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +24,6 @@ public class Shop {
     @JoinColumn(name = "franchise_id")
     private Franchise franchise;
 
-    @Setter
     @OneToOne(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ShopImage shopImage;
 
@@ -37,7 +37,6 @@ public class Shop {
     @Column(length = 3000)
     private String shopInfo;
 
-    @Setter
     @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL)
     private List<ShopPrice> shopPrices;
 
@@ -52,6 +51,30 @@ public class Shop {
 
     @Column(name = "delete_yn")
     private boolean deleteYN;
+
+    public static Shop toEntity(ShopDto shopDto) {
+        return Shop.builder()
+                .id(shopDto.getId())
+                .name(shopDto.getName())
+                .shopUrl(shopDto.getShopUrl())
+                .shopInfo(shopDto.getShopInfo())
+                .address(shopDto.getAddress())
+                .deleteYN(false)
+                .build();
+
+    }
+    public static Shop toEntity(ShopDto shopDto, Area area, Franchise franchise) {
+        return Shop.builder()
+                .id(shopDto.getId())
+                .franchise(franchise)
+                .name(shopDto.getName())
+                .shopInfo(shopDto.getShopInfo())
+                .location(new Location(shopDto.getLat(), shopDto.getLon()))
+                .address(shopDto.getAddress())
+                .area(area)
+                .deleteYN(false)
+                .build();
+    }
 
     public void addShopPrices(ShopPrice shopPrice) {
         this.shopPrices.add(shopPrice);

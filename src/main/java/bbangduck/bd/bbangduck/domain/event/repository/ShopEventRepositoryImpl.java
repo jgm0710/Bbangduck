@@ -28,8 +28,8 @@ public class ShopEventRepositoryImpl implements ShopEventRepositoryCustom{
         return queryFactory.selectFrom(QShopEvent.shopEvent)
                 .where(
                         eqId(shopEvent.getId()),
-                        eqShop(shopEvent.getShop()),
-                        eqBoard(shopEvent.getBoard()),
+                        eqShopId(shopEvent.getShop().getId()),
+                        eqBoardId(shopEvent.getBoard().getId()),
                         eqEndTimes(shopEvent.getEndTimes()),
                         eqStartTimes(shopEvent.getStartTimes())
                 ).fetch();
@@ -49,18 +49,18 @@ public class ShopEventRepositoryImpl implements ShopEventRepositoryCustom{
         return QShopEvent.shopEvent.endTimes.before(endTimes);
     }
 
-    private BooleanExpression eqBoard(Board board) {
-        if (ObjectUtils.isEmpty(board)) {
+    private BooleanExpression eqBoardId(Long id) {
+        if (ObjectUtils.isEmpty(id)) {
             return null;
         }
-        return QShopEvent.shopEvent.board.eq(board);
+        return QShopEvent.shopEvent.board.id.eq(id);
     }
 
-    private BooleanExpression eqShop(Shop shop) {
-        if (ObjectUtils.isEmpty(shop)) {
+    private BooleanExpression eqShopId(Long id) {
+        if (ObjectUtils.isEmpty(id)) {
             return null;
         }
-        return QShopEvent.shopEvent.shop.eq(shop);
+        return QShopEvent.shopEvent.shop.id.eq(id);
     }
 
     private BooleanExpression eqId(Long id) {
@@ -76,8 +76,8 @@ public class ShopEventRepositoryImpl implements ShopEventRepositoryCustom{
         QueryResults<ShopEvent> shopEvents = queryFactory.selectFrom(QShopEvent.shopEvent)
                 .where(
                         eqId(shopEvent.getId()),
-                        eqShop(shopEvent.getShop()),
-                        eqBoard(shopEvent.getBoard()),
+                        eqShopId(shopEvent.getShop().getId()),
+                        eqBoardId(shopEvent.getBoard().getId()),
                         eqEndTimes(shopEvent.getEndTimes()),
                         eqStartTimes(shopEvent.getStartTimes())
                 )
@@ -86,4 +86,8 @@ public class ShopEventRepositoryImpl implements ShopEventRepositoryCustom{
                 .fetchResults();
         return new PageImpl<>(shopEvents.getResults(), pageable, shopEvents.getTotal());
     }
+
+
+
+
 }

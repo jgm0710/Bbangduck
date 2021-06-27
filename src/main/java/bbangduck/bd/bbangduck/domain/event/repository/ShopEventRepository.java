@@ -11,4 +11,6 @@ import java.util.List;
 public interface ShopEventRepository extends JpaRepository<ShopEvent, Long>, ShopEventRepositoryCustom {
 
     List<ShopEvent> findByStartTimesLessThanEqualAndEndTimesGreaterThanEqual(LocalDateTime now, LocalDateTime now1);
+
+
 }

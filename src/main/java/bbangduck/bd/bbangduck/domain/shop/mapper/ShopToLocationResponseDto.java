@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.shop.mapper;
 
-import bbangduck.bd.bbangduck.domain.model.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopLocationResponseDto;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.global.common.util.DistanceUtil;
 
 public interface ShopToLocationResponseDto {

@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.shop.entity;
 
+import bbangduck.bd.bbangduck.domain.shop.dto.ShopImageDto;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.*;
 
@@ -13,17 +14,18 @@ import javax.persistence.*;
 @Table
 public class ShopImage extends BaseEntityDateTime {
 
-    public static ShopImage instance = new ShopImage();
-
-    public static ShopImage getInstance() {
-        return instance;
-    }
+//    public static ShopImage instance = new ShopImage();
+//
+//    public static ShopImage getInstance() {
+//        return instance;
+//    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shop_image_id")
     private Long id;
 
+    @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id")
     private Shop shop;
@@ -32,4 +34,11 @@ public class ShopImage extends BaseEntityDateTime {
 
     private String fileName;
 
+    public static ShopImage toEntity(ShopImageDto shopImageDto) {
+        return ShopImage.builder()
+                .fileStorageId(shopImageDto.getFileStorageId())
+                .fileName(shopImageDto.getFileName())
+                .id(shopImageDto.getId())
+                .build();
+    }
 }

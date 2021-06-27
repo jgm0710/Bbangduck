@@ -1,8 +1,12 @@
 package bbangduck.bd.bbangduck.domain.shop.service;
 
-import bbangduck.bd.bbangduck.domain.model.embeded.Location;
+
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
+import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
+import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopQueryRepository;
+import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.global.common.util.DistanceUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +23,7 @@ import static org.mockito.Mockito.when;
 class ShopServiceTest {
 
   private final ShopQueryRepository shopQueryRepository = Mockito.mock(ShopQueryRepository.class);
-  private final ShopService shopService = new ShopService(shopQueryRepository);
+  private final ShopServiceImpl shopService = new ShopServiceImpl(shopQueryRepository);
 
   @Test
   @DisplayName("KM 단위의 거리 조회 테스트")

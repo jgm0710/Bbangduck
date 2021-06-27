@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.shop.controller;
 
-import bbangduck.bd.bbangduck.domain.model.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopFindByLocationRequestDto;
 import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopLocationPageResponseDto;
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.service.ShopApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
