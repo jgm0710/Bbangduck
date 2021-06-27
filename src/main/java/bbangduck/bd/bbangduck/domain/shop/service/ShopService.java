@@ -23,9 +23,5 @@ public interface ShopService {
 
     void save(Shop shop);
 
-
-
     Shop delete(Long shopId);
-
-    List<Shop> findAllByKmDistance(Location location, int distance);
 }

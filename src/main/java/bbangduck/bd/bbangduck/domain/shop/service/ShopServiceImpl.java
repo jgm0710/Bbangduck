@@ -74,23 +74,9 @@ public class ShopServiceImpl implements ShopService{
         this.shopRepository.save(shop);
     }
 
-
-
     @Override
     public Shop delete(Long shopId) {
         return this.shopRepository.deleteYN(shopId);
     }
 
-    @Override
-    public List<Shop> findAllByKmDistance(Location location, int distance) {
-        List<Shop> byRangeLocation = shopQueryRepository.findByRangeLocation(
-                calculateLatitudeDistance(location.getLatitude(), distance),
-                calculateLatitudeDistance(location.getLatitude(), -distance),
-                calculateLongitudeDistance(location.getLongitude(), distance),
-                calculateLongitudeDistance(location.getLongitude(), -distance));
-        return byRangeLocation
-                .stream().filter(
-                        it -> getDistance(location, it.getLocation()) < distance
-                ).collect(Collectors.toList());
-    }
 }

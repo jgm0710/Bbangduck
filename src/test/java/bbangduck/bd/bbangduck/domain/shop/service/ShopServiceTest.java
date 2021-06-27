@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 class ShopServiceTest {
 
   private final ShopQueryRepository shopQueryRepository = Mockito.mock(ShopQueryRepository.class);
-  private final ShopServiceImpl shopService = new ShopServiceImpl(shopQueryRepository);
+  private final ShopFindService shopService = new ShopFindService(shopQueryRepository);
 
   @Test
   @DisplayName("KM 단위의 거리 조회 테스트")
