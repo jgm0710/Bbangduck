@@ -1,12 +1,10 @@
 package bbangduck.bd.bbangduck.domain.event.service;
 
-import bbangduck.bd.bbangduck.domain.board.dto.BoardDto;
 import bbangduck.bd.bbangduck.domain.board.entity.Board;
 import bbangduck.bd.bbangduck.domain.board.repository.BoardRepository;
 import bbangduck.bd.bbangduck.domain.event.dto.ShopEventDto;
 import bbangduck.bd.bbangduck.domain.event.entity.ShopEvent;
 import bbangduck.bd.bbangduck.domain.event.repository.ShopEventRepository;
-import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +57,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public ShopEvent shopEventSave(ShopEventDto shopEventDto) {
         Board board = this.boardResposototy.findById(shopEventDto.getBoardId()).orElseThrow();
         Shop shop = this.shopRepository.findById(shopEventDto.getShopId()).orElseThrow();

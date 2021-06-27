@@ -5,8 +5,8 @@ import bbangduck.bd.bbangduck.domain.admin.repository.AdminInfoRepository;
 import bbangduck.bd.bbangduck.domain.board.dto.BoardDto;
 import bbangduck.bd.bbangduck.domain.board.entity.Board;
 import bbangduck.bd.bbangduck.domain.board.entity.enumerate.BoardType;
-import bbangduck.bd.bbangduck.domain.event.dto.ShopEventDto;
 import bbangduck.bd.bbangduck.domain.board.repository.BoardRepository;
+import bbangduck.bd.bbangduck.domain.event.dto.ShopEventDto;
 import bbangduck.bd.bbangduck.domain.event.entity.ShopEvent;
 import bbangduck.bd.bbangduck.domain.event.repository.ShopEventRepository;
 import bbangduck.bd.bbangduck.domain.event.service.EventService;
@@ -16,8 +16,8 @@ import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
-import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.entity.*;
+import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.entity.enumerate.ShopPriceUnit;
 import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
@@ -36,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -185,7 +184,7 @@ public class EventTestContoller {
         ShopDto shopDto = ShopDto.builder().name(shopName).build();
 
         ShopEventDto shopEventDto = ShopEventDto.builder()
-//                .boardId(boardResult.getId())
+                .boardId(board.getId())
                 .startTimes(LocalDateTime.now())
                 .endTimes(LocalDateTime.now().plusMonths(1))
                 .shopId(shop.getId())
