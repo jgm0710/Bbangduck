@@ -57,7 +57,7 @@ public class AdminInfoRepositoryImpl implements AdminInfoRepositoryCustom {
     }
 
     @Override
-    public Page<AdminInfo> searchPage(AdminInfo adminInfo, Pageable pageable) {
+    public Page<AdminInfo> searchPage(Pageable pageable, AdminInfo adminInfo, String memberEmail) {
         //        QAdminInfo qAdminInfo = QAdminInfo.adminInfo;
 //        QMember qMember = QMember.member;
 //
@@ -84,7 +84,7 @@ public class AdminInfoRepositoryImpl implements AdminInfoRepositoryCustom {
         QueryResults<AdminInfo> adminInfos = queryFactory.selectFrom(QAdminInfo.adminInfo)
                 .where(
                         eqId(adminInfo.getId()),
-                        eqMemberEmail(adminInfo.getMember().getEmail()),
+                        eqMemberEmail(memberEmail),
                         eqCompanyName(adminInfo.getCompanyName()),
                         eqOwner(adminInfo.getOwner()),
                         eqAddress(adminInfo.getAddress()),

@@ -147,7 +147,7 @@ public class AdminInfoRepositoryTest {
         Sort sort = Sort.by(order);
 
         Pageable pageable = PageRequest.of(0, 10, sort);
-        Page<AdminInfo> adminInfoPage = adminInfoRepository.searchPage(adminInfoBase, pageable);
+        Page<AdminInfo> adminInfoPage = adminInfoRepository.searchPage(pageable, adminInfoBase, "otrodevym@gmail.com");
         assertThat(adminInfoPage.getTotalPages(), CoreMatchers.is(1));
     }
 

@@ -16,5 +16,5 @@ import java.util.List;
 public interface AdminInfoRepositoryCustom {
     List<AdminInfo> search(AdminInfo adminInfo);
 
-    Page<AdminInfo> searchPage(AdminInfo adminInfo1, Pageable pageable);
+    Page<AdminInfo> searchPage(Pageable pageable, AdminInfo adminInfo, String memberEmail);
 }

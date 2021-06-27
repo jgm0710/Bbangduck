@@ -8,6 +8,7 @@ import bbangduck.bd.bbangduck.domain.shop.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class ShopController {
         return ResponseEntity.ok().body(shops);
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/")
     public ResponseEntity<Shop> shopSave(@RequestBody ShopDto shopDto,
                                          @RequestBody ShopImageDto shopImageDto) {
         Shop shop = this.shopService.save(shopDto, shopImageDto);

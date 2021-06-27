@@ -151,7 +151,7 @@ public class MemberSearchTest {
         searchDtos.forEach(System.out::println);
     }
 
-//    @Test
+    @Test
     public void controllerSaveTest() throws Exception {
         MemberSearchDto memberSearchDto = MemberSearchDto.builder()
                 .searchType(MemberSearchType.T01).searchKeyword("빵덕 찾아줭").memberId(1L).id(1L).build();
