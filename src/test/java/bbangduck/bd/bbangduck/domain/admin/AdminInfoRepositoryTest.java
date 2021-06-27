@@ -58,10 +58,13 @@ public class AdminInfoRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
+    private Member member1;
+    private Member member2;
+    private Member member3;
 
     @BeforeEach
     public void setUp() {
-        Member member1 = Member.builder()
+        member1 = Member.builder()
                 .email("otrodevym1@gmail.com")
                 .password("1234")
                 .nickname("developer")
@@ -71,7 +74,7 @@ public class AdminInfoRepositoryTest {
                 .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
                 .build();
         this.memberRepository.save(member1);
-        Member member2 = Member.builder()
+        member2 = Member.builder()
                 .email("otrodevym2@gmail.com")
                 .password("1234")
                 .nickname("developer")
@@ -82,7 +85,7 @@ public class AdminInfoRepositoryTest {
                 .build();
         this.memberRepository.save(member2);
 
-        Member member3 = Member.builder()
+        member3 = Member.builder()
                 .email("otrodevym3@gmail.com")
                 .password("1234")
                 .nickname("developer")
@@ -136,6 +139,7 @@ public class AdminInfoRepositoryTest {
 
         AdminInfo adminInfoBase = AdminInfo.builder()
                 .companyName("빵덕1")
+                .member(member1)
                 .build();
 
 
@@ -143,7 +147,7 @@ public class AdminInfoRepositoryTest {
         Sort sort = Sort.by(order);
 
         Pageable pageable = PageRequest.of(0, 10, sort);
-        Page<AdminInfo> adminInfoPage = adminInfoRepository.searchPage(adminInfoBase, pageable);
+        Page<AdminInfo> adminInfoPage = adminInfoRepository.searchPage(pageable, adminInfoBase, "otrodevym@gmail.com");
         assertThat(adminInfoPage.getTotalPages(), CoreMatchers.is(1));
     }
 
@@ -161,6 +165,7 @@ public class AdminInfoRepositoryTest {
         // 회사 이름으로 조회
         AdminInfo adminInfo1 = AdminInfo.builder()
                 .companyName("빵덕1")
+                .member(member1)
                 .build();
         List<AdminInfo> adminInfos1 = adminInfoRepository.search(adminInfo1);
 
