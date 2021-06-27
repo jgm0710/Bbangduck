@@ -15,7 +15,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
+import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopCreateDto;
 import bbangduck.bd.bbangduck.domain.shop.entity.*;
 import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.entity.enumerate.ShopPriceUnit;
@@ -181,7 +181,7 @@ public class EventTestContoller {
 
         String shopName = "용미니네";
 //        Shop shopResult = this.shopRepository.findByName(shopName);
-        ShopDto shopDto = ShopDto.builder().name(shopName).build();
+        ShopCreateDto shopCreateDto = ShopCreateDto.builder().name(shopName).build();
 
         ShopEventDto shopEventDto = ShopEventDto.builder()
                 .boardId(board.getId())

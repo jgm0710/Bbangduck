@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.admin;
 
+import bbangduck.bd.bbangduck.domain.admin.dto.AdminInfoDto;
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.domain.admin.repository.AdminInfoRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -128,21 +129,21 @@ public class AdminInfoRepositoryTest {
 
 
     // FIXME: 2021-06-28 adminInfo 페이징 조회 테스트 깨져서 주석 처리
-//    @Test
-//    public void admin_info_페이징_조회_테스트() {
-//
-//        AdminInfo adminInfoBase = AdminInfo.builder()
-//                .companyName("빵덕1")
-//                .build();
-//
-//
-//        Sort.Order order = Sort.Order.desc("id");
-//        Sort sort = Sort.by(order);
-//
-//        Pageable pageable = PageRequest.of(0, 10, sort);
-//        Page<AdminInfo> adminInfoPage = adminInfoRepository.searchPage(adminInfoBase, pageable);
-//        assertThat(adminInfoPage.getTotalPages(), CoreMatchers.is(1));
-//    }
+    @Test
+    public void admin_info_페이징_조회_테스트() {
+
+        AdminInfoDto.Search adminInfoBase = AdminInfoDto.Search.builder()
+                .companyName("빵덕1")
+                .build();
+
+
+        Sort.Order order = Sort.Order.desc("id");
+        Sort sort = Sort.by(order);
+
+        Pageable pageable = PageRequest.of(0, 10, sort);
+        Page<AdminInfo> adminInfoPage = adminInfoRepository.searchPage(pageable, adminInfoBase);
+        assertThat(adminInfoPage.getTotalPages(), CoreMatchers.is(1));
+    }
 
     @Test
     public void admin_info_전체_조회_테스트() {
@@ -153,17 +154,17 @@ public class AdminInfoRepositoryTest {
     }
 
     // TODO: 2021-06-28 adminInfo 회사명 조회 테스트 깨져서 주석 처리
-//    @Test
-//    public void admin_info_회사명_조회_테스트() {
-//
-//        // 회사 이름으로 조회
-//        AdminInfo adminInfo1 = AdminInfo.builder()
-//                .companyName("빵덕1")
-//                .build();
-//        List<AdminInfo> adminInfos1 = adminInfoRepository.search(adminInfo1);
-//
-//        assertThat(adminInfos1.get(0).getAddress(), CoreMatchers.is("서울시 용산구1"));
-//    }
+    @Test
+    public void admin_info_회사명_조회_테스트() {
+
+        // 회사 이름으로 조회
+        AdminInfoDto.Search adminInfo1 = AdminInfoDto.Search.builder()
+                .companyName("빵덕1")
+                .build();
+        List<AdminInfo> adminInfos1 = adminInfoRepository.search(adminInfo1);
+
+        assertThat(adminInfos1.get(0).getAddress(), CoreMatchers.is("서울시 용산구1"));
+    }
 
 
 

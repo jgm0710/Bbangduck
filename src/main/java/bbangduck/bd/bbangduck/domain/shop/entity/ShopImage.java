@@ -1,44 +1,29 @@
 package bbangduck.bd.bbangduck.domain.shop.entity;
 
-import bbangduck.bd.bbangduck.domain.shop.dto.ShopImageDto;
-import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
-import lombok.*;
+import lombok.Builder;
 
-import javax.persistence.*;
+import javax.persistence.Embeddable;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-@Getter
-@Table
-public class ShopImage extends BaseEntityDateTime {
+@Embeddable
+public class ShopImage {
+  private Long fileStorageId;
 
-//    public static ShopImage instance = new ShopImage();
-//
-//    public static ShopImage getInstance() {
-//        return instance;
-//    }
+  private String fileName;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "shop_image_id")
-    private Long id;
+  @Builder
+  public ShopImage(Long fileStorageId, String fileName) {
+    this.fileStorageId = fileStorageId;
+    this.fileName = fileName;
+  }
 
-    @Setter
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shop_id")
-    private Shop shop;
+  public ShopImage() {
 
-    private Long fileStorageId;
+  }
 
-    private String fileName;
-
-    public static ShopImage toEntity(ShopImageDto shopImageDto) {
-        return ShopImage.builder()
-                .fileStorageId(shopImageDto.getFileStorageId())
-                .fileName(shopImageDto.getFileName())
-                .id(shopImageDto.getId())
-                .build();
-    }
+  public static ShopImage of(Long fileStorageId, String fileName) {
+    return ShopImage.builder()
+        .fileName(fileName)
+        .fileStorageId(fileStorageId)
+        .build();
+  }
 }

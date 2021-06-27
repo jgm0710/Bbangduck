@@ -1,27 +1,34 @@
 package bbangduck.bd.bbangduck.domain.shop.service;
 
-import bbangduck.bd.bbangduck.domain.shop.dto.AreaDto;
-import bbangduck.bd.bbangduck.domain.shop.dto.FranchiseDto;
-import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
-import bbangduck.bd.bbangduck.domain.shop.dto.ShopImageDto;
+import bbangduck.bd.bbangduck.domain.shop.dto.service.ShopCreateCommand;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
-import bbangduck.bd.bbangduck.domain.shop.entity.ShopImage;
-import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
+import bbangduck.bd.bbangduck.domain.shop.repository.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-public interface ShopService {
+import java.util.Optional;
 
 
-    List<Shop> search(ShopDto shopDto);
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Slf4j
+public class ShopService {
 
-    List<Shop> findByAll();
+    private final ShopRepository shopRepository;
 
-    Shop findById(Long id);
+    public Shop save(ShopCreateCommand shopCreateCommand){
+        Shop shop = Shop.of(shopCreateCommand);
+        return shopRepository.save(shop);
+    }
 
-    Shop save(ShopDto shopDto, ShopImageDto shopImageDto);
+    public void delete(Long shopId) {
+        this.shopRepository.deleteYN(shopId);
+    }
 
-    void save(Shop shop);
-
-    Shop delete(Long shopId);
+    public Shop getById(Long shopId) {
+        return this.shopRepository.findById(shopId).orElseThrow();
+    }
 }

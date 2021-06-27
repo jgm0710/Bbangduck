@@ -9,8 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Embeddable
 public class Location {
 
@@ -23,4 +21,18 @@ public class Location {
     @Column(name = "lon")
     @Getter
     private Double longitude;
+
+    @Builder
+    public Location(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+
+    public static Location of(Double latitude, Double longitude) {
+        return Location.builder()
+            .latitude(latitude)
+            .longitude(longitude)
+            .build();
+    }
 }

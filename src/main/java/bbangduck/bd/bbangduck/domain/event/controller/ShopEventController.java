@@ -1,10 +1,8 @@
 package bbangduck.bd.bbangduck.domain.event.controller;
 
-import bbangduck.bd.bbangduck.domain.board.dto.BoardDto;
 import bbangduck.bd.bbangduck.domain.event.dto.ShopEventDto;
 import bbangduck.bd.bbangduck.domain.event.entity.ShopEvent;
 import bbangduck.bd.bbangduck.domain.event.service.EventService;
-import bbangduck.bd.bbangduck.domain.shop.dto.ShopDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

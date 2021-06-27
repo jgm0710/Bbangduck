@@ -32,11 +32,9 @@ public class AdminInfoserviceImpl implements AdminInfoService {
     private final MemberRepository memberRepository;
 
     @Override
-    public List<AdminInfoDto> getAdminInfoList(AdminInfoDto adminInfoDto) {
-        Member member =
-                this.memberRepository.findById(adminInfoDto.getMemberId()).orElseThrow(MemberNotFoundException::new);
+    public List<AdminInfoDto> getAdminInfoList(AdminInfoDto.Search adminInfoDtoSearch) {
 
-        List<AdminInfo> adminInfos = adminInfoRepository.search(AdminInfo.toEntity(adminInfoDto, member));
+        List<AdminInfo> adminInfos = adminInfoRepository.search(adminInfoDtoSearch);
 
         return adminInfos.stream().map(AdminInfoDto::of).collect(Collectors.toList());
 
