@@ -16,6 +16,7 @@ import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQuer
 import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
+import bbangduck.bd.bbangduck.global.common.exception.NotFoundException;
 import bbangduck.bd.bbangduck.global.config.properties.MemberProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -146,5 +147,9 @@ public class MemberService {
      */
     public Member searchMember(MemberSearchKeywordType searchType, String keyword) {
         return memberQueryRepository.findBySearchTypeAndKeyword(searchType, keyword).orElseThrow(() -> new MemberNotFoundException(searchType, keyword));
+    }
+
+    public boolean isEqualsMember(Long memberId, Member member) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new).equals(member);
     }
 }

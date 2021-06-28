@@ -8,6 +8,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewRespon
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
@@ -49,6 +50,8 @@ public class ThemeReviewApiController{
 
     private final ReviewProperties reviewProperties;
 
+    private final ReviewApplicationService reviewApplicationService;
+
     /**
      * 기능 테스트
      * - 201
@@ -84,7 +87,7 @@ public class ThemeReviewApiController{
     ) {
         reviewValidator.validateCreateView(requestDto, errors);
 
-        Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
         URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId, currentMember)).toUri();
 
         return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.CREATE_REVIEW_SUCCESS, null));

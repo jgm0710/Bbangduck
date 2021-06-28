@@ -74,7 +74,7 @@ public class ReviewService {
         ReviewRecodesCountsDto recodesCountsDto = getReviewRecodesCounts(memberId);
 
         Review review = Review.create(findMember, findTheme, recodesCountsDto.getNextRecodeNumber(), reviewCreateDto);
-        addPlayTogetherFriendsToReview(review, memberId, reviewCreateDto.getFriendIds());
+        addPlayTogetherFriendsToReview(review, findMember, reviewCreateDto.getFriendIds());
         Review save = reviewRepository.save(review);
 
         reflectingPropensityOfMemberToPlay(findMember, findTheme.getGenres());
@@ -166,7 +166,7 @@ public class ReviewService {
         review.clearPlayTogether(reviewPlayTogetherRepository);
 
         review.updateBase(reviewUpdateDto);
-        addPlayTogetherFriendsToReview(review, reviewMember.getId(), reviewUpdateDto.getFriendIds());
+        addPlayTogetherFriendsToReview(review, reviewMember, reviewUpdateDto.getFriendIds());
 
         ReviewType newReviewType = reviewUpdateDto.getReviewType();
         if (newReviewType == ReviewType.DETAIL) {
@@ -254,12 +254,12 @@ public class ReviewService {
 
 
 
-    private void addPlayTogetherFriendsToReview(Review review, Long memberId, List<Long> friendIds) {
+    public void addPlayTogetherFriendsToReview(Review review, Member member, List<Long> friendIds) {
         if (friendIdsExists(friendIds)) {
             friendIds.forEach(friendId -> {
-                Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAcceptedFriendByMemberAndFriend(memberId, friendId);
+                Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAcceptedFriendByMemberAndFriend(member.getId(), friendId);
                 if (optionalMemberFriend.isEmpty()) {
-                    throw new RelationOfMemberAndFriendIsNotFriendException(memberId, friendId);
+                    throw new RelationOfMemberAndFriendIsNotFriendException(member.getId(), friendId);
                 }
                 MemberFriend memberFriend = optionalMemberFriend.get();
                 review.addPlayTogether(memberFriend.getFriend());
@@ -271,7 +271,7 @@ public class ReviewService {
         return friendIds != null && !friendIds.isEmpty();
     }
 
-    private void reflectingPropensityOfMemberToPlay(Member member, List<Genre> themeGenres) {
+    void reflectingPropensityOfMemberToPlay(Member member, List<Genre> themeGenres) {
         themeGenres.forEach(genre -> {
             Optional<MemberPlayInclination> optionalMemberPlayInclination = memberPlayInclinationQueryRepository.findOneByMemberAndGenre(member.getId(), genre.getId());
             if (optionalMemberPlayInclination.isPresent()) {
@@ -362,5 +362,14 @@ public class ReviewService {
      */
     public QueryResults<Review> getMemberReviewList(Long memberId, ReviewSearchDto reviewSearchDto) {
         return reviewQueryRepository.findListByMember(memberId, reviewSearchDto);
+    }
+
+    public Review createReview(Member member, Theme theme, int recodeNumber, ReviewCreateDto reviewCreateDto) {
+        Review review = Review.create(member, theme, recodeNumber, reviewCreateDto);
+        return reviewRepository.save(review);
+    }
+
+    public int getRecordNumberByMemberId(Long memberId) {
+        return 0;
     }
 }
