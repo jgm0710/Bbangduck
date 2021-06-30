@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.admin;
 
+import bbangduck.bd.bbangduck.domain.admin.dto.AdminInfoDto;
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.domain.admin.repository.AdminInfoRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -58,13 +59,10 @@ public class AdminInfoRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
-    private Member member1;
-    private Member member2;
-    private Member member3;
 
     @BeforeEach
     public void setUp() {
-        member1 = Member.builder()
+        Member member1 = Member.builder()
                 .email("otrodevym1@gmail.com")
                 .password("1234")
                 .nickname("developer")
@@ -74,7 +72,7 @@ public class AdminInfoRepositoryTest {
                 .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
                 .build();
         this.memberRepository.save(member1);
-        member2 = Member.builder()
+        Member member2 = Member.builder()
                 .email("otrodevym2@gmail.com")
                 .password("1234")
                 .nickname("developer")
@@ -85,7 +83,7 @@ public class AdminInfoRepositoryTest {
                 .build();
         this.memberRepository.save(member2);
 
-        member3 = Member.builder()
+        Member member3 = Member.builder()
                 .email("otrodevym3@gmail.com")
                 .password("1234")
                 .nickname("developer")
@@ -134,12 +132,12 @@ public class AdminInfoRepositoryTest {
     }
 
 
+    // FIXME: 2021-06-28 adminInfo 페이징 조회 테스트 깨져서 주석 처리
     @Test
     public void admin_info_페이징_조회_테스트() {
 
-        AdminInfo adminInfoBase = AdminInfo.builder()
+        AdminInfoDto.Search adminInfoBase = AdminInfoDto.Search.builder()
                 .companyName("빵덕1")
-                .member(member1)
                 .build();
 
 
@@ -147,7 +145,7 @@ public class AdminInfoRepositoryTest {
         Sort sort = Sort.by(order);
 
         Pageable pageable = PageRequest.of(0, 10, sort);
-        Page<AdminInfo> adminInfoPage = adminInfoRepository.searchPage(pageable, adminInfoBase, "otrodevym@gmail.com");
+        Page<AdminInfo> adminInfoPage = adminInfoRepository.searchPage(pageable, adminInfoBase);
         assertThat(adminInfoPage.getTotalPages(), CoreMatchers.is(1));
     }
 
@@ -159,13 +157,13 @@ public class AdminInfoRepositoryTest {
         assertThat(adminInfos.size(), CoreMatchers.is(3));
     }
 
+    // TODO: 2021-06-28 adminInfo 회사명 조회 테스트 깨져서 주석 처리
     @Test
     public void admin_info_회사명_조회_테스트() {
 
         // 회사 이름으로 조회
-        AdminInfo adminInfo1 = AdminInfo.builder()
+        AdminInfoDto.Search adminInfo1 = AdminInfoDto.Search.builder()
                 .companyName("빵덕1")
-                .member(member1)
                 .build();
         List<AdminInfo> adminInfos1 = adminInfoRepository.search(adminInfo1);
 

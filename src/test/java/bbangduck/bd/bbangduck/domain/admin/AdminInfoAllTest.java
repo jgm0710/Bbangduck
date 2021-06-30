@@ -145,7 +145,7 @@ public class AdminInfoAllTest {
     //
     @Test
     public void admin_info_기본_테스트() throws Exception {
-        AdminInfoDto build = AdminInfoDto.builder()
+        AdminInfoDto.Search build = AdminInfoDto.Search.builder()
                 .owner("빵덕")
                 .address("용산구")
                 .telephone("010-0000-0000")
@@ -160,7 +160,7 @@ public class AdminInfoAllTest {
     @Test
     public void admin_info_service_test() {
 //        AdminInfoDto build = AdminInfoDto.builder().owner("빵덕님1").build();
-        AdminInfoDto build = AdminInfoDto.builder()
+        AdminInfoDto.Search build = AdminInfoDto.Search.builder()
                 .companyName("빵덕1")
                 .build();
         List<AdminInfoDto> adminInfoList = adminInfoService.getAdminInfoList(build);

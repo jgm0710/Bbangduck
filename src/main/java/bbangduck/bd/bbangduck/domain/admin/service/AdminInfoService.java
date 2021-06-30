@@ -15,5 +15,5 @@ import java.util.List;
  */
 
 public interface AdminInfoService {
-    List<AdminInfoDto> getAdminInfoList(AdminInfoDto adminInfo);
+    List<AdminInfoDto> getAdminInfoList(AdminInfoDto.Search adminInfoSearch);
 }

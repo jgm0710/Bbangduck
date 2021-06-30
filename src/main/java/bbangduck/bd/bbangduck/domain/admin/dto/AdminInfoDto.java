@@ -1,10 +1,7 @@
 package bbangduck.bd.bbangduck.domain.admin.dto;
 
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
-import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import lombok.*;
-
-import javax.persistence.*;
 
 /**
  * Project : bbangduck
@@ -46,6 +43,20 @@ public class AdminInfoDto {
                 .companyNum(adminInfo.getCompanyNum())
                 .telephone(adminInfo.getTelephone())
                 .build();
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    public static class Search{
+        private Long id;
+        private String email;
+        private String companyName;
+        private String owner;
+        private String address;
+        private String companyNum;
+        private String telephone;
+
     }
 
 

@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.admin.repository;
 
+import bbangduck.bd.bbangduck.domain.admin.dto.AdminInfoDto;
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.domain.admin.entity.QAdminInfo;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -42,22 +43,22 @@ public class AdminInfoRepositoryImpl implements AdminInfoRepositoryCustom {
 
 
     @Override
-    public List<AdminInfo> search(AdminInfo adminInfo) {
+    public List<AdminInfo> search(AdminInfoDto.Search adminInfoDtoSearch) {
         return queryFactory.selectFrom(QAdminInfo.adminInfo)
                 .where(
-                        eqId(adminInfo.getId()),
-                        eqMemberEmail(adminInfo.getMember().getEmail()),
-                        eqCompanyName(adminInfo.getCompanyName()),
-                        eqOwner(adminInfo.getOwner()),
-                        eqAddress(adminInfo.getAddress()),
-                        eqCompanyNum(adminInfo.getCompanyNum()),
-                        eqTelephone(adminInfo.getTelephone()),
+                        eqId(adminInfoDtoSearch.getId()),
+                        eqMemberEmail(adminInfoDtoSearch.getEmail()),
+                        eqCompanyName(adminInfoDtoSearch.getCompanyName()),
+                        eqOwner(adminInfoDtoSearch.getOwner()),
+                        eqAddress(adminInfoDtoSearch.getAddress()),
+                        eqCompanyNum(adminInfoDtoSearch.getCompanyNum()),
+                        eqTelephone(adminInfoDtoSearch.getTelephone()),
                         eqDeleteYN(false)
                 ).fetch();
     }
 
     @Override
-    public Page<AdminInfo> searchPage(Pageable pageable, AdminInfo adminInfo, String memberEmail) {
+    public Page<AdminInfo> searchPage(Pageable pageable, AdminInfoDto.Search adminInfoDtoSearch) {
         //        QAdminInfo qAdminInfo = QAdminInfo.adminInfo;
 //        QMember qMember = QMember.member;
 //
@@ -83,13 +84,13 @@ public class AdminInfoRepositoryImpl implements AdminInfoRepositoryCustom {
 
         QueryResults<AdminInfo> adminInfos = queryFactory.selectFrom(QAdminInfo.adminInfo)
                 .where(
-                        eqId(adminInfo.getId()),
-                        eqMemberEmail(memberEmail),
-                        eqCompanyName(adminInfo.getCompanyName()),
-                        eqOwner(adminInfo.getOwner()),
-                        eqAddress(adminInfo.getAddress()),
-                        eqCompanyNum(adminInfo.getCompanyNum()),
-                        eqTelephone(adminInfo.getTelephone()),
+                        eqId(adminInfoDtoSearch.getId()),
+                        eqMemberEmail(adminInfoDtoSearch.getEmail()),
+                        eqCompanyName(adminInfoDtoSearch.getCompanyName()),
+                        eqOwner(adminInfoDtoSearch.getOwner()),
+                        eqAddress(adminInfoDtoSearch.getAddress()),
+                        eqCompanyNum(adminInfoDtoSearch.getCompanyNum()),
+                        eqTelephone(adminInfoDtoSearch.getTelephone()),
                         eqDeleteYN(false)
                 )
                 .offset(pageable.getOffset())
