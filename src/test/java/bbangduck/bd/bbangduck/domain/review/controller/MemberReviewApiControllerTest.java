@@ -3,7 +3,7 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSearchType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseDto;
@@ -67,7 +67,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(ResponseStatus.GET_MEMBER_REVIEW_LIST_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data.list").isArray())
-                .andExpect(jsonPath("data.pageNum").value(2))
+                .andExpect(jsonPath("data.nowPageNum").value(2))
                 .andExpect(jsonPath("data.amount").value(8))
                 .andExpect(jsonPath("data.totalPagesCount").hasJsonPath())
                 .andExpect(jsonPath("data.nextPageUrl").hasJsonPath())
@@ -91,7 +91,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("status").description(STATUS_DESCRIPTION),
                                 fieldWithPath("data.list").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
                                         "간단 리뷰, 간단 및 설문 작성 리뷰, 상세 리뷰, 상세 및 설문 작성 리뷰가 모두 응답됨 -> 각 응답 형태는 리뷰 1건 조회 리소스를 통해 참조"),
-                                fieldWithPath("data.pageNum").description("현재 요청한 페이지 번호"),
+                                fieldWithPath("data.nowPageNum").description("현재 요청한 페이지 번호"),
                                 fieldWithPath("data.amount").description("현재 요청한 수량"),
                                 fieldWithPath("data.totalPagesCount").description("요청 시 입력한 pageNum, amount, searchType 에 의해 조회된 결과의 총 페이지 수"),
                                 fieldWithPath("data.prevPageUrl").description("현재 페이지 기준 이전 페이지에 대한 요청 URL +\n" +
@@ -254,11 +254,11 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         MockHttpServletResponse response = mvcResult.getResponse();
         String contentAsString = response.getContentAsString();
 
-        ResponseDto<ReviewsPaginationResponseDto> responseDto = objectMapper.readValue(contentAsString, new TypeReference<>() {
+        ResponseDto<PaginationResponseDto> responseDto = objectMapper.readValue(contentAsString, new TypeReference<>() {
         });
-        ReviewsPaginationResponseDto reviewsPaginationResponseDto = responseDto.getData();
-        String prevPageUrl = reviewsPaginationResponseDto.getPrevPageUrl();
-        String nextPageUrl = reviewsPaginationResponseDto.getNextPageUrl();
+        PaginationResponseDto paginationResponseDto = responseDto.getData();
+        String prevPageUrl = paginationResponseDto.getPrevPageUrl();
+        String nextPageUrl = paginationResponseDto.getNextPageUrl();
 
         mockMvc.perform(
                 get(prevPageUrl)

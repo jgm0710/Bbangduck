@@ -5,7 +5,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ThemeReviewSearchRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
@@ -92,7 +92,7 @@ public class ThemeReviewApiController{
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<ReviewsPaginationResponseDto<Object>>> getReviewList(
+    public ResponseEntity<ResponseDto<PaginationResponseDto<Object>>> getReviewList(
             @PathVariable Long themeId,
             @ModelAttribute @Valid ThemeReviewSearchRequestDto requestDto,
             BindingResult bindingResult,
@@ -112,9 +112,9 @@ public class ThemeReviewApiController{
         long totalResultsCount = reviewQueryResults.getTotal();
         long totalPagesCount = calculateTotalPagesCount(totalResultsCount, reviewSearchDto.getAmount());
 
-        ReviewsPaginationResponseDto<Object> reviewsPaginationResponseDto = ReviewsPaginationResponseDto.builder()
+        PaginationResponseDto<Object> paginationResponseDto = PaginationResponseDto.builder()
                 .list(reviewResponseDtos)
-                .pageNum(requestDto.getPageNum())
+                .nowPageNum(requestDto.getPageNum())
                 .amount(requestDto.getAmount())
                 .totalPagesCount(totalPagesCount)
                 .prevPageUrl(getThemeReviewListPrevPageUriString(themeId, reviewSearchDto, totalPagesCount))
@@ -122,7 +122,7 @@ public class ThemeReviewApiController{
                 .build();
 
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS, reviewsPaginationResponseDto));
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS, paginationResponseDto));
     }
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {

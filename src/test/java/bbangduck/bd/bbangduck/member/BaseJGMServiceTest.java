@@ -336,7 +336,7 @@ public class BaseJGMServiceTest extends BaseTest {
                 .name("이방인")
                 .introduction("\" Loading...80%\n" +
                         "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
-                .numberOfPeople(NumberOfPeople.FIVE)
+                .numberOfPeoples(Set.of(NumberOfPeople.FIVE))
                 .difficulty(Difficulty.NORMAL)
                 .activity(Activity.LITTLE_ACTIVITY)
                 .playTime(LocalTime.of(1, 0))
@@ -428,7 +428,7 @@ public class BaseJGMServiceTest extends BaseTest {
                 .name("이방인")
                 .introduction("\" Loading...80%\n" +
                         "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
-                .numberOfPeople(NumberOfPeople.FIVE)
+                .numberOfPeoples(Set.of(NumberOfPeople.FIVE))
                 .difficulty(Difficulty.NORMAL)
                 .activity(Activity.LITTLE_ACTIVITY)
                 .playTime(LocalTime.of(1, 0))
@@ -514,7 +514,7 @@ public class BaseJGMServiceTest extends BaseTest {
                 .name("이방인")
                 .introduction("\" Loading...80%\n" +
                         "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
-                .numberOfPeople(NumberOfPeople.FIVE)
+                .numberOfPeoples(Set.of(NumberOfPeople.FIVE))
                 .difficulty(Difficulty.NORMAL)
                 .activity(Activity.LITTLE_ACTIVITY)
                 .playTime(LocalTime.of(1, 0))

@@ -7,7 +7,7 @@ import bbangduck.bd.bbangduck.domain.friend.service.MemberFriendService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.MemberReviewSearchRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAreNotOpenException;
@@ -78,7 +78,7 @@ public class MemberReviewApiController{
      * -- 회원을 찾을 수 없는 경우
      */
     @GetMapping
-    public ResponseEntity<ResponseDto<ReviewsPaginationResponseDto<Object>>> getMemberReviewList(
+    public ResponseEntity<ResponseDto<PaginationResponseDto<Object>>> getMemberReviewList(
             @PathVariable Long memberId,
             @ModelAttribute @Valid MemberReviewSearchRequestDto requestDto,
             BindingResult bindingResult,
@@ -114,16 +114,16 @@ public class MemberReviewApiController{
 
         long totalPagesCount = calculateTotalPagesCount(reviewQueryResults.getTotal(), reviewSearchDto.getAmount());
 
-        ReviewsPaginationResponseDto<Object> reviewsPaginationResponseDto = ReviewsPaginationResponseDto.builder()
+        PaginationResponseDto<Object> paginationResponseDto = PaginationResponseDto.builder()
                 .list(reviewResponseDtos)
-                .pageNum(reviewSearchDto.getPageNum())
+                .nowPageNum(reviewSearchDto.getPageNum())
                 .amount(reviewSearchDto.getAmount())
                 .totalPagesCount(totalPagesCount)
                 .prevPageUrl(getMemberReviewListPrevPageUriString(memberId, reviewSearchDto, totalPagesCount))
                 .nextPageUrl(getMemberReviewListNextPageUriString(memberId, reviewSearchDto, totalPagesCount))
                 .build();
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_REVIEW_LIST_SUCCESS, reviewsPaginationResponseDto));
+        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_REVIEW_LIST_SUCCESS, paginationResponseDto));
     }
 
     /**

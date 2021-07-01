@@ -1,9 +1,6 @@
 package bbangduck.bd.bbangduck.global.common;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
 
@@ -15,10 +12,10 @@ import javax.validation.constraints.Min;
 public class CriteriaDto {
 
     @Min(value = 1, message = "페이지 번호는 1보다 작을 수 없습니다.")
-    private Integer pageNum = 1;
+    private Integer pageNum;
 
-    @Length(min = 1, max = 500, message = "조회 가능 수량은 1~500 까지 입니다.")
-    private Integer amount = 15;
+    @Range(min = 1, max = 500, message = "조회 가능 수량은 1~500 까지 입니다.")
+    private Integer amount;
 
     public CriteriaDto() {
         this.pageNum = 1;

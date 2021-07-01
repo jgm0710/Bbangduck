@@ -550,7 +550,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS.getStatus()))
                 .andExpect(jsonPath("data.list").exists())
-                .andExpect(jsonPath("data.pageNum").exists())
+                .andExpect(jsonPath("data.nowPageNum").exists())
                 .andExpect(jsonPath("data.amount").exists())
                 .andExpect(jsonPath("data.totalPagesCount").exists())
                 .andExpect(jsonPath("data.prevPageUrl").exists())
@@ -574,7 +574,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("status").description(STATUS_DESCRIPTION),
                                 fieldWithPath("data.list").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
                                         "간단 리뷰, 간단 및 설문 작성 리뷰, 상세 리뷰, 상세 및 설문 작성 리뷰가 모두 응답됨 -> 각 응답 형태는 리뷰 1건 조회 리소스를 통해 참조"),
-                                fieldWithPath("data.pageNum").description("현재 요청한 페이지 번호"),
+                                fieldWithPath("data.nowPageNum").description("현재 요청한 페이지 번호"),
                                 fieldWithPath("data.amount").description("현재 요청한 수량"),
                                 fieldWithPath("data.totalPagesCount").description("요청 시 입력한 pageNum, amount, sortCondition 에 의해 조회된 결과의 총 페이지 수"),
                                 fieldWithPath("data.prevPageUrl").description("현재 페이지 기준 이전 페이지에 대한 요청 URL +\n" +
