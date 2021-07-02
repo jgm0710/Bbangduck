@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.controller;
 
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
+import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -10,10 +11,12 @@ import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeImage;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeRatingFilteringType;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
+import bbangduck.bd.bbangduck.domain.theme.repository.ThemeAnalysisQueryRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeQueryRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -28,10 +31,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -54,6 +54,9 @@ class ThemeApiControllerTest extends BaseControllerTest {
 
     @MockBean
     ThemeRepository themeRepository;
+
+    @MockBean
+    ThemeAnalysisQueryRepository themeAnalysisQueryRepository;
 
 
     @Test
@@ -317,6 +320,120 @@ class ThemeApiControllerTest extends BaseControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 get("/api/themes/{themeId}", theme.getId())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.MANIPULATE_DELETED_THEME.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.MANIPULATE_DELETED_THEME.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("테마 분석 조회")
+    public void getThemeAnalyses() throws Exception {
+        //given
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .deleteYN(false)
+                .build();
+
+        List<ThemeAnalysis> themeAnalyses = new ArrayList<>();
+        for (long i = 1; i < 6; i++) {
+            Genre genre = Genre.builder()
+                    .id(i)
+                    .code("GR" + i)
+                    .name("genreName" + i)
+                    .build();
+
+            ThemeAnalysis themeAnalysis = ThemeAnalysis.builder()
+                    .genre(genre)
+                    .evaluatedCount((long) new Random().nextInt(4) + 1)
+                    .build();
+            themeAnalyses.add(themeAnalysis);
+        }
+
+        themeAnalyses.sort((o1, o2) -> {
+            Long evaluatedCount1 = o1.getEvaluatedCount();
+            Long evaluatedCount2 = o2.getEvaluatedCount();
+
+            if (evaluatedCount1 > evaluatedCount2) {
+                return -1;
+            } else if (evaluatedCount1.equals(evaluatedCount2)) {
+                Genre o1Genre = o1.getGenre();
+                Genre o2Genre = o2.getGenre();
+
+                int genreCompare = o1Genre.getName().compareTo(o2Genre.getName());
+                if (genreCompare > -1) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else {
+                return 1;
+            }
+        });
+
+        given(themeRepository.findById(theme.getId())).willReturn(Optional.of(theme));
+        given(themeAnalysisQueryRepository.findByThemeId(theme.getId())).willReturn(themeAnalyses);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/{themeId}/analyses", theme.getId())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "get-theme-analyses-success",
+                        responseFields(
+                                fieldWithPath("[0].genre.genreId").description("테마 분석의 장르의 식별 ID"),
+                                fieldWithPath("[0].genre.genreCode").description("테마 분석의 장르의 코드 값"),
+                                fieldWithPath("[0].genre.genreName").description("테마 분석의 장르의 이름"),
+                                fieldWithPath("[0].evaluatedCount").description("테마 분석의 해당 장르로 평가된 횟수")
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("테마 분석 조회 - 테마를 찾을 수 없는 경우")
+    public void getThemeAnalyses_NotFound() throws Exception {
+        //given
+        Long themeId = 1L;
+        given(themeRepository.findById(themeId)).willReturn(Optional.empty());
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/{themeId}/analyses", themeId)
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("status").value(ResponseStatus.THEME_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.THEME_NOT_FOUND.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("테마 분석 조회 - 삭제된 테마일 경우")
+    public void getThemeAnalyses_DeletedTheme() throws Exception {
+        //given
+        Theme theme = Theme.builder()
+                .id(1L)
+                .deleteYN(true)
+                .build();
+
+        given(themeRepository.findById(theme.getId())).willReturn(Optional.of(theme));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/{themeId}/analyses", theme.getId())
         ).andDo(print());
 
         //then

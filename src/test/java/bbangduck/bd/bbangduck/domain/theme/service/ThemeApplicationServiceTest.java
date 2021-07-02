@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
+import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -9,17 +10,18 @@ import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.*;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeImage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -29,9 +31,11 @@ class ThemeApplicationServiceTest {
 
     ThemeService themeMockService = mock(ThemeService.class);
 
+    ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
+
     @BeforeEach
     public void setThemeApplicationService() {
-        themeMockApplicationService = new ThemeApplicationService(themeMockService);
+        themeMockApplicationService = new ThemeApplicationService(themeMockService, themeAnalysisMockService);
     }
 
     @Test
@@ -110,6 +114,47 @@ class ThemeApplicationServiceTest {
         assertEquals(area.getId(), areaInfo.getAreaId());
         assertEquals(area.getCode(), areaInfo.getAreaCode());
         assertEquals(area.getName(), areaInfo.getAreaName());
+
+    }
+
+    @Test
+    @DisplayName("테마 분석 조회")
+    public void getThemeAnalyses() {
+        //given
+        List<ThemeAnalysis> themeAnalyses = new ArrayList<>();
+
+        for (long i = 0; i < 5; i++) {
+            Genre genre = Genre.builder()
+                    .id(i)
+                    .code("GR" + i)
+                    .name("genreName" + i)
+                    .build();
+
+            ThemeAnalysis themeAnalysis = ThemeAnalysis.builder()
+                    .genre(genre)
+                    .evaluatedCount(i)
+                    .build();
+            themeAnalyses.add(themeAnalysis);
+        }
+
+        Long themeId = 1L;
+        given(themeAnalysisMockService.getThemeAnalyses(themeId)).willReturn(themeAnalyses);
+
+        //when
+        List<ThemeAnalysesResponseDto> themeAnalysesResponseDtos = themeMockApplicationService.getThemeAnalyses(themeId);
+
+        //then
+        themeAnalysesResponseDtos.forEach(
+                themeAnalysesResponseDto -> {
+                    assertNotNull(themeAnalysesResponseDto.getEvaluatedCount());
+
+                    ThemeGenreResponseDto themeGenreResponseDto = themeAnalysesResponseDto.getGenre();
+                    assertNotNull(themeGenreResponseDto.getGenreId());
+                    assertNotNull(themeGenreResponseDto.getGenreCode());
+                    assertNotNull(themeGenreResponseDto.getGenreName());
+
+                }
+        );
 
     }
 

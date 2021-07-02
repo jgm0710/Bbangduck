@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.theme.controller;
 
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.request.ThemeGetListRequestDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeAnalysesResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeDetailResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeApplicationService;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
 import static bbangduck.bd.bbangduck.global.common.util.RequestUtils.getParametersFromRequest;
@@ -48,7 +51,6 @@ public class ThemeApiController {
         return ResponseEntity.ok(themeListPaginationResponseDto);
     }
 
-    // TODO: 2021-06-28 테마 상세 조회 구현
     @GetMapping("/{themeId}")
     public ResponseEntity<ThemeDetailResponseDto> getTheme(
             @PathVariable Long themeId
@@ -57,7 +59,13 @@ public class ThemeApiController {
         return ResponseEntity.ok(themeDetailResponseDto);
     }
 
-    // TODO: 2021-06-28 테마 분석 조회 구현
+    @GetMapping("/{themeId}/analyses")
+    public ResponseEntity<List<ThemeAnalysesResponseDto>> getThemeAnalyses(
+            @PathVariable Long themeId
+    ) {
+        List<ThemeAnalysesResponseDto> themeAnalyses = themeApplicationService.getThemeAnalyses(themeId);
+        return ResponseEntity.ok(themeAnalyses);
+    }
 
     // TODO: 2021-06-28 테마 검색 구현
 }

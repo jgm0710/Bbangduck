@@ -32,6 +32,8 @@ public class ThemeDetailResponseDto {
 
     private String  themeDescription;
 
+    // TODO: 2021-07-02 테마 장르 응답 추가
+
     private ThemeShopSimpleInfoResponseDto shopInfo;
 
     private LocalTime playTime;

@@ -1,10 +1,12 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeAnalysesResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeDetailResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeGetListResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,9 @@ public class ThemeApplicationService {
 
     private final ThemeService themeService;
 
+    private final ThemeAnalysisService themeAnalysisService;
+
+
     public PaginationResponseDto getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto, String requestPath, MultiValueMap<String, String> params) {
         QueryResults<Theme> themeQueryResults = themeService.getThemeList(criteriaDto, themeGetListDto);
 
@@ -41,5 +46,11 @@ public class ThemeApplicationService {
     public ThemeDetailResponseDto getTheme(Long themeId) {
         Theme theme = themeService.getTheme(themeId);
         return ThemeDetailResponseDto.convert(theme);
+    }
+
+    public List<ThemeAnalysesResponseDto> getThemeAnalyses(Long themeId) {
+        themeService.getTheme(themeId);
+        List<ThemeAnalysis> themeAnalyses = themeAnalysisService.getThemeAnalyses(themeId);
+        return themeAnalyses.stream().map(ThemeAnalysesResponseDto::convert).collect(Collectors.toList());
     }
 }
