@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeDetailResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeGetListResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -35,5 +36,10 @@ public class ThemeApplicationService {
         List<ThemeGetListResponseDto> themeGetListResponseDtos = themes.stream().map(ThemeGetListResponseDto::convert).collect(Collectors.toList());
 
         return PaginationResponseDto.convert(themeGetListResponseDtos, criteriaDto, totalResultsCount, requestPath, params);
+    }
+
+    public ThemeDetailResponseDto getTheme(Long themeId) {
+        Theme theme = themeService.getTheme(themeId);
+        return ThemeDetailResponseDto.convert(theme);
     }
 }

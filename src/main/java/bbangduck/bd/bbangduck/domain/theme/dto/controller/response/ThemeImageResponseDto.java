@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import static bbangduck.bd.bbangduck.global.common.LinkToUtils.linkToFileDownload;
 import static bbangduck.bd.bbangduck.global.common.LinkToUtils.linkToImageFileThumbnailDownload;
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 
 /**
  * 테마 관련 정보를 응답 할 때, 테마 이미지 관련 정보들을 응답 Body Data 에 싣기 위해 변환해주는 Dto
@@ -27,6 +28,9 @@ public class ThemeImageResponseDto {
     private String themeImageThumbnailUrl;
 
     public static ThemeImageResponseDto convert(ThemeImage themeImage) {
+        if (!isNotNull(themeImage)) {
+            return null;
+        }
         String themeImageUrl = linkToFileDownload(themeImage.getFileName());
         String themeImageThumbnailUrl = linkToImageFileThumbnailDownload(themeImage.getFileName());
 

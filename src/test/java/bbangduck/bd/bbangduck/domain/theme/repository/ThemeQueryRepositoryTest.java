@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 class ThemeQueryRepositoryTest extends BaseTest {
 
@@ -61,7 +60,7 @@ class ThemeQueryRepositoryTest extends BaseTest {
             Activity randomActivity = getRandomActivity();
             Difficulty randomDifficulty = getRandomDifficulty();
             HorrorGrade randomHorrorGrade = getRandomHorrorGrade();
-            Set<NumberOfPeople> randomNumberOfPeoples = getRandomNumberOfPeoples();
+            List<NumberOfPeople> randomNumberOfPeoples = getRandomNumberOfPeoples();
             Genre randomGenre = getRandomGenre(genres);
             long randomTotalEvaluatedCount = new Random().nextInt(50) + 20;
             long randomTotalRating = randomTotalEvaluatedCount * new Random().nextInt(5);
@@ -124,22 +123,22 @@ class ThemeQueryRepositoryTest extends BaseTest {
         }
     }
 
-    private Set<NumberOfPeople> getRandomNumberOfPeoples() {
+    private List<NumberOfPeople> getRandomNumberOfPeoples() {
         switch (new Random().nextInt(7)) {
             case 1:
-                return Set.of(NumberOfPeople.ONE);
+                return List.of(NumberOfPeople.ONE);
             case 2:
-                return Set.of(NumberOfPeople.TWO);
+                return List.of(NumberOfPeople.TWO);
             case 3:
-                return Set.of(NumberOfPeople.THREE);
+                return List.of(NumberOfPeople.THREE);
             case 4:
-                return Set.of(NumberOfPeople.FOUR);
+                return List.of(NumberOfPeople.FOUR);
             case 5:
-                return Set.of(NumberOfPeople.FIVE);
+                return List.of(NumberOfPeople.FIVE);
             case 6:
-                return Set.of(NumberOfPeople.TWO, NumberOfPeople.THREE, NumberOfPeople.FOUR);
+                return List.of(NumberOfPeople.TWO, NumberOfPeople.THREE, NumberOfPeople.FOUR);
             default:
-                return Set.of(NumberOfPeople.ONE, NumberOfPeople.TWO, NumberOfPeople.THREE, NumberOfPeople.FOUR, NumberOfPeople.FIVE);
+                return List.of(NumberOfPeople.ONE, NumberOfPeople.TWO, NumberOfPeople.THREE, NumberOfPeople.FOUR, NumberOfPeople.FIVE);
         }
     }
 

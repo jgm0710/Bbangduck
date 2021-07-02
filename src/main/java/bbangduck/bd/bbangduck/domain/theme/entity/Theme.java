@@ -16,7 +16,6 @@ import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +46,7 @@ public class Theme extends BaseEntityDateTime {
     private String name;
 
     @Column(length = 3000)
-    private String introduction;
+    private String description;
 
     @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
     private List<ThemeGenre> themeGenres = new ArrayList<>();
@@ -58,7 +57,7 @@ public class Theme extends BaseEntityDateTime {
     @ElementCollection(targetClass = NumberOfPeople.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "theme_number_of_people", joinColumns = @JoinColumn(name = "theme_id"))
     @Enumerated(EnumType.STRING)
-    private Set<NumberOfPeople> numberOfPeoples;
+    private List<NumberOfPeople> numberOfPeoples;
 
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
@@ -79,11 +78,11 @@ public class Theme extends BaseEntityDateTime {
     private boolean deleteYN;
 
     @Builder
-    public Theme(Long id, Shop shop, String name, String introduction, ThemeType type, Set<NumberOfPeople> numberOfPeoples, Difficulty difficulty, Activity activity, HorrorGrade horrorGrade, LocalTime playTime, Long totalRating, Long totalEvaluatedCount, boolean deleteYN) {
+    public Theme(Long id, Shop shop, String name, String description, ThemeType type, List<NumberOfPeople> numberOfPeoples, Difficulty difficulty, Activity activity, HorrorGrade horrorGrade, LocalTime playTime, Long totalRating, Long totalEvaluatedCount, boolean deleteYN) {
         this.id = id;
         this.shop = shop;
         this.name = name;
-        this.introduction = introduction;
+        this.description = description;
         this.type = type;
         this.numberOfPeoples = numberOfPeoples;
         this.difficulty = difficulty;
@@ -134,11 +133,11 @@ public class Theme extends BaseEntityDateTime {
         return name;
     }
 
-    public String getIntroduction() {
-        return introduction;
+    public String getDescription() {
+        return description;
     }
 
-    public Set<NumberOfPeople> getNumberOfPeoples() {
+    public List<NumberOfPeople> getNumberOfPeoples() {
         return numberOfPeoples;
     }
 
@@ -190,7 +189,7 @@ public class Theme extends BaseEntityDateTime {
 //                ", themeImage=" + themeImage +
 //                ", themeOperatingTimes=" + themeOperatingTimes +
                 ", name='" + name + '\'' +
-                ", introduction='" + introduction + '\'' +
+                ", introduction='" + description + '\'' +
 //                ", themeGenres=" + themeGenres +
                 ", type=" + type +
                 ", numberOfPeoples=" + numberOfPeoples +
