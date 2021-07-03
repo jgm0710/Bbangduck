@@ -27,16 +27,14 @@ import static org.mockito.Mockito.mock;
 
 class ThemeApplicationServiceTest {
 
-    ThemeApplicationService themeMockApplicationService;
 
     ThemeService themeMockService = mock(ThemeService.class);
 
     ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
 
-    @BeforeEach
-    public void setThemeApplicationService() {
-        themeMockApplicationService = new ThemeApplicationService(themeMockService, themeAnalysisMockService);
-    }
+    ThemeApplicationService themeMockApplicationService = new ThemeApplicationService(themeMockService, themeAnalysisMockService);
+
+    String sad = "";
 
     @Test
     @DisplayName("테마 조회")
