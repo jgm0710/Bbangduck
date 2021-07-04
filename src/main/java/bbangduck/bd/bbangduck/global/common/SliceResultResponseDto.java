@@ -25,7 +25,7 @@ public class SliceResultResponseDto<T> {
     private int requestAmount;
     private boolean hasNextPage;
 
-    public <R> SliceResultResponseDto<R> toResponseDto(Convertor<T, R> convertor) {
+    public <R> SliceResultResponseDto<R> convert(Convertor<T, R> convertor) {
         List<R> results = contents.stream().map(convertor::convert).collect(Collectors.toList());
         return new SliceResultResponseDto<>(results, nowPageNum, requestAmount, hasNextPage);
     }

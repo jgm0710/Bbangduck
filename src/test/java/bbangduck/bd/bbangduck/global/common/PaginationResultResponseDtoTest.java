@@ -47,7 +47,7 @@ class PaginationResultResponseDtoTest {
 
         //when
         PaginationResultResponseDto<Theme> themePaginationResultResponseDto = new PaginationResultResponseDto<>(themeList, 1, 10, 10);
-        PaginationResultResponseDto<ThemeGetListResponseDto> results = themePaginationResultResponseDto.toResponseDto(ThemeGetListResponseDto::convert);
+        PaginationResultResponseDto<ThemeGetListResponseDto> results = themePaginationResultResponseDto.convert(ThemeGetListResponseDto::convert);
 
         //then
         System.out.println("results = " + results);

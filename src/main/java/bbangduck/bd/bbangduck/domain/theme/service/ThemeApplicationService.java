@@ -1,6 +1,5 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeAnalysesResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeDetailResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeGetListResponseDto;
@@ -8,6 +7,7 @@ import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,16 +31,16 @@ public class ThemeApplicationService {
 
     private final ThemeAnalysisService themeAnalysisService;
 
-
-    public PaginationResponseDto getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto, String requestPath, MultiValueMap<String, String> params) {
+    public PaginationResultResponseDto<ThemeGetListResponseDto> getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto, String requestPath, MultiValueMap<String, String> params) {
         QueryResults<Theme> themeQueryResults = themeService.getThemeList(criteriaDto, themeGetListDto);
 
         long totalResultsCount = themeQueryResults.getTotal();
         List<Theme> themes = themeQueryResults.getResults();
 
-        List<ThemeGetListResponseDto> themeGetListResponseDtos = themes.stream().map(ThemeGetListResponseDto::convert).collect(Collectors.toList());
-
-        return PaginationResponseDto.convert(themeGetListResponseDtos, criteriaDto, totalResultsCount, requestPath, params);
+        return new PaginationResultResponseDto<>(themes,
+                criteriaDto.getPageNum(),
+                criteriaDto.getAmount(),
+                totalResultsCount).convert(ThemeGetListResponseDto::convert);
     }
 
     public ThemeDetailResponseDto getTheme(Long themeId) {

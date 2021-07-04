@@ -6,7 +6,6 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
@@ -27,7 +26,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalTime;
@@ -135,34 +133,21 @@ class ThemeApiControllerTest extends BaseControllerTest {
                                         ThemeSortCondition.getNameList())
                         ),
                         responseFields(
-                                fieldWithPath("list[0].themeId").description("조회된 테마의 식별 ID"),
-                                fieldWithPath("list[0].themeImage.themeImageId").description("조회된 테마에 등록된 이미지의 식별 ID"),
-                                fieldWithPath("list[0].themeImage.themeImageUrl").description("조회된 테마에 등록된 이미지 파일의 다운로드 URL"),
-                                fieldWithPath("list[0].themeImage.themeImageThumbnailUrl").description("조회된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 다운로드 URL"),
-                                fieldWithPath("list[0].themeName").description("조회된 테마의 이름"),
-                                fieldWithPath("list[0].franchiseName").description("조회된 테마의 프렌차이즈 이름"),
-                                fieldWithPath("list[0].shopName").description("조회된 테마의 지점명"),
+                                fieldWithPath("contents").description("조회 결과 목록"),
+                                fieldWithPath("contents[].themeId").description("조회된 테마의 식별 ID"),
+                                fieldWithPath("contents[].themeImage.themeImageId").description("조회된 테마에 등록된 이미지의 식별 ID"),
+                                fieldWithPath("contents[].themeImage.themeImageUrl").description("조회된 테마에 등록된 이미지 파일의 다운로드 URL"),
+                                fieldWithPath("contents[].themeImage.themeImageThumbnailUrl").description("조회된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 다운로드 URL"),
+                                fieldWithPath("contents[].themeName").description("조회된 테마의 이름"),
+                                fieldWithPath("contents[].franchiseName").description("조회된 테마의 프렌차이즈 이름"),
+                                fieldWithPath("contents[].shopName").description("조회된 테마의 지점명"),
                                 fieldWithPath("nowPageNum").description("현재 조회한 페이지"),
-                                fieldWithPath("amount").description("조회된 수량"),
-                                fieldWithPath("totalPagesCount").description("요청 시 기입한 조건으로 조회된 결과의 총 페이지 수"),
-                                fieldWithPath("prevPageUrl").description("이전 페이지를 요청할 수 있는 URL 정보"),
-                                fieldWithPath("nextPageUrl").description("다음 페이지를 요청할 수 있는 URL 정보")
+                                fieldWithPath("requestAmount").description("조회된 수량"),
+                                fieldWithPath("totalResultsCount").description("요청 시 기입한 조건으로 조회된 결과의 총 개수")
                         )
                 ))
         ;
 
-        //given
-        MvcResult mvcResult = perform.andReturn();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        PaginationResponseDto paginationResponseDto = objectMapper.readValue(contentAsString, PaginationResponseDto.class);
-        String nextPageUrl = paginationResponseDto.getNextPageUrl();
-        String nextPathContextPath = nextPageUrl.substring(nextPageUrl.indexOf("/api"));
-
-        //when&then
-
-        mockMvc.perform(get(nextPathContextPath))
-                .andDo(print())
-                .andExpect(status().isOk());
     }
 
     @ParameterizedTest

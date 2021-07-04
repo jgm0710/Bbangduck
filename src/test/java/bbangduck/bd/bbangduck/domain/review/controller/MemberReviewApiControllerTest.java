@@ -60,11 +60,10 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("list").isArray())
+                .andExpect(jsonPath("contents").isArray())
                 .andExpect(jsonPath("nowPageNum").value(2))
-                .andExpect(jsonPath("amount").value(8))
-                .andExpect(jsonPath("totalPagesCount").hasJsonPath())
-                .andExpect(jsonPath("nextPageUrl").hasJsonPath())
+                .andExpect(jsonPath("requestAmount").value(8))
+                .andExpect(jsonPath("totalResultsCount").hasJsonPath())
                 .andDo(document(
                         "get-member-review-list-success",
                         requestHeaders(
@@ -81,15 +80,11 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
                                         ReviewSearchType.getNameList())
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("list").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
+                                fieldWithPath("contents").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
                                         "간단 리뷰, 간단 및 설문 작성 리뷰, 상세 리뷰, 상세 및 설문 작성 리뷰가 모두 응답됨 -> 각 응답 형태는 리뷰 1건 조회 리소스를 통해 참조"),
                                 fieldWithPath("nowPageNum").description("현재 요청한 페이지 번호"),
-                                fieldWithPath("amount").description("현재 요청한 수량"),
-                                fieldWithPath("totalPagesCount").description("요청 시 입력한 pageNum, amount, searchType 에 의해 조회된 결과의 총 페이지 수"),
-                                fieldWithPath("prevPageUrl").description("현재 페이지 기준 이전 페이지에 대한 요청 URL +\n" +
-                                        "이전 페이지가 실제로 존재할 수 없는 페이지 일 경우 [null] 값이 나옴"),
-                                fieldWithPath("nextPageUrl").description("현재 페이지 기준 다음 페이지에 대한 요청 URL +\n" +
-                                        "총 페이지 수 보다 다음 페이지가 커서 실제 존재할 수 없는 페이지 일 경우 [null] 값이 나옴")
+                                fieldWithPath("requestAmount").description("현재 요청한 수량"),
+                                fieldWithPath("totalResultsCount").description("요청 시 입력한 pageNum, amount, searchType 에 의해 조회된 결과의 총 개수")
                         )
                 ))
         ;

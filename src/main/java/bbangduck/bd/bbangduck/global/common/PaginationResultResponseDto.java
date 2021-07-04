@@ -24,7 +24,7 @@ public class PaginationResultResponseDto<T> {
     private int requestAmount;
     private long totalResultsCount;
 
-    public <R> PaginationResultResponseDto<R> toResponseDto(Convertor<T, R> convertor) {
+    public <R> PaginationResultResponseDto<R> convert(Convertor<T, R> convertor) {
         List<R> result = contents.stream().map(convertor::convert).collect(Collectors.toList());
         return new PaginationResultResponseDto<>(result, nowPageNum, requestAmount, totalResultsCount);
     }

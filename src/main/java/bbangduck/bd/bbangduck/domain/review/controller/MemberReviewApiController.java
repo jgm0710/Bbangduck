@@ -6,7 +6,6 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.MemberReviewSearchRequestDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
@@ -14,6 +13,7 @@ import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAre
 import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAreOnlyFriendOpenException;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
+import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import com.querydsl.core.QueryResults;
@@ -26,10 +26,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static bbangduck.bd.bbangduck.domain.review.controller.ReviewResponseUtils.*;
+import static bbangduck.bd.bbangduck.domain.review.controller.ReviewResponseUtils.convertReviewToResponseDto;
 import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -81,7 +79,7 @@ public class MemberReviewApiController{
      * 테마 리뷰 목록도 연계되어 있음
      */
     @GetMapping
-    public ResponseEntity<PaginationResponseDto<Object>> getMemberReviewList(
+    public ResponseEntity<PaginationResultResponseDto<ReviewResponseDto>> getMemberReviewList(
             @PathVariable Long memberId,
             @ModelAttribute @Valid MemberReviewSearchRequestDto requestDto,
             BindingResult bindingResult,
@@ -115,18 +113,14 @@ public class MemberReviewApiController{
         List<Review> findReviews = reviewQueryResults.getResults();
         List<ReviewResponseDto> reviewResponseDtos = convertReviewsToReviewResponseDtos(currentMember, findReviews, reviewProperties.getPeriodForAddingSurveys());
 
-        long totalPagesCount = calculateTotalPagesCount(reviewQueryResults.getTotal(), reviewSearchDto.getAmount());
+        PaginationResultResponseDto<ReviewResponseDto> result = new PaginationResultResponseDto<>(
+                reviewResponseDtos,
+                requestDto.getPageNum(),
+                requestDto.getAmount(),
+                reviewQueryResults.getTotal()
+        );
 
-        PaginationResponseDto<Object> paginationResponseDto = PaginationResponseDto.builder()
-                .list(reviewResponseDtos)
-                .nowPageNum(reviewSearchDto.getPageNum())
-                .amount(reviewSearchDto.getAmount())
-                .totalPagesCount(totalPagesCount)
-                .prevPageUrl(getMemberReviewListPrevPageUriString(memberId, reviewSearchDto, totalPagesCount))
-                .nextPageUrl(getMemberReviewListNextPageUriString(memberId, reviewSearchDto, totalPagesCount))
-                .build();
-
-        return ResponseEntity.ok(paginationResponseDto);
+        return ResponseEntity.ok(result);
     }
 
     private List<ReviewResponseDto> convertReviewsToReviewResponseDtos(Member currentMember, List<Review> findReviews, long periodForAddingSurveys) {
@@ -134,30 +128,6 @@ public class MemberReviewApiController{
             boolean existsReviewLike = getExistsReviewLike(review.getId(), currentMember);
             return convertReviewToResponseDto(review, currentMember, existsReviewLike, periodForAddingSurveys);
         }).collect(Collectors.toList());
-    }
-
-    private String getMemberReviewListPrevPageUriString(Long memberId, ReviewSearchDto searchDto, long totalPagesCount) {
-        if (prevPageExists(totalPagesCount, searchDto.getPrevPageNum())) {
-            return linkTo(methodOn(MemberReviewApiController.class).getMemberReviewList(memberId, null, null, null))
-                    .toUriComponentsBuilder()
-                    .queryParam("pageNum", searchDto.getPrevPageNum())
-                    .queryParam("amount", searchDto.getAmount())
-                    .queryParam("searchType", searchDto.getSearchType())
-                    .toUriString();
-        }
-        return null;
-    }
-
-    private String getMemberReviewListNextPageUriString(Long memberId, ReviewSearchDto searchDto, long totalPagesCount) {
-        if (nextPageExists(totalPagesCount, searchDto.getNextPageNum())) {
-            return linkTo(methodOn(MemberReviewApiController.class).getMemberReviewList(memberId,null,null,null))
-                    .toUriComponentsBuilder()
-                    .queryParam("pageNum", searchDto.getNextPageNum())
-                    .queryParam("amount", searchDto.getAmount())
-                    .queryParam("searchType", searchDto.getSearchType())
-                    .toUriString();
-        }
-        return null;
     }
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {

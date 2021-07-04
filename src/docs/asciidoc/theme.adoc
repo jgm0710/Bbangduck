@@ -79,9 +79,6 @@
     ** 페이지 번호를 0보다 작게 기입할 경우 요청에 실패합니다.
     ** 수량은 0~500 사이의 값만 요청이 가능합니다.
 
-* 이전 페이지 요청 URL, 다음 페이지 요청 URL 을 제공합니다.
-    ** 이전, 다음 페이지가 실제로 존재할 수 없는 경우 요청 URL 은 제공되지 않습니다.
-
 operation::get-theme-list-success[snippets='request-parameters,response-fields,curl-request,http-response']
 
 [[resources-get-theme]]

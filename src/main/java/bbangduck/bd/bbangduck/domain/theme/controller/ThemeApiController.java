@@ -1,11 +1,12 @@
 package bbangduck.bd.bbangduck.domain.theme.controller;
 
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.request.ThemeGetListRequestDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeAnalysesResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeDetailResponseDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeGetListResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeApplicationService;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class ThemeApiController {
     private final ThemeApplicationService themeApplicationService;
 
     @GetMapping
-    public ResponseEntity<PaginationResponseDto> getThemeList(
+    public ResponseEntity<PaginationResultResponseDto<ThemeGetListResponseDto>> getThemeList(
             @ModelAttribute @Valid CriteriaDto criteriaDto,
             BindingResult bindingResult,
             @ModelAttribute @Valid ThemeGetListRequestDto requestDto,
@@ -43,12 +44,12 @@ public class ThemeApiController {
     ) {
         hasErrorsThrow(ResponseStatus.GET_THEME_LIST_NOT_VALID, bindingResult);
 
-        PaginationResponseDto themeListPaginationResponseDto = themeApplicationService.getThemeList(criteriaDto,
+        PaginationResultResponseDto<ThemeGetListResponseDto> result = themeApplicationService.getThemeList(criteriaDto,
                 requestDto.toServiceDto(),
                 request.getRequestURL().toString(),
                 getParametersFromRequest(request));
 
-        return ResponseEntity.ok(themeListPaginationResponseDto);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{themeId}")
