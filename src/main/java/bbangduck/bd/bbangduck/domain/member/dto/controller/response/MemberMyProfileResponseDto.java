@@ -35,6 +35,7 @@ public class MemberMyProfileResponseDto extends MemberProfileResponseDto{
         this.socialAccounts = convertSocialAccountsToResponseDtos(member.getSocialAccounts());
         this.registerTimes = member.getRegisterTimes();
         this.updateTimes = member.getUpdateTimes();
+        super.myProfile = true;
     }
 
     private List<SocialAccountResponseDto> convertSocialAccountsToResponseDtos(List<SocialAccount> socialAccounts) {

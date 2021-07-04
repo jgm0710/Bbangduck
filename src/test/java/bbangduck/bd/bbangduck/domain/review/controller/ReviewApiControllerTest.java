@@ -86,66 +86,62 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.reviewId").exists())
-                .andExpect(jsonPath("data.writerInfo").exists())
-                .andExpect(jsonPath("data.writerInfo.memberId").value(signUpId))
-                .andExpect(jsonPath("data.writerInfo.profileImageUrl").exists())
-                .andExpect(jsonPath("data.themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("data.reviewType").value(ReviewType.BASE.name()))
-                .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
-                .andExpect(jsonPath("data.themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
-                .andExpect(jsonPath("data.themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("data.hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount().name()))
-                .andExpect(jsonPath("data.rating").value(simpleReviewCreateRequestDto.getRating()))
-                .andExpect(jsonPath("data.playTogetherFriends").exists())
-                .andExpect(jsonPath("data.likeCount").value(1))
-                .andExpect(jsonPath("data.myReview").value(false))
-                .andExpect(jsonPath("data.like").value(true))
-                .andExpect(jsonPath("data.possibleRegisterForSurveyYN").value(true))
-                .andExpect(jsonPath("data.surveyYN").value(false))
-                .andExpect(jsonPath("data.registerTimes").exists())
-                .andExpect(jsonPath("data.updateTimes").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_SUCCESS.getMessage()))
+                .andExpect(jsonPath("reviewId").exists())
+                .andExpect(jsonPath("writerInfo").exists())
+                .andExpect(jsonPath("writerInfo.memberId").value(signUpId))
+                .andExpect(jsonPath("writerInfo.profileImageUrl").exists())
+                .andExpect(jsonPath("themeInfo.themeId").value(theme.getId()))
+                .andExpect(jsonPath("reviewType").value(ReviewType.BASE.name()))
+                .andExpect(jsonPath("reviewRecodeNumber").value(1))
+                .andExpect(jsonPath("themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
+                .andExpect(jsonPath("themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
+                .andExpect(jsonPath("hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount().name()))
+                .andExpect(jsonPath("rating").value(simpleReviewCreateRequestDto.getRating()))
+                .andExpect(jsonPath("playTogetherFriends").exists())
+                .andExpect(jsonPath("likeCount").value(1))
+                .andExpect(jsonPath("myReview").value(false))
+                .andExpect(jsonPath("like").value(true))
+                .andExpect(jsonPath("possibleRegisterForSurveyYN").value(true))
+                .andExpect(jsonPath("surveyYN").value(false))
+                .andExpect(jsonPath("registerTimes").exists())
+                .andExpect(jsonPath("updateTimes").exists())
                 .andDo(document(
                         "get-simple-review-of-different-member-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.reviewId").description("조회된 리뷰의 식별 ID"),
-                                fieldWithPath("data.writerInfo.memberId").description("조회된 리뷰를 생성한 회원의 식별 ID"),
-                                fieldWithPath("data.writerInfo.nickname").description("조회된 리뷰를 생성한 회원의 닉네임"),
-                                fieldWithPath("data.writerInfo.profileImageUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 Download Url"),
-                                fieldWithPath("data.writerInfo.profileImageThumbnailUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.themeInfo.themeId").description("조회된 리뷰가 등록된 테마의 식별 ID"),
-                                fieldWithPath("data.themeInfo.themeName").description("조회된 리뷰가 등록된 테마의 이름"),
-                                fieldWithPath("data.themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
-                                fieldWithPath("data.themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.reviewType").description("조회된 리뷰의 Type +\n" +
+                                fieldWithPath("reviewId").description("조회된 리뷰의 식별 ID"),
+                                fieldWithPath("writerInfo.memberId").description("조회된 리뷰를 생성한 회원의 식별 ID"),
+                                fieldWithPath("writerInfo.nickname").description("조회된 리뷰를 생성한 회원의 닉네임"),
+                                fieldWithPath("writerInfo.profileImageUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 Download Url"),
+                                fieldWithPath("writerInfo.profileImageThumbnailUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("themeInfo.themeId").description("조회된 리뷰가 등록된 테마의 식별 ID"),
+                                fieldWithPath("themeInfo.themeName").description("조회된 리뷰가 등록된 테마의 이름"),
+                                fieldWithPath("themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
+                                fieldWithPath("themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("reviewType").description("조회된 리뷰의 Type +\n" +
                                         ReviewType.getNameList()),
-                                fieldWithPath("data.reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
+                                fieldWithPath("reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
-                                fieldWithPath("data.themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
-                                fieldWithPath("data.themeClearTime").description("조회된 리뷰의 테마 클리어 시간"),
-                                fieldWithPath("data.hintUsageCount").description("조회된 리뷰의 테마 플레이 시 사용한 힌트 개수"),
-                                fieldWithPath("data.rating").description("조회된 리뷰의 테마에 대한 평점"),
-                                fieldWithPath("data.playTogetherFriends[0].memberId").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 식별 ID"),
-                                fieldWithPath("data.playTogetherFriends[0].nickname").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 닉네임"),
-                                fieldWithPath("data.playTogetherFriends[0].profileImageUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 Download Url"),
-                                fieldWithPath("data.playTogetherFriends[0].profileImageThumbnailUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.likeCount").description("조회된 리뷰에 등록된 좋아요 개수"),
-                                fieldWithPath("data.myReview").description("조회된 리뷰가 인증된 사용자가 생성한 리뷰인지 여부 +\n" +
+                                fieldWithPath("themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
+                                fieldWithPath("themeClearTime").description("조회된 리뷰의 테마 클리어 시간"),
+                                fieldWithPath("hintUsageCount").description("조회된 리뷰의 테마 플레이 시 사용한 힌트 개수"),
+                                fieldWithPath("rating").description("조회된 리뷰의 테마에 대한 평점"),
+                                fieldWithPath("playTogetherFriends[0].memberId").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 식별 ID"),
+                                fieldWithPath("playTogetherFriends[0].nickname").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 닉네임"),
+                                fieldWithPath("playTogetherFriends[0].profileImageUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 Download Url"),
+                                fieldWithPath("playTogetherFriends[0].profileImageThumbnailUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("likeCount").description("조회된 리뷰에 등록된 좋아요 개수"),
+                                fieldWithPath("myReview").description("조회된 리뷰가 인증된 사용자가 생성한 리뷰인지 여부 +\n" +
                                         "[true -> 본인이 생성한 리뷰, false -> 다른 회원이 생성한 리뷰]"),
-                                fieldWithPath("data.like").description("조회된 리뷰에 인증된 사용자가 좋아요를 등록했는지 여부 +\n" +
+                                fieldWithPath("like").description("조회된 리뷰에 인증된 사용자가 좋아요를 등록했는지 여부 +\n" +
                                         "[true -> 본인이 좋아요를 등록한 리뷰, false -> 본인이 좋아요를 등록하지 않은 리뷰]"),
-                                fieldWithPath("data.possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
+                                fieldWithPath("possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
                                         "리뷰를 생성한 이후 일정 기간이 지나면 설문을 등록할 수 없습니다."),
-                                fieldWithPath("data.surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
-                                fieldWithPath("data.registerTimes").description("조회된 리뷰의 생성 일자"),
-                                fieldWithPath("data.updateTimes").description("조회된 리뷰의 마지막 수정 일자"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
+                                fieldWithPath("registerTimes").description("조회된 리뷰의 생성 일자"),
+                                fieldWithPath("updateTimes").description("조회된 리뷰의 마지막 수정 일자")
                         )
                 ))
         ;
@@ -248,84 +244,80 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.reviewId").exists())
-                .andExpect(jsonPath("data.writerInfo").exists())
-                .andExpect(jsonPath("data.writerInfo.memberId").value(signUpId))
-                .andExpect(jsonPath("data.writerInfo.profileImageUrl").exists())
-                .andExpect(jsonPath("data.themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("data.reviewType").value(ReviewType.BASE.name()))
-                .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
-                .andExpect(jsonPath("data.themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
-                .andExpect(jsonPath("data.themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("data.hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount().name()))
-                .andExpect(jsonPath("data.rating").value(simpleReviewCreateRequestDto.getRating()))
-                .andExpect(jsonPath("data.playTogetherFriends").exists())
-                .andExpect(jsonPath("data.likeCount").value(1))
-                .andExpect(jsonPath("data.myReview").value(false))
-                .andExpect(jsonPath("data.like").value(true))
-                .andExpect(jsonPath("data.possibleRegisterForSurveyYN").value(true))
-                .andExpect(jsonPath("data.surveyYN").value(true))
-                .andExpect(jsonPath("data.registerTimes").exists())
-                .andExpect(jsonPath("data.updateTimes").exists())
-                .andExpect(jsonPath("data.perceivedThemeGenres[0].genreId").exists())
-                .andExpect(jsonPath("data.perceivedThemeGenres[0].genreCode").exists())
-                .andExpect(jsonPath("data.perceivedThemeGenres[0].genreName").exists())
-                .andExpect(jsonPath("data.perceivedDifficulty").value(reviewSurveyCreateRequestDto.getPerceivedDifficulty().name()))
-                .andExpect(jsonPath("data.perceivedHorrorGrade").value(reviewSurveyCreateRequestDto.getPerceivedHorrorGrade().name()))
-                .andExpect(jsonPath("data.perceivedActivity").value(reviewSurveyCreateRequestDto.getPerceivedActivity().name()))
-                .andExpect(jsonPath("data.scenarioSatisfaction").value(reviewSurveyCreateRequestDto.getScenarioSatisfaction().name()))
-                .andExpect(jsonPath("data.interiorSatisfaction").value(reviewSurveyCreateRequestDto.getInteriorSatisfaction().name()))
-                .andExpect(jsonPath("data.problemConfigurationSatisfaction").value(reviewSurveyCreateRequestDto.getProblemConfigurationSatisfaction().name()))
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_SUCCESS.getMessage()))
+                .andExpect(jsonPath("reviewId").exists())
+                .andExpect(jsonPath("writerInfo").exists())
+                .andExpect(jsonPath("writerInfo.memberId").value(signUpId))
+                .andExpect(jsonPath("writerInfo.profileImageUrl").exists())
+                .andExpect(jsonPath("themeInfo.themeId").value(theme.getId()))
+                .andExpect(jsonPath("reviewType").value(ReviewType.BASE.name()))
+                .andExpect(jsonPath("reviewRecodeNumber").value(1))
+                .andExpect(jsonPath("themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
+                .andExpect(jsonPath("themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
+                .andExpect(jsonPath("hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount().name()))
+                .andExpect(jsonPath("rating").value(simpleReviewCreateRequestDto.getRating()))
+                .andExpect(jsonPath("playTogetherFriends").exists())
+                .andExpect(jsonPath("likeCount").value(1))
+                .andExpect(jsonPath("myReview").value(false))
+                .andExpect(jsonPath("like").value(true))
+                .andExpect(jsonPath("possibleRegisterForSurveyYN").value(true))
+                .andExpect(jsonPath("surveyYN").value(true))
+                .andExpect(jsonPath("registerTimes").exists())
+                .andExpect(jsonPath("updateTimes").exists())
+                .andExpect(jsonPath("perceivedThemeGenres[0].genreId").exists())
+                .andExpect(jsonPath("perceivedThemeGenres[0].genreCode").exists())
+                .andExpect(jsonPath("perceivedThemeGenres[0].genreName").exists())
+                .andExpect(jsonPath("perceivedDifficulty").value(reviewSurveyCreateRequestDto.getPerceivedDifficulty().name()))
+                .andExpect(jsonPath("perceivedHorrorGrade").value(reviewSurveyCreateRequestDto.getPerceivedHorrorGrade().name()))
+                .andExpect(jsonPath("perceivedActivity").value(reviewSurveyCreateRequestDto.getPerceivedActivity().name()))
+                .andExpect(jsonPath("scenarioSatisfaction").value(reviewSurveyCreateRequestDto.getScenarioSatisfaction().name()))
+                .andExpect(jsonPath("interiorSatisfaction").value(reviewSurveyCreateRequestDto.getInteriorSatisfaction().name()))
+                .andExpect(jsonPath("problemConfigurationSatisfaction").value(reviewSurveyCreateRequestDto.getProblemConfigurationSatisfaction().name()))
                 .andDo(document(
                         "get-simple-and-survey-review-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.reviewId").description("조회된 리뷰의 식별 ID"),
-                                fieldWithPath("data.writerInfo.memberId").description("조회된 리뷰를 생성한 회원의 식별 ID"),
-                                fieldWithPath("data.writerInfo.nickname").description("조회된 리뷰를 생성한 회원의 닉네임"),
-                                fieldWithPath("data.writerInfo.profileImageUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 Download Url"),
-                                fieldWithPath("data.writerInfo.profileImageThumbnailUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.themeInfo.themeId").description("조회된 리뷰가 등록된 테마의 식별 ID"),
-                                fieldWithPath("data.themeInfo.themeName").description("조회된 리뷰가 등록된 테마의 이름"),
-                                fieldWithPath("data.themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
-                                fieldWithPath("data.themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.reviewType").description("조회된 리뷰의 Type +\n" +
+                                fieldWithPath("reviewId").description("조회된 리뷰의 식별 ID"),
+                                fieldWithPath("writerInfo.memberId").description("조회된 리뷰를 생성한 회원의 식별 ID"),
+                                fieldWithPath("writerInfo.nickname").description("조회된 리뷰를 생성한 회원의 닉네임"),
+                                fieldWithPath("writerInfo.profileImageUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 Download Url"),
+                                fieldWithPath("writerInfo.profileImageThumbnailUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("themeInfo.themeId").description("조회된 리뷰가 등록된 테마의 식별 ID"),
+                                fieldWithPath("themeInfo.themeName").description("조회된 리뷰가 등록된 테마의 이름"),
+                                fieldWithPath("themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
+                                fieldWithPath("themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("reviewType").description("조회된 리뷰의 Type +\n" +
                                         ReviewType.getNameList()),
-                                fieldWithPath("data.reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
+                                fieldWithPath("reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
-                                fieldWithPath("data.themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
-                                fieldWithPath("data.themeClearTime").description("조회된 리뷰의 테마 클리어 시간"),
-                                fieldWithPath("data.hintUsageCount").description("조회된 리뷰의 테마 플레이 시 사용한 힌트 개수"),
-                                fieldWithPath("data.rating").description("조회된 리뷰의 테마에 대한 평점"),
-                                fieldWithPath("data.playTogetherFriends[0].memberId").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 식별 ID"),
-                                fieldWithPath("data.playTogetherFriends[0].nickname").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 닉네임"),
-                                fieldWithPath("data.playTogetherFriends[0].profileImageUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 Download Url"),
-                                fieldWithPath("data.playTogetherFriends[0].profileImageThumbnailUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.likeCount").description("조회된 리뷰에 등록된 좋아요 개수"),
-                                fieldWithPath("data.myReview").description("조회된 리뷰가 인증된 사용자가 생성한 리뷰인지 여부 +\n" +
+                                fieldWithPath("themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
+                                fieldWithPath("themeClearTime").description("조회된 리뷰의 테마 클리어 시간"),
+                                fieldWithPath("hintUsageCount").description("조회된 리뷰의 테마 플레이 시 사용한 힌트 개수"),
+                                fieldWithPath("rating").description("조회된 리뷰의 테마에 대한 평점"),
+                                fieldWithPath("playTogetherFriends[0].memberId").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 식별 ID"),
+                                fieldWithPath("playTogetherFriends[0].nickname").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 닉네임"),
+                                fieldWithPath("playTogetherFriends[0].profileImageUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 Download Url"),
+                                fieldWithPath("playTogetherFriends[0].profileImageThumbnailUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("likeCount").description("조회된 리뷰에 등록된 좋아요 개수"),
+                                fieldWithPath("myReview").description("조회된 리뷰가 인증된 사용자가 생성한 리뷰인지 여부 +\n" +
                                         "[true -> 본인이 생성한 리뷰, false -> 다른 회원이 생성한 리뷰]"),
-                                fieldWithPath("data.like").description("조회된 리뷰에 인증된 사용자가 좋아요를 등록했는지 여부 +\n" +
+                                fieldWithPath("like").description("조회된 리뷰에 인증된 사용자가 좋아요를 등록했는지 여부 +\n" +
                                         "[true -> 본인이 좋아요를 등록한 리뷰, false -> 본인이 좋아요를 등록하지 않은 리뷰]"),
-                                fieldWithPath("data.possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
+                                fieldWithPath("possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
                                         "리뷰를 생성한 이후 일정 기간이 지나면 설문을 등록할 수 없습니다."),
-                                fieldWithPath("data.surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
-                                fieldWithPath("data.perceivedThemeGenres[0].genreId").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 식별 ID"),
-                                fieldWithPath("data.perceivedThemeGenres[0].genreCode").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 코드"),
-                                fieldWithPath("data.perceivedThemeGenres[0].genreName").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 이름"),
-                                fieldWithPath("data.perceivedDifficulty").description("조회된 리뷰에 등록된 설문에 등록된 체감 난이도"),
-                                fieldWithPath("data.perceivedHorrorGrade").description("조회된 리뷰에 등록된 설문에 등록된 체감 공포도"),
-                                fieldWithPath("data.perceivedActivity").description("조회된 리뷰에 등록된 설문에 등록된 체감 활동성"),
-                                fieldWithPath("data.scenarioSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 시나리오 만족도"),
-                                fieldWithPath("data.interiorSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 인테리어 만족도"),
-                                fieldWithPath("data.problemConfigurationSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 문제 구성 만족도"),
-                                fieldWithPath("data.registerTimes").description("조회된 리뷰의 생성 일자"),
-                                fieldWithPath("data.updateTimes").description("조회된 리뷰의 마지막 수정 일자"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
+                                fieldWithPath("perceivedThemeGenres[0].genreId").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 식별 ID"),
+                                fieldWithPath("perceivedThemeGenres[0].genreCode").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 코드"),
+                                fieldWithPath("perceivedThemeGenres[0].genreName").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 이름"),
+                                fieldWithPath("perceivedDifficulty").description("조회된 리뷰에 등록된 설문에 등록된 체감 난이도"),
+                                fieldWithPath("perceivedHorrorGrade").description("조회된 리뷰에 등록된 설문에 등록된 체감 공포도"),
+                                fieldWithPath("perceivedActivity").description("조회된 리뷰에 등록된 설문에 등록된 체감 활동성"),
+                                fieldWithPath("scenarioSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 시나리오 만족도"),
+                                fieldWithPath("interiorSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 인테리어 만족도"),
+                                fieldWithPath("problemConfigurationSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 문제 구성 만족도"),
+                                fieldWithPath("registerTimes").description("조회된 리뷰의 생성 일자"),
+                                fieldWithPath("updateTimes").description("조회된 리뷰의 마지막 수정 일자")
                         )
                 ))
         ;
@@ -378,72 +370,68 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.reviewId").exists())
-                .andExpect(jsonPath("data.writerInfo").exists())
-                .andExpect(jsonPath("data.writerInfo.memberId").value(signUpId))
-                .andExpect(jsonPath("data.writerInfo.profileImageUrl").exists())
-                .andExpect(jsonPath("data.themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("data.reviewType").value(ReviewType.DETAIL.name()))
-                .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
-                .andExpect(jsonPath("data.themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
-                .andExpect(jsonPath("data.themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("data.hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount().name()))
-                .andExpect(jsonPath("data.rating").value(detailReviewCreateRequestDto.getRating()))
-                .andExpect(jsonPath("data.playTogetherFriends").exists())
-                .andExpect(jsonPath("data.reviewImages").exists())
-                .andExpect(jsonPath("data.comment").exists())
-                .andExpect(jsonPath("data.likeCount").value(1))
-                .andExpect(jsonPath("data.myReview").value(false))
-                .andExpect(jsonPath("data.like").value(true))
-                .andExpect(jsonPath("data.possibleRegisterForSurveyYN").value(true))
-                .andExpect(jsonPath("data.surveyYN").value(false))
-                .andExpect(jsonPath("data.registerTimes").exists())
-                .andExpect(jsonPath("data.updateTimes").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_SUCCESS.getMessage()))
+                .andExpect(jsonPath("reviewId").exists())
+                .andExpect(jsonPath("writerInfo").exists())
+                .andExpect(jsonPath("writerInfo.memberId").value(signUpId))
+                .andExpect(jsonPath("writerInfo.profileImageUrl").exists())
+                .andExpect(jsonPath("themeInfo.themeId").value(theme.getId()))
+                .andExpect(jsonPath("reviewType").value(ReviewType.DETAIL.name()))
+                .andExpect(jsonPath("reviewRecodeNumber").value(1))
+                .andExpect(jsonPath("themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
+                .andExpect(jsonPath("themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
+                .andExpect(jsonPath("hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount().name()))
+                .andExpect(jsonPath("rating").value(detailReviewCreateRequestDto.getRating()))
+                .andExpect(jsonPath("playTogetherFriends").exists())
+                .andExpect(jsonPath("reviewImages").exists())
+                .andExpect(jsonPath("comment").exists())
+                .andExpect(jsonPath("likeCount").value(1))
+                .andExpect(jsonPath("myReview").value(false))
+                .andExpect(jsonPath("like").value(true))
+                .andExpect(jsonPath("possibleRegisterForSurveyYN").value(true))
+                .andExpect(jsonPath("surveyYN").value(false))
+                .andExpect(jsonPath("registerTimes").exists())
+                .andExpect(jsonPath("updateTimes").exists())
                 .andDo(document(
                         "get-detail-review-of-different-member-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.reviewId").description("조회된 리뷰의 식별 ID"),
-                                fieldWithPath("data.writerInfo.memberId").description("조회된 리뷰를 생성한 회원의 식별 ID"),
-                                fieldWithPath("data.writerInfo.nickname").description("조회된 리뷰를 생성한 회원의 닉네임"),
-                                fieldWithPath("data.writerInfo.profileImageUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 Download Url"),
-                                fieldWithPath("data.writerInfo.profileImageThumbnailUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.themeInfo.themeId").description("조회된 리뷰가 등록된 테마의 식별 ID"),
-                                fieldWithPath("data.themeInfo.themeName").description("조회된 리뷰가 등록된 테마의 이름"),
-                                fieldWithPath("data.themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
-                                fieldWithPath("data.themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.reviewType").description("조회된 리뷰의 Type +\n" +
+                                fieldWithPath("reviewId").description("조회된 리뷰의 식별 ID"),
+                                fieldWithPath("writerInfo.memberId").description("조회된 리뷰를 생성한 회원의 식별 ID"),
+                                fieldWithPath("writerInfo.nickname").description("조회된 리뷰를 생성한 회원의 닉네임"),
+                                fieldWithPath("writerInfo.profileImageUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 Download Url"),
+                                fieldWithPath("writerInfo.profileImageThumbnailUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("themeInfo.themeId").description("조회된 리뷰가 등록된 테마의 식별 ID"),
+                                fieldWithPath("themeInfo.themeName").description("조회된 리뷰가 등록된 테마의 이름"),
+                                fieldWithPath("themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
+                                fieldWithPath("themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("reviewType").description("조회된 리뷰의 Type +\n" +
                                         ReviewType.getNameList()),
-                                fieldWithPath("data.reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
+                                fieldWithPath("reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
-                                fieldWithPath("data.themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
-                                fieldWithPath("data.themeClearTime").description("조회된 리뷰의 테마 클리어 시간"),
-                                fieldWithPath("data.hintUsageCount").description("조회된 리뷰의 테마 플레이 시 사용한 힌트 개수"),
-                                fieldWithPath("data.rating").description("조회된 리뷰의 테마에 대한 평점"),
-                                fieldWithPath("data.playTogetherFriends[0].memberId").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 식별 ID"),
-                                fieldWithPath("data.playTogetherFriends[0].nickname").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 닉네임"),
-                                fieldWithPath("data.playTogetherFriends[0].profileImageUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 Download Url"),
-                                fieldWithPath("data.playTogetherFriends[0].profileImageThumbnailUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.likeCount").description("조회된 리뷰에 등록된 좋아요 개수"),
-                                fieldWithPath("data.myReview").description("조회된 리뷰가 인증된 사용자가 생성한 리뷰인지 여부 +\n" +
+                                fieldWithPath("themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
+                                fieldWithPath("themeClearTime").description("조회된 리뷰의 테마 클리어 시간"),
+                                fieldWithPath("hintUsageCount").description("조회된 리뷰의 테마 플레이 시 사용한 힌트 개수"),
+                                fieldWithPath("rating").description("조회된 리뷰의 테마에 대한 평점"),
+                                fieldWithPath("playTogetherFriends[0].memberId").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 식별 ID"),
+                                fieldWithPath("playTogetherFriends[0].nickname").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 닉네임"),
+                                fieldWithPath("playTogetherFriends[0].profileImageUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 Download Url"),
+                                fieldWithPath("playTogetherFriends[0].profileImageThumbnailUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("likeCount").description("조회된 리뷰에 등록된 좋아요 개수"),
+                                fieldWithPath("myReview").description("조회된 리뷰가 인증된 사용자가 생성한 리뷰인지 여부 +\n" +
                                         "[true -> 본인이 생성한 리뷰, false -> 다른 회원이 생성한 리뷰]"),
-                                fieldWithPath("data.like").description("조회된 리뷰에 인증된 사용자가 좋아요를 등록했는지 여부 +\n" +
+                                fieldWithPath("like").description("조회된 리뷰에 인증된 사용자가 좋아요를 등록했는지 여부 +\n" +
                                         "[true -> 본인이 좋아요를 등록한 리뷰, false -> 본인이 좋아요를 등록하지 않은 리뷰]"),
-                                fieldWithPath("data.reviewImages[0].reviewImageId").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 식별 ID"),
-                                fieldWithPath("data.reviewImages[0].reviewImageUrl").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 Download Url"),
-                                fieldWithPath("data.reviewImages[0].reviewImageThumbnailUrl").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.comment").description("조회된 리뷰에 등록된 상세 코멘트"),
-                                fieldWithPath("data.possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
+                                fieldWithPath("reviewImages[0].reviewImageId").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 식별 ID"),
+                                fieldWithPath("reviewImages[0].reviewImageUrl").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 Download Url"),
+                                fieldWithPath("reviewImages[0].reviewImageThumbnailUrl").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("comment").description("조회된 리뷰에 등록된 상세 코멘트"),
+                                fieldWithPath("possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
                                         "리뷰를 생성한 이후 일정 기간이 지나면 설문을 등록할 수 없습니다."),
-                                fieldWithPath("data.surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
-                                fieldWithPath("data.registerTimes").description("조회된 리뷰의 생성 일자"),
-                                fieldWithPath("data.updateTimes").description("조회된 리뷰의 마지막 수정 일자"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION))
+                                fieldWithPath("surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
+                                fieldWithPath("registerTimes").description("조회된 리뷰의 생성 일자"),
+                                fieldWithPath("updateTimes").description("조회된 리뷰의 마지막 수정 일자"))
                 ));
 
     }
@@ -498,90 +486,86 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.reviewId").exists())
-                .andExpect(jsonPath("data.writerInfo").exists())
-                .andExpect(jsonPath("data.writerInfo.memberId").value(signUpId))
-                .andExpect(jsonPath("data.writerInfo.profileImageUrl").exists())
-                .andExpect(jsonPath("data.themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("data.reviewType").value(ReviewType.DETAIL.name()))
-                .andExpect(jsonPath("data.reviewRecodeNumber").value(1))
-                .andExpect(jsonPath("data.themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
-                .andExpect(jsonPath("data.themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("data.hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount().name()))
-                .andExpect(jsonPath("data.rating").value(detailReviewCreateRequestDto.getRating()))
-                .andExpect(jsonPath("data.playTogetherFriends").exists())
-                .andExpect(jsonPath("data.reviewImages").exists())
-                .andExpect(jsonPath("data.comment").exists())
-                .andExpect(jsonPath("data.likeCount").value(1))
-                .andExpect(jsonPath("data.myReview").value(false))
-                .andExpect(jsonPath("data.like").value(true))
-                .andExpect(jsonPath("data.possibleRegisterForSurveyYN").value(true))
-                .andExpect(jsonPath("data.surveyYN").value(true))
-                .andExpect(jsonPath("data.perceivedThemeGenres[0].genreId").exists())
-                .andExpect(jsonPath("data.perceivedThemeGenres[0].genreCode").exists())
-                .andExpect(jsonPath("data.perceivedThemeGenres[0].genreName").exists())
-                .andExpect(jsonPath("data.perceivedDifficulty").value(reviewSurveyCreateRequestDto.getPerceivedDifficulty().name()))
-                .andExpect(jsonPath("data.perceivedHorrorGrade").value(reviewSurveyCreateRequestDto.getPerceivedHorrorGrade().name()))
-                .andExpect(jsonPath("data.perceivedActivity").value(reviewSurveyCreateRequestDto.getPerceivedActivity().name()))
-                .andExpect(jsonPath("data.scenarioSatisfaction").value(reviewSurveyCreateRequestDto.getScenarioSatisfaction().name()))
-                .andExpect(jsonPath("data.interiorSatisfaction").value(reviewSurveyCreateRequestDto.getInteriorSatisfaction().name()))
-                .andExpect(jsonPath("data.problemConfigurationSatisfaction").value(reviewSurveyCreateRequestDto.getProblemConfigurationSatisfaction().name()))
-                .andExpect(jsonPath("data.registerTimes").exists())
-                .andExpect(jsonPath("data.updateTimes").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_REVIEW_SUCCESS.getMessage()))
+                .andExpect(jsonPath("reviewId").exists())
+                .andExpect(jsonPath("writerInfo").exists())
+                .andExpect(jsonPath("writerInfo.memberId").value(signUpId))
+                .andExpect(jsonPath("writerInfo.profileImageUrl").exists())
+                .andExpect(jsonPath("themeInfo.themeId").value(theme.getId()))
+                .andExpect(jsonPath("reviewType").value(ReviewType.DETAIL.name()))
+                .andExpect(jsonPath("reviewRecodeNumber").value(1))
+                .andExpect(jsonPath("themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
+                .andExpect(jsonPath("themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
+                .andExpect(jsonPath("hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount().name()))
+                .andExpect(jsonPath("rating").value(detailReviewCreateRequestDto.getRating()))
+                .andExpect(jsonPath("playTogetherFriends").exists())
+                .andExpect(jsonPath("reviewImages").exists())
+                .andExpect(jsonPath("comment").exists())
+                .andExpect(jsonPath("likeCount").value(1))
+                .andExpect(jsonPath("myReview").value(false))
+                .andExpect(jsonPath("like").value(true))
+                .andExpect(jsonPath("possibleRegisterForSurveyYN").value(true))
+                .andExpect(jsonPath("surveyYN").value(true))
+                .andExpect(jsonPath("perceivedThemeGenres[0].genreId").exists())
+                .andExpect(jsonPath("perceivedThemeGenres[0].genreCode").exists())
+                .andExpect(jsonPath("perceivedThemeGenres[0].genreName").exists())
+                .andExpect(jsonPath("perceivedDifficulty").value(reviewSurveyCreateRequestDto.getPerceivedDifficulty().name()))
+                .andExpect(jsonPath("perceivedHorrorGrade").value(reviewSurveyCreateRequestDto.getPerceivedHorrorGrade().name()))
+                .andExpect(jsonPath("perceivedActivity").value(reviewSurveyCreateRequestDto.getPerceivedActivity().name()))
+                .andExpect(jsonPath("scenarioSatisfaction").value(reviewSurveyCreateRequestDto.getScenarioSatisfaction().name()))
+                .andExpect(jsonPath("interiorSatisfaction").value(reviewSurveyCreateRequestDto.getInteriorSatisfaction().name()))
+                .andExpect(jsonPath("problemConfigurationSatisfaction").value(reviewSurveyCreateRequestDto.getProblemConfigurationSatisfaction().name()))
+                .andExpect(jsonPath("registerTimes").exists())
+                .andExpect(jsonPath("updateTimes").exists())
                 .andDo(document(
                         "get-detail-and-survey-review-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.reviewId").description("조회된 리뷰의 식별 ID"),
-                                fieldWithPath("data.writerInfo.memberId").description("조회된 리뷰를 생성한 회원의 식별 ID"),
-                                fieldWithPath("data.writerInfo.nickname").description("조회된 리뷰를 생성한 회원의 닉네임"),
-                                fieldWithPath("data.writerInfo.profileImageUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 Download Url"),
-                                fieldWithPath("data.writerInfo.profileImageThumbnailUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.themeInfo.themeId").description("조회된 리뷰가 등록된 테마의 식별 ID"),
-                                fieldWithPath("data.themeInfo.themeName").description("조회된 리뷰가 등록된 테마의 이름"),
-                                fieldWithPath("data.themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
-                                fieldWithPath("data.themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.reviewType").description("조회된 리뷰의 Type +\n" +
+                                fieldWithPath("reviewId").description("조회된 리뷰의 식별 ID"),
+                                fieldWithPath("writerInfo.memberId").description("조회된 리뷰를 생성한 회원의 식별 ID"),
+                                fieldWithPath("writerInfo.nickname").description("조회된 리뷰를 생성한 회원의 닉네임"),
+                                fieldWithPath("writerInfo.profileImageUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 Download Url"),
+                                fieldWithPath("writerInfo.profileImageThumbnailUrl").description("조회된 리뷰를 생성한 회원의 프로필 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("themeInfo.themeId").description("조회된 리뷰가 등록된 테마의 식별 ID"),
+                                fieldWithPath("themeInfo.themeName").description("조회된 리뷰가 등록된 테마의 이름"),
+                                fieldWithPath("themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
+                                fieldWithPath("themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("reviewType").description("조회된 리뷰의 Type +\n" +
                                         ReviewType.getNameList()),
-                                fieldWithPath("data.reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
+                                fieldWithPath("reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
-                                fieldWithPath("data.themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
-                                fieldWithPath("data.themeClearTime").description("조회된 리뷰의 테마 클리어 시간"),
-                                fieldWithPath("data.hintUsageCount").description("조회된 리뷰의 테마 플레이 시 사용한 힌트 개수"),
-                                fieldWithPath("data.rating").description("조회된 리뷰의 테마에 대한 평점"),
-                                fieldWithPath("data.playTogetherFriends[0].memberId").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 식별 ID"),
-                                fieldWithPath("data.playTogetherFriends[0].nickname").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 닉네임"),
-                                fieldWithPath("data.playTogetherFriends[0].profileImageUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 Download Url"),
-                                fieldWithPath("data.playTogetherFriends[0].profileImageThumbnailUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.likeCount").description("조회된 리뷰에 등록된 좋아요 개수"),
-                                fieldWithPath("data.myReview").description("조회된 리뷰가 인증된 사용자가 생성한 리뷰인지 여부 +\n" +
+                                fieldWithPath("themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
+                                fieldWithPath("themeClearTime").description("조회된 리뷰의 테마 클리어 시간"),
+                                fieldWithPath("hintUsageCount").description("조회된 리뷰의 테마 플레이 시 사용한 힌트 개수"),
+                                fieldWithPath("rating").description("조회된 리뷰의 테마에 대한 평점"),
+                                fieldWithPath("playTogetherFriends[0].memberId").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 식별 ID"),
+                                fieldWithPath("playTogetherFriends[0].nickname").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 닉네임"),
+                                fieldWithPath("playTogetherFriends[0].profileImageUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 Download Url"),
+                                fieldWithPath("playTogetherFriends[0].profileImageThumbnailUrl").description("조회된 리뷰에 등록된 함께 플레이한 친구 목록 중 첫 번째 친구 회원의 프로필 이미지 파일 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("likeCount").description("조회된 리뷰에 등록된 좋아요 개수"),
+                                fieldWithPath("myReview").description("조회된 리뷰가 인증된 사용자가 생성한 리뷰인지 여부 +\n" +
                                         "[true -> 본인이 생성한 리뷰, false -> 다른 회원이 생성한 리뷰]"),
-                                fieldWithPath("data.like").description("조회된 리뷰에 인증된 사용자가 좋아요를 등록했는지 여부 +\n" +
+                                fieldWithPath("like").description("조회된 리뷰에 인증된 사용자가 좋아요를 등록했는지 여부 +\n" +
                                         "[true -> 본인이 좋아요를 등록한 리뷰, false -> 본인이 좋아요를 등록하지 않은 리뷰]"),
-                                fieldWithPath("data.reviewImages[0].reviewImageId").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 식별 ID"),
-                                fieldWithPath("data.reviewImages[0].reviewImageUrl").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 Download Url"),
-                                fieldWithPath("data.reviewImages[0].reviewImageThumbnailUrl").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 썸네일 이미지 파일 Download Url"),
-                                fieldWithPath("data.comment").description("조회된 리뷰에 등록된 상세 코멘트"),
-                                fieldWithPath("data.possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
+                                fieldWithPath("reviewImages[0].reviewImageId").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 식별 ID"),
+                                fieldWithPath("reviewImages[0].reviewImageUrl").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 Download Url"),
+                                fieldWithPath("reviewImages[0].reviewImageThumbnailUrl").description("조회된 리뷰에 등록된 이미지 파일 목록 중 첫 번째 이미지 파일의 썸네일 이미지 파일 Download Url"),
+                                fieldWithPath("comment").description("조회된 리뷰에 등록된 상세 코멘트"),
+                                fieldWithPath("possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
                                         "리뷰를 생성한 이후 일정 기간이 지나면 설문을 등록할 수 없습니다."),
-                                fieldWithPath("data.surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
-                                fieldWithPath("data.perceivedThemeGenres[0].genreId").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 식별 ID"),
-                                fieldWithPath("data.perceivedThemeGenres[0].genreCode").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 코드"),
-                                fieldWithPath("data.perceivedThemeGenres[0].genreName").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 이름"),
-                                fieldWithPath("data.perceivedDifficulty").description("조회된 리뷰에 등록된 설문에 등록된 체감 난이도"),
-                                fieldWithPath("data.perceivedHorrorGrade").description("조회된 리뷰에 등록된 설문에 등록된 체감 공포도"),
-                                fieldWithPath("data.perceivedActivity").description("조회된 리뷰에 등록된 설문에 등록된 체감 활동성"),
-                                fieldWithPath("data.scenarioSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 시나리오 만족도"),
-                                fieldWithPath("data.interiorSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 인테리어 만족도"),
-                                fieldWithPath("data.problemConfigurationSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 문제 구성 만족도"),
-                                fieldWithPath("data.registerTimes").description("조회된 리뷰의 생성 일자"),
-                                fieldWithPath("data.updateTimes").description("조회된 리뷰의 마지막 수정 일자"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION))
+                                fieldWithPath("surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
+                                fieldWithPath("perceivedThemeGenres[0].genreId").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 식별 ID"),
+                                fieldWithPath("perceivedThemeGenres[0].genreCode").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 코드"),
+                                fieldWithPath("perceivedThemeGenres[0].genreName").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 이름"),
+                                fieldWithPath("perceivedDifficulty").description("조회된 리뷰에 등록된 설문에 등록된 체감 난이도"),
+                                fieldWithPath("perceivedHorrorGrade").description("조회된 리뷰에 등록된 설문에 등록된 체감 공포도"),
+                                fieldWithPath("perceivedActivity").description("조회된 리뷰에 등록된 설문에 등록된 체감 활동성"),
+                                fieldWithPath("scenarioSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 시나리오 만족도"),
+                                fieldWithPath("interiorSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 인테리어 만족도"),
+                                fieldWithPath("problemConfigurationSatisfaction").description("조회된 리뷰에 등록된 설문에 등록된 문제 구성 만족도"),
+                                fieldWithPath("registerTimes").description("조회된 리뷰의 생성 일자"),
+                                fieldWithPath("updateTimes").description("조회된 리뷰의 마지막 수정 일자"))
                 ));
 
     }
@@ -723,9 +707,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.ADD_SURVEY_TO_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.ADD_SURVEY_TO_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "add-survey-to-review-success",
                         requestHeaders(
@@ -746,11 +727,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                         Satisfaction.getNameList()),
                                 fieldWithPath("problemConfigurationSatisfaction").description("리뷰에 추가할 설문에 등록할 문제 구성 만족도 기입 +\n" +
                                         Satisfaction.getNameList())
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -1281,9 +1257,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "update-survey-from-review-success",
                         requestHeaders(
@@ -1298,11 +1271,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("scenarioSatisfaction").description("수정할 설문에 등록할 시나리오 만족도 기입"),
                                 fieldWithPath("interiorSatisfaction").description("수정할 설문에 등록할 체감 인테리어 만족도 기입"),
                                 fieldWithPath("problemConfigurationSatisfaction").description("수정할 설문에 등록할 문제 구성 만족도 기입")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -1839,9 +1807,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "update-review-base-to-detail-success",
                         requestHeaders(
@@ -1861,11 +1826,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewImages[0].fileStorageId").description("수정 시 리뷰에 등록할 이미지 목록의 파일 저장소 ID 기입"),
                                 fieldWithPath("reviewImages[0].fileName").description("수정 시 리뷰에 등록할 이미지 목록의 파일 이름 기입"),
                                 fieldWithPath("comment").description("수정할 코멘트 기입")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -1994,9 +1954,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "update-review-detail-to-base-success",
                         requestHeaders(
@@ -2015,11 +1972,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("friendIds").description("수정 시 리뷰에 등록할 친구 ID 목록 기입"),
                                 fieldWithPath("reviewImages").description("[null]"),
                                 fieldWithPath("comment").description("[null]")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -2329,9 +2281,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.ADD_DETAIL_TO_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.ADD_DETAIL_TO_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "add-detail-to-review-success",
                         requestHeaders(
@@ -2343,11 +2292,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewImages[0].fileName").description("리뷰 상세에 추가할 이미지 파일의 파일 이름 기입"),
                                 fieldWithPath("comment").description("리뷰 상세에 추가할 코멘트 기입 +\n" +
                                         "최대 2000자 제한")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -2387,9 +2331,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "add-detail-and-survey-to-review-success",
                         requestHeaders(
@@ -2407,11 +2348,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("scenarioSatisfaction").description("리뷰 설문에 등록할 시나리오 만족도 기입"),
                                 fieldWithPath("interiorSatisfaction").description("리뷰 설문에 등록할 인테리어 만족도 기입"),
                                 fieldWithPath("problemConfigurationSatisfaction").description("리뷰 설문에 등록할 문제 구성 만족도 기입")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
 
                 ))
@@ -2441,19 +2377,11 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.DELETE_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.DELETE_REVIEW_SUCCESS.getMessage()))
+                .andExpect(status().isNoContent())
                 .andDo(document(
                         "delete-review-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -2487,19 +2415,11 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.ADD_LIKE_TO_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.ADD_LIKE_TO_REVIEW_SUCCESS.getMessage()))
+                .andExpect(status().isCreated())
                 .andDo(document(
                         "add-like-to-review-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -2538,19 +2458,11 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.REMOVE_LIKE_FROM_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.REMOVE_LIKE_FROM_REVIEW_SUCCESS.getMessage()))
+                .andExpect(status().isNoContent())
                 .andDo(document(
                         "remove-like-from-review-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;

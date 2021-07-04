@@ -1,20 +1,19 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
+import bbangduck.bd.bbangduck.domain.friend.service.MemberFriendService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
-import bbangduck.bd.bbangduck.domain.friend.service.MemberFriendService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.MemberReviewSearchRequestDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAreNotOpenException;
 import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAreOnlyFriendOpenException;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import com.querydsl.core.QueryResults;
@@ -77,8 +76,12 @@ public class MemberReviewApiController{
      * - service 실패
      * -- 회원을 찾을 수 없는 경우
      */
+    /**
+     * FIXME: 2021-06-15 좋아요 목록 조회 한 방 쿼링해서 리펙토링하기
+     * 테마 리뷰 목록도 연계되어 있음
+     */
     @GetMapping
-    public ResponseEntity<ResponseDto<PaginationResponseDto<Object>>> getMemberReviewList(
+    public ResponseEntity<PaginationResponseDto<Object>> getMemberReviewList(
             @PathVariable Long memberId,
             @ModelAttribute @Valid MemberReviewSearchRequestDto requestDto,
             BindingResult bindingResult,
@@ -123,13 +126,9 @@ public class MemberReviewApiController{
                 .nextPageUrl(getMemberReviewListNextPageUriString(memberId, reviewSearchDto, totalPagesCount))
                 .build();
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_REVIEW_LIST_SUCCESS, paginationResponseDto));
+        return ResponseEntity.ok(paginationResponseDto);
     }
 
-    /**
-     * FIXME: 2021-06-15 좋아요 목록 조회 한 방 쿼링해서 리펙토링하기
-     * 테마 리뷰 목록도 연계되어 있음
-     */
     private List<ReviewResponseDto> convertReviewsToReviewResponseDtos(Member currentMember, List<Review> findReviews, long periodForAddingSurveys) {
         return findReviews.stream().map(review -> {
             boolean existsReviewLike = getExistsReviewLike(review.getId(), currentMember);

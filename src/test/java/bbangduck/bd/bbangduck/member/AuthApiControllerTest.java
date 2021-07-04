@@ -1,20 +1,19 @@
 package bbangduck.bd.bbangduck.member;
 
-import bbangduck.bd.bbangduck.domain.auth.dto.controller.OnlyRefreshTokenRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.OnlyRefreshTokenRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.CheckIfEmailIsAvailableRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberCheckIfNicknameIsAvailableRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberSocialInfoDuplicateException;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +38,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("인증 관련 API Controller 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -82,32 +82,31 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                         "해당 SocialId 를 통해 회원을 식별합니다.")
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.memberInfo.memberId").description("가입된 회원의 식별 ID"),
-                                fieldWithPath("data.memberInfo.email").description("가입된 회원의 Email"),
-                                fieldWithPath("data.memberInfo.nickname").description("가입된 회원의 Nickname"),
-                                fieldWithPath("data.memberInfo.profileImage").description("가입된 회원의 프로필 이미지 (null)"),
-                                fieldWithPath("data.memberInfo.socialAccounts[0].socialId").description("Social 인증을 통해 가입된 회원의 Social ID"),
-                                fieldWithPath("data.memberInfo.socialAccounts[0].socialType").description("Social 인증을 통해 가입된 회원이 사용한 Social 매체"),
-                                fieldWithPath("data.memberInfo.description").description("간략한 자기 소개 (null)"),
-                                fieldWithPath("data.memberInfo.roomEscapeRecodesOpenStatus").description("방탈출 기록 공개 여부 +\n" +
+                                fieldWithPath("memberInfo.memberId").description("가입된 회원의 식별 ID"),
+                                fieldWithPath("memberInfo.email").description("가입된 회원의 Email"),
+                                fieldWithPath("memberInfo.nickname").description("가입된 회원의 Nickname"),
+                                fieldWithPath("memberInfo.profileImage").description("가입된 회원의 프로필 이미지 (null)"),
+                                fieldWithPath("memberInfo.socialAccounts[0].socialId").description("Social 인증을 통해 가입된 회원의 Social ID"),
+                                fieldWithPath("memberInfo.socialAccounts[0].socialType").description("Social 인증을 통해 가입된 회원이 사용한 Social 매체"),
+                                fieldWithPath("memberInfo.description").description("간략한 자기 소개 (null)"),
+                                fieldWithPath("memberInfo.roomEscapeRecodesOpenStatus").description("방탈출 기록 공개 여부 +\n" +
                                         MemberRoomEscapeRecodesOpenStatus.getNameList()),
-                                fieldWithPath("data.memberInfo.roomEscapeStatus.challengesCount").description("회원의 테마 도전 횟수 [0]"),
-                                fieldWithPath("data.memberInfo.roomEscapeStatus.successCount").description("회원의 테마 클리어에 성공한 횟수 [0]"),
-                                fieldWithPath("data.memberInfo.roomEscapeStatus.failCount").description("회원이 테마 클리어에 실패한 횟수 [0]"),
-                                fieldWithPath("data.memberInfo.playInclinations").description("회원의 방탈출 성향 [null]"),
-                                fieldWithPath("data.memberInfo.registerTimes").description("가입 날짜"),
-                                fieldWithPath("data.memberInfo.updateTimes").description("회원 정보 최종 수정 날짜"),
+                                fieldWithPath("memberInfo.roomEscapeStatus.challengesCount").description("회원의 테마 도전 횟수 [0]"),
+                                fieldWithPath("memberInfo.roomEscapeStatus.successCount").description("회원의 테마 클리어에 성공한 횟수 [0]"),
+                                fieldWithPath("memberInfo.roomEscapeStatus.failCount").description("회원이 테마 클리어에 실패한 횟수 [0]"),
+                                fieldWithPath("memberInfo.playInclinations").description("회원의 방탈출 성향 [null]"),
+                                fieldWithPath("memberInfo.registerTimes").description("가입 날짜"),
+                                fieldWithPath("memberInfo.updateTimes").description("회원 정보 최종 수정 날짜"),
+                                fieldWithPath("memberInfo.myProfile").description("자신의 프로필을 조회했는지 여부"),
 
 
-                                fieldWithPath("data.tokenInfo.memberId").description("가입된 회원의 식별 ID"),
-                                fieldWithPath("data.tokenInfo.accessToken.header").description("가입된 회원에게 발급된 인증 JWT 토큰의 Header"),
-                                fieldWithPath("data.tokenInfo.accessToken.payload").description("가입된 회원에게 발급된 인증 JWT 토큰의 Payload"),
-                                fieldWithPath("data.tokenInfo.accessToken.signature").description("가입된 회원에게 발급된 인증 JWT 토큰의 Signature"),
-                                fieldWithPath("data.tokenInfo.accessTokenValidSecond").description("가입된 회원에게 발급된 인증 JWT 토큰이 만료되기까지 남은 시간"),
-                                fieldWithPath("data.tokenInfo.refreshToken").description("인증토큰 재발급 요청에 필요한 Refresh 토큰"),
-                                fieldWithPath("data.tokenInfo.refreshTokenExpiredDate").description("인증토큰 재발급 요청에 필요한 Refresh 토큰의 만료 날짜"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("tokenInfo.memberId").description("가입된 회원의 식별 ID"),
+                                fieldWithPath("tokenInfo.accessToken.header").description("가입된 회원에게 발급된 인증 JWT 토큰의 Header"),
+                                fieldWithPath("tokenInfo.accessToken.payload").description("가입된 회원에게 발급된 인증 JWT 토큰의 Payload"),
+                                fieldWithPath("tokenInfo.accessToken.signature").description("가입된 회원에게 발급된 인증 JWT 토큰의 Signature"),
+                                fieldWithPath("tokenInfo.accessTokenValidSecond").description("가입된 회원에게 발급된 인증 JWT 토큰이 만료되기까지 남은 시간"),
+                                fieldWithPath("tokenInfo.refreshToken").description("인증토큰 재발급 요청에 필요한 Refresh 토큰"),
+                                fieldWithPath("tokenInfo.refreshTokenExpiredDate").description("인증토큰 재발급 요청에 필요한 Refresh 토큰의 만료 날짜")
                         )
                 ))
         ;
@@ -402,9 +401,6 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(REFRESH_SIGN_IN_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").exists())
-                .andExpect(jsonPath("message").value(REFRESH_SIGN_IN_SUCCESS.getMessage()))
                 .andDo(document(
                         "refresh-sign-in-success",
                         requestHeaders(
@@ -415,15 +411,13 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                         "소셜 로그인(소셜 회원가입 포함) 시점에 Access Token 과 함께 발급되는 Refresh Token")
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.memberId").description("인증된 회원의 식별 ID"),
-                                fieldWithPath("data.accessToken.header").description("재발급된 Access Token 의 Header"),
-                                fieldWithPath("data.accessToken.payload").description("재발급된 Access Token 의 Payload"),
-                                fieldWithPath("data.accessToken.signature").description("재발급된 Access Token 의 Signature"),
-                                fieldWithPath("data.accessTokenValidSecond").description("재발급된 Access Token 의 만료까지 남은 시간(초)"),
-                                fieldWithPath("data.refreshToken").description("사용된 Refresh Token 다시 응답(Refresh Token 재발급을 위해서는 로그인을 다시 해야합니다.)"),
-                                fieldWithPath("data.refreshTokenExpiredDate").description("사용된 Refresh Token 의 만료 날짜"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("memberId").description("인증된 회원의 식별 ID"),
+                                fieldWithPath("accessToken.header").description("재발급된 Access Token 의 Header"),
+                                fieldWithPath("accessToken.payload").description("재발급된 Access Token 의 Payload"),
+                                fieldWithPath("accessToken.signature").description("재발급된 Access Token 의 Signature"),
+                                fieldWithPath("accessTokenValidSecond").description("재발급된 Access Token 의 만료까지 남은 시간(초)"),
+                                fieldWithPath("refreshToken").description("사용된 Refresh Token 다시 응답(Refresh Token 재발급을 위해서는 로그인을 다시 해야합니다.)"),
+                                fieldWithPath("refreshTokenExpiredDate").description("사용된 Refresh Token 의 만료 날짜")
                         )
                 ))
         ;
@@ -509,19 +503,11 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(WITHDRAWAL_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(WITHDRAWAL_SUCCESS.getMessage()))
+                .andExpect(status().isNoContent())
                 .andDo(document(
                         "withdrawal-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -621,19 +607,11 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(SIGN_OUT_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(SIGN_OUT_SUCCESS.getMessage()))
+                .andExpect(status().isNoContent())
                 .andDo(document(
                         "sign-out-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -755,9 +733,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform1
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").value(false))
-                .andExpect(jsonPath("message").value(ResponseStatus.CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS.getMessage()))
+                .andExpect(jsonPath("isAvailable").value(false))
                 .andDo(document(
                         "check-if-email-is-available-success",
                         requestHeaders(
@@ -767,19 +743,15 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("email").description("사용 가능 확인을 위한 Email 기입")
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("Email 사용 가능 여부 응답 \n" +
-                                        "true -> 사용 가능, false -> 사용 불가능"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("isAvailable").description("Email 사용 가능 여부 응답 \n" +
+                                        "true -> 사용 가능, false -> 사용 불가능")
                         )
                 ))
         ;
 
         perform2
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").value(false))
-                .andExpect(jsonPath("message").value(ResponseStatus.CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS.getMessage()))
+                .andExpect(jsonPath("isAvailable").value(false))
                 .andDo(document(
                         "check-if-nickname-is-available-success",
                         requestHeaders(
@@ -789,10 +761,8 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("nickname").description("사용 가능 확인을 위한 Nickname 기입")
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("Nickname 사용 가능 여부 응답 +\n" +
-                                        "true -> 사용 가능, false -> 사용 불가능"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("isAvailable").description("Nickname 사용 가능 여부 응답 +\n" +
+                                        "true -> 사용 가능, false -> 사용 불가능")
                         )
                 ))
         ;

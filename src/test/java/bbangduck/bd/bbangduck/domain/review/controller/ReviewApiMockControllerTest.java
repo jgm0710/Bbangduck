@@ -245,7 +245,7 @@ class ReviewApiMockControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data.possibleRegisterForSurveyYN").value(false));
+                .andExpect(jsonPath("possibleRegisterForSurveyYN").value(false));
 
     }
 }

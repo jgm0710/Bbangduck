@@ -449,7 +449,7 @@
 
 * 추후 리뷰 상세나 테마 설문을 추가할 수 있습니다.
 
-* 요청이 성공하면 `status`, `message` 가 응됩니다. 별도의 `data` 는 응답되지 않습니다.
+* 별도의 응답 Body Data 는 제공되지 않습니다.
     ** 생성된 리뷰에 대한 정보를 조회하려면 리뷰 조회 리소스를 통해 조회하면 됩니다.
     ** 응답 `Header` 에 `Location` 부분에 리뷰 조회 API 요청에 대한 URL 값이 있습니다.
 
@@ -459,7 +459,7 @@
 * 응답 HttpStatus : `201 Created`
 * 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::create-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::create-review-success[snippets='request-headers,request-fields,curl-request,http-response']
 
 
 
@@ -494,7 +494,7 @@ operation::create-review-success[snippets='request-headers,request-fields,respon
 * 응답 HttpStatus : `201 Created`
 * 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::add-detail-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::add-detail-to-review-success[snippets='request-headers,request-fields,curl-request,http-response']
 
 
 
@@ -526,7 +526,7 @@ operation::add-detail-to-review-success[snippets='request-headers,request-fields
 * 응답 HttpStatus : `201 Created`
 * 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::add-survey-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::add-survey-to-review-success[snippets='request-headers,request-fields,curl-request,http-response']
 
 [[resources-add-survey-to-review-not-valid]]
 === 리뷰에 설문 추가 시 값을 제대로 기입하지 않은 경우
@@ -570,7 +570,7 @@ operation::add-survey-to-review-not-valid[snippets='response-fields,curl-request
 * 응답 HttpStatus : `201 Created`
 * 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::add-detail-and-survey-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::add-detail-and-survey-to-review-success[snippets='request-headers,request-fields,curl-request,http-response']
 
 
 
@@ -601,7 +601,7 @@ operation::add-detail-and-survey-to-review-success[snippets='request-headers,req
 
 * 별도의 응답 Data 는 없습니다.
 
-operation::update-survey-from-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::update-survey-from-review-success[snippets='request-headers,request-fields,curl-request,http-response']
 
 [[resources-update-survey-from-review-not-valid]]
 === 리뷰에 등록된 설문 수정 - 입력 규칙을 지키지 않은 경우
@@ -859,7 +859,7 @@ operation::get-member-review-list-success[snippets='request-headers,request-para
 * 상세 리뷰에서 상세 리뷰로 수정하는 요청 역시 가능합니다.
     ** 주목할 점은 상세 리뷰로 수정한다는 것 입니다.
 
-operation::update-review-base-to-detail-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::update-review-base-to-detail-success[snippets='request-headers,request-fields,curl-request,http-response']
 
 [[reousrces-update-review-detail-to-base-success]]
 === 상세 리뷰에서 기본 리뷰로 수정
@@ -871,7 +871,7 @@ operation::update-review-base-to-detail-success[snippets='request-headers,reques
 * 기본 리뷰에서 기본 리뷰로 수정하는 요청 역시 가능합니다.
     ** 주목할 점은 기본 리뷰로 수정한다는 것 입니다.
 
-operation::update-review-detail-to-base-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
+operation::update-review-detail-to-base-success[snippets='request-headers,request-fields,curl-request,http-response']
 
 
 
@@ -892,10 +892,10 @@ operation::update-review-detail-to-base-success[snippets='request-headers,reques
 [[resources-delete-review-success]]
 === 리뷰 삭제 성공
 
-* 응답 HttpStatus : `200 OK`
+* 응답 HttpStatus : `204 No Content`
 * 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::delete-review-success[snippets='request-headers,response-fields,curl-request,http-response']
+operation::delete-review-success[snippets='request-headers,curl-request,http-response']
 
 
 
@@ -919,10 +919,10 @@ operation::delete-review-success[snippets='request-headers,response-fields,curl-
 [[resources-add-like-to-review-success]]
 == 리뷰에 좋아요 등록 성공
 
-* 응답 HttpStatus : `200 OK`
+* 응답 HttpStatus : `201 Created`
 * 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::add-like-to-review-success[snippets='request-headers,response-fields,curl-request,http-response']
+operation::add-like-to-review-success[snippets='request-headers,curl-request,http-response']
 
 
 
@@ -945,4 +945,6 @@ operation::add-like-to-review-success[snippets='request-headers,response-fields,
 [[resources-remove-like-from-review-success]]
 == 리뷰에 등록된 좋아요 해제 성공
 
-operation::remove-like-from-review-success[snippets='request-headers,response-fields,curl-request,http-response']
+* 응답 HttpStatus : `204 No Content`
+
+operation::remove-like-from-review-success[snippets='request-headers,curl-request,http-response']

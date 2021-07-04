@@ -58,9 +58,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS.getMessage()))
                 .andDo(document(
                         "update-profile-image-success",
                         requestHeaders(
@@ -70,11 +67,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                         requestFields(
                                 fieldWithPath("fileStorageId").description("변경할 이미지 파일의 파일 저장소 ID"),
                                 fieldWithPath("fileName").description("변경할 이미지 파일의 이름")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -180,9 +172,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS.getMessage()))
         ;
 
     }
@@ -264,18 +253,10 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS.getMessage()))
                 .andDo(document(
                         "delete-profile-image-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -395,9 +376,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_NICKNAME_SUCCESS.getMessage()))
                 .andDo(document(
                         "update-nickname-success",
                         requestHeaders(
@@ -406,11 +384,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("nickname").description("변경할 Nickname")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -585,9 +558,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS.getMessage()))
                 .andDo(document(
                         "update-description-success",
                         requestHeaders(
@@ -596,11 +566,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("description").description("변경할 자기소개 기입")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -739,9 +704,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("status").value(ResponseStatus.UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS.getMessage()))
                 .andDo(document(
                         "update-room-escape-recodes-open-status-success",
                         requestHeaders(
@@ -750,11 +712,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                         requestFields(
                                 fieldWithPath("roomEscapeRecodesOpenStatus").description("변경할 방탈출 기록 공개 상태 기입 +\n" +
                                         MemberRoomEscapeRecodesOpenStatus.getNameList())
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -852,45 +809,42 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_DIFFERENT_MEMBER_PROFILE_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.memberId").isNumber())
-                .andExpect(jsonPath("data.profileImage.profileImageId").isNumber())
-                .andExpect(jsonPath("data.profileImage.profileImageUrl").isString())
-                .andExpect(jsonPath("data.profileImage.profileImageThumbnailUrl").isString())
-                .andExpect(jsonPath("data.nickname").isString())
-                .andExpect(jsonPath("data.description").isString())
-                .andExpect(jsonPath("data.roomEscapeStatus.challengesCount").isNumber())
-                .andExpect(jsonPath("data.roomEscapeStatus.successCount").isNumber())
-                .andExpect(jsonPath("data.roomEscapeStatus.failCount").isNumber())
-                .andExpect(jsonPath("data.roomEscapeRecodesOpenStatus").isString())
-                .andExpect(jsonPath("data.playInclinations[0].genre.genreCode").isString())
-                .andExpect(jsonPath("data.playInclinations[0].genre.genreName").isString())
-                .andExpect(jsonPath("data.playInclinations[0].playCount").isNumber())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_DIFFERENT_MEMBER_PROFILE_SUCCESS.getMessage()))
+                .andExpect(jsonPath("memberId").isNumber())
+                .andExpect(jsonPath("profileImage.profileImageId").isNumber())
+                .andExpect(jsonPath("profileImage.profileImageUrl").isString())
+                .andExpect(jsonPath("profileImage.profileImageThumbnailUrl").isString())
+                .andExpect(jsonPath("nickname").isString())
+                .andExpect(jsonPath("description").isString())
+                .andExpect(jsonPath("roomEscapeStatus.challengesCount").isNumber())
+                .andExpect(jsonPath("roomEscapeStatus.successCount").isNumber())
+                .andExpect(jsonPath("roomEscapeStatus.failCount").isNumber())
+                .andExpect(jsonPath("roomEscapeRecodesOpenStatus").isString())
+                .andExpect(jsonPath("playInclinations[0].genre.genreCode").isString())
+                .andExpect(jsonPath("playInclinations[0].genre.genreName").isString())
+                .andExpect(jsonPath("playInclinations[0].playCount").isNumber())
                 .andDo(document(
                         "get-different-member-profile-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.memberId").description("조회된 회원의 식별 ID"),
-                                fieldWithPath("data.profileImage.profileImageId").description("조회된 회원에게 등록된 프로필 이미지의 식별 ID \n" +
+                                fieldWithPath("memberId").description("조회된 회원의 식별 ID"),
+                                fieldWithPath("profileImage.profileImageId").description("조회된 회원에게 등록된 프로필 이미지의 식별 ID \n" +
                                         "프로필 이미지 삭제 요청 등에 사용될 수 있음"),
-                                fieldWithPath("data.profileImage.profileImageUrl").description("조회된 회원에게 등록된 프로필 이미지 다운로드 URL"),
-                                fieldWithPath("data.profileImage.profileImageThumbnailUrl").description("조회된 회원에게 등록된 프로필 이미지의 썸네일 이미지 다운로드 URL"),
-                                fieldWithPath("data.nickname").description("조회된 회원의 닉네임"),
-                                fieldWithPath("data.description").description("조회된 회원의 자기소개"),
-                                fieldWithPath("data.roomEscapeStatus.challengesCount").description("조회된 회원이 테마에 도전한 총 횟수 +\n" +
+                                fieldWithPath("profileImage.profileImageUrl").description("조회된 회원에게 등록된 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("profileImage.profileImageThumbnailUrl").description("조회된 회원에게 등록된 프로필 이미지의 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("nickname").description("조회된 회원의 닉네임"),
+                                fieldWithPath("description").description("조회된 회원의 자기소개"),
+                                fieldWithPath("roomEscapeStatus.challengesCount").description("조회된 회원이 테마에 도전한 총 횟수 +\n" +
                                         "(리뷰를 작성한 횟수라고 생각해도 무방)"),
-                                fieldWithPath("data.roomEscapeStatus.successCount").description("조회된 회원이 테마 클리어에 성공한 횟수"),
-                                fieldWithPath("data.roomEscapeStatus.failCount").description("조회된 회원이 테마 클리어에 실패한 횟수"),
-                                fieldWithPath("data.roomEscapeRecodesOpenStatus").description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
+                                fieldWithPath("roomEscapeStatus.successCount").description("조회된 회원이 테마 클리어에 성공한 횟수"),
+                                fieldWithPath("roomEscapeStatus.failCount").description("조회된 회원이 테마 클리어에 실패한 횟수"),
+                                fieldWithPath("roomEscapeRecodesOpenStatus").description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
                                         MemberRoomEscapeRecodesOpenStatus.getNameList()),
-                                fieldWithPath("data.playInclinations[0].genre.genreCode").description("조회된 회원의 플레이 성향에 등록된 장르의 코드값"),
-                                fieldWithPath("data.playInclinations[0].genre.genreName").description("조회된 회원의 플레이 성향에 등록된 장르의 이름"),
-                                fieldWithPath("data.playInclinations[0].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("playInclinations[0].genre.genreCode").description("조회된 회원의 플레이 성향에 등록된 장르의 코드값"),
+                                fieldWithPath("playInclinations[0].genre.genreName").description("조회된 회원의 플레이 성향에 등록된 장르의 이름"),
+                                fieldWithPath("playInclinations[0].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
+                                fieldWithPath("myProfile").description("자신의 프로필을 조회했는지 여부")
                         )
                 ))
         ;
@@ -927,55 +881,52 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_MY_PROFILE_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.memberId").isNumber())
-                .andExpect(jsonPath("data.profileImage.profileImageId").isNumber())
-                .andExpect(jsonPath("data.profileImage.profileImageUrl").isString())
-                .andExpect(jsonPath("data.profileImage.profileImageThumbnailUrl").isString())
-                .andExpect(jsonPath("data.nickname").isString())
-                .andExpect(jsonPath("data.description").isString())
-                .andExpect(jsonPath("data.roomEscapeStatus.challengesCount").isNumber())
-                .andExpect(jsonPath("data.roomEscapeStatus.successCount").isNumber())
-                .andExpect(jsonPath("data.roomEscapeStatus.failCount").isNumber())
-                .andExpect(jsonPath("data.roomEscapeRecodesOpenStatus").isString())
-                .andExpect(jsonPath("data.playInclinations[0].genre.genreCode").isString())
-                .andExpect(jsonPath("data.playInclinations[0].genre.genreName").isString())
-                .andExpect(jsonPath("data.playInclinations[0].playCount").isNumber())
-                .andExpect(jsonPath("data.email").isString())
-                .andExpect(jsonPath("data.socialAccounts[0].socialId").isString())
-                .andExpect(jsonPath("data.socialAccounts[0].socialType").isString())
-                .andExpect(jsonPath("data.registerTimes").isString())
-                .andExpect(jsonPath("data.updateTimes").isString())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_MY_PROFILE_SUCCESS.getMessage()))
+                .andExpect(jsonPath("memberId").isNumber())
+                .andExpect(jsonPath("profileImage.profileImageId").isNumber())
+                .andExpect(jsonPath("profileImage.profileImageUrl").isString())
+                .andExpect(jsonPath("profileImage.profileImageThumbnailUrl").isString())
+                .andExpect(jsonPath("nickname").isString())
+                .andExpect(jsonPath("description").isString())
+                .andExpect(jsonPath("roomEscapeStatus.challengesCount").isNumber())
+                .andExpect(jsonPath("roomEscapeStatus.successCount").isNumber())
+                .andExpect(jsonPath("roomEscapeStatus.failCount").isNumber())
+                .andExpect(jsonPath("roomEscapeRecodesOpenStatus").isString())
+                .andExpect(jsonPath("playInclinations[0].genre.genreCode").isString())
+                .andExpect(jsonPath("playInclinations[0].genre.genreName").isString())
+                .andExpect(jsonPath("playInclinations[0].playCount").isNumber())
+                .andExpect(jsonPath("email").isString())
+                .andExpect(jsonPath("socialAccounts[0].socialId").isString())
+                .andExpect(jsonPath("socialAccounts[0].socialType").isString())
+                .andExpect(jsonPath("registerTimes").isString())
+                .andExpect(jsonPath("updateTimes").isString())
                 .andDo(document(
                         "get-my-profile-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.memberId").description("조회된 회원의 식별 ID"),
-                                fieldWithPath("data.profileImage.profileImageId").description("조회된 회원에게 등록된 프로필 이미지의 식별 ID \n" +
+                                fieldWithPath("memberId").description("조회된 회원의 식별 ID"),
+                                fieldWithPath("profileImage.profileImageId").description("조회된 회원에게 등록된 프로필 이미지의 식별 ID \n" +
                                         "프로필 이미지 삭제 요청 등에 사용될 수 있음"),
-                                fieldWithPath("data.profileImage.profileImageUrl").description("조회된 회원에게 등록된 프로필 이미지 다운로드 URL"),
-                                fieldWithPath("data.profileImage.profileImageThumbnailUrl").description("조회된 회원에게 등록된 프로필 이미지의 썸네일 이미지 다운로드 URL"),
-                                fieldWithPath("data.nickname").description("조회된 회원의 닉네임"),
-                                fieldWithPath("data.description").description("조회된 회원의 자기소개"),
-                                fieldWithPath("data.roomEscapeStatus.challengesCount").description("조회된 회원이 테마에 도전한 총 횟수 +\n" +
+                                fieldWithPath("profileImage.profileImageUrl").description("조회된 회원에게 등록된 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("profileImage.profileImageThumbnailUrl").description("조회된 회원에게 등록된 프로필 이미지의 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("nickname").description("조회된 회원의 닉네임"),
+                                fieldWithPath("description").description("조회된 회원의 자기소개"),
+                                fieldWithPath("roomEscapeStatus.challengesCount").description("조회된 회원이 테마에 도전한 총 횟수 +\n" +
                                         "(리뷰를 작성한 횟수라고 생각해도 무방)"),
-                                fieldWithPath("data.roomEscapeStatus.successCount").description("조회된 회원이 테마 클리어에 성공한 횟수"),
-                                fieldWithPath("data.roomEscapeStatus.failCount").description("조회된 회원이 테마 클리어에 실패한 횟수"),
-                                fieldWithPath("data.roomEscapeRecodesOpenStatus").description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
+                                fieldWithPath("roomEscapeStatus.successCount").description("조회된 회원이 테마 클리어에 성공한 횟수"),
+                                fieldWithPath("roomEscapeStatus.failCount").description("조회된 회원이 테마 클리어에 실패한 횟수"),
+                                fieldWithPath("roomEscapeRecodesOpenStatus").description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
                                         MemberRoomEscapeRecodesOpenStatus.getNameList()),
-                                fieldWithPath("data.playInclinations[0].genre.genreCode").description("조회된 회원의 플레이 성향에 등록된 장르의 코드값"),
-                                fieldWithPath("data.playInclinations[0].genre.genreName").description("조회된 회원의 플레이 성향에 등록된 장르의 이름"),
-                                fieldWithPath("data.playInclinations[0].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
-                                fieldWithPath("data.email").description("조회된 회원의 Email"),
-                                fieldWithPath("data.socialAccounts[0].socialId").description("조회된 회원에 등록된 소셜 계정의 (여러개 일 수 있습니다.) 식별 ID (소셜 매체에서 응답된 회원 식별 ID)"),
-                                fieldWithPath("data.socialAccounts[0].socialType").description("조회된 회원에 등록된 소셜 계정의 (여러개 일 수 있습니다.) 타입 (어떤 소셜 매체를 통해 등록되었는지)"),
-                                fieldWithPath("data.registerTimes").description("조회된 회원의 생성 일자 (가입일시)"),
-                                fieldWithPath("data.updateTimes").description("조회된 회원의 수정 일자 (마지막으로 개인정보가 수정된 일시)"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("playInclinations[0].genre.genreCode").description("조회된 회원의 플레이 성향에 등록된 장르의 코드값"),
+                                fieldWithPath("playInclinations[0].genre.genreName").description("조회된 회원의 플레이 성향에 등록된 장르의 이름"),
+                                fieldWithPath("playInclinations[0].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
+                                fieldWithPath("email").description("조회된 회원의 Email"),
+                                fieldWithPath("socialAccounts[0].socialId").description("조회된 회원에 등록된 소셜 계정의 (여러개 일 수 있습니다.) 식별 ID (소셜 매체에서 응답된 회원 식별 ID)"),
+                                fieldWithPath("socialAccounts[0].socialType").description("조회된 회원에 등록된 소셜 계정의 (여러개 일 수 있습니다.) 타입 (어떤 소셜 매체를 통해 등록되었는지)"),
+                                fieldWithPath("registerTimes").description("조회된 회원의 생성 일자 (가입일시)"),
+                                fieldWithPath("updateTimes").description("조회된 회원의 수정 일자 (마지막으로 개인정보가 수정된 일시)"),
+                                fieldWithPath("myProfile").description("자신의 프로필을 조회했는지 여부")
                         )
                 ))
         ;
@@ -1145,25 +1096,21 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_MEMBER_PLAY_INCLINATIONS_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.playInclinations").isArray())
-                .andExpect(jsonPath("data.playInclinations[0].genre.genreCode").isString())
-                .andExpect(jsonPath("data.playInclinations[0].genre.genreName").isString())
-                .andExpect(jsonPath("data.playInclinations[0].playCount").isNumber())
-                .andExpect(jsonPath("data.totalThemeEvaluatesCount").isNumber())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_MEMBER_PLAY_INCLINATIONS_SUCCESS.getMessage()))
+                .andExpect(jsonPath("playInclinations").isArray())
+                .andExpect(jsonPath("playInclinations[0].genre.genreCode").isString())
+                .andExpect(jsonPath("playInclinations[0].genre.genreName").isString())
+                .andExpect(jsonPath("playInclinations[0].playCount").isNumber())
+                .andExpect(jsonPath("totalThemeEvaluatesCount").isNumber())
                 .andDo(document(
                         "get-member-play-inclination-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.playInclinations[0].genre.genreCode").description("회원의 플레이 성향에 등록된 장르의 코드값"),
-                                fieldWithPath("data.playInclinations[0].genre.genreName").description("회원의 플레이 성향에 등록된 장르의 이름"),
-                                fieldWithPath("data.playInclinations[0].playCount").description("회원이 플레이 성향에 등록된 장르를 플레이한 횟수"),
-                                fieldWithPath("data.totalThemeEvaluatesCount").description("회원이 테마를 평가한 총 횟수"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("playInclinations[0].genre.genreCode").description("회원의 플레이 성향에 등록된 장르의 코드값"),
+                                fieldWithPath("playInclinations[0].genre.genreName").description("회원의 플레이 성향에 등록된 장르의 이름"),
+                                fieldWithPath("playInclinations[0].playCount").description("회원이 플레이 성향에 등록된 장르를 플레이한 횟수"),
+                                fieldWithPath("totalThemeEvaluatesCount").description("회원이 테마를 평가한 총 횟수")
                         )
                 ))
         ;
@@ -1211,8 +1158,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.SEARCH_MEMBER_SUCCESS.getStatus()))
-                .andExpect(jsonPath("message").value(ResponseStatus.SEARCH_MEMBER_SUCCESS.getMessage()))
                 .andDo(document(
                         "search-member-success",
                         requestHeaders(
@@ -1226,21 +1171,21 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                                         "정확한 이메일, 닉네임을 지정해야 검색할 수 있습니다.")
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.memberId").description("검색된 회원의 식별 ID"),
-                                fieldWithPath("data.profileImage.profileImageId").description("검색된 회원에 등록된 프로필 이미지의 식별 ID"),
-                                fieldWithPath("data.profileImage.profileImageUrl").description("검색된 회원에 등록된 프로필 이미지 다운로드 URL"),
-                                fieldWithPath("data.profileImage.profileImageThumbnailUrl").description("검색된 회원에 등록횐 프로필 이미지의 썸네일 이미지 다운로드 URL"),
-                                fieldWithPath("data.nickname").description("검색된 회원의 닉네임"),
-                                fieldWithPath("data.description").description("검색된 회원의 자기소개"),
-                                fieldWithPath("data.roomEscapeStatus.challengesCount").description("검색된 회원이 테마에 도전한 총 횟수"),
-                                fieldWithPath("data.roomEscapeStatus.successCount").description("검색된 회원이 테마 클리어에 성공한 총 횟수"),
-                                fieldWithPath("data.roomEscapeStatus.failCount").description("검색된 회원이 테마 클리어에 실패한 총 횟수"),
-                                fieldWithPath("data.roomEscapeRecodesOpenStatus").description("검색된 회원의 방탈출 공개 상태"),
-                                fieldWithPath("data.playInclinations[0].genre.genreCode").description("검색된 회원이 플레이한 장르의 코드"),
-                                fieldWithPath("data.playInclinations[0].genre.genreName").description("검색된 회원이 플레이한 장르의 이름"),
-                                fieldWithPath("data.playInclinations[0].playCount").description("검색된 회원이 해당 장르 플레이한 횟수"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("memberId").description("검색된 회원의 식별 ID"),
+                                fieldWithPath("profileImage.profileImageId").description("검색된 회원에 등록된 프로필 이미지의 식별 ID"),
+                                fieldWithPath("profileImage.profileImageUrl").description("검색된 회원에 등록된 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("profileImage.profileImageThumbnailUrl").description("검색된 회원에 등록횐 프로필 이미지의 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("nickname").description("검색된 회원의 닉네임"),
+                                fieldWithPath("description").description("검색된 회원의 자기소개"),
+                                fieldWithPath("roomEscapeStatus.challengesCount").description("검색된 회원이 테마에 도전한 총 횟수"),
+                                fieldWithPath("roomEscapeStatus.successCount").description("검색된 회원이 테마 클리어에 성공한 총 횟수"),
+                                fieldWithPath("roomEscapeStatus.failCount").description("검색된 회원이 테마 클리어에 실패한 총 횟수"),
+                                fieldWithPath("roomEscapeRecodesOpenStatus").description("검색된 회원의 방탈출 공개 상태"),
+                                fieldWithPath("playInclinations[0].genre.genreCode").description("검색된 회원이 플레이한 장르의 코드"),
+                                fieldWithPath("playInclinations[0].genre.genreName").description("검색된 회원이 플레이한 장르의 이름"),
+                                fieldWithPath("playInclinations[0].playCount").description("검색된 회원이 해당 장르 플레이한 횟수"),
+                                fieldWithPath("myProfile").description("자신의 프로필을 조회했는지 여부 +\n" +
+                                        "자신의 프로필은 조회한 경우 민감한 정보들이 추가적으로 응답")
                         )
                 ))
         ;

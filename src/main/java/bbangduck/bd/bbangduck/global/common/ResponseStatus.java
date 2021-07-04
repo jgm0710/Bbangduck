@@ -21,11 +21,11 @@ public enum ResponseStatus {
      * 시작 코드 1
      */
     KAKAO_SIGN_IN_SUCCESS(1221, "카카오 로그인에 성공했습니다.", "카카오 API 를 통한 로그인이 성공했을 경우"),
-    REFRESH_SIGN_IN_SUCCESS(1222, "Refresh Token 을 통한 Access Token 재발급에 성공했습니다.", "Refresh Token 을 통한 Access Token 재발급에 성공했을 경우"),
-    WITHDRAWAL_SUCCESS(1223, "회원 탈퇴에 성공했습니다.", "회원 탈퇴에 성공한 경우"),
-    SIGN_OUT_SUCCESS(1224, "로그아웃에 성공했습니다.", "로그아웃에 성공한 경우"),
-    CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS(1225, "이메일 중복 체크에 성공했습니다.", "이메일 중복 체크에 성공한 경우"),
-    CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS(1226, "닉네임 중복 체크에 성공했습니다.", "닉테임 중복 체크에 성공한 경우"),
+//    REFRESH_SIGN_IN_SUCCESS(1222, "Refresh Token 을 통한 Access Token 재발급에 성공했습니다.", "Refresh Token 을 통한 Access Token 재발급에 성공했을 경우"),
+//    WITHDRAWAL_SUCCESS(1223, "회원 탈퇴에 성공했습니다.", "회원 탈퇴에 성공한 경우"),
+//    SIGN_OUT_SUCCESS(1224, "로그아웃에 성공했습니다.", "로그아웃에 성공한 경우"),
+//    CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS(1225, "이메일 중복 체크에 성공했습니다.", "이메일 중복 체크에 성공한 경우"),
+//    CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS(1226, "닉네임 중복 체크에 성공했습니다.", "닉테임 중복 체크에 성공한 경우"),
     NAVER_SIGN_IN_SUCCESS(1227, "네이버 로그인에 성공했습니다.", "네이버 API 를 통한 로그인에 성공했을 경우"),
 
     UNAUTHORIZED(1401, "인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.", "인증이 필요한 리소스 요청 시 헤더에 기입된 인증 토큰이 유효하지 않은 경우"),
@@ -52,16 +52,16 @@ public enum ResponseStatus {
      * 회원 관련 응답 코드
      * 시작 코드 2
      */
-    MEMBER_SIGN_UP_SUCCESS(2201, " 회원가입에 성공했습니다.", "회원가입에 성공했을 경우"),
-    GET_DIFFERENT_MEMBER_PROFILE_SUCCESS(2202, "다른 회원의 프로필 조회에 성공했습니다.", "다른 회원의 프로필 조회에 성공한 경우"),
-    MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS(2203, "회원 프로필 이미지 변경에 성공했습니다.", "회원 프로필 이미지 변경 요청이 성공했을 경우"),
-    MEMBER_DELETE_PROFILE_IMAGE_SUCCESS(2204, "회원 프로필 이미지 삭제에 성공했습니다.", "회원 프로필 이미지 삭제 요청에 성공했을 경우"),
-    MEMBER_UPDATE_NICKNAME_SUCCESS(2205, "회원 Nickname 변경에 성공했습니다.", "회원 Nickname 변경에 성공한 경우"),
-    MEMBER_UPDATE_DESCRIPTION_SUCCESS(2206, "회원 자기소개 변경에 성공했습니다.", "회원 자기소개 변경에 성공한 경우"),
-    UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS(2207, "회원 방탈출 기록 공개 상태 변경에 성공했습니다.", "회원 방탈출 기록 공개 상태 변경에 성공한 경우"),
-    GET_MY_PROFILE_SUCCESS(2208, "본인의 프로필 조회에 성공했습니다.", "본인의 프로필 조회에 성공한 경우"),
-    GET_MEMBER_PLAY_INCLINATIONS_SUCCESS(2209, "회원의 플레이 성향 조회에 성공했습니다.", "회원의 플레이 성향 조회에 성공한 경우"),
-    SEARCH_MEMBER_SUCCESS(2210, "회원 검색에 성공했습니다.", "이메일, 닉네임 등을 통해 회원 검색에 성공한 경우"),
+//    MEMBER_SIGN_UP_SUCCESS(2201, " 회원가입에 성공했습니다.", "회원가입에 성공했을 경우"),
+//    GET_DIFFERENT_MEMBER_PROFILE_SUCCESS(2202, "다른 회원의 프로필 조회에 성공했습니다.", "다른 회원의 프로필 조회에 성공한 경우"),
+//    MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS(2203, "회원 프로필 이미지 변경에 성공했습니다.", "회원 프로필 이미지 변경 요청이 성공했을 경우"),
+//    MEMBER_DELETE_PROFILE_IMAGE_SUCCESS(2204, "회원 프로필 이미지 삭제에 성공했습니다.", "회원 프로필 이미지 삭제 요청에 성공했을 경우"),
+//    MEMBER_UPDATE_NICKNAME_SUCCESS(2205, "회원 Nickname 변경에 성공했습니다.", "회원 Nickname 변경에 성공한 경우"),
+//    MEMBER_UPDATE_DESCRIPTION_SUCCESS(2206, "회원 자기소개 변경에 성공했습니다.", "회원 자기소개 변경에 성공한 경우"),
+//    UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS(2207, "회원 방탈출 기록 공개 상태 변경에 성공했습니다.", "회원 방탈출 기록 공개 상태 변경에 성공한 경우"),
+//    GET_MY_PROFILE_SUCCESS(2208, "본인의 프로필 조회에 성공했습니다.", "본인의 프로필 조회에 성공한 경우"),
+//    GET_MEMBER_PLAY_INCLINATIONS_SUCCESS(2209, "회원의 플레이 성향 조회에 성공했습니다.", "회원의 플레이 성향 조회에 성공한 경우"),
+//    SEARCH_MEMBER_SUCCESS(2210, "회원 검색에 성공했습니다.", "이메일, 닉네임 등을 통해 회원 검색에 성공한 경우"),
 
 
     MEMBER_NOT_FOUND(2401, "해당 회원이 존재하지 않습니다.", "해당 조건으로 조회된 회원이 존재하지 않는 경우"),
@@ -85,7 +85,7 @@ public enum ResponseStatus {
      * 파일 관련 응답 코드
      * 시작 코드 3
      */
-    UPLOAD_IMAGE_FILE_SUCCESS(3201, "이미지 파일 업로드에 성공했습니다.", "이미지 파일 업로드에 성공한 경우"),
+//    UPLOAD_IMAGE_FILE_SUCCESS(3201, "이미지 파일 업로드에 성공했습니다.", "이미지 파일 업로드에 성공한 경우"),
     // FIXME: 2021-05-12 파일 삭제 기능 부분 논의 완료되면 해당 주석 삭제
 //    DELETE_FILE_SUCCESS(3202, "파일 삭제에 성공했습니다.", "파일 삭제에 성공한 경우"),
 
@@ -105,20 +105,20 @@ public enum ResponseStatus {
      * 리뷰 관련 응답 코드
      * 시작 코드 4
      */
-    CREATE_REVIEW_SUCCESS(4201, "리뷰 생성에 성공했습니다.", "리뷰 생성에 성공한 경우"),
+//    CREATE_REVIEW_SUCCESS(4201, "리뷰 생성에 성공했습니다.", "리뷰 생성에 성공한 경우"),
 //    CREATE_DETAIL_REVIEW_SUCCESS(4202, "상세 리뷰 생성에 성공했습니다.", "상세 리뷰 생성에 성공한 경우"),
-    GET_REVIEW_SUCCESS(4204, "리뷰 조회에 성공했습니다.", "리뷰 1건 조회에 성공한 경우"),
-    GET_THEME_REVIEW_LIST_SUCCESS(4205, "테마에 등록된 리뷰 목록 조회에 성공했습니다.", "테마에 등록된 리뷰 목록 조회에 성공한 경우"),
-    UPDATE_REVIEW_SUCCESS(4206, "리뷰 수정에 성공했습니다.", "리뷰 수정에 성공한 경우"),
-    ADD_SURVEY_TO_REVIEW_SUCCESS(4207, "리뷰에 설문 등록 요청을 성공했습니다.", "리뷰에 테마에 관한 설문 정보 등록을 성공한 경우"),
-    UPDATE_SURVEY_FROM_REVIEW_SUCCESS(4208, "리뷰에 등록된 설문 수정 요청에 성공했습니다.", "리뷰에 등록된 설문 수정 요청을 성공한 경우"),
-    ADD_DETAIL_TO_REVIEW_SUCCESS(4209, "리뷰에 리뷰 상세를 추가하는데 성공했습니다.", "리뷰에 리뷰 상세를 추가하는데 성공한 경우"),
-    UPDATE_DETAIL_FROM_REVIEW_SUCCESS(4210, "리뷰의 리뷰 상세 수정에 성공했습니다.", "리뷰에 등록된 리뷰 상세를 수정하는데 성공한 경우"),
-    ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS(4211, "리뷰에 리뷰 상세 및 설문을 추가하는데 성공했습니다.", "리뷰에 리뷰 상세 및 설문을 추가하는데 성공한 경우"),
-    DELETE_REVIEW_SUCCESS(4212, "리뷰 삭제에 성공했습니다.", "리뷰 삭제에 성공한 경우"),
-    ADD_LIKE_TO_REVIEW_SUCCESS(4213, "리뷰 좋아요 등록에 성공했습니다.", "리뷰 좋아요 등록에 성공한 경우"),
-    REMOVE_LIKE_FROM_REVIEW_SUCCESS(4214, "리뷰에 등록된 좋아요 삭제에 성공했습니다.", "리뷰에 등록된 좋아요 삭제에 성공한 경우"),
-    GET_MEMBER_REVIEW_LIST_SUCCESS(4215, "특정 회원이 생성한 리뷰 목록 조회를 성공했습니다.", "특정 회원이 생성한 리뷰 목록 조회에 성공한 경우"),
+//    GET_REVIEW_SUCCESS(4204, "리뷰 조회에 성공했습니다.", "리뷰 1건 조회에 성공한 경우"),
+//    GET_THEME_REVIEW_LIST_SUCCESS(4205, "테마에 등록된 리뷰 목록 조회에 성공했습니다.", "테마에 등록된 리뷰 목록 조회에 성공한 경우"),
+//    UPDATE_REVIEW_SUCCESS(4206, "리뷰 수정에 성공했습니다.", "리뷰 수정에 성공한 경우"),
+//    ADD_SURVEY_TO_REVIEW_SUCCESS(4207, "리뷰에 설문 등록 요청을 성공했습니다.", "리뷰에 테마에 관한 설문 정보 등록을 성공한 경우"),
+//    UPDATE_SURVEY_FROM_REVIEW_SUCCESS(4208, "리뷰에 등록된 설문 수정 요청에 성공했습니다.", "리뷰에 등록된 설문 수정 요청을 성공한 경우"),
+//    ADD_DETAIL_TO_REVIEW_SUCCESS(4209, "리뷰에 리뷰 상세를 추가하는데 성공했습니다.", "리뷰에 리뷰 상세를 추가하는데 성공한 경우"),
+//    UPDATE_DETAIL_FROM_REVIEW_SUCCESS(4210, "리뷰의 리뷰 상세 수정에 성공했습니다.", "리뷰에 등록된 리뷰 상세를 수정하는데 성공한 경우"),
+//    ADD_DETAIL_AND_SURVEY_TO_REVIEW_SUCCESS(4211, "리뷰에 리뷰 상세 및 설문을 추가하는데 성공했습니다.", "리뷰에 리뷰 상세 및 설문을 추가하는데 성공한 경우"),
+//    DELETE_REVIEW_SUCCESS(4212, "리뷰 삭제에 성공했습니다.", "리뷰 삭제에 성공한 경우"),
+//    ADD_LIKE_TO_REVIEW_SUCCESS(4213, "리뷰 좋아요 등록에 성공했습니다.", "리뷰 좋아요 등록에 성공한 경우"),
+//    REMOVE_LIKE_FROM_REVIEW_SUCCESS(4214, "리뷰에 등록된 좋아요 삭제에 성공했습니다.", "리뷰에 등록된 좋아요 삭제에 성공한 경우"),
+//    GET_MEMBER_REVIEW_LIST_SUCCESS(4215, "특정 회원이 생성한 리뷰 목록 조회를 성공했습니다.", "특정 회원이 생성한 리뷰 목록 조회에 성공한 경우"),
 
     CREATE_REVIEW_NOT_VALID(4401, "리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "리뷰 생성 요청 시 공통적으로 필요한 필수 기입 사항을 올바르게 기입하지 않은 경우"),
 //    CREATE_SIMPLE_REVIEW_NOT_VALID(4402, "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않았습니다.", "간단 리뷰 생성 요청 시 기입 사항을 올바르게 기입하지 않은 경우"),

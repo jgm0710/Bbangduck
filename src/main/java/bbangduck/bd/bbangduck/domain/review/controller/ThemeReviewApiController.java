@@ -4,13 +4,12 @@ import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ThemeReviewSearchRequestDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.PaginationResponseDto;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.common.ThrowUtils;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
@@ -76,7 +75,7 @@ public class ThemeReviewApiController{
      */
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> createReview(
+    public ResponseEntity<Object> createReview(
             @PathVariable Long themeId,
             @RequestBody @Valid ReviewCreateRequestDto requestDto,
             Errors errors,
@@ -87,12 +86,11 @@ public class ThemeReviewApiController{
         Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
         URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId, currentMember)).toUri();
 
-        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.CREATE_REVIEW_SUCCESS, null));
-
+        return ResponseEntity.created(linkToGetReviewsUri).build();
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<PaginationResponseDto<Object>>> getReviewList(
+    public ResponseEntity<PaginationResponseDto<Object>> getReviewList(
             @PathVariable Long themeId,
             @ModelAttribute @Valid ThemeReviewSearchRequestDto requestDto,
             BindingResult bindingResult,
@@ -122,7 +120,7 @@ public class ThemeReviewApiController{
                 .build();
 
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS, paginationResponseDto));
+        return ResponseEntity.ok(paginationResponseDto);
     }
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {

@@ -36,6 +36,8 @@ public class MemberProfileResponseDto {
 
     private List<MemberPlayInclinationResponseDto> playInclinations;
 
+    protected Boolean myProfile;
+
     public static MemberProfileResponseDto convert(Member member, ReviewRecodesCountsDto reviewRecodesCountsDto, List<MemberPlayInclination> memberPlayInclinations) {
         return new MemberProfileResponseDto(member, reviewRecodesCountsDto, memberPlayInclinations);
     }
@@ -48,6 +50,7 @@ public class MemberProfileResponseDto {
         this.roomEscapeStatus = MemberRoomEscapeStatusResponseDto.convert(reviewRecodesCountsDto);
         this.roomEscapeRecodesOpenStatus = member.getRoomEscapeRecodesOpenStatus();
         this.playInclinations = convertMemberPlayInclinationsToResponseDtos(memberPlayInclinations);
+        this.myProfile = false;
     }
 
     private List<MemberPlayInclinationResponseDto> convertMemberPlayInclinationsToResponseDtos(List<MemberPlayInclination> memberPlayInclinations) {

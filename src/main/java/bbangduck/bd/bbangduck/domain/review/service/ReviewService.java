@@ -242,6 +242,7 @@ public class ReviewService {
      * 오류 테스트
      * - 리뷰를 찾을 수 없는 경우
      * - 이미 삭제된 리뷰일 경우
+     * fixme : 리뷰 삭제 시 레코드 변호 update 하지 않도록 변경
      */
     @Transactional
     public void deleteReview(Long reviewId) {
