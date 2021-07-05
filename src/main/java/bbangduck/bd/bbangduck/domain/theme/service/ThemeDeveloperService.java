@@ -15,6 +15,7 @@ import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemeImage;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import lombok.RequiredArgsConstructor;
@@ -405,5 +406,14 @@ public class ThemeDeveloperService {
         theme.addGenre(genre);
 
         themeRepository.save(theme);
+    }
+
+    public void addImageToTheme(Theme theme, Long fileStorageId, String fileName) {
+        ThemeImage themeImage = ThemeImage.builder()
+                .fileStorageId(fileStorageId)
+                .fileName(fileName)
+                .build();
+
+        theme.setThemeImage(themeImage);
     }
 }

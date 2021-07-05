@@ -185,6 +185,7 @@ public enum ResponseStatus {
     GET_MEMBER_LIST_BY_DEVELOPER_SUCCESS(97202, "개발자 권한으로 요청된 회원 목록 조회에 성공했습니다.", "개발자 권한으로 회원 목록 조회에 성공한 경우"),
     GET_MEMBER_BY_DEVELOPER_SUCCESS(97203, "개발자 권한으로 요청된 회원애 대한 조회에 성공했습니다.", "개발자 권한으로 회원 조회에 성공한 경우"),
     SIGN_IN_DEVELOPER_SUCCESS(97204, "개발자 권한을 가진 사용자 로그인에 성공했습니다.", "개발자 계정을 통한 로그인에 성공한 경우"),
+    ADD_IMAGE_TO_THEME_BY_DEVELOPER_NOT_VALID(97204, "개발자 권한을 가진 사용자에 의해 테마 이미지 추가 시 기입 사항이 올바르게 기입되지 않았습니다.", "개발자 권한을 가진 사용자에 의해 테마 이미지 추가 시 기입 사항이 올바르게 기입되지 않은 경우"),
 
 
     /**

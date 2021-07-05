@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.dto.controller.response;
 
 import bbangduck.bd.bbangduck.domain.shop.entity.Area;
+import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,9 @@ public class ThemeShopAreaResponseDto {
     private String areaName;
 
     public static ThemeShopAreaResponseDto convert(Area area) {
+        if (NullCheckUtils.isNull(area)) {
+            return null;
+        }
         return ThemeShopAreaResponseDto.builder()
                 .areaId(area.getId())
                 .areaCode(area.getCode())

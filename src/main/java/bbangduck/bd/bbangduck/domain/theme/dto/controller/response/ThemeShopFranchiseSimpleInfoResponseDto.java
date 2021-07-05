@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.dto.controller.response;
 
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
+import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,9 @@ public class ThemeShopFranchiseSimpleInfoResponseDto {
     private String franchiseName;
 
     public static ThemeShopFranchiseSimpleInfoResponseDto convert(Franchise franchise) {
+        if (NullCheckUtils.isNull(franchise)) {
+            return null;
+        }
         return ThemeShopFranchiseSimpleInfoResponseDto.builder()
                 .franchiseId(franchise.getId())
                 .franchiseName(franchise.getName())

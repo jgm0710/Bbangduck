@@ -20,4 +20,8 @@ public class NullCheckUtils {
     public static <T> boolean isNotNull(T object) {
         return object != null;
     }
+
+    public static <T> boolean isNull(T object) {
+        return object == null;
+    }
 }
