@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import java.util.List;
 
 import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
-import static bbangduck.bd.bbangduck.global.common.util.RequestUtils.getParametersFromRequest;
 
 /**
  * 테마와 관련된 EndPoint 를 구현하기 위한 Api Controller
@@ -44,10 +42,8 @@ public class ThemeApiController {
     ) {
         hasErrorsThrow(ResponseStatus.GET_THEME_LIST_NOT_VALID, bindingResult);
 
-        PaginationResultResponseDto<ThemeGetListResponseDto> result = themeApplicationService.getThemeList(criteriaDto,
-                requestDto.toServiceDto(),
-                request.getRequestURL().toString(),
-                getParametersFromRequest(request));
+        PaginationResultResponseDto<ThemeGetListResponseDto> result
+                = themeApplicationService.getThemeList(criteriaDto, requestDto.toServiceDto());
 
         return ResponseEntity.ok(result);
     }

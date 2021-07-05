@@ -13,6 +13,7 @@ import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -70,14 +71,14 @@ public class ThemeQueryRepository {
                 case LATEST:
                     orderSpecifiers.add(theme.registerTimes.desc());
                 case RATING_ASC:
-                    orderSpecifiers.add(theme.totalRating.divide(theme.totalEvaluatedCount).asc());
+                    orderSpecifiers.add(theme.totalRating.divide(totalEvaluatedCount()).asc());
                     orderSpecifiers.add(theme.registerTimes.desc());
                 default:
-                    orderSpecifiers.add(theme.totalRating.divide(theme.totalEvaluatedCount).desc());
+                    orderSpecifiers.add(theme.totalRating.divide(totalEvaluatedCount()).desc());
                     orderSpecifiers.add(theme.registerTimes.desc());
             }
         } else {
-            orderSpecifiers.add(theme.totalRating.divide(theme.totalEvaluatedCount).desc());
+            orderSpecifiers.add(theme.totalRating.divide(totalEvaluatedCount()).desc());
             orderSpecifiers.add(theme.registerTimes.desc());
         }
 
@@ -105,18 +106,23 @@ public class ThemeQueryRepository {
 
     private BooleanExpression ratingEq(ThemeRatingFilteringType rating) {
         if (isNotNull(rating)) {
+
             switch (rating) {
                 case TWO_OR_MORE:
-                    return theme.totalRating.divide(theme.totalEvaluatedCount).gt(2);
+                    return theme.totalRating.divide(totalEvaluatedCount()).gt(2);
                 case THREE_OR_MORE:
-                    return theme.totalRating.divide(theme.totalEvaluatedCount).gt(3);
+                    return theme.totalRating.divide(totalEvaluatedCount()).gt(3);
                 case FOUR_OR_MORE:
-                    return theme.totalRating.divide(theme.totalEvaluatedCount).gt(4);
+                    return theme.totalRating.divide(totalEvaluatedCount()).gt(4);
                 default:
                     return null;
             }
         }
         return null;
+    }
+
+    private NumberExpression<Long> totalEvaluatedCount() {
+        return theme.totalEvaluatedCount.when(0L).then(1L).otherwise(theme.totalEvaluatedCount);
     }
 
     private BooleanExpression typeEq(ThemeType themeType) {

@@ -12,7 +12,9 @@ import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.entity.enumerate.ShopPriceUnit;
 import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
+import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.shop.service.ShopService;
+import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,6 +58,12 @@ public class ShopTest {
     @Autowired
     private FranchiseRepository franchiseRepository;
 
+    @Autowired
+    private ShopRepository shopRepository;
+
+    @Autowired
+    private ThemeRepository themeRepository;
+
     private Member member1;
 
     private AdminInfo adminInfoSave1;
@@ -64,6 +72,16 @@ public class ShopTest {
 
     @BeforeEach
     public void setup() {
+        memberRepository.deleteAll();
+        adminInfoRepository.deleteAll();
+        areaRepository.deleteAll();
+        franchiseRepository.deleteAll();
+        shopRepository.deleteAll();
+        themeRepository.deleteAll();
+
+        entityManager.flush();
+        entityManager.clear();
+
         member1 = Member.builder()
                 .email("otrodevym1@gmail.com")
                 .password("1234")
@@ -110,8 +128,6 @@ public class ShopTest {
     public void shopSaveTest() {
 
 
-
-
         Shop shop = Shop.builder()
                 .address("서울시")
                 .area(area)
@@ -127,7 +143,7 @@ public class ShopTest {
         ShopImage shopImage = ShopImage.builder()
                 .fileName("미니 사진")
                 .shop(shop)
-                .fileStorageId(1l)
+                .fileStorageId(1L)
                 .build();
         ShopPrice shopPrice = ShopPrice.builder()
                 .price(10000)

@@ -53,4 +53,19 @@ class PaginationResultResponseDtoTest {
         System.out.println("results = " + results);
 
     }
+
+    @Test
+    @DisplayName("null Contents Test")
+    public void nullContentsTest() throws Exception {
+        //given
+        List<Theme> themes = new ArrayList<>();
+        PaginationResultResponseDto<ThemeGetListResponseDto> result = new PaginationResultResponseDto<>(themes, 1, 1, 1).convert(ThemeGetListResponseDto::convert);
+
+        //when
+        System.out.println("result = " + result);
+
+
+        //then
+
+    }
 }

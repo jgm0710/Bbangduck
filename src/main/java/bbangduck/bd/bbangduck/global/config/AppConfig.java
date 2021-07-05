@@ -5,7 +5,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.domain.theme.service.ThemeDeveloperService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -81,10 +81,10 @@ public class AppConfig {
         return new ApplicationRunner() {
 
             @Autowired
-            private MemberService memberService;
+            private MemberRepository memberRepository;
 
             @Autowired
-            private MemberRepository memberRepository;
+            private ThemeDeveloperService themeDeveloperService;
 
             @Override
             public void run(ApplicationArguments args) {
@@ -105,6 +105,8 @@ public class AppConfig {
 
                     memberRepository.save(member);
                 }
+
+                themeDeveloperService.dummyDataSetUp();
 
             }
         };

@@ -12,7 +12,6 @@ import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public class ThemeApplicationService {
 
     private final ThemeAnalysisService themeAnalysisService;
 
-    public PaginationResultResponseDto<ThemeGetListResponseDto> getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto, String requestPath, MultiValueMap<String, String> params) {
+    public PaginationResultResponseDto<ThemeGetListResponseDto> getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto) {
         QueryResults<Theme> themeQueryResults = themeService.getThemeList(criteriaDto, themeGetListDto);
 
         long totalResultsCount = themeQueryResults.getTotal();

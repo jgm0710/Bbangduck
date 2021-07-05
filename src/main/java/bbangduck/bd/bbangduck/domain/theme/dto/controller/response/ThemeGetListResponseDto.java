@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.theme.dto.controller.response;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +31,9 @@ public class ThemeGetListResponseDto {
     private String shopName;
 
     public static ThemeGetListResponseDto convert(Theme theme) {
+        if (!NullCheckUtils.isNotNull(theme)) {
+            return null;
+        }
         Shop themeShop = theme.getShop();
         Franchise themeShopFranchise = themeShop.getFranchise();
 

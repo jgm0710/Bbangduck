@@ -25,7 +25,15 @@ public class PaginationResultResponseDto<T> {
     private long totalResultsCount;
 
     public <R> PaginationResultResponseDto<R> convert(Convertor<T, R> convertor) {
-        List<R> result = contents.stream().map(convertor::convert).collect(Collectors.toList());
+        List<R> result = convertContents(convertor);
         return new PaginationResultResponseDto<>(result, nowPageNum, requestAmount, totalResultsCount);
+    }
+
+    private <R> List<R> convertContents(Convertor<T, R> convertor) {
+        if (NullCheckUtils.existsList(contents)) {
+            return contents.stream().map(t -> NullCheckUtils.isNotNull(t) ? convertor.convert(t) : null).collect(Collectors.toList());
+        } else {
+            return null;
+        }
     }
 }
