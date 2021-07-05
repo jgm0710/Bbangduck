@@ -230,6 +230,20 @@ class ThemeApiControllerTest extends BaseControllerTest {
 
         theme.setThemeImage(themeImage);
 
+        Genre genre1 = Genre.builder()
+                .id(1L)
+                .code("GR1")
+                .name("genre1")
+                .build();
+
+        Genre genre2 = Genre.builder()
+                .id(2L)
+                .code("GR2")
+                .name("genre2")
+                .build();
+        theme.addGenre(genre1);
+        theme.addGenre(genre2);
+
         given(themeRepository.findById(theme.getId())).willReturn(Optional.of(theme));
 
         //when
@@ -244,15 +258,23 @@ class ThemeApiControllerTest extends BaseControllerTest {
                         "get-theme-success",
                         responseFields(
                                 fieldWithPath("themeId").description("조회된 테마의 식별 ID"),
+                                fieldWithPath("themeImage").description("조회된 테마에 등록된 이미지 정보"),
                                 fieldWithPath("themeImage.themeImageId").description("조회된 테마의 이미지의 식별 ID"),
                                 fieldWithPath("themeImage.themeImageUrl").description("조회된 테마의 이미지 다운로드 URL"),
                                 fieldWithPath("themeImage.themeImageThumbnailUrl").description("조회된 테마의 이미지의 썸네일 이미지 다운로드 URL"),
                                 fieldWithPath("themeName").description("조회된 테마의 이름"),
                                 fieldWithPath("themeDescription").description("조회된 테마에 대한 설명"),
+                                fieldWithPath("themeGenres").description("조회된 테마의 장르 정보들"),
+                                fieldWithPath("themeGenres[].genreId").description("조회된 테마의 장르의 식별 ID"),
+                                fieldWithPath("themeGenres[].genreCode").description("조회된 테마의 장르의 코드 값"),
+                                fieldWithPath("themeGenres[].genreName").description("조회된 테마의 장르의 이름"),
+                                fieldWithPath("shopInfo").description("조회된 테마의 샵 정보"),
+                                fieldWithPath("shopInfo.franchiseInfo").description("조회된 테마의 샵의 프랜차이즈 정보"),
                                 fieldWithPath("shopInfo.franchiseInfo.franchiseId").description("조회된 테마의 샵의 프렌차이즈의 식별 ID"),
                                 fieldWithPath("shopInfo.franchiseInfo.franchiseName").description("조회된 테마의 샵의 프렌차이즈의 이름"),
                                 fieldWithPath("shopInfo.shopId").description("조회된 테마의 샵의 식별 ID"),
                                 fieldWithPath("shopInfo.shopName").description("조회된 테마의 샵의 이름"),
+                                fieldWithPath("shopInfo.areaInfo").description("조회된 테마의 샵의 지역 정보"),
                                 fieldWithPath("shopInfo.areaInfo.areaId").description("조회된 테마의 샵의 지역의 식별 ID"),
                                 fieldWithPath("shopInfo.areaInfo.areaCode").description("조회된 테마의 샵의 지역의 코드 값"),
                                 fieldWithPath("shopInfo.areaInfo.areaName").description("조회된 테마의 샵의 지역의 이름"),
