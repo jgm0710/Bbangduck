@@ -1,20 +1,19 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
+import bbangduck.bd.bbangduck.domain.friend.service.MemberFriendService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
-import bbangduck.bd.bbangduck.domain.friend.service.MemberFriendService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.MemberReviewSearchRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAreNotOpenException;
 import bbangduck.bd.bbangduck.domain.review.exception.MemberRoomEscapeRecodesAreOnlyFriendOpenException;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
+import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import com.querydsl.core.QueryResults;
@@ -27,10 +26,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static bbangduck.bd.bbangduck.domain.review.controller.ReviewResponseUtils.*;
+import static bbangduck.bd.bbangduck.domain.review.controller.ReviewResponseUtils.convertReviewToResponseDto;
 import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -77,8 +74,12 @@ public class MemberReviewApiController{
      * - service 실패
      * -- 회원을 찾을 수 없는 경우
      */
+    /**
+     * FIXME: 2021-06-15 좋아요 목록 조회 한 방 쿼링해서 리펙토링하기
+     * 테마 리뷰 목록도 연계되어 있음
+     */
     @GetMapping
-    public ResponseEntity<ResponseDto<ReviewsPaginationResponseDto<Object>>> getMemberReviewList(
+    public ResponseEntity<PaginationResultResponseDto<ReviewResponseDto>> getMemberReviewList(
             @PathVariable Long memberId,
             @ModelAttribute @Valid MemberReviewSearchRequestDto requestDto,
             BindingResult bindingResult,
@@ -112,53 +113,21 @@ public class MemberReviewApiController{
         List<Review> findReviews = reviewQueryResults.getResults();
         List<ReviewResponseDto> reviewResponseDtos = convertReviewsToReviewResponseDtos(currentMember, findReviews, reviewProperties.getPeriodForAddingSurveys());
 
-        long totalPagesCount = calculateTotalPagesCount(reviewQueryResults.getTotal(), reviewSearchDto.getAmount());
+        PaginationResultResponseDto<ReviewResponseDto> result = new PaginationResultResponseDto<>(
+                reviewResponseDtos,
+                requestDto.getPageNum(),
+                requestDto.getAmount(),
+                reviewQueryResults.getTotal()
+        );
 
-        ReviewsPaginationResponseDto<Object> reviewsPaginationResponseDto = ReviewsPaginationResponseDto.builder()
-                .list(reviewResponseDtos)
-                .pageNum(reviewSearchDto.getPageNum())
-                .amount(reviewSearchDto.getAmount())
-                .totalPagesCount(totalPagesCount)
-                .prevPageUrl(getMemberReviewListPrevPageUriString(memberId, reviewSearchDto, totalPagesCount))
-                .nextPageUrl(getMemberReviewListNextPageUriString(memberId, reviewSearchDto, totalPagesCount))
-                .build();
-
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_REVIEW_LIST_SUCCESS, reviewsPaginationResponseDto));
+        return ResponseEntity.ok(result);
     }
 
-    /**
-     * FIXME: 2021-06-15 좋아요 목록 조회 한 방 쿼링해서 리펙토링하기
-     * 테마 리뷰 목록도 연계되어 있음
-     */
     private List<ReviewResponseDto> convertReviewsToReviewResponseDtos(Member currentMember, List<Review> findReviews, long periodForAddingSurveys) {
         return findReviews.stream().map(review -> {
             boolean existsReviewLike = getExistsReviewLike(review.getId(), currentMember);
             return convertReviewToResponseDto(review, currentMember, existsReviewLike, periodForAddingSurveys);
         }).collect(Collectors.toList());
-    }
-
-    private String getMemberReviewListPrevPageUriString(Long memberId, ReviewSearchDto searchDto, long totalPagesCount) {
-        if (prevPageExists(totalPagesCount, searchDto.getPrevPageNum())) {
-            return linkTo(methodOn(MemberReviewApiController.class).getMemberReviewList(memberId, null, null, null))
-                    .toUriComponentsBuilder()
-                    .queryParam("pageNum", searchDto.getPrevPageNum())
-                    .queryParam("amount", searchDto.getAmount())
-                    .queryParam("searchType", searchDto.getSearchType())
-                    .toUriString();
-        }
-        return null;
-    }
-
-    private String getMemberReviewListNextPageUriString(Long memberId, ReviewSearchDto searchDto, long totalPagesCount) {
-        if (nextPageExists(totalPagesCount, searchDto.getNextPageNum())) {
-            return linkTo(methodOn(MemberReviewApiController.class).getMemberReviewList(memberId,null,null,null))
-                    .toUriComponentsBuilder()
-                    .queryParam("pageNum", searchDto.getNextPageNum())
-                    .queryParam("amount", searchDto.getAmount())
-                    .queryParam("searchType", searchDto.getSearchType())
-                    .toUriString();
-        }
-        return null;
     }
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {

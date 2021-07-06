@@ -9,7 +9,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true  #Jpa show-sql 시 나오는 쿼리를 정렬해서 출력
@@ -18,7 +18,7 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
-    enabled: true
+    enabled: false
   servlet:
     multipart:
       file-size-threshold: 2KB

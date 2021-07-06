@@ -30,22 +30,4 @@ public class ReviewResponseUtils {
                 return null;
         }
     }
-
-
-
-    public static long calculateTotalPagesCount(long totalResultsCount, int amount) {
-        long totalPagesCount = totalResultsCount / amount;
-        if (totalResultsCount % amount != 0) {
-            totalPagesCount++;
-        }
-        return totalPagesCount;
-    }
-
-    public static boolean nextPageExists(long totalPagesCount, int nextPageNum) {
-        return nextPageNum <= totalPagesCount;
-    }
-
-    public static boolean prevPageExists(long totalPagesCount, Integer prevPageNum) {
-        return prevPageNum != null && totalPagesCount >= prevPageNum;
-    }
 }

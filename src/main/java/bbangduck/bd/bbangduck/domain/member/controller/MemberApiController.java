@@ -12,18 +12,15 @@ import bbangduck.bd.bbangduck.domain.member.exception.UpdateDifferentMemberExcep
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,7 +77,7 @@ public class MemberApiController {
      */
     @GetMapping("/{memberId}/profiles")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<MemberProfileResponseDto>> getProfile(
+    public ResponseEntity<MemberProfileResponseDto> getProfile(
             @PathVariable Long memberId,
             @CurrentUser Member currentMember
     ) {
@@ -91,17 +88,8 @@ public class MemberApiController {
         boolean myId = findMember.isMyId(currentMember.getId());
 
         MemberProfileResponseDto memberProfileResponseDto = convertMemberToProfileResponseDto(myId, findMember, reviewRecodesCounts, memberPlayInclinationTopN);
-        ResponseStatus responseStatus = getGetProfileResponseStatus(myId);
 
-        return ResponseEntity.ok(new ResponseDto<>(responseStatus, memberProfileResponseDto));
-    }
-
-    private ResponseStatus getGetProfileResponseStatus(boolean myId) {
-        if (myId) {
-            return ResponseStatus.GET_MY_PROFILE_SUCCESS;
-        } else {
-            return ResponseStatus.GET_DIFFERENT_MEMBER_PROFILE_SUCCESS;
-        }
+        return ResponseEntity.ok(memberProfileResponseDto);
     }
 
     private MemberProfileResponseDto convertMemberToProfileResponseDto(boolean myId, Member findMember, ReviewRecodesCountsDto reviewRecodesCounts, List<MemberPlayInclination> memberPlayInclinations) {
@@ -125,7 +113,7 @@ public class MemberApiController {
      */
     @GetMapping("/{memberId}/play-inclinations")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<GetMemberPlayInclinationsResponseDto>> getMemberPlayInclination(
+    public ResponseEntity<GetMemberPlayInclinationsResponseDto> getMemberPlayInclination(
             @PathVariable Long memberId
     ) {
         List<MemberPlayInclination> memberPlayInclinations = memberService.getMemberPlayInclinations(memberId);
@@ -133,14 +121,13 @@ public class MemberApiController {
         List<MemberPlayInclinationResponseDto> memberPlayInclinationResponseDtos = memberPlayInclinations.stream().map(MemberPlayInclinationResponseDto::convert).collect(Collectors.toList());
         GetMemberPlayInclinationsResponseDto getMemberPlayInclinationsResponseDto = new GetMemberPlayInclinationsResponseDto(memberPlayInclinationResponseDtos, reviewRecodesCounts.getTotalRecodesCount());
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_MEMBER_PLAY_INCLINATIONS_SUCCESS, getMemberPlayInclinationsResponseDto));
-
+        return ResponseEntity.ok(getMemberPlayInclinationsResponseDto);
     }
 
 
     @PutMapping("/{memberId}/profiles/images")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> updateProfileImage(
+    public ResponseEntity<Object> updateProfileImage(
             @PathVariable Long memberId,
             @RequestBody @Valid MemberUpdateProfileImageRequestDto requestDto,
             Errors errors,
@@ -150,12 +137,12 @@ public class MemberApiController {
         ifUpdateDifferentMemberThrows(memberId, currentMember);
 
         memberService.updateProfileImage(memberId, requestDto.toServiceDto());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_UPDATE_PROFILE_IMAGE_SUCCESS, null));
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{memberId}/profiles/images")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> deleteProfileImage(
+    public ResponseEntity<Object> deleteProfileImage(
             @PathVariable Long memberId,
             @CurrentUser Member currentMember
     ) {
@@ -163,13 +150,13 @@ public class MemberApiController {
 
         memberService.deleteProfileImage(memberId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_DELETE_PROFILE_IMAGE_SUCCESS, null));
+        return ResponseEntity.noContent().build();
     }
 
 
     @PutMapping("/{memberId}/nicknames")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> updateNickname(
+    public ResponseEntity<Object> updateNickname(
             @PathVariable Long memberId,
             @RequestBody @Valid MemberUpdateNicknameRequestDto requestDto,
             Errors errors,
@@ -180,12 +167,12 @@ public class MemberApiController {
 
         memberService.updateNickname(memberId, requestDto.getNickname());
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_UPDATE_NICKNAME_SUCCESS, null));
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{memberId}/descriptions")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> updateDescription(
+    public ResponseEntity<Object> updateDescription(
             @PathVariable Long memberId,
             @RequestBody @Valid MemberUpdateDescriptionRequestDto requestDto,
             Errors errors,
@@ -196,12 +183,12 @@ public class MemberApiController {
 
         memberService.updateDescription(memberId, requestDto.getDescription());
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.MEMBER_UPDATE_DESCRIPTION_SUCCESS, null));
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{memberId}/room-escape-recodes-open-status")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> updateRoomEscapeRecodesOpenStatus(
+    public ResponseEntity<Object> updateRoomEscapeRecodesOpenStatus(
             @PathVariable Long memberId,
             @RequestBody @Valid MemberRoomEscapeRecodesOpenStatusUpdateRequestDto requestDto,
             @CurrentUser Member currentMember
@@ -209,7 +196,7 @@ public class MemberApiController {
         ifUpdateDifferentMemberThrows(memberId, currentMember);
         memberService.updateRoomEscapeRecodesOpenStatus(memberId, requestDto.getRoomEscapeRecodesOpenStatus());
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResponseDto<>(ResponseStatus.UPDATE_ROOM_ESCAPE_RECODES_OPEN_STATUS_SUCCESS, null));
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -234,7 +221,7 @@ public class MemberApiController {
      */
     @PostMapping("/search")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<MemberProfileResponseDto>> searchMember(
+    public ResponseEntity<MemberProfileResponseDto> searchMember(
             @RequestBody @Valid MemberSearchRequestDto requestDto,
             Errors errors
     ) {
@@ -244,7 +231,7 @@ public class MemberApiController {
         List<MemberPlayInclination> memberPlayInclinationTopN = memberService.getMemberPlayInclinationTopN(findMember.getId());
         MemberProfileResponseDto memberProfileResponseDto = MemberProfileResponseDto.convert(findMember, reviewRecodesCounts, memberPlayInclinationTopN);
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.SEARCH_MEMBER_SUCCESS, memberProfileResponseDto));
+        return ResponseEntity.ok(memberProfileResponseDto);
     }
 
 

@@ -3,8 +3,10 @@ package bbangduck.bd.bbangduck.domain.theme.entity;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
+import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -44,13 +46,18 @@ public class Theme extends BaseEntityDateTime {
     private String name;
 
     @Column(length = 3000)
-    private String introduction;
+    private String description;
 
     @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
     private List<ThemeGenre> themeGenres = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private NumberOfPeople numberOfPeople;
+    private ThemeType type;
+
+    @ElementCollection(targetClass = NumberOfPeople.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "theme_number_of_people", joinColumns = @JoinColumn(name = "theme_id"))
+    @Enumerated(EnumType.STRING)
+    private List<NumberOfPeople> numberOfPeoples;
 
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
@@ -58,21 +65,32 @@ public class Theme extends BaseEntityDateTime {
     @Enumerated(EnumType.STRING)
     private Activity activity;
 
+    @Enumerated(EnumType.STRING)
+    private HorrorGrade horrorGrade;
+
     private LocalTime playTime;
+
+    private Long totalRating;
+
+    private Long totalEvaluatedCount;
 
     @Column(name = "delete_yn")
     private boolean deleteYN;
 
     @Builder
-    public Theme(Long id, Shop shop, String name, String introduction, NumberOfPeople numberOfPeople, Difficulty difficulty, Activity activity, LocalTime playTime, boolean deleteYN) {
+    public Theme(Long id, Shop shop, String name, String description, ThemeType type, List<NumberOfPeople> numberOfPeoples, Difficulty difficulty, Activity activity, HorrorGrade horrorGrade, LocalTime playTime, Long totalRating, Long totalEvaluatedCount, boolean deleteYN) {
         this.id = id;
         this.shop = shop;
         this.name = name;
-        this.introduction = introduction;
-        this.numberOfPeople = numberOfPeople;
+        this.description = description;
+        this.type = type;
+        this.numberOfPeoples = numberOfPeoples;
         this.difficulty = difficulty;
         this.activity = activity;
+        this.horrorGrade = horrorGrade;
         this.playTime = playTime;
+        this.totalRating = totalRating;
+        this.totalEvaluatedCount = totalEvaluatedCount;
         this.deleteYN = deleteYN;
     }
 
@@ -115,12 +133,12 @@ public class Theme extends BaseEntityDateTime {
         return name;
     }
 
-    public String getIntroduction() {
-        return introduction;
+    public String getDescription() {
+        return description;
     }
 
-    public NumberOfPeople getNumberOfPeople() {
-        return numberOfPeople;
+    public List<NumberOfPeople> getNumberOfPeoples() {
+        return numberOfPeoples;
     }
 
     public Difficulty getDifficulty() {
@@ -143,7 +161,45 @@ public class Theme extends BaseEntityDateTime {
         return themeGenres.stream().map(ThemeGenre::getGenre).collect(Collectors.toList());
     }
 
+    public ThemeType getType() {
+        return type;
+    }
+
     public String getThemeImageFileName() {
         return themeImage == null ? null : themeImage.getFileName();
+    }
+
+    public Long getTotalRating() {
+        return totalRating;
+    }
+
+    public Long getTotalEvaluatedCount() {
+        return totalEvaluatedCount;
+    }
+
+    public HorrorGrade getHorrorGrade() {
+        return horrorGrade;
+    }
+
+    @Override
+    public String toString() {
+        return "Theme{" +
+                "id=" + id +
+//                ", shop=" + shop +
+//                ", themeImage=" + themeImage +
+//                ", themeOperatingTimes=" + themeOperatingTimes +
+                ", name='" + name + '\'' +
+                ", introduction='" + description + '\'' +
+//                ", themeGenres=" + themeGenres +
+                ", type=" + type +
+                ", numberOfPeoples=" + numberOfPeoples +
+                ", difficulty=" + difficulty +
+                ", activity=" + activity +
+                ", horrorGrade=" + horrorGrade +
+                ", playTime=" + playTime +
+                ", totalRating=" + totalRating +
+                ", totalEvaluatedCount=" + totalEvaluatedCount +
+                ", deleteYN=" + deleteYN +
+                '}';
     }
 }

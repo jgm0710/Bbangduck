@@ -2,11 +2,9 @@ package bbangduck.bd.bbangduck.domain.file.controller;
 
 import bbangduck.bd.bbangduck.domain.file.dto.UploadedImageFileResponseDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.global.common.exception.MD5EncodingUnknownException;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.global.common.MD5Utils;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
+import bbangduck.bd.bbangduck.global.common.exception.MD5EncodingUnknownException;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -46,7 +45,7 @@ public class FileStorageApiController {
     // TODO: 2021-05-13 포스트맨으로 파일 업로드를 통한 다운로드 테스트
     @PostMapping("/images")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<List<UploadedImageFileResponseDto>>> uploadImageFiles(
+    public ResponseEntity<List<UploadedImageFileResponseDto>> uploadImageFiles(
             @RequestParam MultipartFile[] files
     ) {
         List<UploadedImageFileResponseDto> uploadedImageFileResponseDtos = Arrays.stream(files)
@@ -56,7 +55,7 @@ public class FileStorageApiController {
                     return UploadedImageFileResponseDto.convert(storedFile);
                 }).collect(Collectors.toList());
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.UPLOAD_IMAGE_FILE_SUCCESS, uploadedImageFileResponseDtos));
+        return ResponseEntity.created(URI.create("/")).body(uploadedImageFileResponseDtos);
     }
 
     @GetMapping("/{fileName:.+}")

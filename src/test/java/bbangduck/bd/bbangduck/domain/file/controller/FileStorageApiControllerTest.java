@@ -62,13 +62,11 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
         ).andDo(print());
 
         //then
-        perform.andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.UPLOAD_IMAGE_FILE_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data[0].fileId").exists())
-                .andExpect(jsonPath("data[0].fileName").exists())
-                .andExpect(jsonPath("data[0].fileDownloadUrl").exists())
-                .andExpect(jsonPath("data[0].fileThumbnailDownloadUrl").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.UPLOAD_IMAGE_FILE_SUCCESS.getMessage()))
+        perform.andExpect(status().isCreated())
+                .andExpect(jsonPath("$[0].fileId").exists())
+                .andExpect(jsonPath("$[0].fileName").exists())
+                .andExpect(jsonPath("$[0].fileDownloadUrl").exists())
+                .andExpect(jsonPath("$[0].fileThumbnailDownloadUrl").exists())
                 .andDo(document(
                         "upload-image-file-success",
                         requestHeaders(
@@ -79,12 +77,10 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
                                 partWithName("files").description("업로드 파일을 files 로 요청")
                         ),
                         responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data[0].fileId").description("업로드 된 파일 목록 중 첫 번째 파일의 식별 ID"),
-                                fieldWithPath("data[0].fileName").description("업로드 된 파일 목록 중 첫 번째 파일의 이름"),
-                                fieldWithPath("data[0].fileDownloadUrl").description("업로드 된 파일 목록 중 첫 번째 파일을 다운로드 받을 URL"),
-                                fieldWithPath("data[0].fileThumbnailDownloadUrl").description("업로드 된 파일 목록 중 첫 번째 파일의 썸네일 이미지를 다운로드 받을 URL"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("[0].fileId").description("업로드 된 파일 목록 중 첫 번째 파일의 식별 ID"),
+                                fieldWithPath("[0].fileName").description("업로드 된 파일 목록 중 첫 번째 파일의 이름"),
+                                fieldWithPath("[0].fileDownloadUrl").description("업로드 된 파일 목록 중 첫 번째 파일을 다운로드 받을 URL"),
+                                fieldWithPath("[0].fileThumbnailDownloadUrl").description("업로드 된 파일 목록 중 첫 번째 파일의 썸네일 이미지를 다운로드 받을 URL")
                         )
                 ))
         ;

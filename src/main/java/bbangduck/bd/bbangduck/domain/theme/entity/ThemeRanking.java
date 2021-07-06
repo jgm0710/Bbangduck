@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.entity;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.theme.entity.enumerate.ThemeRankingType;
+import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeRankingType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;

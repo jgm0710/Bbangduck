@@ -1,20 +1,16 @@
 package bbangduck.bd.bbangduck.domain.auth.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
-import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSignUpResponseDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.controller.OnlyRefreshTokenRequestDto;
-import bbangduck.bd.bbangduck.domain.auth.dto.controller.TokenResponseDto;
+import bbangduck.bd.bbangduck.domain.auth.dto.controller.*;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.SignOutDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.auth.exception.WithdrawalDifferentMemberException;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
-import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.CheckIfEmailIsAvailableRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberCheckIfNicknameIsAvailableRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +41,7 @@ public class AuthApiController {
     private final MemberService memberService;
 
     @PostMapping(value = "/social/sign-up")
-    public ResponseEntity<ResponseDto<MemberSignUpResponseDto>> signUp(
+    public ResponseEntity<MemberSignUpResponseDto> signUp(
             @RequestBody @Valid MemberSocialSignUpRequestDto memberSocialSignUpRequestDto,
             Errors errors
     ) {
@@ -56,11 +52,11 @@ public class AuthApiController {
         MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.convert(savedMember, tokenDto);
         URI uri = linkTo(MemberApiController.class).slash(savedMemberId).toUri();
 
-        return ResponseEntity.created(uri).body(new ResponseDto<>(ResponseStatus.MEMBER_SIGN_UP_SUCCESS, memberSignUpResponseDto));
+        return ResponseEntity.created(uri).body(memberSignUpResponseDto);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<ResponseDto<TokenResponseDto>> refresh(
+    public ResponseEntity<TokenResponseDto> refresh(
             @RequestBody @Valid OnlyRefreshTokenRequestDto onlyRefreshTokenRequestDto,
             Errors errors
     ) {
@@ -70,13 +66,12 @@ public class AuthApiController {
         TokenDto tokenDto = authenticationService.refresh(refreshToken);
         TokenResponseDto tokenResponseDto = TokenResponseDto.convert(tokenDto);
 
-        log.info("Refresh sign in success");
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.REFRESH_SIGN_IN_SUCCESS, tokenResponseDto));
+        return ResponseEntity.ok(tokenResponseDto);
     }
 
     @DeleteMapping("/{memberId}/withdrawal")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> withdrawal(
+    public ResponseEntity<Object> withdrawal(
             @PathVariable Long memberId,
             @CurrentUser Member currentMember
     ) {
@@ -86,13 +81,13 @@ public class AuthApiController {
 
         authenticationService.withdrawal(memberId);
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.WITHDRAWAL_SUCCESS, null));
+        return ResponseEntity.noContent().build();
     }
 
 
     @GetMapping("/{memberId}/sign-out")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> signOut(
+    public ResponseEntity<Object> signOut(
             @PathVariable Long memberId,
             @CurrentUser Member currentMember
     ) {
@@ -102,11 +97,12 @@ public class AuthApiController {
 
         authenticationService.signOut(memberId);
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.SIGN_OUT_SUCCESS, null));
+        return ResponseEntity.noContent().build();
     }
 
+    // TODO: 2021-07-03 get mapping 으로 변경
     @PostMapping("/emails/check-availabilities")
-    public ResponseEntity<ResponseDto<Boolean>> checkIfEmailIsAvailable(
+    public ResponseEntity<AvailableResponseDto> checkIfEmailIsAvailable(
             @RequestBody @Valid CheckIfEmailIsAvailableRequestDto requestDto,
             Errors errors
     ) {
@@ -114,11 +110,12 @@ public class AuthApiController {
 
         boolean result = authenticationService.checkIfEmailIsAvailable(requestDto.getEmail());
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.CHECK_IF_EMAIL_IS_AVAILABLE_SUCCESS, result));
+        return ResponseEntity.ok(new AvailableResponseDto(result));
     }
 
+    // TODO: 2021-07-03 get mapping 으로 변경
     @PostMapping("/nicknames/check-availabilities")
-    public ResponseEntity<ResponseDto<Boolean>> checkIfNicknameIsAvailable(
+    public ResponseEntity<AvailableResponseDto> checkIfNicknameIsAvailable(
             @RequestBody @Valid MemberCheckIfNicknameIsAvailableRequestDto requestDto,
             Errors errors
     ) {
@@ -126,7 +123,7 @@ public class AuthApiController {
 
         boolean result = authenticationService.checkIfNicknameIsAvailable(requestDto.getNickname());
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.CHECK_IF_NICKNAME_IS_AVAILABLE_SUCCESS, result));
+        return ResponseEntity.ok(new AvailableResponseDto(result));
     }
 
     // TODO: 2021-05-02 자체 로그인 기능 구현 시 로그인 요청 처리 메서드 등록

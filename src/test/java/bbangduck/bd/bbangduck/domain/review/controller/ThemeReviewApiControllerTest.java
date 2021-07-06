@@ -71,9 +71,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
                 .andDo(document(
                         "create-review-success",
                         requestHeaders(
@@ -88,11 +85,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("rating").description("테마에 대한 평점 기입 +\n" +
                                         "테마에 대한 평점은 1~5 점 사이의 점수로만 평가가 가능합니다."),
                                 fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data").description("[null]"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
                         )
                 ))
         ;
@@ -231,9 +223,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("status").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(ResponseStatus.CREATE_REVIEW_SUCCESS.getMessage()))
         ;
 
     }
@@ -548,14 +537,10 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.list").exists())
-                .andExpect(jsonPath("data.pageNum").exists())
-                .andExpect(jsonPath("data.amount").exists())
-                .andExpect(jsonPath("data.totalPagesCount").exists())
-                .andExpect(jsonPath("data.prevPageUrl").exists())
-                .andExpect(jsonPath("data.nextPageUrl").exists())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS.getMessage()))
+                .andExpect(jsonPath("contents").exists())
+                .andExpect(jsonPath("nowPageNum").exists())
+                .andExpect(jsonPath("requestAmount").exists())
+                .andExpect(jsonPath("totalResultsCount").exists())
                 .andDo(document(
                         "get-theme-review-list-success",
                         requestHeaders(
@@ -571,17 +556,11 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                         ReviewSortCondition.getNameList())
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.list").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
+                                fieldWithPath("contents").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
                                         "간단 리뷰, 간단 및 설문 작성 리뷰, 상세 리뷰, 상세 및 설문 작성 리뷰가 모두 응답됨 -> 각 응답 형태는 리뷰 1건 조회 리소스를 통해 참조"),
-                                fieldWithPath("data.pageNum").description("현재 요청한 페이지 번호"),
-                                fieldWithPath("data.amount").description("현재 요청한 수량"),
-                                fieldWithPath("data.totalPagesCount").description("요청 시 입력한 pageNum, amount, sortCondition 에 의해 조회된 결과의 총 페이지 수"),
-                                fieldWithPath("data.prevPageUrl").description("현재 페이지 기준 이전 페이지에 대한 요청 URL +\n" +
-                                        "이전 페이지가 실제로 존재할 수 없는 페이지 일 경우 [null] 값이 나옴"),
-                                fieldWithPath("data.nextPageUrl").description("현재 페이지 기준 다음 페이지에 대한 요청 URL +\n" +
-                                        "총 페이지 수 보다 다음 페이지가 커서 실제 존재할 수 없는 페이지 일 경우 [null] 값이 나옴"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("nowPageNum").description("현재 요청한 페이지 번호"),
+                                fieldWithPath("requestAmount").description("현재 요청한 수량"),
+                                fieldWithPath("totalResultsCount").description("조회된 결과의 총 개수")
                         )
                 ))
         ;

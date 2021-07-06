@@ -1,0 +1,112 @@
+= BbangDuck API Guide
+정구민;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+:docinfo: shared-head
+
+[[overview]]
+= 개요
+== link:/docs/index.html[home]
+== 오류 코드
+
+|===
+| 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
+
+| <<resources-get-theme-list>>
+| 테마 목록 조회 시 기입하는 parameter 값이 올바르지 않을 경우
+| 400
+| 5403
+| 테마 목록 조회 시 조건이 올바르게 기입되지 않았습니다.
+
+| <<resources-get-theme>>
+| 테마 조회 시 테마를 찾을 수 없는 경우
+| 404
+| 5401
+| 해당 테마가 존재하지 않습니다.
+
+| <<resources-get-theme>>
+| 삭제된 테마를 조회할 경우
+| 400
+| 5402
+| 삭제된 테마입니다.
+
+| <<resources-get-theme-analyses>>
+| 테마 분석 조회 시 테마를 찾을 수 없는 경우
+| 404
+| 5401
+| 해당 테마가 존재하지 않습니다.
+
+| <<resources-get-theme-analyses>>
+| 삭제된 테마의 분석을 조회할 경우
+| 400
+| 5402
+| 삭제된 테마입니다.
+
+
+|===
+
+== 히스토리
+
+히스토리는 문서의 변경이력을 표시합니다.
+
+2021-07-01 :::
+* <<resources-get-theme-list>> 기능 구현
+
+2021-07-02:::
+* <<resources-get-theme>> 기능 구현
+* <<resources-get-theme-analyses>> 기능 구현
+
+[[resources-theme]]
+= 테마 리소스
+
+[[resources-get-theme-list]]
+== 테마 목록 조회
+
+* `GET` `/api/themes?{parameters}`
+
+* 테마 목록을 조회합니다.
+    ** 여러 필터링 조건을 query parameters 에 기입하여 필터링 된 테마 목록을 조회합니다.
+
+* 해당 리소스는 인증을 필요로 하지 않습니다.
+
+* 입력 규칙
+    ** 페이지 번호를 0보다 작게 기입할 경우 요청에 실패합니다.
+    ** 수량은 0~500 사이의 값만 요청이 가능합니다.
+
+operation::get-theme-list-success[snippets='request-parameters,response-fields,curl-request,http-response']
+
+[[resources-get-theme]]
+== 테마 상세 조회
+
+* `GET` `/api/themes/{themeId}`
+
+* 테마를 상세 조회합니다.
+
+* 해당 리소스는 인증을 필요로하지 않습니다.
+
+
+operation::get-theme-success[snippets='response-fields,curl-request,http-response']
+
+[[resources-get-theme-analyses]]
+== 테마 분석 조회
+
+* `GET` `/api/themes/{themeId}/analyses`
+
+* 테마에 대한 테마 분석을 응답합니다.
+    ** 테마가 어떠한 장르로 평가되었는지에 대한 정보를 응답합니다.
+    ** 평가된 횟수가 높은 장르부터 내림차순으로 정렬됩니다.
+        *** 평가 횟수가 같을 경우 이름이 사전 기준 오름차순으로 정렬됩니다.
+
+* 해당 리소스는 인증을 필요로 하지 않습니다.
+
+
+operation::get-theme-analyses-success[snippets='response-fields,curl-request,http-response']
+
+
+

@@ -81,6 +81,7 @@ public class AuthenticationService {
         String jwtToken = jwtTokenProvider.createToken(email, roleNameList);
 
         return TokenDto.builder()
+                .memberId(findMember.getId())
                 .accessToken(jwtToken)
                 .accessTokenValidSecond(securityJwtProperties.getTokenValidSecond())
                 .refreshToken(findMember.getRefreshToken())

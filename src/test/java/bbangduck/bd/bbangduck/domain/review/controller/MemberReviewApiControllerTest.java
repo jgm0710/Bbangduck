@@ -3,20 +3,15 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSearchType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
@@ -65,13 +60,10 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(ResponseStatus.GET_MEMBER_REVIEW_LIST_SUCCESS.getStatus()))
-                .andExpect(jsonPath("data.list").isArray())
-                .andExpect(jsonPath("data.pageNum").value(2))
-                .andExpect(jsonPath("data.amount").value(8))
-                .andExpect(jsonPath("data.totalPagesCount").hasJsonPath())
-                .andExpect(jsonPath("data.nextPageUrl").hasJsonPath())
-                .andExpect(jsonPath("message").value(ResponseStatus.GET_MEMBER_REVIEW_LIST_SUCCESS.getMessage()))
+                .andExpect(jsonPath("contents").isArray())
+                .andExpect(jsonPath("nowPageNum").value(2))
+                .andExpect(jsonPath("requestAmount").value(8))
+                .andExpect(jsonPath("totalResultsCount").hasJsonPath())
                 .andDo(document(
                         "get-member-review-list-success",
                         requestHeaders(
@@ -88,17 +80,11 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
                                         ReviewSearchType.getNameList())
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("status").description(STATUS_DESCRIPTION),
-                                fieldWithPath("data.list").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
+                                fieldWithPath("contents").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
                                         "간단 리뷰, 간단 및 설문 작성 리뷰, 상세 리뷰, 상세 및 설문 작성 리뷰가 모두 응답됨 -> 각 응답 형태는 리뷰 1건 조회 리소스를 통해 참조"),
-                                fieldWithPath("data.pageNum").description("현재 요청한 페이지 번호"),
-                                fieldWithPath("data.amount").description("현재 요청한 수량"),
-                                fieldWithPath("data.totalPagesCount").description("요청 시 입력한 pageNum, amount, searchType 에 의해 조회된 결과의 총 페이지 수"),
-                                fieldWithPath("data.prevPageUrl").description("현재 페이지 기준 이전 페이지에 대한 요청 URL +\n" +
-                                        "이전 페이지가 실제로 존재할 수 없는 페이지 일 경우 [null] 값이 나옴"),
-                                fieldWithPath("data.nextPageUrl").description("현재 페이지 기준 다음 페이지에 대한 요청 URL +\n" +
-                                        "총 페이지 수 보다 다음 페이지가 커서 실제 존재할 수 없는 페이지 일 경우 [null] 값이 나옴"),
-                                fieldWithPath("message").description(MESSAGE_DESCRIPTION)
+                                fieldWithPath("nowPageNum").description("현재 요청한 페이지 번호"),
+                                fieldWithPath("requestAmount").description("현재 요청한 수량"),
+                                fieldWithPath("totalResultsCount").description("요청 시 입력한 pageNum, amount, searchType 에 의해 조회된 결과의 총 개수")
                         )
                 ))
         ;
@@ -249,30 +235,6 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         //then
         perform.andExpect(status().isOk());
-
-        MvcResult mvcResult = perform.andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-        String contentAsString = response.getContentAsString();
-
-        ResponseDto<ReviewsPaginationResponseDto> responseDto = objectMapper.readValue(contentAsString, new TypeReference<>() {
-        });
-        ReviewsPaginationResponseDto reviewsPaginationResponseDto = responseDto.getData();
-        String prevPageUrl = reviewsPaginationResponseDto.getPrevPageUrl();
-        String nextPageUrl = reviewsPaginationResponseDto.getNextPageUrl();
-
-        mockMvc.perform(
-                get(prevPageUrl)
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-        ).andDo(print())
-                .andExpect(status().isOk())
-        ;
-
-        mockMvc.perform(
-                get(nextPageUrl)
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-        ).andDo(print())
-                .andExpect(status().isOk())
-        ;
 
     }
 

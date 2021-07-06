@@ -1,11 +1,7 @@
 package bbangduck.bd.bbangduck.global.config;
 
-import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
-import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.domain.member.service.MemberDevelopService;
+import bbangduck.bd.bbangduck.domain.theme.service.ThemeDeveloperService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -29,7 +25,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.Set;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -81,30 +76,15 @@ public class AppConfig {
         return new ApplicationRunner() {
 
             @Autowired
-            private MemberService memberService;
+            private MemberDevelopService memberDevelopService;
 
             @Autowired
-            private MemberRepository memberRepository;
+            private ThemeDeveloperService themeDeveloperService;
 
             @Override
             public void run(ApplicationArguments args) {
-                PasswordEncoder passwordEncoder = passwordEncoder();
-                String encodedPassword = passwordEncoder.encode("bbangduckDEV7");
-                String email = "developer@bbangduck.com";
-
-                if (memberRepository.findByEmail(email).isEmpty()) {
-                    Member member = Member.builder()
-                            .email(email)
-                            .password(encodedPassword)
-                            .nickname("developer")
-                            .description("개발자")
-                            .roomEscapeRecodesOpenStatus(MemberRoomEscapeRecodesOpenStatus.OPEN)
-                            .refreshInfo(RefreshInfo.init(1000))
-                            .roles(Set.of(MemberRole.DEVELOP, MemberRole.USER, MemberRole.ADMIN))
-                            .build();
-
-                    memberRepository.save(member);
-                }
+                memberDevelopService.createDevelopMember();
+                themeDeveloperService.dummyDataSetUp();
 
             }
         };

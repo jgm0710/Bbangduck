@@ -236,9 +236,9 @@ operation::refresh-sign-in-success[snippets='request-headers,request-fields,resp
 [[resources-withdrawal-success]]
 === 회원 탈퇴 성공
 
-* 응답 HttpStatus : `200 OK`
+* 응답 HttpStatus : `204 No Content`
 
-operation::withdrawal-success[snippets='request-headers,response-fields,curl-request,http-response']
+operation::withdrawal-success[snippets='request-headers,curl-request,http-response']
 
 [[resources-sign-out]]
 == 로그아웃
@@ -252,9 +252,9 @@ operation::withdrawal-success[snippets='request-headers,response-fields,curl-req
 [[resources-sign-out-success]]
 === 로그아웃 성공
 
-* 응답 HttpStatus : `200 OK`
+* 응답 HttpStatus : `204 No Content`
 
-operation::sign-out-success[snippets='request-headers,response-fields,curl-request,http-response']
+operation::sign-out-success[snippets='request-headers,curl-request,http-response']
 
 
 [[resources-check-if-email-is-available]]
@@ -263,8 +263,8 @@ operation::sign-out-success[snippets='request-headers,response-fields,curl-reque
 * `POST` `/api/auth/emails/check-availabilities`
 
 * 이메일이 사용 가능한지 여부를 체크합니다.
-** 사용 가능할 경우 응답 `data` 는 `true` 가 응답됩니다.
-** 사용이 불가능할 경우 `data` 는 `false` 가 응답됩니다.
+** 사용 가능할 경우 응답 `isAvailable` 는 `true` 가 응답됩니다.
+** 사용이 불가능할 경우 `isAvailable` 는 `false` 가 응답됩니다.
 
 * 해당 리소스는 인증을 필요로 하지 않습니다.
 ** 이메일 수정 등에서 중복 체크를 하는 경우 자신이 지금 사용하고 있는 email 일 경우라도 사용 불가로 응답됩니다.
@@ -278,9 +278,9 @@ operation::sign-out-success[snippets='request-headers,response-fields,curl-reque
 
 * 응답 HttpStatus : `200 OK`
 
-* data 를 통해 사용 가능 여부가 응답됩니다.
-** true -> 사용 가능
-** false -> 사용 불가능
+* `isAvailable` 를 통해 사용 가능 여부가 응답됩니다.
+    ** true -> 사용 가능
+    ** false -> 사용 불가능
 
 operation::check-if-email-is-available-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
@@ -290,14 +290,14 @@ operation::check-if-email-is-available-success[snippets='request-headers,request
 * `POST` `/api/auth/nicknames/check-availabilities`
 
 * 닉네임이 사용 가능한지 여부를 체크합니다.
-** 사용 가능할 경우 응답 data 는 true 가 응답됩니다.
-** 사용이 불가능할 경우 data 는 false 가 응답됩니다.
+    ** 사용 가능할 경우 응답 `isAvailable` 는 `true` 가 응답됩니다.
+    ** 사용이 불가능할 경우 `isAvailable` 는 `false` 가 응답됩니다.
 
 * 해당 리소스는 인증을 필요로 하지 않습니다.
-** 닉네임 수정 등에서 중복 체크를 하는 경우 자신이 지금 사용하고 있는 nickname 일 경우라도 사용 불가로 응답됩니다.
+    ** 닉네임 수정 등에서 중복 체크를 하는 경우 자신이 지금 사용하고 있는 nickname 일 경우라도 사용 불가로 응답됩니다.
 
 * 입력 규칙
-** 닉네임을 반드시 기입해야 합니다.
+    ** 닉네임을 반드시 기입해야 합니다.
 
 
 [[resources-check-if-nickname-is-available-success]]
@@ -305,9 +305,9 @@ operation::check-if-email-is-available-success[snippets='request-headers,request
 
 * 응답 HttpStatus : `200 OK`
 
-* data 를 통해 사용 가능 여부가 응답됩니다.
-** true -> 사용 가능
-** false -> 사용 불가능
+* `isAvailable` 를 통해 사용 가능 여부가 응답됩니다.
+** `true` -> 사용 가능
+** `false` -> 사용 불가능
 
 operation::check-if-nickname-is-available-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 

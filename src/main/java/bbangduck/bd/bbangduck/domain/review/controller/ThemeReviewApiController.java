@@ -5,12 +5,11 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ThemeReviewSearchRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewsPaginationResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
+import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.common.ThrowUtils;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
@@ -76,7 +75,7 @@ public class ThemeReviewApiController{
      */
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ResponseDto<Object>> createReview(
+    public ResponseEntity<Object> createReview(
             @PathVariable Long themeId,
             @RequestBody @Valid ReviewCreateRequestDto requestDto,
             Errors errors,
@@ -87,12 +86,11 @@ public class ThemeReviewApiController{
         Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
         URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId, currentMember)).toUri();
 
-        return ResponseEntity.created(linkToGetReviewsUri).body(new ResponseDto<>(ResponseStatus.CREATE_REVIEW_SUCCESS, null));
-
+        return ResponseEntity.created(linkToGetReviewsUri).build();
     }
 
     @GetMapping
-    public ResponseEntity<ResponseDto<ReviewsPaginationResponseDto<Object>>> getReviewList(
+    public ResponseEntity<PaginationResultResponseDto<ReviewResponseDto>> getReviewList(
             @PathVariable Long themeId,
             @ModelAttribute @Valid ThemeReviewSearchRequestDto requestDto,
             BindingResult bindingResult,
@@ -110,19 +108,16 @@ public class ThemeReviewApiController{
         }).collect(Collectors.toList());
 
         long totalResultsCount = reviewQueryResults.getTotal();
-        long totalPagesCount = calculateTotalPagesCount(totalResultsCount, reviewSearchDto.getAmount());
-
-        ReviewsPaginationResponseDto<Object> reviewsPaginationResponseDto = ReviewsPaginationResponseDto.builder()
-                .list(reviewResponseDtos)
-                .pageNum(requestDto.getPageNum())
-                .amount(requestDto.getAmount())
-                .totalPagesCount(totalPagesCount)
-                .prevPageUrl(getThemeReviewListPrevPageUriString(themeId, reviewSearchDto, totalPagesCount))
-                .nextPageUrl(getThemeReviewListNextPageUrlString(themeId, reviewSearchDto, totalPagesCount))
-                .build();
 
 
-        return ResponseEntity.ok(new ResponseDto<>(ResponseStatus.GET_THEME_REVIEW_LIST_SUCCESS, reviewsPaginationResponseDto));
+        PaginationResultResponseDto<ReviewResponseDto> result = new PaginationResultResponseDto<>(
+                reviewResponseDtos,
+                requestDto.getPageNum(),
+                requestDto.getAmount(),
+                totalResultsCount
+        );
+
+        return ResponseEntity.ok(result);
     }
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {
@@ -130,29 +125,6 @@ public class ThemeReviewApiController{
             return reviewLikeService.getExistsReviewLike(currentMember.getId(), reviewId);
         }
         return false;
-    }
-
-    private String getThemeReviewListNextPageUrlString(Long themeId, ReviewSearchDto searchDto, long totalPagesCount) {
-        if (nextPageExists(totalPagesCount, searchDto.getNextPageNum())) {
-            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, null, null, null))
-                    .toUriComponentsBuilder()
-                    .queryParam("pageNum", searchDto.getNextPageNum())
-                    .queryParam("amount", searchDto.getAmount())
-                    .queryParam("sortCondition", searchDto.getSortCondition())
-                    .toUriString();
-        }
-        return null;
-    }
-
-    private String getThemeReviewListPrevPageUriString(Long themeId, ReviewSearchDto searchDto, long totalPagesCount) {
-        if (prevPageExists(totalPagesCount, searchDto.getPrevPageNum())) {
-            return linkTo(methodOn(ThemeReviewApiController.class).getReviewList(themeId, null, null, null)).toUriComponentsBuilder()
-                    .queryParam("pageNum", searchDto.getPrevPageNum())
-                    .queryParam("amount", searchDto.getAmount())
-                    .queryParam("sortCondition", searchDto.getSortCondition()).toUriString();
-        }
-
-        return null;
     }
 
 }
