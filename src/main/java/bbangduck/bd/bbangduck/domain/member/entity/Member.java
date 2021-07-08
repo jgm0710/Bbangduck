@@ -73,7 +73,8 @@ public class Member extends BaseEntityDateTime {
 
 
     @Builder
-    public Member(String email, String password, String nickname, String description, Set<MemberRole> roles, MemberRoomEscapeRecodesOpenStatus roomEscapeRecodesOpenStatus, RefreshInfo refreshInfo) {
+    public Member(Long id, String email, String password, String nickname, String description, Set<MemberRole> roles, MemberRoomEscapeRecodesOpenStatus roomEscapeRecodesOpenStatus, RefreshInfo refreshInfo) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;

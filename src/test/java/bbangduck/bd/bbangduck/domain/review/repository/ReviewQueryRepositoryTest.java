@@ -24,22 +24,22 @@ class ReviewQueryRepositoryTest extends BaseJGMServiceTest {
         Theme theme = createThemeSample();
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(null);
-        Long member1Review1Id = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-        reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long member1Review1Id = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         simpleReviewCreateRequestDto.setClearYN(false);
-        reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-        reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-        reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         memberSignUpRequestDto.setEmail("test2@email.com");
         memberSignUpRequestDto.setNickname("test2");
         memberSignUpRequestDto.setSocialId("333332213");
         Long signUp2 = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
 
-        reviewService.createReview(signUp2, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-        reviewService.createReview(signUp2, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-        reviewService.createReview(signUp2, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUp2, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUp2, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUp2, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         em.flush();
         em.clear();

@@ -1,30 +1,22 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
+import bbangduck.bd.bbangduck.domain.friend.entity.MemberFriend;
+import bbangduck.bd.bbangduck.domain.friend.exception.RelationOfMemberAndFriendIsNotFriendException;
+import bbangduck.bd.bbangduck.domain.friend.repository.MemberFriendQueryRepository;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.friend.entity.MemberFriend;
-import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
-import bbangduck.bd.bbangduck.domain.friend.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.friend.repository.MemberFriendQueryRepository;
-import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQueryRepository;
-import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationRepository;
-import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
+import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
-import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.*;
 import bbangduck.bd.bbangduck.domain.review.repository.*;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
-import bbangduck.bd.bbangduck.domain.theme.exception.ManipulateDeletedThemeException;
-import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
-import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
@@ -52,11 +44,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewQueryRepository reviewQueryRepository;
-    private final MemberRepository memberRepository;
-    private final MemberPlayInclinationRepository memberPlayInclinationRepository;
-    private final MemberPlayInclinationQueryRepository memberPlayInclinationQueryRepository;
     private final MemberFriendQueryRepository memberFriendQueryRepository;
-    private final ThemeRepository themeRepository;
     private final GenreRepository genreRepository;
     private final ReviewProperties reviewProperties;
     private final ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
@@ -65,21 +53,12 @@ public class ReviewService {
     private final ReviewDetailRepository reviewDetailRepository;
 
     @Transactional
-    public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Theme findTheme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-        throwExceptionIfThemeHasBeenDeleted(findTheme);
-        // TODO: 2021-06-16 test 완료되면 주석 삭제
-//        ReviewRecodesCountsDto recodesCountsDto = reviewQueryRepository.findRecodesCountsByMember(memberId).orElse(new ReviewRecodesCountsDto());
-        ReviewRecodesCountsDto recodesCountsDto = getReviewRecodesCounts(memberId);
+    public Long saveReview(Member member, Theme theme, ReviewCreateDto reviewCreateDto) {
+        ReviewRecodesCountsDto recodesCountsDto = getReviewRecodesCounts(member.getId());
+        Review review = Review.create(member, theme, recodesCountsDto.getNextRecodeNumber(), reviewCreateDto);
+        Review savedReview = reviewRepository.save(review);
 
-        Review review = Review.create(findMember, findTheme, recodesCountsDto.getNextRecodeNumber(), reviewCreateDto);
-        addPlayTogetherFriendsToReview(review, memberId, reviewCreateDto.getFriendIds());
-        Review save = reviewRepository.save(review);
-
-        reflectingPropensityOfMemberToPlay(findMember, findTheme.getGenres());
-
-        return save.getId();
+        return savedReview.getId();
     }
 
     /**
@@ -108,6 +87,7 @@ public class ReviewService {
     }
 
     // TODO: 2021-06-13 이미 설문이 등록된 리뷰일 경우 예외 발생 테스트 구현
+    // TODO: 2021-07-08 리뷰 설문 추가시 테마 분석 반영되도록 변경
     @Transactional
     public void addSurveyToReview(Long reviewId, ReviewSurveyCreateDto reviewSurveyCreateDto) {
         Review review = getReview(reviewId);
@@ -157,6 +137,7 @@ public class ReviewService {
      * - 리뷰를 찾을 수 없는 경우 o
      * - 수정 시 등록하는 친구와 리뷰를 작성한 회원이 실제 친구 관계가 아닐 경우 o
      */
+    // TODO: 2021-07-08 리뷰 수정 시 기존 평점을 깎고 새로운 평점을 기입하는 기능 추가
     @Transactional
     public void updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
         Review review = getReview(reviewId);
@@ -166,7 +147,7 @@ public class ReviewService {
         review.clearPlayTogether(reviewPlayTogetherRepository);
 
         review.updateBase(reviewUpdateDto);
-        addPlayTogetherFriendsToReview(review, reviewMember.getId(), reviewUpdateDto.getFriendIds());
+        addPlayTogetherFriendsToReview(review, reviewUpdateDto.getFriendIds());
 
         ReviewType newReviewType = reviewUpdateDto.getReviewType();
         if (newReviewType == ReviewType.DETAIL) {
@@ -216,6 +197,7 @@ public class ReviewService {
     }
 
     // TODO: 2021-06-13 우선은 사용하지 않는 기능
+    // TODO: 2021-07-08 추후 사용하는 기능이 된다면, 테마 분석 반영된 부분 삭제, 새로운 테마 분석 반영 로직을 추가해야함
     @Transactional
     public void updateSurveyFromReview(Long reviewId, ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
         Review review = getReview(reviewId);
@@ -253,9 +235,11 @@ public class ReviewService {
     }
 
 
-
-
-    private void addPlayTogetherFriendsToReview(Review review, Long memberId, List<Long> friendIds) {
+    // TODO: 2021-07-08 회원 친구 ID 를 받는 것이 아닌 회원 친구를 조회해서 리뷰 친구에 파라미터로 삽입하도록 변경
+    // TODO: 2021-07-08 친구 기능에 대한 수정 사항이 있음. 해당 수정 사항이 반영되면 추후에 진행
+    public void addPlayTogetherFriendsToReview(Review review, List<Long> friendIds) {
+        Member reviewMember = review.getMember();
+        Long memberId = reviewMember.getId();
         if (friendIdsExists(friendIds)) {
             friendIds.forEach(friendId -> {
                 Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAcceptedFriendByMemberAndFriend(memberId, friendId);
@@ -272,23 +256,6 @@ public class ReviewService {
         return friendIds != null && !friendIds.isEmpty();
     }
 
-    private void reflectingPropensityOfMemberToPlay(Member member, List<Genre> themeGenres) {
-        themeGenres.forEach(genre -> {
-            Optional<MemberPlayInclination> optionalMemberPlayInclination = memberPlayInclinationQueryRepository.findOneByMemberAndGenre(member.getId(), genre.getId());
-            if (optionalMemberPlayInclination.isPresent()) {
-                MemberPlayInclination memberPlayInclination = optionalMemberPlayInclination.get();
-                memberPlayInclination.increasePlayCount();
-            } else {
-                MemberPlayInclination newPlayInclination = MemberPlayInclination.builder()
-                        .member(member)
-                        .genre(genre)
-                        .playCount(1)
-                        .build();
-
-                memberPlayInclinationRepository.save(newPlayInclination);
-            }
-        });
-    }
 
     private void throwExceptionIfReviewHasBeenDeleted(Review review) {
         if (review.isDeleteYN()) {
@@ -320,12 +287,6 @@ public class ReviewService {
     private void updatePerceivedGenresFromReviewSurvey(ReviewSurvey reviewSurvey, List<String> genreCodes) {
         reviewPerceivedThemeGenreRepository.deleteInBatch(reviewSurvey.getPerceivedThemeGenreEntities());
         addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
-    }
-
-    private void throwExceptionIfThemeHasBeenDeleted(Theme theme) {
-        if (theme.isDeleteYN()) {
-            throw new ManipulateDeletedThemeException();
-        }
     }
 
     /**

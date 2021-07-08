@@ -27,6 +27,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.*;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
@@ -143,6 +144,9 @@ public class BaseJGMServiceTest extends BaseTest {
 
     @Autowired
     protected ReviewImageRepository reviewImageRepository;
+
+    @Autowired
+    protected ReviewApplicationService reviewApplicationService;
 
     protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
 
@@ -340,6 +344,8 @@ public class BaseJGMServiceTest extends BaseTest {
                 .difficulty(Difficulty.NORMAL)
                 .activity(Activity.LITTLE_ACTIVITY)
                 .playTime(LocalTime.of(1, 0))
+                .totalRating(0L)
+                .totalEvaluatedCount(0L)
                 .deleteYN(false)
                 .build();
 
@@ -433,6 +439,8 @@ public class BaseJGMServiceTest extends BaseTest {
                 .activity(Activity.LITTLE_ACTIVITY)
                 .playTime(LocalTime.of(1, 0))
                 .deleteYN(false)
+                .totalRating(0L)
+                .totalEvaluatedCount(0L)
                 .build();
 
         return themeRepository.save(theme);

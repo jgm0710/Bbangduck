@@ -791,7 +791,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@email.com");
         memberSocialSignUpRequestDto.setNickname("member2");
@@ -868,7 +868,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -950,7 +950,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@email.com");
         memberSocialSignUpRequestDto.setNickname("member2");
@@ -1083,8 +1083,8 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
-        reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
         //when
@@ -1138,7 +1138,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
         Theme themeSample = createThemeSample();
-        reviewService.createReview(memberId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        reviewApplicationService.createReview(memberId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         MemberSearchRequestDto memberSearchRequestDto = MemberSearchRequestDto.builder()
                 .searchType(MemberSearchKeywordType.NICKNAME)

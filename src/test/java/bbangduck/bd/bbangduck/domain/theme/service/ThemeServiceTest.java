@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -60,6 +61,26 @@ class ThemeServiceTest {
 
         //then
         assertThrows(ManipulateDeletedThemeException.class, () -> themeMockService.getTheme(1L));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 생성 기입한 평점 테마에 반영")
+    public void reflectThemeRating() {
+        //given
+        Theme theme = Theme.builder()
+                .id(1L)
+                .totalRating(0L)
+                .totalEvaluatedCount(0L)
+                .deleteYN(false)
+                .build();
+
+        //when
+        themeMockService.reflectThemeRating(theme, 5);
+
+        //then
+        assertEquals(5, theme.getTotalRating());
+        assertEquals(1, theme.getTotalEvaluatedCount());
 
     }
 

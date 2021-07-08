@@ -7,6 +7,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ThemeReviewSe
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSearchDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
@@ -32,13 +33,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * 테마와 관련된 리뷰 요청 API 를 구현한 Controller
  */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/themes/{themeId}/reviews")
-public class ThemeReviewApiController{
+public class ThemeReviewApiController {
+
+    private final ReviewApplicationService reviewApplicationService;
 
     private final ReviewService reviewService;
 
@@ -53,9 +56,9 @@ public class ThemeReviewApiController{
      * - 201
      * - 응답 코드, 메세지 확인
      * - 문서화 o
-     *
+     * <p>
      * - 친구를 등록하지 않을 경우도 요청 성공
-     *
+     * <p>
      * 실패 테스트
      * - validation - bad request o
      * -- 클리어를 했는데 클리어 시간을 입력하지 않은 경우 o
@@ -63,11 +66,11 @@ public class ThemeReviewApiController{
      * -- 요청 시 아무런 정보도 기입하지 않았을 경우 o
      * -- 함께 플레이한 친구의 수가 제한된 수보다 많을 경우 (친구 수 제한은 properties 를 통해 관리) o
      * -- todo : 플레이 시간 10 시간 이상일 경우 test 미완
-     *
-     *
+     * <p>
+     * <p>
      * - 인증되지 않은 사용자가 리뷰를 생성할 경우 - unauthorized o
      * - 탈퇴한 회원이 리뷰를 생성할 경우 - forbidden o
-     *
+     * <p>
      * - service 실패 o
      * -- 리뷰를 생성할 테마가 삭제된 테마일 경우 - bad request o
      * -- 테마를 찾을 수 없는 경우 - not found o
@@ -83,7 +86,7 @@ public class ThemeReviewApiController{
     ) {
         reviewValidator.validateCreateView(requestDto, errors);
 
-        Long createdReviewId = reviewService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
         URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId, currentMember)).toUri();
 
         return ResponseEntity.created(linkToGetReviewsUri).build();

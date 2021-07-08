@@ -75,7 +75,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         //when
-        Long reviewId = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
 
         //then
         Review findReview = reviewService.getReview(reviewId);
@@ -134,7 +134,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(ManipulateDeletedThemeException.class, () -> reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
+        assertThrows(ManipulateDeletedThemeException.class, () -> reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
 
     }
 
@@ -157,10 +157,10 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
         //when
         System.out.println("==========================================================================================================================================================");
-        Long reviewId2 = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        Long reviewId2 = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
         System.out.println("==========================================================================================================================================================");
 
         //then
@@ -191,7 +191,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(MemberNotFoundException.class, () -> reviewService.createReview(100000L, savedTheme.getId(), reviewCreateDto));
+        assertThrows(MemberNotFoundException.class, () -> reviewApplicationService.createReview(100000L, savedTheme.getId(), reviewCreateDto));
 
     }
 
@@ -217,7 +217,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(ThemeNotFoundException.class, () -> reviewService.createReview(signUpId, 100000L, reviewCreateDto));
+        assertThrows(ThemeNotFoundException.class, () -> reviewApplicationService.createReview(signUpId, 100000L, reviewCreateDto));
 
     }
 
@@ -241,7 +241,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         //when
-        Long reviewId = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
 
         //then
         assertTrue(memberPlayInclinationQueryRepository.findAllByMember(signUpId).isEmpty(), "테마에 등록된 장르가 없을 경우 회원의 성향은 반영되지 않는다.");
@@ -267,7 +267,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
 
         Review savedReview = reviewService.getReview(reviewId);
         Member reviewMember = savedReview.getMember();
@@ -279,7 +279,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         });
 
         //when
-        Long reviewId2 = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        Long reviewId2 = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
 
         //then
         Review findReview2 = reviewService.getReview(reviewId2);
@@ -318,7 +318,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
+        assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
 
     }
 
@@ -341,7 +341,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
 
         reviewService.deleteReview(reviewId);
 
@@ -571,7 +571,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(List.of(storedFile), friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), reviewCreateDto);
 
         List<String> genreCodes = createGenreCodes();
 
@@ -625,7 +625,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(List.of(storedFile), friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), reviewCreateDto);
 
         List<String> genreCodes = createGenreCodes();
 
@@ -665,7 +665,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(List.of(storedFile), friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), reviewCreateDto);
 
         List<String> genreCodes = createGenreCodes();
 
@@ -700,7 +700,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(List.of(storedFile), friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), reviewCreateDto);
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), reviewCreateDto);
 
         List<String> genreCodes = List.of("AMGN1", "AMGN2");
 
@@ -731,7 +731,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
 
         List<String> oldGenreCodes = List.of("HR1", "RSN1");
@@ -782,7 +782,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
 
         List<String> oldGenreCodes = List.of("HR1", "RSN1");
@@ -820,7 +820,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
 
         List<String> oldGenreCodes = List.of("HR1", "RSN1");
@@ -854,7 +854,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
 
         List<String> oldGenreCodes = List.of("HR1", "RSN1");
@@ -889,7 +889,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
 
         List<String> oldGenreCodes = List.of("HR1", "RSN1");
@@ -923,7 +923,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
 
         List<String> oldGenreCodes = List.of("HR1", "RSN1");
@@ -958,7 +958,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Theme theme = createThemeSample();
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(2));
 
@@ -1014,7 +1014,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
         reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
@@ -1067,7 +1067,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
         reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
@@ -1122,7 +1122,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Theme theme = createThemeSample();
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(2));
 
@@ -1166,7 +1166,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Theme theme = createThemeSample();
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(signUpMemberFriendsIds.get(0), signUpMemberFriendsIds.get(2));
 
@@ -1203,7 +1203,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Theme theme = createThemeSample();
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = new ArrayList<>();
         newFriendIds.add(signUpMemberFriendsIds.get(0));
@@ -1243,7 +1243,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
@@ -1282,7 +1282,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         List<String> genreCodes = createGenreCodes();
@@ -1336,12 +1336,12 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
 
-        Long member1review1Id = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
-        Long member1review2Id = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
-        Long member1review3Id = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
-        Long member1review4Id = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
-        Long member2review1Id = reviewService.createReview(member2Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
-        Long member2review2Id = reviewService.createReview(member2Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member1review1Id = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member1review2Id = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member1review3Id = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member1review4Id = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member2review1Id = reviewApplicationService.createReview(member2Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long member2review2Id = reviewApplicationService.createReview(member2Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         Review member1review1 = reviewService.getReview(member1review1Id);
         Review member1review2 = reviewService.getReview(member1review2Id);
@@ -1467,7 +1467,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
                     .friendIds(null)
                     .build();
 
-            Long reviewId = reviewService.createReview(member1Id, themeSampleId, reviewCreateRequestDto.toServiceDto());
+            Long reviewId = reviewApplicationService.createReview(member1Id, themeSampleId, reviewCreateRequestDto.toServiceDto());
 
             if (i % 3 == 0) {
                 reviewService.deleteReview(reviewId);

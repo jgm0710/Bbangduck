@@ -30,6 +30,7 @@ import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.domain.shop.entity.Area;
@@ -137,6 +138,9 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
     @Autowired
     protected ShopRepository shopRepository;
+
+    @Autowired
+    protected ReviewApplicationService reviewApplicationService;
 
     protected static int REFRESH_TOKEN_EXPIRED_DATE;
 
@@ -322,6 +326,8 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .activity(Activity.LITTLE_ACTIVITY)
                 .playTime(LocalTime.of(1, 0))
                 .deleteYN(false)
+                .totalEvaluatedCount(0L)
+                .totalRating(0L)
                 .build();
 
         Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
@@ -832,7 +838,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                     .friendIds(friendIds)
                     .build();
 
-            Long reviewId = reviewService.createReview(memberId, themeId, reviewCreateRequestDto.toServiceDto());
+            Long reviewId = reviewApplicationService.createReview(memberId, themeId, reviewCreateRequestDto.toServiceDto());
 
             if (i % 2 == 0) {
                 List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();

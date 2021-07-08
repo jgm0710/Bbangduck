@@ -63,7 +63,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@emailcom");
         memberSocialSignUpRequestDto.setNickname("member2");
@@ -167,7 +167,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@emailcom");
         memberSocialSignUpRequestDto.setNickname("member2");
@@ -217,7 +217,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -342,7 +342,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
@@ -455,7 +455,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
 
@@ -589,7 +589,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@emailcom");
         memberSocialSignUpRequestDto.setNickname("member2");
@@ -635,7 +635,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         ReviewCreateRequestDto deepReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, theme.getId(), deepReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), deepReviewCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@emailcom");
         memberSocialSignUpRequestDto.setNickname("member2");
@@ -680,7 +680,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
 
@@ -748,7 +748,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
 
@@ -798,7 +798,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
 //        List<String> genreCodes = createGenreCodes();
         List<String> genreCodes = new ArrayList<>();
@@ -865,7 +865,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
 
@@ -914,7 +914,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = List.of("AMGN1", "AMGN2");
 
@@ -963,7 +963,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -1085,7 +1085,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
 
@@ -1138,7 +1138,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
 
@@ -1186,7 +1186,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long savedReviewId = reviewService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
 
@@ -1234,7 +1234,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1290,7 +1290,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1335,7 +1335,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1462,7 +1462,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1523,7 +1523,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1570,7 +1570,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1612,7 +1612,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1655,7 +1655,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1698,7 +1698,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1742,7 +1742,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<String> genreCodes = createGenreCodes();
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
@@ -1789,7 +1789,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendId1, friendId3);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -1850,7 +1850,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendId1, friendId3);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -1891,7 +1891,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendId1, friendId3);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -1934,7 +1934,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), detailReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
         reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
@@ -1995,7 +1995,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         friendIds.add(10000L);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -2042,7 +2042,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
 //        List<Long> newFriendIds = List.of(friendId1, friendId3);
         List<Long> newFriendIds = new ArrayList<>();
@@ -2091,7 +2091,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendId1, friendId3);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -2138,7 +2138,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendId1, friendId3);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -2184,7 +2184,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendId1, friendId3);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -2226,7 +2226,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         List<Long> oldFriendIds = List.of(friendId1, friendId2);
         ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(oldFriendIds);
 
-        Long createdReviewId = reviewService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
+        Long createdReviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendId1, friendId3);
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
@@ -2264,7 +2264,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
-        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
@@ -2312,7 +2312,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
-        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
         List<String> genreCodes = createGenreCodes();
@@ -2365,7 +2365,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        Long reviewId = reviewService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
@@ -2403,7 +2403,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        Long reviewId = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         TokenDto tokenDto = authenticationService.signIn(member2Id);
 
@@ -2441,7 +2441,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        Long reviewId = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         reviewLikeService.addLikeToReview(member2Id, reviewId);
 

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * 관계 매핑을 위해 임시 구현
  */
 @Entity
@@ -201,5 +201,13 @@ public class Theme extends BaseEntityDateTime {
                 ", totalEvaluatedCount=" + totalEvaluatedCount +
                 ", deleteYN=" + deleteYN +
                 '}';
+    }
+
+    public void increaseTotalRating(int rating) {
+        this.totalRating += (long) rating;
+    }
+
+    public void increaseTotalEvaluatedCount() {
+        this.totalEvaluatedCount++;
     }
 }

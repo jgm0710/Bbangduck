@@ -28,7 +28,7 @@ class ReviewLikeServiceTest extends BaseJGMServiceTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        Long reviewId = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         //when
         reviewLikeService.addLikeToReview(member2Id, reviewId);
@@ -54,7 +54,7 @@ class ReviewLikeServiceTest extends BaseJGMServiceTest {
         Theme themeSample = createThemeSample();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
-        Long reviewId = reviewService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
+        Long reviewId = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         reviewLikeService.addLikeToReview(member2Id, reviewId);
 
