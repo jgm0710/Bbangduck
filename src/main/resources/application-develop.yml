@@ -17,7 +17,7 @@ logging:
   file:
     name: /home/ec2-user/dev-logs/bbangduck-dev.log # 로그 파일을 남기기 위함
 
-kakao:
+social:
   sign-in:
-    properties:
+    kakao:
       redirect-uri: http://13.125.48.96:8080/api/auth/kakao/sign-in/callback
