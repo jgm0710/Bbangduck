@@ -54,6 +54,23 @@ public class ReviewUpdateDto {
         this.comment = comment;
     }
 
+    public ReviewUpdateBaseDto toReviewUpdateBaseDto() {
+        return ReviewUpdateBaseDto.builder()
+                .reviewType(reviewType)
+                .clearYN(clearYN)
+                .clearTime(clearTime)
+                .hintUsageCount(hintUsageCount)
+                .rating(rating)
+                .build();
+    }
+
+    public ReviewDetailCreateDto toReviewDetailCreateDto() {
+        return ReviewDetailCreateDto.builder()
+                .reviewImageDtos(reviewImages)
+                .comment(comment)
+                .build();
+    }
+
     public ReviewType getReviewType() {
         return reviewType;
     }

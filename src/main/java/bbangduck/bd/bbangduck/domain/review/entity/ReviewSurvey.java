@@ -32,8 +32,7 @@ public class ReviewSurvey extends BaseEntityDateTime {
     @Column(name = "review_survey_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
+    @OneToOne(mappedBy = "reviewSurvey")
     private Review review;
 
     @OneToMany(mappedBy = "reviewSurvey", cascade = CascadeType.ALL)

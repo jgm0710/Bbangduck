@@ -1,19 +1,10 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
-import bbangduck.bd.bbangduck.domain.friend.entity.MemberFriend;
-import bbangduck.bd.bbangduck.domain.friend.exception.RelationOfMemberAndFriendIsNotFriendException;
-import bbangduck.bd.bbangduck.domain.friend.repository.MemberFriendQueryRepository;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
-import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.*;
-import bbangduck.bd.bbangduck.domain.review.entity.Review;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewDetail;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewImage;
-import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
-import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.domain.review.entity.*;
 import bbangduck.bd.bbangduck.domain.review.exception.*;
 import bbangduck.bd.bbangduck.domain.review.repository.*;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -26,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
@@ -44,13 +34,10 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewQueryRepository reviewQueryRepository;
-    private final MemberFriendQueryRepository memberFriendQueryRepository;
-    private final GenreRepository genreRepository;
-    private final ReviewProperties reviewProperties;
-    private final ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
     private final ReviewImageRepository reviewImageRepository;
-    private final ReviewPlayTogetherRepository reviewPlayTogetherRepository;
     private final ReviewDetailRepository reviewDetailRepository;
+    private final ReviewProperties reviewProperties;
+    private final ReviewPlayTogetherRepository reviewPlayTogetherRepository;
 
     @Transactional
     public Long saveReview(Member member, Theme theme, ReviewCreateDto reviewCreateDto) {
@@ -61,52 +48,80 @@ public class ReviewService {
         return savedReview.getId();
     }
 
-    /**
-     * 기능 테스트 o
-     * - 리뷰에 리뷰 상세가 잘 등록 되는지 확인
-     * -- 이미지가 잘 등록되는지 확인
-     * -- 코멘트가 잘 등록되는지 확인
-     * - 리뷰 타입이 바뀌는지 확인
-     *
-     * TODO: 2021-06-13 실패 테스트 미완
-     * 실패 테스트
-     * - 리뷰가 삭제된 리뷰일 경우
-     * - 리뷰를 찾을 수 없는 경우
-     * - 이미 리뷰 상세가 등록되어 있는 리뷰일 경우
-     */
     @Transactional
-    public void addDetailToReview(Long reviewId, ReviewDetailCreateDto reviewDetailCreateDto) {
-        Review review = getReview(reviewId);
-
-        if (isNotNull(review.getReviewDetail())) {
-            throw new DetailIsAlreadyRegisteredInReviewException();
-        }
+    public void addDetailToReview(Review review, ReviewDetailCreateDto reviewDetailCreateDto) {
+        checkIfDetailAlreadyRegisteredInReview(review);
 
         ReviewDetail reviewDetail = ReviewDetail.create(reviewDetailCreateDto);
         review.addReviewDetail(reviewDetail);
     }
 
-    // TODO: 2021-06-13 이미 설문이 등록된 리뷰일 경우 예외 발생 테스트 구현
-    // TODO: 2021-07-08 리뷰 설문 추가시 테마 분석 반영되도록 변경
-    @Transactional
-    public void addSurveyToReview(Long reviewId, ReviewSurveyCreateDto reviewSurveyCreateDto) {
-        Review review = getReview(reviewId);
-
-        if (isNotNull(review.getReviewSurvey())) {
-            throw new SurveyIsAlreadyRegisteredInReviewException();
+    private void checkIfDetailAlreadyRegisteredInReview(Review review) {
+        if (isNotNull(review.getReviewDetail())) {
+            throw new DetailIsAlreadyRegisteredInReviewException();
         }
+    }
 
+    @Transactional
+    public void clearReviewDetail(Review review) {
+        ReviewDetail reviewDetail = review.getReviewDetail();
+        if (isNotNull(reviewDetail)) {
+            reviewDetailRepository.delete(reviewDetail);
+        }
+        review.clearDetail();
+    }
+
+    @Transactional
+    public void addSurveyToReview(Review review, ReviewSurveyCreateDto reviewSurveyCreateDto) {
+        checkIfSurveyAlreadyRegisteredInReview(review);
         checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
 
         ReviewSurvey reviewSurvey = ReviewSurvey.create(reviewSurveyCreateDto);
-        addPerceivedGenresToReviewSurvey(reviewSurvey, reviewSurveyCreateDto.getGenreCodes());
 
-        review.setReviewSurvey(reviewSurvey);
+        review.addReviewSurvey(reviewSurvey);
     }
+
+    private void checkIfSurveyAlreadyRegisteredInReview(Review review) {
+        if (isNotNull(review.getReviewSurvey())) {
+            throw new SurveyIsAlreadyRegisteredInReviewException();
+        }
+    }
+
+    private void checkIfReviewCanAddSurvey(LocalDateTime reviewRegisterTimes, long periodForAddingSurveys) {
+        LocalDateTime periodForAddingSurveysDateTime = LocalDateTime.now().minusDays(periodForAddingSurveys);
+        if (reviewRegisterTimes.isBefore(periodForAddingSurveysDateTime)) {
+            throw new ExpirationOfReviewSurveyAddPeriodException(reviewRegisterTimes, periodForAddingSurveysDateTime);
+        }
+    }
+
+    public void addGenresToReviewSurvey(ReviewSurvey reviewSurvey, List<Genre> genres) {
+        genres.forEach(reviewSurvey::addPerceivedThemeGenre);
+    }
+
+//    // TODO: 2021-06-13 우선은 사용하지 않는 기능
+//    // TODO: 2021-07-08 추후 사용하는 기능이 된다면, 테마 분석 반영된 부분 삭제, 새로운 테마 분석 반영 로직을 추가해야함
+//    @Transactional
+//    public void updateSurveyFromReview(Review review, ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
+//        if (!isNotNull(review.getReviewSurvey())) {
+//            throw new ReviewHasNotSurveyException();
+//        }
+//
+//        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
+//
+//        review.updateSurvey(reviewSurveyUpdateDto);
+//        updatePerceivedGenresFromReviewSurvey(review.getReviewSurvey(), reviewSurveyUpdateDto.getGenreCodes());
+//    }
+//
+//    private void updatePerceivedGenresFromReviewSurvey(ReviewSurvey reviewSurvey, List<String> genreCodes) {
+//        reviewPerceivedThemeGenreRepository.deleteInBatch(reviewSurvey.getPerceivedThemeGenreEntities());
+//        addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
+//    }
 
     public Review getReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
-        throwExceptionIfReviewHasBeenDeleted(review);
+        if (review.isDeleteYN()) {
+            throw new ManipulateDeletedReviewsException();
+        }
         return review;
     }
 
@@ -116,48 +131,6 @@ public class ReviewService {
 
     public ReviewRecodesCountsDto getReviewRecodesCounts(Long memberId) {
         return reviewQueryRepository.findRecodesCountsByMember(memberId).orElse(new ReviewRecodesCountsDto());
-    }
-
-    /**
-     * 테스트 완료
-     *
-     * 기능 테스트
-     * - 변경 사항이 잘 저장되는지 o
-     * - 간단 리뷰에서 상세 리뷰로 잘 변경되는지 확인 o
-     * - 상세 리뷰에서 간단 리뷰로 변경될 경우 reviewImage, comment 가 제대로 null 로 기입되는지 확인 o
-     *
-     * - 새로 등록한 친구들이 잘 들어 있는지 o
-     * - 기존에 있었지만 수정했을 때 등록되지 않는 친구들이 잘 사라져 있는지 o
-     *
-     * - 새로 등록한 리뷰 이미지가 잘 등록되어 있는지 o
-     * - 기존에 등록되어 있었지만 수정했을 때 등록되지 않은 리뷰 이미지들이 잘 사라져 있는지 o
-     *
-     * 실패
-     * - 삭제된 리뷰일 경우 수정 불가 o
-     * - 리뷰를 찾을 수 없는 경우 o
-     * - 수정 시 등록하는 친구와 리뷰를 작성한 회원이 실제 친구 관계가 아닐 경우 o
-     */
-    // TODO: 2021-07-08 리뷰 수정 시 기존 평점을 깎고 새로운 평점을 기입하는 기능 추가
-    @Transactional
-    public void updateReview(Long reviewId, ReviewUpdateDto reviewUpdateDto) {
-        Review review = getReview(reviewId);
-        Member reviewMember = review.getMember();
-
-        review.clearDetail(reviewDetailRepository);
-        review.clearPlayTogether(reviewPlayTogetherRepository);
-
-        review.updateBase(reviewUpdateDto);
-        addPlayTogetherFriendsToReview(review, reviewUpdateDto.getFriendIds());
-
-        ReviewType newReviewType = reviewUpdateDto.getReviewType();
-        if (newReviewType == ReviewType.DETAIL) {
-            ReviewDetailCreateDto reviewDetailCreateDto = ReviewDetailCreateDto.builder()
-                    .reviewImageDtos(reviewUpdateDto.getReviewImages())
-                    .comment(reviewUpdateDto.getComment())
-                    .build();
-
-            addDetailToReview(reviewId, reviewDetailCreateDto);
-        }
     }
 
     // TODO: 2021-06-13 필요 없으면 삭제
@@ -196,22 +169,6 @@ public class ReviewService {
         }
     }
 
-    // TODO: 2021-06-13 우선은 사용하지 않는 기능
-    // TODO: 2021-07-08 추후 사용하는 기능이 된다면, 테마 분석 반영된 부분 삭제, 새로운 테마 분석 반영 로직을 추가해야함
-    @Transactional
-    public void updateSurveyFromReview(Long reviewId, ReviewSurveyUpdateDto reviewSurveyUpdateDto) {
-        Review review = getReview(reviewId);
-
-        if (!isNotNull(review.getReviewSurvey())) {
-            throw new ReviewHasNotSurveyException();
-        }
-
-        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
-
-        review.updateSurvey(reviewSurveyUpdateDto);
-        updatePerceivedGenresFromReviewSurvey(review.getReviewSurvey(), reviewSurveyUpdateDto.getGenreCodes());
-    }
-
     /**
      * 기능 테스트 o
      * - 리뷰가 제대로 삭제 상태가 되는지 확인
@@ -234,95 +191,30 @@ public class ReviewService {
         review.delete();
     }
 
-
-    // TODO: 2021-07-08 회원 친구 ID 를 받는 것이 아닌 회원 친구를 조회해서 리뷰 친구에 파라미터로 삽입하도록 변경
-    // TODO: 2021-07-08 친구 기능에 대한 수정 사항이 있음. 해당 수정 사항이 반영되면 추후에 진행
-    public void addPlayTogetherFriendsToReview(Review review, List<Long> friendIds) {
-        Member reviewMember = review.getMember();
-        Long memberId = reviewMember.getId();
-        if (friendIdsExists(friendIds)) {
-            friendIds.forEach(friendId -> {
-                Optional<MemberFriend> optionalMemberFriend = memberFriendQueryRepository.findAcceptedFriendByMemberAndFriend(memberId, friendId);
-                if (optionalMemberFriend.isEmpty()) {
-                    throw new RelationOfMemberAndFriendIsNotFriendException(memberId, friendId);
-                }
-                MemberFriend memberFriend = optionalMemberFriend.get();
-                review.addPlayTogether(memberFriend.getFriend());
-            });
-        }
-    }
-
-    private boolean friendIdsExists(List<Long> friendIds) {
-        return friendIds != null && !friendIds.isEmpty();
-    }
-
-
-    private void throwExceptionIfReviewHasBeenDeleted(Review review) {
-        if (review.isDeleteYN()) {
-            throw new ManipulateDeletedReviewsException();
-        }
-    }
-
-    private void checkIfReviewCanAddSurvey(LocalDateTime reviewRegisterTimes,long periodForAddingSurveys) {
-        LocalDateTime periodForAddingSurveysDateTime = LocalDateTime.now().minusDays(periodForAddingSurveys);
-        if (reviewRegisterTimes.isBefore(periodForAddingSurveysDateTime)) {
-            throw new ExpirationOfReviewSurveyAddPeriodException(reviewRegisterTimes, periodForAddingSurveysDateTime);
-        }
-    }
-
-    private void addPerceivedGenresToReviewSurvey(ReviewSurvey reviewSurvey, List<String> genreCodes) {
-        checkIfGenreCodeExists(genreCodes);
-        genreCodes.forEach(genreCode -> {
-            Genre genre = genreRepository.findByCode(genreCode).orElseThrow(() -> new GenreNotFoundException(genreCode));
-            reviewSurvey.addPerceivedThemeGenre(genre);
-        });
-    }
-
-    private void checkIfGenreCodeExists(List<String> genreCodes) {
-        if (!existsList(genreCodes)) {
-            throw new NoGenreToRegisterForReviewSurveyException();
-        }
-    }
-
-    private void updatePerceivedGenresFromReviewSurvey(ReviewSurvey reviewSurvey, List<String> genreCodes) {
-        reviewPerceivedThemeGenreRepository.deleteInBatch(reviewSurvey.getPerceivedThemeGenreEntities());
-        addPerceivedGenresToReviewSurvey(reviewSurvey, genreCodes);
-    }
-
-    /**
-     * 기능 테스트 o
-     * - 기존 리뷰 내용이 변경되지는 않았는지 확인
-     * - 리뷰 타입이 detail 로 잘 바뀌었는지 확인
-     * - 추가한 detail 값들이 잘 들어가 있는지 확인
-     * - 추가한 survey 값들이 잘 들어가 있는지 확인
-     *
-     * TODO: 2021-06-13 실패 테스트 미완
-     * 실패 테스트
-     * * 다른 메서드들을 그대로 가져와서 사용하는 것이므로 해당 메서드들 검증이 완료되면 굳이 안해도 됨
-     * - 리뷰를 찾을 수 없는 경우
-     * - 장르를 찾을 수 없는 경우
-     * - 이미 리뷰 상세가 등록된 설문일 경우
-     * - 이미 설문이 등록된 리뷰일 경우
-     * - 설문 등록 가능 기간이 지난 경우
-     */
-    @Transactional
-    public void addDetailAndSurveyToReview(Long reviewId, ReviewDetailCreateDto reviewDetailCreateDto, ReviewSurveyCreateDto reviewSurveyCreateDto) {
-        addDetailToReview(reviewId, reviewDetailCreateDto);
-        addSurveyToReview(reviewId, reviewSurveyCreateDto);
-    }
-
-    /**
-     * 테스트 완료
-     *
-     * 기능 테스트
-     * - 삭제된 목록은 나오지 않는지 확인
-     * - total 이면 전체 리뷰가 나오는지 확인
-     * - success 이면 성공한 리뷰만 나오는지 확인
-     * - fail 이면 실패한 리뷰만 나오는지 확인
-     * - 레코드 번호 역순으로 나오는지 확인
-     * - 특정 회원의 리뷰 목록만 나오는지 확인
-     */
     public QueryResults<Review> getMemberReviewList(Long memberId, ReviewSearchDto reviewSearchDto) {
         return reviewQueryRepository.findListByMember(memberId, reviewSearchDto);
+    }
+
+    public void checkIfMyReview(Long authenticatedMemberId, Long reviewMemberId) {
+        if (!reviewMemberId.equals(authenticatedMemberId)) {
+            throw new ReviewCreatedByOtherMembersException();
+        }
+    }
+
+    public void updateReviewBase(Review review, ReviewUpdateBaseDto reviewBaseUpdateDto) {
+        review.updateBase(reviewBaseUpdateDto);
+    }
+
+    public void addPlayTogetherFriendsToReview(Review review, List<Member> friends) {
+        if (existsList(friends)) {
+            friends.forEach(review::addPlayTogether);
+        }
+    }
+
+    @Transactional
+    public void clearReviewPlayTogether(Review review) {
+        List<ReviewPlayTogether> reviewPlayTogetherEntities = review.getReviewPlayTogetherEntities();
+        reviewPlayTogetherRepository.deleteInBatch(reviewPlayTogetherEntities);
+        review.clearPlayTogether();
     }
 }

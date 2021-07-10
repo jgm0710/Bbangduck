@@ -966,10 +966,10 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         reviewRepository.save(member3DetailReview2);
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(createGenreCodes());
-        reviewService.addSurveyToReview(member3SimpleReview1.getId(), reviewSurveyCreateRequestDto.toServiceDto());
-        reviewService.addSurveyToReview(member2SimpleReview2.getId(), reviewSurveyCreateRequestDto.toServiceDto());
-        reviewService.addSurveyToReview(member1DetailReview1.getId(), reviewSurveyCreateRequestDto.toServiceDto());
-        reviewService.addSurveyToReview(member3DetailReview1.getId(), reviewSurveyCreateRequestDto.toServiceDto());
-        reviewService.addSurveyToReview(member3DetailReview2.getId(), reviewSurveyCreateRequestDto.toServiceDto());
+        reviewApplicationService.addSurveyToReview(member3SimpleReview1.getId(), member3.getId(),reviewSurveyCreateRequestDto.toServiceDto());
+        reviewApplicationService.addSurveyToReview(member2SimpleReview2.getId(), member2.getId(), reviewSurveyCreateRequestDto.toServiceDto());
+        reviewApplicationService.addSurveyToReview(member1DetailReview1.getId(), member1.getId(), reviewSurveyCreateRequestDto.toServiceDto());
+        reviewApplicationService.addSurveyToReview(member3DetailReview1.getId(), member3.getId(), reviewSurveyCreateRequestDto.toServiceDto());
+        reviewApplicationService.addSurveyToReview(member3DetailReview2.getId(), member3.getId(), reviewSurveyCreateRequestDto.toServiceDto());
     }
 }

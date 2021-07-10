@@ -30,14 +30,22 @@ public class MemberPlayInclination extends BaseEntityDateTime {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    private int playCount;
+    private Long playCount;
 
     @Builder
-    public MemberPlayInclination(Long id, Member member, Genre genre, int playCount) {
+    public MemberPlayInclination(Long id, Member member, Genre genre, Long playCount) {
         this.id = id;
         this.member = member;
         this.genre = genre;
         this.playCount = playCount;
+    }
+
+    public static MemberPlayInclination init(Member member, Genre genre) {
+        return MemberPlayInclination.builder()
+                .member(member)
+                .genre(genre)
+                .playCount(0L)
+                .build();
     }
 
     public void increasePlayCount() {
@@ -56,7 +64,7 @@ public class MemberPlayInclination extends BaseEntityDateTime {
         return genre;
     }
 
-    public int getPlayCount() {
+    public Long getPlayCount() {
         return playCount;
     }
 

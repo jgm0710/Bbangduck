@@ -74,7 +74,7 @@ public class MemberPlayInclinationQueryRepository {
         return genre.id.eq(genreId);
     }
 
-    private OrderSpecifier<Integer> playCountDesc() {
+    private OrderSpecifier<Long> playCountDesc() {
         return memberPlayInclination.playCount.desc();
     }
 

@@ -30,9 +30,7 @@ import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
-import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
-import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
-import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
+import bbangduck.bd.bbangduck.domain.review.service.*;
 import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
@@ -40,6 +38,7 @@ import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.repository.ThemeAnalysisRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
@@ -142,6 +141,9 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     @Autowired
     protected ReviewApplicationService reviewApplicationService;
 
+    @Autowired
+    protected ThemeAnalysisRepository themeAnalysisRepository;
+
     protected static int REFRESH_TOKEN_EXPIRED_DATE;
 
     protected static String JWT_TOKEN_HEADER_DESCRIPTION = "리소스 접근 시 회원 인증을 위해 필요한 JWT 토큰 인증 헤더";
@@ -170,12 +172,13 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     @BeforeEach
     public void setUp() {
         REFRESH_TOKEN_EXPIRED_DATE = securityJwtProperties.getRefreshTokenExpiredDate();
-//        deleteAll();
+        deleteAll();
     }
 
     protected void deleteAll() {
         reviewLikeRepository.deleteAll();
         reviewRepository.deleteAll();
+        themeAnalysisRepository.deleteAll();
         themeRepository.deleteAll();
         shopRepository.deleteAll();
         areaRepository.deleteAll();
@@ -843,12 +846,12 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
             if (i % 2 == 0) {
                 List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
                 ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
-                reviewService.addDetailToReview(reviewId, reviewDetailCreateRequestDto.toServiceDto());
+                reviewApplicationService.addDetailToReview(reviewId, memberId,reviewDetailCreateRequestDto.toServiceDto());
             }
 
             if (i % 4 == 0) {
                 ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
-                reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+                reviewApplicationService.addSurveyToReview(reviewId, memberId, reviewSurveyCreateRequestDto.toServiceDto());
             }
 
             if (i % 3 == 0) {

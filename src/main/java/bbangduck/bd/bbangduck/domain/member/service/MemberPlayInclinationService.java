@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 회원의 플레이 성향에 대한 비즈니스 로직을 구현한 Service
@@ -25,19 +24,10 @@ public class MemberPlayInclinationService {
     @Transactional
     public void reflectingPropensityOfMemberToPlay(Member member, List<Genre> themeGenres) {
         themeGenres.forEach(genre -> {
-            Optional<MemberPlayInclination> optionalMemberPlayInclination = memberPlayInclinationRepository.findByMemberAndGenre(member, genre);
-            if (optionalMemberPlayInclination.isPresent()) {
-                MemberPlayInclination memberPlayInclination = optionalMemberPlayInclination.get();
-                memberPlayInclination.increasePlayCount();
-            } else {
-                MemberPlayInclination newPlayInclination = MemberPlayInclination.builder()
-                        .member(member)
-                        .genre(genre)
-                        .playCount(1)
-                        .build();
-
-                memberPlayInclinationRepository.save(newPlayInclination);
-            }
+            MemberPlayInclination memberPlayInclination = memberPlayInclinationRepository.findByMemberAndGenre(member, genre)
+                    .orElse(MemberPlayInclination.init(member, genre));
+            memberPlayInclination.increasePlayCount();
+            memberPlayInclinationRepository.save(memberPlayInclination);
         });
     }
 }

@@ -210,4 +210,12 @@ public class Theme extends BaseEntityDateTime {
     public void increaseTotalEvaluatedCount() {
         this.totalEvaluatedCount++;
     }
+
+    public void decreaseTotalRating(int rating) {
+        this.totalRating -= rating;
+    }
+
+    public void decreaseTotalEvaluatedCount() {
+        this.totalEvaluatedCount--;
+    }
 }

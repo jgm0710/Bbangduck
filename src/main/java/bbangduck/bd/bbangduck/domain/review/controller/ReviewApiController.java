@@ -6,9 +6,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.response.ReviewResponseDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewCreatedByOtherMembersException;
-import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
-import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
+import bbangduck.bd.bbangduck.domain.review.service.*;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +38,8 @@ public class ReviewApiController {
     private final ReviewValidator reviewValidator;
 
     private final ReviewProperties reviewProperties;
+
+    private final ReviewApplicationService reviewApplicationService;
 
     /**
      * 문서화 완료, 테스트 미완
@@ -74,9 +74,9 @@ public class ReviewApiController {
         reviewValidator.validateAddDetailToReview(requestDto, errors);
 
         Review findReview = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.ADD_DETAIL_TO_REVIEW_CREATED_BY_OTHER_MEMBERS);
+        checkIsReviewCreatedByMe(currentMember, findReview);
 
-        reviewService.addDetailToReview(reviewId, requestDto.toServiceDto());
+        reviewApplicationService.addDetailToReview(reviewId, currentMember.getId(), requestDto.toServiceDto());
         URI linkToGetReviewsUri = getLinkToGetReviewsUri(reviewId, currentMember);
 
         return ResponseEntity.created(linkToGetReviewsUri).build();
@@ -102,6 +102,8 @@ public class ReviewApiController {
      * - 인증되지 않은 사용자가 접근하는 경우
      * - 탈퇴된 사용자가 접근하는 경우
      */
+    // TODO: 2021-07-10 실제로 사용하는지 확인
+    // FIXME: 2021-07-11 실제로 사용하지 않음 -> 주석 처리
     @PutMapping("/details")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Object> updateDetailFromReview(
@@ -113,7 +115,7 @@ public class ReviewApiController {
         reviewValidator.validateUpdateDetailFromReview(requestDto, errors);
 
         Review findReview = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.UPDATE_DETAIL_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS);
+        checkIsReviewCreatedByMe(currentMember, findReview);
 
         reviewService.updateDetailFromReview(reviewId, requestDto.toServiceDto());
 
@@ -158,10 +160,9 @@ public class ReviewApiController {
     ) {
         reviewValidator.validateAddDetailAndSurveyToReview(requestDto, errors);
 
-        Review findReview = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_CREATED_BY_OTHER_MEMBERS);
+        reviewApplicationService.addDetailToReview(reviewId, currentMember.getId(), requestDto.toDetailServiceDto());
+        reviewApplicationService.addSurveyToReview(reviewId, currentMember.getId(), requestDto.toSurveyServiceDto());
 
-        reviewService.addDetailAndSurveyToReview(reviewId, requestDto.toDetailServiceDto(), requestDto.toSurveyServiceDto());
         URI linkToGetReviewsUri = getLinkToGetReviewsUri(reviewId, currentMember);
 
         return ResponseEntity.created(linkToGetReviewsUri).build();
@@ -190,29 +191,6 @@ public class ReviewApiController {
         return false;
     }
 
-    /**
-     * 문서화 완료, 테스트 완료
-     * <p>
-     * 기능 테스트 - 문서화
-     * - 204
-     * - 응답 코드 및 메세지
-     * <p>
-     * 요청 실패 경우
-     * - Validation - bad request
-     * -- 간단 리뷰 검증 o
-     * -- 상세 리뷰 검증 o
-     * -- 리뷰에 등록하는 친구가 5명 이상일 경우 o
-     * -- clearYN 이 false 이면 clearTime 이 기입되지 않아도 됨 o
-     * -- clearYN 이 false 이면 clearTime 이 기입되지 않아도 됨 o
-     * -- 코멘트가 3000자를 넘긴 경우
-     * <p>
-     * - 리뷰에 등록하는 친구가 실제 친구 관계가 아닐 경우 - bad request o
-     * - 다른 회원이 생성한 리뷰를 수정하는 경우 - forbidden o
-     * - 삭제된 리뷰일 경우 수정 불가  - bad request o
-     * - 인증되지 않은 회원이 리뷰 수정 - unauthorized o
-     * - 탈퇴된 회원이 리뷰 수정 - forbidden o
-     * - 리뷰를 찾을 수 없는 경우 o
-     */
     @PutMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Object> updateReview(
@@ -223,44 +201,18 @@ public class ReviewApiController {
     ) {
         reviewValidator.validateUpdateReview(requestDto, errors);
 
-        Review review = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, review, ResponseStatus.UPDATE_REVIEW_CREATED_BY_OTHER_MEMBERS);
-
-        reviewService.updateReview(reviewId, requestDto.toServiceDto());
+        reviewApplicationService.updateReview(reviewId, currentMember.getId(), requestDto.toServiceDto());
 
         return ResponseEntity.noContent().build();
     }
 
-    private void checkIsReviewCreatedByMe(Member currentMember, Review review, ResponseStatus responseStatus) {
+    private void checkIsReviewCreatedByMe(Member currentMember, Review review) {
         Member reviewMember = review.getMember();
         if (!reviewMember.getId().equals(currentMember.getId())) {
-            throw new ReviewCreatedByOtherMembersException(responseStatus);
+            throw new ReviewCreatedByOtherMembersException();
         }
     }
 
-
-    /**
-     * 테스트, 문서화 완료
-     * <p>
-     * 기능 테스트
-     * - 201
-     * - 문서화 o
-     * <p>
-     * 실패 테스트
-     * - validation - bad request o
-     * --체감 장르 수가 제한된 개수보다 많이 기입될 경우 o
-     * --체감 난이도, 체감 공포도, 체감 활동성, 시나리오 만족도, 인테리어 만족도, o
-     * 문제 구성 만족도를 기입하지 않은 경우
-     * <p>
-     * - 다른 회원이 생성한 리뷰에 설문을 등록하는 경우 - forbidden o
-     * - 인증되지 않은 사용자가 설문을 등록하는 경우 - unauthorized o
-     * - 탈퇴된 사용자가 설문을 등록하는 경우  - forbidden o
-     * <p>
-     * - service 실패
-     * -- 리뷰가 삭제된 리뷰일 경우 - bad request o
-     * -- 리뷰를 찾을 수 없는 경우 - not found o
-     * -- 장르를 찾을 수 없는 경우 - not found o
-     */
     @PostMapping("/surveys")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Object> addSurveyToReview(
@@ -271,35 +223,33 @@ public class ReviewApiController {
     ) {
         reviewValidator.validateAddSurveyToReview(requestDto, errors);
 
-        Review findReview = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.ADD_SURVEYS_TO_REVIEWS_CREATED_BY_OTHER_MEMBERS);
-
-        reviewService.addSurveyToReview(reviewId, requestDto.toServiceDto());
+        reviewApplicationService.addSurveyToReview(reviewId, currentMember.getId(), requestDto.toServiceDto());
 
         URI linkToGetReviewUri = getLinkToGetReviewsUri(reviewId, currentMember);
+
         return ResponseEntity.created(linkToGetReviewUri).build();
     }
 
-    /**
-     * 문서화 완료, 테스트 완료
-     */
-    @PutMapping("/surveys")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Object> updateSurveyFromReview(
-            @PathVariable Long reviewId,
-            @RequestBody @Valid ReviewSurveyUpdateRequestDto requestDto,
-            Errors errors,
-            @CurrentUser Member currentMember
-    ) {
-        reviewValidator.validateUpdateSurveyFromReview(requestDto, errors);
-
-        Review findReview = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_CREATED_BY_OTHER_MEMBERS);
-
-        reviewService.updateSurveyFromReview(reviewId, requestDto.toServiceDto());
-
-        return ResponseEntity.noContent().build();
-    }
+//    /**
+//     * 문서화 완료, 테스트 완료
+//     */
+//    @PutMapping("/surveys")
+//    @PreAuthorize("hasRole('ROLE_USER')")
+//    public ResponseEntity<Object> updateSurveyFromReview(
+//            @PathVariable Long reviewId,
+//            @RequestBody @Valid ReviewSurveyUpdateRequestDto requestDto,
+//            Errors errors,
+//            @CurrentUser Member currentMember
+//    ) {
+//        reviewValidator.validateUpdateSurveyFromReview(requestDto, errors);
+//
+//        Review findReview = reviewService.getReview(reviewId);
+//        checkIsReviewCreatedByMe(currentMember, findReview);
+//
+//        reviewService.updateSurveyFromReview(reviewId, requestDto.toServiceDto());
+//
+//        return ResponseEntity.noContent().build();
+//    }
 
     /**
      * 문서화 완료, 테스트 미완
@@ -325,7 +275,7 @@ public class ReviewApiController {
             @CurrentUser Member currentMember
     ) {
         Review findReview = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, findReview, ResponseStatus.DELETE_REVIEW_CREATED_BY_OTHER_MEMBERS);
+        checkIsReviewCreatedByMe(currentMember, findReview);
 
         reviewService.deleteReview(reviewId);
 

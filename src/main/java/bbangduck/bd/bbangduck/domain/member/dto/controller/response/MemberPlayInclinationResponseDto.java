@@ -21,7 +21,7 @@ public class MemberPlayInclinationResponseDto {
 
     private MemberPlayInclinationGenreSimpleInfoResponseDto genre;
 
-    private Integer playCount;
+    private Long playCount;
 
     public static MemberPlayInclinationResponseDto convert(MemberPlayInclination memberPlayInclination) {
         return MemberPlayInclinationResponseDto.builder()

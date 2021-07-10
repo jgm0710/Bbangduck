@@ -3,13 +3,12 @@ package bbangduck.bd.bbangduck.domain.review.entity;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSurveyUpdateDto;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateBaseDto;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewDetailRepository;
-import bbangduck.bd.bbangduck.domain.review.repository.ReviewPlayTogetherRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
+import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -20,9 +19,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
-import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -67,7 +63,8 @@ public class Review extends BaseEntityDateTime {
     @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
     private ReviewDetail reviewDetail;
 
-    @OneToOne(mappedBy = "review", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "review_survey_id")
     private ReviewSurvey reviewSurvey;
 
     private long likeCount;
@@ -172,7 +169,7 @@ public class Review extends BaseEntityDateTime {
         this.likeCount--;
     }
 
-    public void setReviewSurvey(ReviewSurvey reviewSurvey) {
+    public void addReviewSurvey(ReviewSurvey reviewSurvey) {
         reviewSurvey.setReview(this);
         this.reviewSurvey = reviewSurvey;
     }
@@ -189,12 +186,12 @@ public class Review extends BaseEntityDateTime {
         return deleteYN;
     }
 
-    public void updateBase(ReviewUpdateDto reviewUpdateDto) {
-        this.reviewType = reviewUpdateDto.getReviewType();
-        this.clearYN = reviewUpdateDto.isClearYN();
-        this.clearTime = reviewUpdateDto.getClearTime();
-        this.hintUsageCount = reviewUpdateDto.getHintUsageCount();
-        this.rating = reviewUpdateDto.getRating();
+    public void updateBase(ReviewUpdateBaseDto reviewUpdateBaseDto) {
+        this.reviewType = reviewUpdateBaseDto.getReviewType();
+        this.clearYN = reviewUpdateBaseDto.isClearYN();
+        this.clearTime = reviewUpdateBaseDto.getClearTime();
+        this.hintUsageCount = reviewUpdateBaseDto.getHintUsageCount();
+        this.rating = reviewUpdateBaseDto.getRating();
     }
 
     public void delete() {
@@ -212,18 +209,19 @@ public class Review extends BaseEntityDateTime {
         reviewDetail.setReview(this);
     }
 
-    public void clearDetail(ReviewDetailRepository reviewDetailRepository) {
-        if (isNotNull(this.reviewDetail)) {
-            reviewDetailRepository.delete(this.reviewDetail);
+    public void clearDetail() {
+        if (NullCheckUtils.isNotNull(this.reviewDetail)) {
+            this.reviewDetail.clearReview();
             this.reviewDetail = null;
         }
     }
 
-    public void clearPlayTogether(ReviewPlayTogetherRepository reviewPlayTogetherRepository) {
-        if (existsList(this.reviewPlayTogethers)) {
-            reviewPlayTogetherRepository.deleteInBatch(this.reviewPlayTogethers);
-            this.reviewPlayTogethers.clear();
-        }
+    public List<ReviewPlayTogether> getReviewPlayTogetherEntities() {
+        return reviewPlayTogethers;
+    }
+
+    public void clearPlayTogether() {
+        this.reviewPlayTogethers.clear();
     }
 
     @Override

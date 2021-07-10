@@ -33,13 +33,13 @@ class MemberQueryRepositoryTest extends BaseTest {
     public void findBySearchTypeAndKeyword(MemberSearchKeywordType searchKeywordType, String keyword) {
         //given
         Member member1 = Member.builder()
-                .email("member1@email.com")
-                .nickname("member1")
+                .email("fstmember1@email.com")
+                .nickname("fstmember1")
                 .build();
 
         Member member2 = Member.builder()
-                .email("member2@email.com")
-                .nickname("member2")
+                .email("fstmember2@email.com")
+                .nickname("fstmember2")
                 .build();
 
         Member save1 = memberRepository.save(member1);
@@ -53,14 +53,15 @@ class MemberQueryRepositoryTest extends BaseTest {
         assertEquals(save1.getEmail(), findMember.getEmail());
         assertEquals(save1.getNickname(), findMember.getNickname());
 
-        memberRepository.deleteAll();
+        memberRepository.delete(save1);
+        memberRepository.delete(save2);
 
     }
 
     private static Stream<Arguments> parametersForFindBySearchTypeAndKeyword() {
         return Stream.of(
-                Arguments.of(MemberSearchKeywordType.EMAIL, "member1@email.com"),
-                Arguments.of(MemberSearchKeywordType.NICKNAME, "member1")
+                Arguments.of(MemberSearchKeywordType.EMAIL, "fstmember1@email.com"),
+                Arguments.of(MemberSearchKeywordType.NICKNAME, "fstmember1")
         );
     }
 }

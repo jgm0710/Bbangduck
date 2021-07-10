@@ -10,7 +10,7 @@ import bbangduck.bd.bbangduck.global.common.exception.ForbiddenException;
  * 다른 회원이 생성한 리뷰를 조작하는 경우 발생할 예외
  */
 public class ReviewCreatedByOtherMembersException extends ForbiddenException {
-    public ReviewCreatedByOtherMembersException(ResponseStatus responseStatus) {
-        super(responseStatus);
+    public ReviewCreatedByOtherMembersException() {
+        super(ResponseStatus.REVIEW_CREATED_BY_OTHER_MEMBERS);
     }
 }

@@ -36,9 +36,18 @@ public class ThemeService {
         return findTheme;
     }
 
-    // TODO: 2021-07-08 리뷰 업데이트 시점에도 반영하도록 변경
-    public void reflectThemeRating(Theme theme, int rating) {
+    public void increaseThemeRating(Theme theme, int rating) {
         theme.increaseTotalRating(rating);
         theme.increaseTotalEvaluatedCount();
+    }
+
+    public void decreaseThemeRating(Theme theme, int rating) {
+        theme.decreaseTotalRating(rating);
+        theme.decreaseTotalEvaluatedCount();
+    }
+
+    public void updateThemeRating(Theme theme, int decreaseRating, int increaseRating) {
+        decreaseThemeRating(theme, decreaseRating);
+        increaseThemeRating(theme, increaseRating);
     }
 }

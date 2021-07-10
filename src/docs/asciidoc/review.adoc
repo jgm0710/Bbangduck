@@ -70,8 +70,8 @@
 | <<resources-add-detail-to-review>>
 | 다른 회원이 생성한 리뷰에 리뷰 상세를 등록하는 경우
 | 403
-| 4418
-| 다른 회원이 생성한 리뷰에는 리뷰 상세를 추가할 수 없습니다.
+| 4408
+| 다른 회원이 생성한 리뷰는 조작할 수 없습니다.
 
 | <<resources-add-detail-to-review>>
 | 리뷰 상세를 추가할 리뷰가 삭제된 리뷰일 경우
@@ -127,7 +127,7 @@
 | 리뷰에 설문 등록 시 다른 회원이 생성한 리뷰에 설문을 등록하는 경우
 | 403
 | 4408
-| 다른 회원이 생성한 리뷰에는 설문을 추가할 수 없습니다.
+| 다른 회원이 생성한 리뷰는 조작할 수 없습니다.
 
 
 
@@ -142,8 +142,8 @@
 | <<resources-add-detail-and-survey-to-review>>
 | 다른 회원이 생성한 리뷰에 리뷰 상세 및 설문을 등록하는 경우
 | 403
-| 4424
-| 다른 회원이 생성한 리뷰에는 리뷰 상세 및 설문을 추가할 수 없습니다.
+| 4408
+| 다른 회원이 생성한 리뷰는 조작할 수 없습니다.
 
 | <<resources-add-detail-and-survey-to-review>>
 | 리뷰를 찾을 수 없는 경우
@@ -198,8 +198,8 @@
 | <<resources-update-survey-from-review>>
 | 다른 회원이 생성한 리뷰에 등록된 설문을 수정하는 경우
 | 403
-| 4410
-| 다른 회원이 생성한 리뷰의 설문은 수정할 수 없습니다.
+| 4408
+| 다른 회원이 생성한 리뷰는 조작할 수 없습니다.
 
 | <<resources-update-survey-from-review>>
 | 설문을 수정할 리뷰가 삭제된 리뷰일 경우
@@ -243,8 +243,8 @@
 | <<resources-update-review>>
 | 다른 회원이 생성한 리뷰를 수정하는 경우
 | 403
-| 4414
-| 다른 회원이 생성한 리뷰는 수정할 수 없습니다.
+| 4408
+| 다른 회원이 생성한 리뷰는 조작할 수 없습니다.
 
 | <<resources-update-review>>
 | 삭제된 리뷰를 수정하는 경우
@@ -409,6 +409,15 @@
 * <<resources-create-review>> , <<resources-update-review>> 기능 수정
     ** 리뷰 생성, 수정 시 입력하는 힌트 사용 개수를 int 값에서 Enum(String) 값으로 변경
     ** 테마에 대한 평점 기입 값을 1~5 사이로 제한
+
+2021-07-11:::
+* <<resources-create-review>> 기능 수정
+    ** 리뷰 생성 시 테마의 평점이 변경되도록 수정
+* <<resources-update-review>> 기능 수정
+    ** 리뷰 수정 시 테마의 평점이 변경되도록 수정
+* <<resources-add-survey-to-review>> 기능 수정
+    ** 리뷰 설문 추가 시 테마 분석이 반영되도록 수정
+* <<resources-update-survey-from-review>> 기능 삭제
 
 
 

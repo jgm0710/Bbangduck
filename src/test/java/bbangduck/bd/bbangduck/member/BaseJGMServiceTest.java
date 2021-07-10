@@ -27,9 +27,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.*;
-import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
-import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
-import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
+import bbangduck.bd.bbangduck.domain.review.service.*;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.shop.entity.Area;
@@ -39,6 +37,7 @@ import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.repository.ThemeAnalysisRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
@@ -148,6 +147,9 @@ public class BaseJGMServiceTest extends BaseTest {
     @Autowired
     protected ReviewApplicationService reviewApplicationService;
 
+    @Autowired
+    protected ThemeAnalysisRepository themeAnalysisRepository;
+
     protected final String IMAGE_FILE2_CLASS_PATH = "/static/test/bbangduck.jpg";
 
     protected final String IMAGE_FILE_CLASS_PATH = "/static/test/puppy.jpg";
@@ -170,6 +172,7 @@ public class BaseJGMServiceTest extends BaseTest {
         reviewLikeRepository.deleteAll();
         reviewImageRepository.deleteAll();
         reviewRepository.deleteAll();
+        themeAnalysisRepository.deleteAll();
         themeRepository.deleteAll();
         shopRepository.deleteAll();
         areaRepository.deleteAll();

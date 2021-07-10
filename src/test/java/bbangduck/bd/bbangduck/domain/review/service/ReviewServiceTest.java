@@ -21,8 +21,6 @@ import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSearchType;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.ManipulateDeletedReviewsException;
-import bbangduck.bd.bbangduck.domain.review.exception.NoGenreToRegisterForReviewSurveyException;
-import bbangduck.bd.bbangduck.domain.review.exception.ReviewHasNotSurveyException;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewNotFoundException;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.exception.ManipulateDeletedThemeException;
@@ -274,7 +272,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         List<MemberPlayInclination> reviewMemberPlayInclinations = memberPlayInclinationQueryRepository.findAllByMember(reviewMember.getId());
         reviewMemberPlayInclinations.forEach(memberPlayInclination -> {
-            int playCount = memberPlayInclination.getPlayCount();
+            Long playCount = memberPlayInclination.getPlayCount();
             assertEquals(1, playCount, "처음 회원가입 이후 처음 댓글 작성 시 회원 플레이 성향의 장르별 플레이 횟수는 1 이 나와야 한다.");
         });
 
@@ -286,7 +284,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         Member review2Member = findReview2.getMember();
         List<MemberPlayInclination> review2MemberPlayInclinations = memberPlayInclinationQueryRepository.findAllByMember(review2Member.getId());
         review2MemberPlayInclinations.forEach(memberPlayInclination -> {
-            int playCount = memberPlayInclination.getPlayCount();
+            Long playCount = memberPlayInclination.getPlayCount();
             assertEquals(2, playCount, "같은 테마에 대해서 두번 리뷰를 작성한 것이므로 회원 플레이 성향의 모든 장르에 대한 플레이 횟수는 2 가 나와야 한다.");
         });
 
@@ -409,7 +407,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         boolean sortFlag = true;
         switch (sortCondition) {
             case LIKE_COUNT_DESC:
-                for (int i = 0; i < findReviews.size()-1; i++) {
+                for (int i = 0; i < findReviews.size() - 1; i++) {
                     Review nowReview = findReviews.get(i);
                     Review nextReview = findReviews.get(i + 1);
 
@@ -428,7 +426,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
                 }
                 break;
             case LIKE_COUNT_ASC:
-                for (int i = 0; i < findReviews.size()-1; i++) {
+                for (int i = 0; i < findReviews.size() - 1; i++) {
                     Review nowReview = findReviews.get(i);
                     Review nextReview = findReviews.get(i + 1);
 
@@ -447,7 +445,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
                 }
                 break;
             case LATEST:
-                for (int i = 0; i < findReviews.size()-1; i++) {
+                for (int i = 0; i < findReviews.size() - 1; i++) {
                     Review nowReview = findReviews.get(i);
                     Review nextReview = findReviews.get(i + 1);
 
@@ -461,7 +459,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
                 }
                 break;
             case OLDEST:
-                for (int i = 0; i < findReviews.size()-1; i++) {
+                for (int i = 0; i < findReviews.size() - 1; i++) {
                     Review nowReview = findReviews.get(i);
                     Review nextReview = findReviews.get(i + 1);
 
@@ -475,7 +473,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
                 }
                 break;
             case RATING_DESC:
-                for (int i = 0; i < findReviews.size()-1; i++) {
+                for (int i = 0; i < findReviews.size() - 1; i++) {
                     Review nowReview = findReviews.get(i);
                     Review nextReview = findReviews.get(i + 1);
 
@@ -494,7 +492,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
                 }
                 break;
             case RATING_ASC:
-                for (int i = 0; i < findReviews.size()-1; i++) {
+                for (int i = 0; i < findReviews.size() - 1; i++) {
                     Review nowReview = findReviews.get(i);
                     Review nextReview = findReviews.get(i + 1);
 
@@ -523,10 +521,8 @@ class ReviewServiceTest extends BaseJGMServiceTest {
     private List<Review> createTmpReviewList(Member member, Theme theme) {
         List<Review> reviewList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            boolean clearYN = true;
-            if (i % 2 == 0) {
-                clearYN = false;
-            }
+            boolean clearYN = i % 2 != 0;
+
             Review newReview = Review.builder()
                     .theme(theme)
                     .member(member)
@@ -582,7 +578,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         em.clear();
 
         //when
-        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateDto);
+        reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewSurveyCreateDto);
 
         em.flush();
         em.clear();
@@ -643,7 +639,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.addSurveyToReview(reviewId, reviewSurveyCreateDto));
+        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewSurveyCreateDto));
 
     }
 
@@ -678,7 +674,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(ReviewNotFoundException.class, () -> reviewService.addSurveyToReview(10000L, reviewSurveyCreateDto));
+        assertThrows(ReviewNotFoundException.class, () -> reviewApplicationService.addSurveyToReview(10000L, signUpId, reviewSurveyCreateDto));
 
     }
 
@@ -713,235 +709,202 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(GenreNotFoundException.class, () -> reviewService.addSurveyToReview(reviewId, reviewSurveyCreateDto));
+        assertThrows(GenreNotFoundException.class, () -> reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewSurveyCreateDto));
 
     }
 
-    @Test
-    @DisplayName("리뷰에 등록된 설문 수정")
-    @Transactional
-    public void updateSurveyFromReview() {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        Theme theme = createThemeSample();
-
-        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
-
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
-
-        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-
-
-        List<String> oldGenreCodes = List.of("HR1", "RSN1");
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
-        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
-
-        List<String> newGenreCodes = List.of("HR1", "RMC1");
-        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
-
-        em.flush();
-        em.clear();
-
-        //when
-        reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto());
-
-        em.flush();
-        em.clear();
-
-        //then
-        Review findReview = reviewService.getReview(reviewId);
-        ReviewSurvey findReviewSurvey = findReview.getReviewSurvey();
-
-        List<Genre> findReviewSurveyPerceivedThemeGenres = findReviewSurvey.getPerceivedThemeGenres();
-        findReviewSurveyPerceivedThemeGenres.forEach(genre -> System.out.println("genre = " + genre));
-        assertTrue(findReviewSurveyPerceivedThemeGenres.stream().anyMatch(genre -> genre.getCode().equals("HR1")), "변경된 설문에 등록된 체감 테마 장르에는 HR1 장르 코드의 장르가 있어야 한다.");
-        assertTrue(findReviewSurveyPerceivedThemeGenres.stream().anyMatch(genre -> genre.getCode().equals("RMC1")),"변경된 설문에 등록된 체감 테마 장르에는 RMC1 장르 코드의 장르가 있어야 한다.");
-        assertTrue(findReviewSurveyPerceivedThemeGenres.stream().noneMatch(genre -> genre.getCode().equals("RSN1")), "변경된 설문에 등록된 체감 테마 장르에는 RSN1 장르 코드의 장르가 없어야 한다.");
-
-        assertEquals(reviewSurveyUpdateRequestDto.getPerceivedDifficulty(), findReviewSurvey.getPerceivedDifficulty());
-        assertEquals(reviewSurveyUpdateRequestDto.getPerceivedActivity(), findReviewSurvey.getPerceivedActivity());
-        assertEquals(reviewSurveyUpdateRequestDto.getPerceivedHorrorGrade(), findReviewSurvey.getPerceivedHorrorGrade());
-        assertEquals(reviewSurveyUpdateRequestDto.getScenarioSatisfaction(), findReviewSurvey.getScenarioSatisfaction());
-        assertEquals(reviewSurveyUpdateRequestDto.getInteriorSatisfaction(), findReviewSurvey.getInteriorSatisfaction());
-        assertEquals(reviewSurveyUpdateRequestDto.getProblemConfigurationSatisfaction(), findReviewSurvey.getProblemConfigurationSatisfaction());
-
-    }
-
-    @Test
-    @DisplayName("리뷰에 등록된 설문 수정 - 삭제된 리뷰의 설문을 수정")
-    public void updateSurveyFromReview_DeletedReview() {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        Theme theme = createThemeSample();
-
-        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
-
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
-
-        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-
-
-        List<String> oldGenreCodes = List.of("HR1", "RSN1");
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
-        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
-
-        List<String> newGenreCodes = List.of("HR1", "RMC1");
-        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
-
-        em.flush();
-        em.clear();
-
-        reviewService.deleteReview(reviewId);
-
-        em.flush();
-        em.clear();
-
-        //when
-
-        //then
-        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
-
-    }
-
-    @Test
-    @DisplayName("리뷰에 등록된 설문 수정 - 리뷰를 찾을 수 없는 경우")
-    public void updateSurveyFromReview_ReviewNotFound() {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        Theme theme = createThemeSample();
-
-        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
-
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
-
-        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-
-
-        List<String> oldGenreCodes = List.of("HR1", "RSN1");
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
-        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
-
-        List<String> newGenreCodes = List.of("HR1", "RMC1");
-        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
-
-
-        em.flush();
-        em.clear();
-
-        //when
-
-        //then
-        assertThrows(ReviewNotFoundException.class, ()-> reviewService.updateSurveyFromReview(100000L, reviewSurveyUpdateRequestDto.toServiceDto()));
-
-    }
-
-    @Test
-    @DisplayName("리뷰에 등록된 설문 수정 - 장르를 찾을 수 없는 경우")
-    public void updateSurveyFromReview_GenreNotFound() {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        Theme theme = createThemeSample();
-
-        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
-
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
-
-        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-
-
-        List<String> oldGenreCodes = List.of("HR1", "RSN1");
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
-        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
-
-        List<String> newGenreCodes = List.of("AMRN1", "AMRN2");
-        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
-
-
-        em.flush();
-        em.clear();
-
-
-        //when
-
-        //then
-        assertThrows(GenreNotFoundException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
-
-    }
-
-    @Test
-    @DisplayName("리뷰에 등록된 설문 수정 - 장르 코드 목록을 기입하지 않은 경우")
-    public void updateSurveyFromReview_GenreCodesEmpty() {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        Theme theme = createThemeSample();
-
-        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
-
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
-
-        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-
-
-        List<String> oldGenreCodes = List.of("HR1", "RSN1");
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
-        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
-
-        List<String> newGenreCodes = new ArrayList<>();
-        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
-
-        em.flush();
-        em.clear();
-
-        //when
-
-        //then
-        assertThrows(NoGenreToRegisterForReviewSurveyException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
-
-    }
-
-    @Test
-    @DisplayName("리뷰에 등록된 설문 수정 - 리뷰에 설문이 등로되어 있지 않을 경우")
-    @Transactional
-    public void updateSurveyFromReview_ReviewHasNotSurvey() {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        Theme theme = createThemeSample();
-
-        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
-
-        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
-
-        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
-
-
-        List<String> oldGenreCodes = List.of("HR1", "RSN1");
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
-//        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
-
-        List<String> newGenreCodes = List.of("HR1", "RMC1");
-        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
-
-        em.flush();
-        em.clear();
-
-        //when
-
-        //then
-        assertThrows(ReviewHasNotSurveyException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
-
-    }
+//    @Test
+//    @DisplayName("리뷰에 등록된 설문 수정")
+//    @Transactional
+//    public void updateSurveyFromReview() {
+//        //given
+//        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+//        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+//
+//        Theme theme = createThemeSample();
+//
+//        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+//
+//        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+//
+//        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+//
+//
+//        List<String> oldGenreCodes = List.of("HR1", "RSN1");
+//        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
+//        reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewSurveyCreateRequestDto.toServiceDto());
+//
+//        List<String> newGenreCodes = List.of("HR1", "RMC1");
+//        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+//
+//        em.flush();
+//        em.clear();
+//
+//        //when
+//        reviewApplicationService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto());
+//
+//        em.flush();
+//        em.clear();
+//
+//        //then
+//        Review findReview = reviewService.getReview(reviewId);
+//        ReviewSurvey findReviewSurvey = findReview.getReviewSurvey();
+//
+//        List<Genre> findReviewSurveyPerceivedThemeGenres = findReviewSurvey.getPerceivedThemeGenres();
+//        findReviewSurveyPerceivedThemeGenres.forEach(genre -> System.out.println("genre = " + genre));
+//        assertTrue(findReviewSurveyPerceivedThemeGenres.stream().anyMatch(genre -> genre.getCode().equals("HR1")), "변경된 설문에 등록된 체감 테마 장르에는 HR1 장르 코드의 장르가 있어야 한다.");
+//        assertTrue(findReviewSurveyPerceivedThemeGenres.stream().anyMatch(genre -> genre.getCode().equals("RMC1")), "변경된 설문에 등록된 체감 테마 장르에는 RMC1 장르 코드의 장르가 있어야 한다.");
+//        assertTrue(findReviewSurveyPerceivedThemeGenres.stream().noneMatch(genre -> genre.getCode().equals("RSN1")), "변경된 설문에 등록된 체감 테마 장르에는 RSN1 장르 코드의 장르가 없어야 한다.");
+//
+//        assertEquals(reviewSurveyUpdateRequestDto.getPerceivedDifficulty(), findReviewSurvey.getPerceivedDifficulty());
+//        assertEquals(reviewSurveyUpdateRequestDto.getPerceivedActivity(), findReviewSurvey.getPerceivedActivity());
+//        assertEquals(reviewSurveyUpdateRequestDto.getPerceivedHorrorGrade(), findReviewSurvey.getPerceivedHorrorGrade());
+//        assertEquals(reviewSurveyUpdateRequestDto.getScenarioSatisfaction(), findReviewSurvey.getScenarioSatisfaction());
+//        assertEquals(reviewSurveyUpdateRequestDto.getInteriorSatisfaction(), findReviewSurvey.getInteriorSatisfaction());
+//        assertEquals(reviewSurveyUpdateRequestDto.getProblemConfigurationSatisfaction(), findReviewSurvey.getProblemConfigurationSatisfaction());
+//
+//    }
+
+//    @Test
+//    @DisplayName("리뷰에 등록된 설문 수정 - 삭제된 리뷰의 설문을 수정")
+//    public void updateSurveyFromReview_DeletedReview() {
+//        //given
+//        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+//        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+//
+//        Theme theme = createThemeSample();
+//
+//        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+//
+//        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+//
+//        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+//
+//
+//        List<String> oldGenreCodes = List.of("HR1", "RSN1");
+//        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
+//        reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewSurveyCreateRequestDto.toServiceDto());
+//
+//        List<String> newGenreCodes = List.of("HR1", "RMC1");
+//        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+//
+//        em.flush();
+//        em.clear();
+//
+//        reviewService.deleteReview(reviewId);
+//
+//        em.flush();
+//        em.clear();
+//
+//        //when
+//
+//        //then
+//        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
+//
+//    }
+
+//    @Test
+//    @DisplayName("리뷰에 등록된 설문 수정 - 리뷰를 찾을 수 없는 경우")
+//    public void updateSurveyFromReview_ReviewNotFound() {
+//        //given
+//        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+//        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+//
+//        Theme theme = createThemeSample();
+//
+//        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+//
+//        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+//
+//        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+//
+//
+//        List<String> oldGenreCodes = List.of("HR1", "RSN1");
+//        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
+//        reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewSurveyCreateRequestDto.toServiceDto());
+//
+//        List<String> newGenreCodes = List.of("HR1", "RMC1");
+//        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+//
+//
+//        em.flush();
+//        em.clear();
+//
+//        //when
+//
+//        //then
+//        assertThrows(ReviewNotFoundException.class, () -> reviewService.updateSurveyFromReview(100000L, reviewSurveyUpdateRequestDto.toServiceDto()));
+//
+//    }
+
+//    @Test
+//    @DisplayName("리뷰에 등록된 설문 수정 - 장르를 찾을 수 없는 경우")
+//    public void updateSurveyFromReview_GenreNotFound() {
+//        //given
+//        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+//        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+//
+//        Theme theme = createThemeSample();
+//
+//        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+//
+//        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+//
+//        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+//
+//
+//        List<String> oldGenreCodes = List.of("HR1", "RSN1");
+//        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
+//        reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewSurveyCreateRequestDto.toServiceDto());
+//
+//        List<String> newGenreCodes = List.of("AMRN1", "AMRN2");
+//        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+//
+//
+//        em.flush();
+//        em.clear();
+//
+//
+//        //when
+//
+//        //then
+//        assertThrows(GenreNotFoundException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
+//
+//    }
+
+//    @Test
+//    @DisplayName("리뷰에 등록된 설문 수정 - 리뷰에 설문이 등로되어 있지 않을 경우")
+//    @Transactional
+//    public void updateSurveyFromReview_ReviewHasNotSurvey() {
+//        //given
+//        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
+//        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
+//
+//        Theme theme = createThemeSample();
+//
+//        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
+//
+//        ReviewCreateRequestDto simpleReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
+//
+//        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
+//
+//
+//        List<String> oldGenreCodes = List.of("HR1", "RSN1");
+//        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(oldGenreCodes);
+////        reviewService.addSurveyToReview(reviewId, reviewSurveyCreateRequestDto.toServiceDto());
+//
+//        List<String> newGenreCodes = List.of("HR1", "RMC1");
+//        ReviewSurveyUpdateRequestDto reviewSurveyUpdateRequestDto = createReviewSurveyUpdateRequestDto(newGenreCodes);
+//
+//        em.flush();
+//        em.clear();
+//
+//        //when
+//
+//        //then
+//        assertThrows(ReviewHasNotSurveyException.class, () -> reviewService.updateSurveyFromReview(reviewId, reviewSurveyUpdateRequestDto.toServiceDto()));
+//
+//    }
 
     @Test
     @DisplayName("리뷰 수정 - 간단 리뷰 to 상세 리뷰")
@@ -974,7 +937,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         ReviewUpdateRequestDto reviewUpdateRequestDto = createDetailReviewUpdateRequestDto(newFriendIds, reviewImageRequestDtos);
 
         //when
-        reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto());
+        reviewApplicationService.updateReview(createdReviewId,signUpId, reviewUpdateRequestDto.toServiceDto());
 
         em.flush();
         em.clear();
@@ -1017,7 +980,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
-        reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
+        reviewApplicationService.addDetailToReview(createdReviewId, signUpId, reviewDetailCreateRequestDto.toServiceDto());
 
         ReviewUpdateRequestDto reviewUpdateRequestDto = createSimpleReviewUpdateRequestDto(friendIds);
 
@@ -1026,7 +989,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         //when
         System.out.println("====================================================================================================================================");
-        reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto());
+        reviewApplicationService.updateReview(createdReviewId, signUpId, reviewUpdateRequestDto.toServiceDto());
 
         em.flush();
         em.clear();
@@ -1070,7 +1033,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
         ReviewDetailCreateRequestDto reviewDetailCreateRequestDto = createReviewDetailCreateRequestDto(reviewImageRequestDtos);
-        reviewService.addDetailToReview(createdReviewId, reviewDetailCreateRequestDto.toServiceDto());
+        reviewApplicationService.addDetailToReview(createdReviewId, signUpId, reviewDetailCreateRequestDto.toServiceDto());
 
         List<Long> newFriendIds = List.of(friendIds.get(1), friendIds.get(2));
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
@@ -1091,7 +1054,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         //when
         System.out.println("====================================================================================================================================");
-        reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto());
+        reviewApplicationService.updateReview(createdReviewId, signUpId, reviewUpdateRequestDto.toServiceDto());
 
         em.flush();
         em.clear();
@@ -1147,7 +1110,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto()));
+        assertThrows(ManipulateDeletedReviewsException.class, () -> reviewApplicationService.updateReview(createdReviewId, signUpId, reviewUpdateRequestDto.toServiceDto()));
 
     }
 
@@ -1184,7 +1147,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(ReviewNotFoundException.class, () -> reviewService.updateReview(100000L, reviewUpdateRequestDto.toServiceDto()));
+        assertThrows(ReviewNotFoundException.class, () -> reviewApplicationService.updateReview(100000L, signUpId, reviewUpdateRequestDto.toServiceDto()));
 
     }
 
@@ -1226,7 +1189,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewService.updateReview(createdReviewId, reviewUpdateRequestDto.toServiceDto()));
+        assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewApplicationService.updateReview(createdReviewId, signUpId, reviewUpdateRequestDto.toServiceDto()));
 
     }
 
@@ -1251,7 +1214,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         em.flush();
         em.clear();
         //when
-        reviewService.addDetailToReview(reviewId, reviewDetailCreateRequestDto.toServiceDto());
+        reviewApplicationService.addDetailToReview(reviewId, signUpId, reviewDetailCreateRequestDto.toServiceDto());
 
         em.flush();
         em.clear();
@@ -1290,7 +1253,8 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         ReviewDetailAndSurveyCreateDtoRequestDto reviewDetailAndSurveyCreateDtoRequestDto = createReviewDetailAndSurveyCreateDtoRequestDto(reviewImageRequestDtos, genreCodes);
 
         //when
-        reviewService.addDetailAndSurveyToReview(reviewId, reviewDetailAndSurveyCreateDtoRequestDto.toDetailServiceDto(), reviewDetailAndSurveyCreateDtoRequestDto.toSurveyServiceDto());
+        reviewApplicationService.addDetailToReview(reviewId, signUpId, reviewDetailAndSurveyCreateDtoRequestDto.toDetailServiceDto());
+        reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewDetailAndSurveyCreateDtoRequestDto.toSurveyServiceDto());
 
         //then
         Review findReview = reviewService.getReview(reviewId);
@@ -1427,7 +1391,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
             assertEquals(member1Id, reviewMember.getId(), "조회된 리뷰는 모드 member1 이 생성한 리뷰가 조회되어야 한다.");
         });
 
-        for (int i = 0; i < findReviews.size()-1; i++) {
+        for (int i = 0; i < findReviews.size() - 1; i++) {
             Review nowReview = findReviews.get(i);
             Review nextReview = findReviews.get(i + 1);
             assertTrue(nowReview.getRecodeNumber() > nextReview.getRecodeNumber(), "조회된 리뷰의 기록 번호는 내림차순 정렬이어야 한다.");

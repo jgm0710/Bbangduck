@@ -463,14 +463,14 @@ class MemberServiceTest extends BaseJGMServiceTest {
             MemberPlayInclination memberPlayInclination = MemberPlayInclination.builder()
                     .member(member)
                     .genre(genre)
-                    .playCount(new Random().nextInt(8) + 1)
+                    .playCount((long) (new Random().nextInt(8) + 1))
                     .build();
             memberPlayInclinationRepository.save(memberPlayInclination);
 
             MemberPlayInclination member2PlayInclination = MemberPlayInclination.builder()
                     .member(member2)
                     .genre(genre)
-                    .playCount(new Random().nextInt(8) + 1)
+                    .playCount((long) (new Random().nextInt(8) + 1))
                     .build();
             memberPlayInclinationRepository.save(member2PlayInclination);
         });
@@ -530,14 +530,14 @@ class MemberServiceTest extends BaseJGMServiceTest {
             MemberPlayInclination memberPlayInclination = MemberPlayInclination.builder()
                     .member(member)
                     .genre(genre)
-                    .playCount(new Random().nextInt(8) + 1)
+                    .playCount((long) (new Random().nextInt(8) + 1))
                     .build();
             memberPlayInclinationRepository.save(memberPlayInclination);
 
             MemberPlayInclination member2PlayInclination = MemberPlayInclination.builder()
                     .member(member2)
                     .genre(genre)
-                    .playCount(new Random().nextInt(8) + 1)
+                    .playCount((long) (new Random().nextInt(8) + 1))
                     .build();
             memberPlayInclinationRepository.save(member2PlayInclination);
         });

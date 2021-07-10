@@ -39,6 +39,14 @@ public class ThemeAnalysis {
         this.evaluatedCount = evaluatedCount;
     }
 
+    public static ThemeAnalysis init(Theme theme, Genre genre) {
+        return ThemeAnalysis.builder()
+                .theme(theme)
+                .genre(genre)
+                .evaluatedCount(0L)
+                .build();
+    }
+
     public Long getId() {
         return Id;
     }
@@ -53,5 +61,9 @@ public class ThemeAnalysis {
 
     public Long getEvaluatedCount() {
         return evaluatedCount;
+    }
+
+    public void increaseEvaluatedCount() {
+        this.evaluatedCount++;
     }
 }

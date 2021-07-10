@@ -98,4 +98,8 @@ public class ReviewDetail extends BaseEntityDateTime {
             });
         }
     }
+
+    public void clearReview() {
+        this.review = null;
+    }
 }

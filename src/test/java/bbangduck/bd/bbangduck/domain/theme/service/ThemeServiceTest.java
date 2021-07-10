@@ -76,7 +76,7 @@ class ThemeServiceTest {
                 .build();
 
         //when
-        themeMockService.reflectThemeRating(theme, 5);
+        themeMockService.increaseThemeRating(theme, 5);
 
         //then
         assertEquals(5, theme.getTotalRating());
