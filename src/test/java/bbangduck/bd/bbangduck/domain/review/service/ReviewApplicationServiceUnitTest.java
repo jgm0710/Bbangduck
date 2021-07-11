@@ -37,6 +37,7 @@ class ReviewApplicationServiceUnitTest {
     MemberFriendService memberFriendMockService = mock(MemberFriendService.class);
     GenreService genreMockService = mock(GenreService.class);
     ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
+    ReviewLikeService reviewLikeMockService = mock(ReviewLikeService.class);
 
     ReviewApplicationService reviewMockApplicationService = new ReviewApplicationService(
             reviewMockService,
@@ -45,8 +46,10 @@ class ReviewApplicationServiceUnitTest {
             memberPlayInclinationMockService,
             memberFriendMockService,
             genreMockService,
-            themeAnalysisMockService
+            themeAnalysisMockService,
+            reviewLikeMockService
     );
+
 
 
 

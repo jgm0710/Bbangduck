@@ -58,11 +58,11 @@ public class SimpleReviewResponseDto implements ReviewResponseDto {
     private LocalDateTime updateTimes;
 
 
-    public static SimpleReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
-        return new SimpleReviewResponseDto(review, currentMember, existReviewLike, periodForAddingSurveys);
+    public static SimpleReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike, boolean possibleOfAddReviewSurvey) {
+        return new SimpleReviewResponseDto(review, currentMember, existReviewLike, possibleOfAddReviewSurvey);
     }
 
-    protected SimpleReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
+    protected SimpleReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, boolean possibleOfAddReviewSurvey) {
         this.reviewId = review.getId();
         this.writerInfo = ReviewMemberSimpleInfoResponseDto.convert(review.getMember());
         this.themeInfo = ReviewThemeSimpleInfoResponseDto.convert(review.getTheme());
@@ -76,15 +76,10 @@ public class SimpleReviewResponseDto implements ReviewResponseDto {
         this.likeCount = review.getLikeCount();
         this.myReview = review.isMyReview(currentMember);
         this.like = existReviewLike;
-        this.possibleRegisterForSurveyYN = calculatePossibleRegisterForSurveyYN(review.getRegisterTimes(), periodForAddingSurveys);
+        this.possibleRegisterForSurveyYN = possibleOfAddReviewSurvey;
         this.surveyYN = false;
         this.registerTimes = review.getRegisterTimes();
         this.updateTimes = review.getUpdateTimes();
-    }
-
-    private boolean calculatePossibleRegisterForSurveyYN(LocalDateTime registerTimes, long periodForAddingSurveys) {
-        LocalDateTime registerSurveyPeriodExpirationDateTime = LocalDateTime.now().minusDays(periodForAddingSurveys);
-        return registerTimes.isAfter(registerSurveyPeriodExpirationDateTime);
     }
 
     private List<ReviewMemberSimpleInfoResponseDto> convertReviewPlayTogetherFriends(List<Member> playTogetherMembers) {

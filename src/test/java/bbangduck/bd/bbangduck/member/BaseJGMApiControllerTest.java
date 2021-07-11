@@ -38,6 +38,7 @@ import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemeImage;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeAnalysisRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
@@ -308,7 +309,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return genreCodes;
     }
 
-    protected Theme createThemeSample() {
+    protected Theme createThemeSample() throws IOException {
         Member member = createAdminMemberSample();
 
         AdminInfo adminInfo = createAdminInfoSample(member);
@@ -332,6 +333,15 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .totalEvaluatedCount(0L)
                 .totalRating(0L)
                 .build();
+
+        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
+        Long uploadImageFileId = fileStorageService.uploadImageFile(files);
+        FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
+        ThemeImage themeImage = ThemeImage.builder()
+                .fileStorageId(storedFile.getId())
+                .fileName(storedFile.getFileName())
+                .build();
+        theme.setThemeImage(themeImage);
 
         Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
         Genre rmc1 = genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new);

@@ -16,32 +16,32 @@ import bbangduck.bd.bbangduck.domain.review.repository.*;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("ReviewService 단위 테스트")
 class ReviewServiceUnitTest {
 
-     ReviewRepository reviewRepository = Mockito.mock(ReviewRepository.class);
-     ReviewQueryRepository reviewQueryRepository = Mockito.mock(ReviewQueryRepository.class);
-     ReviewImageRepository reviewImageRepository = Mockito.mock(ReviewImageRepository.class);
-     ReviewDetailRepository reviewDetailRepository = Mockito.mock(ReviewDetailRepository.class);
-    ReviewProperties reviewProperties = Mockito.mock(ReviewProperties.class);
-    ReviewPlayTogetherRepository reviewPlayTogetherRepository = Mockito.mock(ReviewPlayTogetherRepository.class);
+    ReviewRepository reviewRepository = mock(ReviewRepository.class);
+    ReviewQueryRepository reviewQueryRepository = mock(ReviewQueryRepository.class);
+    ReviewImageRepository reviewImageRepository = mock(ReviewImageRepository.class);
+    ReviewDetailRepository reviewDetailRepository = mock(ReviewDetailRepository.class);
+    ReviewPlayTogetherRepository reviewPlayTogetherRepository = mock(ReviewPlayTogetherRepository.class);
+    ReviewProperties reviewProperties = mock(ReviewProperties.class);
+
 
     ReviewService reviewService = new ReviewService(
             reviewRepository,
             reviewQueryRepository,
             reviewImageRepository,
             reviewDetailRepository,
-            reviewProperties,
-            reviewPlayTogetherRepository
+            reviewPlayTogetherRepository,
+            reviewProperties
     );
 
     @Test
@@ -99,7 +99,7 @@ class ReviewServiceUnitTest {
         ReviewImageDto reviewImageDto1 = new ReviewImageDto(1L, "fileName1");
         ReviewImageDto reviewImageDto2 = new ReviewImageDto(2L, "fileName2");
 
-        List<ReviewImageDto> reviewImageDtos = List.of(reviewImageDto1,reviewImageDto2);
+        List<ReviewImageDto> reviewImageDtos = List.of(reviewImageDto1, reviewImageDto2);
         ReviewDetailCreateDto reviewDetailCreateDto = new ReviewDetailCreateDto(reviewImageDtos, "comment");
 
 
@@ -174,7 +174,6 @@ class ReviewServiceUnitTest {
 
         //then
         assertThrows(SurveyIsAlreadyRegisteredInReviewException.class, () -> reviewService.addSurveyToReview(review, reviewSurveyCreateDto));
-
     }
 
     @Test
@@ -182,8 +181,6 @@ class ReviewServiceUnitTest {
     public void addSurveyToReview_ExpirationOfReviewSurveyAddPeriod() {
         //given
         long periodForAddingSurveys = 7;
-
-        given(reviewProperties.getPeriodForAddingSurveys()).willReturn(periodForAddingSurveys);
 
         Review review = Review.builder()
                 .id(1L)

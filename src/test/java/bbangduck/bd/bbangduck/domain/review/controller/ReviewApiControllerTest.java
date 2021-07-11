@@ -727,6 +727,48 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                         Satisfaction.getNameList()),
                                 fieldWithPath("problemConfigurationSatisfaction").description("리뷰에 추가할 설문에 등록할 문제 구성 만족도 기입 +\n" +
                                         Satisfaction.getNameList())
+                        ),
+                        responseFields(
+                                fieldWithPath("reviewId").description("리뷰의 식별 ID"),
+                                fieldWithPath("writerInfo").description("리뷰를 생성한 회원 정보"),
+                                fieldWithPath("writerInfo.memberId").description("리뷰를 생성한 회원의 식별 ID"),
+                                fieldWithPath("writerInfo.nickname").description("리뷰를 생성한 회원의 닉네임"),
+                                fieldWithPath("writerInfo.profileImageUrl").description("리뷰를 생성한 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("writerInfo.profileImageThumbnailUrl").description("리뷰를 생성한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("themeInfo").description("리뷰가 생성된 테마의 정보"),
+                                fieldWithPath("themeInfo.themeId").description("리뷰가 생성된 테마의 식별 ID"),
+                                fieldWithPath("themeInfo.themeName").description("리뷰가 생성된 테마의 이름"),
+                                fieldWithPath("themeInfo.themeImageUrl").description("리뷰가 생성된 테마의 이미지 다운로드 URL"),
+                                fieldWithPath("themeInfo.themeImageThumbnailUrl").description("리뷰가 생성된 테마의 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("reviewType").description("리뷰의 Type +\n" +
+                                        ReviewType.getNameList()),
+                                fieldWithPath("reviewRecodeNumber").description("생성된 리뷰의 기록 번호"),
+                                fieldWithPath("themeClearYN").description("테마 클리어 여부"),
+                                fieldWithPath("themeClearTime").description("테마를 클리어하는데 걸린 시간"),
+                                fieldWithPath("hintUsageCount").description("힌트 사용 개수"),
+                                fieldWithPath("rating").description("테마에 대한 평점"),
+                                fieldWithPath("playTogetherFriends").description("리뷰에 함께 플레이한 친구로 등록한 친구들의 회원 정보"),
+                                fieldWithPath("playTogetherFriends[].memberId").description("리뷰에 함께 플레이한 친구 회원의 식별 ID"),
+                                fieldWithPath("playTogetherFriends[].nickname").description("리뷰에 함께 플레이한 친구 회원의 닉네임"),
+                                fieldWithPath("playTogetherFriends[].profileImageUrl").description("리뷰에 함께 플레이한 친구 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("playTogetherFriends[].profileImageThumbnailUrl").description("리뷰에 함께 플레이한 친구 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("likeCount").description("리뷰가 좋아요 받은 개수"),
+                                fieldWithPath("myReview").description("내가 생성한 리뷰인지 여부"),
+                                fieldWithPath("like").description("좋아요를 등록한 리뷰인지 여부"),
+                                fieldWithPath("possibleRegisterForSurveyYN").description("리뷰에 설문 추가가 가능한지 여부"),
+                                fieldWithPath("surveyYN").description("리뷰에 설문이 등록되었는지 여부"),
+                                fieldWithPath("perceivedThemeGenres").description("테마에 대한 평가한 체감 장르 목록 정보"),
+                                fieldWithPath("perceivedThemeGenres[].genreId").description("장르 식별 ID"),
+                                fieldWithPath("perceivedThemeGenres[].genreCode").description("장르 코드 값"),
+                                fieldWithPath("perceivedThemeGenres[].genreName").description("장르명"),
+                                fieldWithPath("perceivedDifficulty").description("체감 난이도"),
+                                fieldWithPath("perceivedHorrorGrade").description("체감 공포도"),
+                                fieldWithPath("perceivedActivity").description("체감 활동성"),
+                                fieldWithPath("scenarioSatisfaction").description("시나리오 만족도"),
+                                fieldWithPath("interiorSatisfaction").description("인테리어 만족도"),
+                                fieldWithPath("problemConfigurationSatisfaction").description("문제 구성 만족도"),
+                                fieldWithPath("registerTimes").description("리뷰 생성 일자"),
+                                fieldWithPath("updateTimes").description("리뷰 마지막 수정 일자")
                         )
                 ))
         ;
@@ -2292,10 +2334,46 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewImages[0].fileName").description("리뷰 상세에 추가할 이미지 파일의 파일 이름 기입"),
                                 fieldWithPath("comment").description("리뷰 상세에 추가할 코멘트 기입 +\n" +
                                         "최대 2000자 제한")
+                        ),
+                        responseFields(
+                                fieldWithPath("reviewId").description("리뷰의 식별 ID"),
+                                fieldWithPath("writerInfo").description("리뷰를 생성한 회원 정보"),
+                                fieldWithPath("writerInfo.memberId").description("리뷰를 생성한 회원의 식별 ID"),
+                                fieldWithPath("writerInfo.nickname").description("리뷰를 생성한 회원의 닉네임"),
+                                fieldWithPath("writerInfo.profileImageUrl").description("리뷰를 생성한 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("writerInfo.profileImageThumbnailUrl").description("리뷰를 생성한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("themeInfo").description("리뷰가 생성된 테마의 정보"),
+                                fieldWithPath("themeInfo.themeId").description("리뷰가 생성된 테마의 식별 ID"),
+                                fieldWithPath("themeInfo.themeName").description("리뷰가 생성된 테마의 이름"),
+                                fieldWithPath("themeInfo.themeImageUrl").description("리뷰가 생성된 테마의 이미지 다운로드 URL"),
+                                fieldWithPath("themeInfo.themeImageThumbnailUrl").description("리뷰가 생성된 테마의 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("reviewType").description("리뷰의 Type +\n" +
+                                        ReviewType.getNameList()),
+                                fieldWithPath("reviewRecodeNumber").description("생성된 리뷰의 기록 번호"),
+                                fieldWithPath("themeClearYN").description("테마 클리어 여부"),
+                                fieldWithPath("themeClearTime").description("테마를 클리어하는데 걸린 시간"),
+                                fieldWithPath("hintUsageCount").description("힌트 사용 개수"),
+                                fieldWithPath("rating").description("테마에 대한 평점"),
+                                fieldWithPath("playTogetherFriends").description("리뷰에 함께 플레이한 친구로 등록한 친구들의 회원 정보"),
+                                fieldWithPath("playTogetherFriends[].memberId").description("리뷰에 함께 플레이한 친구 회원의 식별 ID"),
+                                fieldWithPath("playTogetherFriends[].nickname").description("리뷰에 함께 플레이한 친구 회원의 닉네임"),
+                                fieldWithPath("playTogetherFriends[].profileImageUrl").description("리뷰에 함께 플레이한 친구 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("playTogetherFriends[].profileImageThumbnailUrl").description("리뷰에 함께 플레이한 친구 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("likeCount").description("리뷰가 좋아요 받은 개수"),
+                                fieldWithPath("myReview").description("내가 생성한 리뷰인지 여부"),
+                                fieldWithPath("like").description("좋아요를 등록한 리뷰인지 여부"),
+                                fieldWithPath("possibleRegisterForSurveyYN").description("리뷰에 설문 추가가 가능한지 여부"),
+                                fieldWithPath("surveyYN").description("리뷰에 설문이 등록되었는지 여부"),
+                                fieldWithPath("reviewImages").description("상세 리뷰에 등록된 이미지 정보"),
+                                fieldWithPath("reviewImages[].reviewImageId").description("상세 리뷰에 등록된 이미지의 식별 ID"),
+                                fieldWithPath("reviewImages[].reviewImageUrl").description("상세 리뷰에 등록된 이미지의 다운로드 URL"),
+                                fieldWithPath("reviewImages[].reviewImageThumbnailUrl").description("상세 리뷰에 등록된 이미지의 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("comment").description("상세 리뷰에 등록된 코멘트"),
+                                fieldWithPath("registerTimes").description("리뷰 생성 일자"),
+                                fieldWithPath("updateTimes").description("리뷰 마지막 수정 일자")
                         )
                 ))
         ;
-
     }
 
     @Test
@@ -2348,6 +2426,53 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("scenarioSatisfaction").description("리뷰 설문에 등록할 시나리오 만족도 기입"),
                                 fieldWithPath("interiorSatisfaction").description("리뷰 설문에 등록할 인테리어 만족도 기입"),
                                 fieldWithPath("problemConfigurationSatisfaction").description("리뷰 설문에 등록할 문제 구성 만족도 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("reviewId").description("리뷰의 식별 ID"),
+                                fieldWithPath("writerInfo").description("리뷰를 생성한 회원 정보"),
+                                fieldWithPath("writerInfo.memberId").description("리뷰를 생성한 회원의 식별 ID"),
+                                fieldWithPath("writerInfo.nickname").description("리뷰를 생성한 회원의 닉네임"),
+                                fieldWithPath("writerInfo.profileImageUrl").description("리뷰를 생성한 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("writerInfo.profileImageThumbnailUrl").description("리뷰를 생성한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("themeInfo").description("리뷰가 생성된 테마의 정보"),
+                                fieldWithPath("themeInfo.themeId").description("리뷰가 생성된 테마의 식별 ID"),
+                                fieldWithPath("themeInfo.themeName").description("리뷰가 생성된 테마의 이름"),
+                                fieldWithPath("themeInfo.themeImageUrl").description("리뷰가 생성된 테마의 이미지 다운로드 URL"),
+                                fieldWithPath("themeInfo.themeImageThumbnailUrl").description("리뷰가 생성된 테마의 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("reviewType").description("리뷰의 Type +\n" +
+                                        ReviewType.getNameList()),
+                                fieldWithPath("reviewRecodeNumber").description("생성된 리뷰의 기록 번호"),
+                                fieldWithPath("themeClearYN").description("테마 클리어 여부"),
+                                fieldWithPath("themeClearTime").description("테마를 클리어하는데 걸린 시간"),
+                                fieldWithPath("hintUsageCount").description("힌트 사용 개수"),
+                                fieldWithPath("rating").description("테마에 대한 평점"),
+                                fieldWithPath("playTogetherFriends").description("리뷰에 함께 플레이한 친구로 등록한 친구들의 회원 정보"),
+                                fieldWithPath("playTogetherFriends[].memberId").description("리뷰에 함께 플레이한 친구 회원의 식별 ID"),
+                                fieldWithPath("playTogetherFriends[].nickname").description("리뷰에 함께 플레이한 친구 회원의 닉네임"),
+                                fieldWithPath("playTogetherFriends[].profileImageUrl").description("리뷰에 함께 플레이한 친구 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("playTogetherFriends[].profileImageThumbnailUrl").description("리뷰에 함께 플레이한 친구 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("likeCount").description("리뷰가 좋아요 받은 개수"),
+                                fieldWithPath("myReview").description("내가 생성한 리뷰인지 여부"),
+                                fieldWithPath("like").description("좋아요를 등록한 리뷰인지 여부"),
+                                fieldWithPath("possibleRegisterForSurveyYN").description("리뷰에 설문 추가가 가능한지 여부"),
+                                fieldWithPath("surveyYN").description("리뷰에 설문이 등록되었는지 여부"),
+                                fieldWithPath("reviewImages").description("상세 리뷰에 등록된 이미지 정보"),
+                                fieldWithPath("reviewImages[].reviewImageId").description("상세 리뷰에 등록된 이미지의 식별 ID"),
+                                fieldWithPath("reviewImages[].reviewImageUrl").description("상세 리뷰에 등록된 이미지의 다운로드 URL"),
+                                fieldWithPath("reviewImages[].reviewImageThumbnailUrl").description("상세 리뷰에 등록된 이미지의 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("comment").description("상세 리뷰에 등록된 코멘트"),
+                                fieldWithPath("perceivedThemeGenres").description("테마에 대한 평가한 체감 장르 목록 정보"),
+                                fieldWithPath("perceivedThemeGenres[].genreId").description("장르 식별 ID"),
+                                fieldWithPath("perceivedThemeGenres[].genreCode").description("장르 코드 값"),
+                                fieldWithPath("perceivedThemeGenres[].genreName").description("장르명"),
+                                fieldWithPath("perceivedDifficulty").description("체감 난이도"),
+                                fieldWithPath("perceivedHorrorGrade").description("체감 공포도"),
+                                fieldWithPath("perceivedActivity").description("체감 활동성"),
+                                fieldWithPath("scenarioSatisfaction").description("시나리오 만족도"),
+                                fieldWithPath("interiorSatisfaction").description("인테리어 만족도"),
+                                fieldWithPath("problemConfigurationSatisfaction").description("문제 구성 만족도"),
+                                fieldWithPath("registerTimes").description("리뷰 생성 일자"),
+                                fieldWithPath("updateTimes").description("리뷰 마지막 수정 일자")
                         )
 
                 ))

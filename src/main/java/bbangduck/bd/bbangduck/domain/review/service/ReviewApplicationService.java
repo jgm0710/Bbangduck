@@ -6,11 +6,13 @@ import bbangduck.bd.bbangduck.domain.genre.service.GenreService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberPlayInclinationService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
+import bbangduck.bd.bbangduck.domain.review.dto.controller.response.*;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewDetailCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSurveyCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeAnalysisService;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 
 /**
  * 리뷰와 관련된 여러 비즈니스 로직을 통합하여 한 단계 상위 계층의 Service Layer 로 구성
@@ -44,6 +48,8 @@ public class ReviewApplicationService {
     private final GenreService genreService;
 
     private final ThemeAnalysisService themeAnalysisService;
+
+    private final ReviewLikeService reviewLikeService;
 
     @Transactional
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
@@ -104,6 +110,31 @@ public class ReviewApplicationService {
         reviewService.addPlayTogetherFriendsToReview(review, acceptedFriends);
         if (reviewUpdateDto.getReviewType() == ReviewType.DETAIL) {
             reviewService.addDetailToReview(review, reviewUpdateDto.toReviewDetailCreateDto());
+        }
+    }
+
+    public ReviewResponseDto getReview(Long reviewId, Long authenticatedMemberId) {
+        Review review = reviewService.getReview(reviewId);
+        Member authenticatedMember = memberService.getMember(authenticatedMemberId);
+        boolean existsReviewLike = reviewLikeService.getExistsReviewLike(authenticatedMemberId, reviewId);
+        boolean possibleOfAddReviewSurvey = reviewService.isPossibleOfAddReviewSurvey(review.getRegisterTimes());
+        return convertReviewToResponseDto(review, authenticatedMember, existsReviewLike, possibleOfAddReviewSurvey);
+    }
+
+    private ReviewResponseDto convertReviewToResponseDto(Review review, Member currentMember, boolean existsReviewLike, boolean possibleOfAddReviewSurvey) {
+        ReviewSurvey reviewSurvey = review.getReviewSurvey();
+
+        switch (review.getReviewType()) {
+            case BASE:
+                return isNotNull(reviewSurvey) ?
+                        SimpleAndSurveyReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey) :
+                        SimpleReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey);
+            case DETAIL:
+                return isNotNull(reviewSurvey) ?
+                        DetailAndSurveyReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey) :
+                        DetailReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey);
+            default:
+                return null;
         }
     }
 }

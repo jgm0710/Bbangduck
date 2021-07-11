@@ -36,8 +36,8 @@ public class ReviewService {
     private final ReviewQueryRepository reviewQueryRepository;
     private final ReviewImageRepository reviewImageRepository;
     private final ReviewDetailRepository reviewDetailRepository;
-    private final ReviewProperties reviewProperties;
     private final ReviewPlayTogetherRepository reviewPlayTogetherRepository;
+    private final ReviewProperties reviewProperties;
 
     @Transactional
     public Long saveReview(Member member, Theme theme, ReviewCreateDto reviewCreateDto) {
@@ -74,7 +74,7 @@ public class ReviewService {
     @Transactional
     public void addSurveyToReview(Review review, ReviewSurveyCreateDto reviewSurveyCreateDto) {
         checkIfSurveyAlreadyRegisteredInReview(review);
-        checkIfReviewCanAddSurvey(review.getRegisterTimes(), reviewProperties.getPeriodForAddingSurveys());
+        checkIfReviewCanAddSurvey(review.getRegisterTimes());
 
         ReviewSurvey reviewSurvey = ReviewSurvey.create(reviewSurveyCreateDto);
 
@@ -87,11 +87,17 @@ public class ReviewService {
         }
     }
 
-    private void checkIfReviewCanAddSurvey(LocalDateTime reviewRegisterTimes, long periodForAddingSurveys) {
-        LocalDateTime periodForAddingSurveysDateTime = LocalDateTime.now().minusDays(periodForAddingSurveys);
-        if (reviewRegisterTimes.isBefore(periodForAddingSurveysDateTime)) {
-            throw new ExpirationOfReviewSurveyAddPeriodException(reviewRegisterTimes, periodForAddingSurveysDateTime);
+    private void checkIfReviewCanAddSurvey(LocalDateTime reviewRegisterTimes) {
+        boolean possibleOfAddReviewSurvey = isPossibleOfAddReviewSurvey(reviewRegisterTimes);
+        if (!possibleOfAddReviewSurvey) {
+            throw new ExpirationOfReviewSurveyAddPeriodException();
         }
+    }
+
+    public boolean isPossibleOfAddReviewSurvey(LocalDateTime reviewRegisterTimes) {
+        long periodForAddingSurveys = reviewProperties.getPeriodForAddingSurveys();
+        LocalDateTime periodForAddingSurveysDateTime = LocalDateTime.now().minusDays(periodForAddingSurveys);
+        return reviewRegisterTimes.isAfter(periodForAddingSurveysDateTime);
     }
 
     public void addGenresToReviewSurvey(ReviewSurvey reviewSurvey, List<Genre> genres) {

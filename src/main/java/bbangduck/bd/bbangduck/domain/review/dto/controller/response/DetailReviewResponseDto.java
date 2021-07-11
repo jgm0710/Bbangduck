@@ -24,12 +24,12 @@ public class DetailReviewResponseDto extends SimpleReviewResponseDto {
 
     private String comment;
 
-    public static DetailReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
-        return new DetailReviewResponseDto(review, currentMember, existReviewLike, periodForAddingSurveys);
+    public static DetailReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike, boolean possibleOfAddReviewSurvey) {
+        return new DetailReviewResponseDto(review, currentMember, existReviewLike, possibleOfAddReviewSurvey);
     }
 
-    protected DetailReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
-        super(review, currentMember, existReviewLike, periodForAddingSurveys);
+    protected DetailReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, boolean possibleOfAddReviewSurvey) {
+        super(review, currentMember, existReviewLike, possibleOfAddReviewSurvey);
         ReviewDetail reviewDetail = review.getReviewDetail();
 
         this.reviewImages = convertReviewImages(reviewDetail.getReviewImages());

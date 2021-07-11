@@ -87,9 +87,11 @@ public class ThemeReviewApiController {
         reviewValidator.validateCreateView(requestDto, errors);
 
         Long createdReviewId = reviewApplicationService.createReview(currentMember.getId(), themeId, requestDto.toServiceDto());
+        ReviewResponseDto result = reviewApplicationService.getReview(createdReviewId, currentMember.getId());
+
         URI linkToGetReviewsUri = linkTo(methodOn(ReviewApiController.class).getReview(createdReviewId, currentMember)).toUri();
 
-        return ResponseEntity.created(linkToGetReviewsUri).build();
+        return ResponseEntity.created(linkToGetReviewsUri).body(result);
     }
 
     @GetMapping
@@ -107,7 +109,8 @@ public class ThemeReviewApiController {
         List<Review> findReviews = reviewQueryResults.getResults();
         List<ReviewResponseDto> reviewResponseDtos = findReviews.stream().map(review -> {
             boolean existsReviewLike = getExistsReviewLike(review.getId(), currentMember);
-            return convertReviewToResponseDto(review, currentMember, existsReviewLike, reviewProperties.getPeriodForAddingSurveys());
+            boolean possibleOfAddReviewSurvey = reviewService.isPossibleOfAddReviewSurvey(review.getRegisterTimes());
+            return convertReviewToResponseDto(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey);
         }).collect(Collectors.toList());
 
         long totalResultsCount = reviewQueryResults.getTotal();
