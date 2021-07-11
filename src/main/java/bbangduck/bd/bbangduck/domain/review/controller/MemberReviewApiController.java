@@ -111,7 +111,7 @@ public class MemberReviewApiController{
         QueryResults<Review> reviewQueryResults = reviewService.getMemberReviewList(memberId, reviewSearchDto);
 
         List<Review> findReviews = reviewQueryResults.getResults();
-        List<ReviewResponseDto> reviewResponseDtos = convertReviewsToReviewResponseDtos(currentMember, findReviews, reviewProperties.getPeriodForAddingSurveys());
+        List<ReviewResponseDto> reviewResponseDtos = convertReviewsToReviewResponseDtos(currentMember, findReviews);
 
         PaginationResultResponseDto<ReviewResponseDto> result = new PaginationResultResponseDto<>(
                 reviewResponseDtos,
@@ -123,10 +123,11 @@ public class MemberReviewApiController{
         return ResponseEntity.ok(result);
     }
 
-    private List<ReviewResponseDto> convertReviewsToReviewResponseDtos(Member currentMember, List<Review> findReviews, long periodForAddingSurveys) {
+    private List<ReviewResponseDto> convertReviewsToReviewResponseDtos(Member currentMember, List<Review> findReviews) {
         return findReviews.stream().map(review -> {
             boolean existsReviewLike = getExistsReviewLike(review.getId(), currentMember);
-            return convertReviewToResponseDto(review, currentMember, existsReviewLike, periodForAddingSurveys);
+            boolean possibleOfAddReviewSurvey = reviewService.isPossibleOfAddReviewSurvey(review.getRegisterTimes());
+            return convertReviewToResponseDto(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey);
         }).collect(Collectors.toList());
     }
 

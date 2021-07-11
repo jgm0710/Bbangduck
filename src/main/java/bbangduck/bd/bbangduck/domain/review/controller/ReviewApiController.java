@@ -77,9 +77,10 @@ public class ReviewApiController {
         checkIsReviewCreatedByMe(currentMember, findReview);
 
         reviewApplicationService.addDetailToReview(reviewId, currentMember.getId(), requestDto.toServiceDto());
+        ReviewResponseDto result = reviewApplicationService.getReview(reviewId, currentMember.getId());
         URI linkToGetReviewsUri = getLinkToGetReviewsUri(reviewId, currentMember);
 
-        return ResponseEntity.created(linkToGetReviewsUri).build();
+        return ResponseEntity.created(linkToGetReviewsUri).body(result);
     }
 
     private URI getLinkToGetReviewsUri(@PathVariable Long reviewId, @CurrentUser Member currentMember) {
@@ -162,10 +163,11 @@ public class ReviewApiController {
 
         reviewApplicationService.addDetailToReview(reviewId, currentMember.getId(), requestDto.toDetailServiceDto());
         reviewApplicationService.addSurveyToReview(reviewId, currentMember.getId(), requestDto.toSurveyServiceDto());
+        ReviewResponseDto result = reviewApplicationService.getReview(reviewId, currentMember.getId());
 
         URI linkToGetReviewsUri = getLinkToGetReviewsUri(reviewId, currentMember);
 
-        return ResponseEntity.created(linkToGetReviewsUri).build();
+        return ResponseEntity.created(linkToGetReviewsUri).body(result);
     }
 
     /**
@@ -178,8 +180,9 @@ public class ReviewApiController {
     ) {
         Review findReview = reviewService.getReview(reviewId);
         boolean existsReviewLike = getExistsReviewLike(reviewId, currentMember);
+        boolean possibleOfAddReviewSurvey = reviewService.isPossibleOfAddReviewSurvey(findReview.getRegisterTimes());
 
-        ReviewResponseDto reviewResponseDto = convertReviewToResponseDto(findReview, currentMember, existsReviewLike, reviewProperties.getPeriodForAddingSurveys());
+        ReviewResponseDto reviewResponseDto = convertReviewToResponseDto(findReview, currentMember, existsReviewLike, possibleOfAddReviewSurvey);
 
         return ResponseEntity.ok(reviewResponseDto);
     }
@@ -224,10 +227,11 @@ public class ReviewApiController {
         reviewValidator.validateAddSurveyToReview(requestDto, errors);
 
         reviewApplicationService.addSurveyToReview(reviewId, currentMember.getId(), requestDto.toServiceDto());
+        ReviewResponseDto result = reviewApplicationService.getReview(reviewId, currentMember.getId());
 
         URI linkToGetReviewUri = getLinkToGetReviewsUri(reviewId, currentMember);
 
-        return ResponseEntity.created(linkToGetReviewUri).build();
+        return ResponseEntity.created(linkToGetReviewUri).body(result);
     }
 
 //    /**

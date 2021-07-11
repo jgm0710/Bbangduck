@@ -413,12 +413,17 @@
 2021-07-11:::
 * <<resources-create-review>> 기능 수정
     ** 리뷰 생성 시 테마의 평점이 변경되도록 수정
+    ** 리뷰 생성 시 생성된 리뷰에 대한 정보 응답되도록 변경
 * <<resources-update-review>> 기능 수정
     ** 리뷰 수정 시 테마의 평점이 변경되도록 수정
+* <<resources-add-detail-to-review>> 응답 수정
+    ** 리뷰 상세 추가 시 리뷰에 대한 정보 응답되도록 변경
 * <<resources-add-survey-to-review>> 기능 수정
     ** 리뷰 설문 추가 시 테마 분석이 반영되도록 수정
+    ** 리뷰 설문 추가 시 리뷰에 대한 정보 응답되도록 변경
+* <<resources-add-detail-and-survey-to-review>> 응답 변경
+    ** 리뷰 상세 및 설문 추가 시 리뷰에 대한 정보 응답되도록 변경
 * <<resources-update-survey-from-review>> 기능 삭제
-
 
 
 
@@ -466,9 +471,8 @@
 == 테마에 리뷰 생성 성공
 
 * 응답 HttpStatus : `201 Created`
-* 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::create-review-success[snippets='request-headers,request-fields,curl-request,http-response']
+operation::create-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 
 
@@ -501,9 +505,8 @@ operation::create-review-success[snippets='request-headers,request-fields,curl-r
 === 리뷰에 리뷰 상세 추가 성공
 
 * 응답 HttpStatus : `201 Created`
-* 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::add-detail-to-review-success[snippets='request-headers,request-fields,curl-request,http-response']
+operation::add-detail-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 
 
@@ -535,7 +538,7 @@ operation::add-detail-to-review-success[snippets='request-headers,request-fields
 * 응답 HttpStatus : `201 Created`
 * 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::add-survey-to-review-success[snippets='request-headers,request-fields,curl-request,http-response']
+operation::add-survey-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 [[resources-add-survey-to-review-not-valid]]
 === 리뷰에 설문 추가 시 값을 제대로 기입하지 않은 경우
@@ -579,7 +582,7 @@ operation::add-survey-to-review-not-valid[snippets='response-fields,curl-request
 * 응답 HttpStatus : `201 Created`
 * 별도의 응답 Body Data 는 제공되지 않습니다.
 
-operation::add-detail-and-survey-to-review-success[snippets='request-headers,request-fields,curl-request,http-response']
+operation::add-detail-and-survey-to-review-success[snippets='request-headers,request-fields,response-fields,curl-request,http-response']
 
 
 

@@ -14,18 +14,18 @@ import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
  * 코드 재사용율을 높이기 위해 구현한 utility class
  */
 public class ReviewResponseUtils {
-    public static ReviewResponseDto convertReviewToResponseDto(Review review, Member currentMember, boolean existsReviewLike, long periodForAddingSurveys) {
+    public static ReviewResponseDto convertReviewToResponseDto(Review review, Member currentMember, boolean existsReviewLike, boolean possibleOfAddReviewSurvey) {
         ReviewSurvey reviewSurvey = review.getReviewSurvey();
 
         switch (review.getReviewType()) {
             case BASE:
                 return isNotNull(reviewSurvey) ?
-                        SimpleAndSurveyReviewResponseDto.convert(review, currentMember, existsReviewLike, periodForAddingSurveys) :
-                        SimpleReviewResponseDto.convert(review, currentMember, existsReviewLike, periodForAddingSurveys);
+                        SimpleAndSurveyReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey) :
+                        SimpleReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey);
             case DETAIL:
                 return isNotNull(reviewSurvey) ?
-                        DetailAndSurveyReviewResponseDto.convert(review, currentMember, existsReviewLike, periodForAddingSurveys) :
-                        DetailReviewResponseDto.convert(review, currentMember, existsReviewLike, periodForAddingSurveys);
+                        DetailAndSurveyReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey) :
+                        DetailReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey);
             default:
                 return null;
         }

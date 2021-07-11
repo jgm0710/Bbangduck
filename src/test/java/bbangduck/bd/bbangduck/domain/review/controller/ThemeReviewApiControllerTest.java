@@ -3,8 +3,8 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.friend.exception.RelationOfMemberAndFriendIsNotFriendException;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewImageRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyCreateRequestDto;
@@ -85,10 +85,41 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("rating").description("테마에 대한 평점 기입 +\n" +
                                         "테마에 대한 평점은 1~5 점 사이의 점수로만 평가가 가능합니다."),
                                 fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("reviewId").description("리뷰의 식별 ID"),
+                                fieldWithPath("writerInfo").description("리뷰를 생성한 회원 정보"),
+                                fieldWithPath("writerInfo.memberId").description("리뷰를 생성한 회원의 식별 ID"),
+                                fieldWithPath("writerInfo.nickname").description("리뷰를 생성한 회원의 닉네임"),
+                                fieldWithPath("writerInfo.profileImageUrl").description("리뷰를 생성한 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("writerInfo.profileImageThumbnailUrl").description("리뷰를 생성한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("themeInfo").description("리뷰가 생성된 테마의 정보"),
+                                fieldWithPath("themeInfo.themeId").description("리뷰가 생성된 테마의 식별 ID"),
+                                fieldWithPath("themeInfo.themeName").description("리뷰가 생성된 테마의 이름"),
+                                fieldWithPath("themeInfo.themeImageUrl").description("리뷰가 생성된 테마의 이미지 다운로드 URL"),
+                                fieldWithPath("themeInfo.themeImageThumbnailUrl").description("리뷰가 생성된 테마의 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("reviewType").description("리뷰의 Type +\n" +
+                                        ReviewType.getNameList()),
+                                fieldWithPath("reviewRecodeNumber").description("생성된 리뷰의 기록 번호"),
+                                fieldWithPath("themeClearYN").description("테마 클리어 여부"),
+                                fieldWithPath("themeClearTime").description("테마를 클리어하는데 걸린 시간"),
+                                fieldWithPath("hintUsageCount").description("힌트 사용 개수"),
+                                fieldWithPath("rating").description("테마에 대한 평점"),
+                                fieldWithPath("playTogetherFriends").description("리뷰에 함께 플레이한 친구로 등록한 친구들의 회원 정보"),
+                                fieldWithPath("playTogetherFriends[].memberId").description("리뷰에 함께 플레이한 친구 회원의 식별 ID"),
+                                fieldWithPath("playTogetherFriends[].nickname").description("리뷰에 함께 플레이한 친구 회원의 닉네임"),
+                                fieldWithPath("playTogetherFriends[].profileImageUrl").description("리뷰에 함께 플레이한 친구 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("playTogetherFriends[].profileImageThumbnailUrl").description("리뷰에 함께 플레이한 친구 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("likeCount").description("리뷰가 좋아요 받은 개수"),
+                                fieldWithPath("myReview").description("내가 생성한 리뷰인지 여부"),
+                                fieldWithPath("like").description("좋아요를 등록한 리뷰인지 여부"),
+                                fieldWithPath("possibleRegisterForSurveyYN").description("리뷰에 설문 추가가 가능한지 여부"),
+                                fieldWithPath("surveyYN").description("리뷰에 설문이 등록되었는지 여부"),
+                                fieldWithPath("registerTimes").description("리뷰 생성 일자"),
+                                fieldWithPath("updateTimes").description("리뷰 마지막 수정 일자")
                         )
                 ))
         ;
-
     }
 
     @Test

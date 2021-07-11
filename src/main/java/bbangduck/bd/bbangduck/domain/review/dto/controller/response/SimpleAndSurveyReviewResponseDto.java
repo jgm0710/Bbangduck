@@ -32,12 +32,12 @@ public class SimpleAndSurveyReviewResponseDto extends SimpleReviewResponseDto {
     private Satisfaction interiorSatisfaction;
     private Satisfaction problemConfigurationSatisfaction;
 
-    public static SimpleAndSurveyReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
-        return new SimpleAndSurveyReviewResponseDto(review, currentMember, existReviewLike, periodForAddingSurveys);
+    public static SimpleAndSurveyReviewResponseDto convert(Review review, Member currentMember, boolean existReviewLike, boolean possibleOfAddReviewSurvey) {
+        return new SimpleAndSurveyReviewResponseDto(review, currentMember, existReviewLike, possibleOfAddReviewSurvey);
     }
 
-    protected SimpleAndSurveyReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, long periodForAddingSurveys) {
-        super(review, currentMember, existReviewLike, periodForAddingSurveys);
+    protected SimpleAndSurveyReviewResponseDto(Review review, Member currentMember, boolean existReviewLike, boolean possibleOfAddReviewSurvey) {
+        super(review, currentMember, existReviewLike, possibleOfAddReviewSurvey);
 
         ReviewSurvey reviewSurvey = review.getReviewSurvey();
         List<Genre> perceivedThemeGenres = reviewSurvey.getPerceivedThemeGenres();
