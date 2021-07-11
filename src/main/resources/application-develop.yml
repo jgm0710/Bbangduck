@@ -19,5 +19,7 @@ logging:
 
 social:
   sign-in:
+    naver:
+      redirect-uri: http://13.125.48.96:8080/api/auth/naver/sign-in/callback
     kakao:
       redirect-uri: http://13.125.48.96:8080/api/auth/kakao/sign-in/callback
