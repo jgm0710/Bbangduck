@@ -264,6 +264,7 @@ class ThemeApiControllerTest extends BaseControllerTest {
                                 fieldWithPath("themeImage.themeImageThumbnailUrl").description("조회된 테마의 이미지의 썸네일 이미지 다운로드 URL"),
                                 fieldWithPath("themeName").description("조회된 테마의 이름"),
                                 fieldWithPath("themeDescription").description("조회된 테마에 대한 설명"),
+                                fieldWithPath("themeRating").description("조회된 테마의 평점"),
                                 fieldWithPath("themeGenres").description("조회된 테마의 장르 정보들"),
                                 fieldWithPath("themeGenres[].genreId").description("조회된 테마의 장르의 식별 ID"),
                                 fieldWithPath("themeGenres[].genreCode").description("조회된 테마의 장르의 코드 값"),
