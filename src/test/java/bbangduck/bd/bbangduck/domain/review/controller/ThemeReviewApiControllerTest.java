@@ -3,7 +3,7 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.friend.exception.RelationOfMemberAndFriendIsNotFriendException;
+import bbangduck.bd.bbangduck.domain.follow.exception.NotTwoWayFollowRelationException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewImageRequestDto;
@@ -50,7 +50,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
 
         Theme theme = createThemeSample();
@@ -129,7 +129,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
 
         Theme theme = createThemeSample();
@@ -167,7 +167,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
 
         Theme theme = createThemeSample();
@@ -204,7 +204,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
 
         Theme theme = createDeletedThemeSample();
@@ -266,7 +266,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
 
         Theme theme = createThemeSample();
@@ -319,7 +319,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
 
         Theme theme = createThemeSample();
@@ -412,7 +412,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
 
         Theme theme = createThemeSample();
@@ -449,7 +449,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
 
         Theme theme = createThemeSample();
@@ -484,8 +484,8 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
-        Member requestStateFriendToMember = createRequestStateFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
+        Member requestStateFriendToMember = createOneWayFollowMember(memberSocialSignUpRequestDto, signUpId);
         friendIds.set(4, requestStateFriendToMember.getId());
 
 
@@ -506,9 +506,9 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.RELATION_OF_MEMBER_AND_FRIEND_IS_NOT_FRIEND.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.NOT_TWO_WAY_FOLLOW_RELATION.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(new RelationOfMemberAndFriendIsNotFriendException(signUpId, requestStateFriendToMember.getId()).getMessage()))
+                .andExpect(jsonPath("message").value(new NotTwoWayFollowRelationException(signUpId, requestStateFriendToMember.getId()).getMessage()))
         ;
 
     }
@@ -543,7 +543,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, member1Id);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, member1Id);
 
         List<Member> friends = friendIds.stream().map(friendId -> memberService.getMember(friendId)).collect(Collectors.toList());
 
@@ -751,7 +751,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, member1Id);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, member1Id);
 
         List<Member> friends = friendIds.stream().map(friendId -> memberService.getMember(friendId)).collect(Collectors.toList());
 

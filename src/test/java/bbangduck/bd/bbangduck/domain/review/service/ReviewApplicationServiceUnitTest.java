@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
-import bbangduck.bd.bbangduck.domain.friend.service.MemberFriendService;
+import bbangduck.bd.bbangduck.domain.follow.exception.NotTwoWayFollowRelationException;
+import bbangduck.bd.bbangduck.domain.follow.service.FollowService;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.service.GenreService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -14,6 +15,7 @@ import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeAnalysisService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +36,7 @@ class ReviewApplicationServiceUnitTest {
     ThemeService themeMockService = mock(ThemeService.class);
     MemberService memberMockService = mock(MemberService.class);
     MemberPlayInclinationService memberPlayInclinationMockService = mock(MemberPlayInclinationService.class);
-    MemberFriendService memberFriendMockService = mock(MemberFriendService.class);
+    FollowService followMockService = mock(FollowService.class);
     GenreService genreMockService = mock(GenreService.class);
     ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
     ReviewLikeService reviewLikeMockService = mock(ReviewLikeService.class);
@@ -44,7 +46,7 @@ class ReviewApplicationServiceUnitTest {
             themeMockService,
             memberMockService,
             memberPlayInclinationMockService,
-            memberFriendMockService,
+            followMockService,
             genreMockService,
             themeAnalysisMockService,
             reviewLikeMockService
@@ -111,7 +113,8 @@ class ReviewApplicationServiceUnitTest {
         given(themeMockService.getTheme(themeId)).willReturn(theme);
         given(reviewMockService.saveReview(member, theme, reviewCreateDto)).willReturn(reviewId);
         given(reviewMockService.getReview(reviewId)).willReturn(review);
-        given(memberFriendMockService.getAcceptedFriends(memberId, friendIds)).willReturn(friends);
+        given(followMockService.isTwoWayFollowRelationMembers(memberId, friendIds)).willReturn(true);
+        given(memberMockService.getMembers(friendIds)).willReturn(friends);
 
 
         //when
@@ -122,10 +125,95 @@ class ReviewApplicationServiceUnitTest {
         then(themeMockService).should(times(1)).getTheme(themeId);
         then(reviewMockService).should(times(1)).saveReview(member, theme, reviewCreateDto);
         then(reviewMockService).should(times(1)).getReview(reviewId);
-        then(memberFriendMockService).should().getAcceptedFriends(memberId, friendIds);
+        then(followMockService).should(times(1)).isTwoWayFollowRelationMembers(memberId, friendIds);
+        then(memberMockService).should(times(1)).getMembers(friendIds);
+        then(followMockService).should(times(0)).isTwoWayFollowRelation(memberId, friendIds.get(0));
         then(reviewMockService).should(times(1)).addPlayTogetherFriendsToReview(review, friends);
         then(memberPlayInclinationMockService).should(times(1)).reflectingPropensityOfMemberToPlay(member, theme.getGenres());
         then(themeMockService).should(times(1)).increaseThemeRating(theme, reviewCreateDto.getRating());
+    }
+
+    @Test
+    @DisplayName("리뷰 생성 - 리뷰 생성 시 추가하는 친구가 친구 관계가 아닌 경우")
+    public void createReview_RegisterNotFriend() {
+        //given
+        Long memberId = 1L;
+        Long themeId = 1L;
+
+        Member member = Member.builder()
+                .id(1L)
+                .email("member@emailcom")
+                .nickname("member")
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .name("theme")
+                .build();
+
+        Genre genre1 = Genre.builder()
+                .code("GR1")
+                .name("genre1")
+                .build();
+
+        Genre genre2 = Genre.builder()
+                .code("GR2")
+                .name("genre2")
+                .build();
+
+        theme.addGenre(genre1);
+        theme.addGenre(genre2);
+
+        Long reviewId = 1L;
+
+        Member friend1 = Member.builder()
+                .id(3L)
+                .build();
+
+        Member friend2 = Member.builder()
+                .id(5L)
+                .build();
+
+        List<Member> friends = List.of(friend1, friend2);
+        List<Long> friendIds = List.of(friend1.getId(), friend2.getId());
+
+        ReviewCreateDto reviewCreateDto = new ReviewCreateDto(true, LocalTime.of(0, 40), ReviewHintUsageCount.THREE_OR_MORE, 3, friendIds);
+
+        Review review = Review.builder()
+                .id(reviewId)
+                .clearYN(reviewCreateDto.isClearYN())
+                .clearTime(reviewCreateDto.getClearTime())
+                .hintUsageCount(reviewCreateDto.getHintUsageCount())
+                .rating(reviewCreateDto.getRating())
+                .build();
+
+        given(memberMockService.getMember(memberId)).willReturn(member);
+        given(themeMockService.getTheme(themeId)).willReturn(theme);
+        given(reviewMockService.saveReview(member, theme, reviewCreateDto)).willReturn(reviewId);
+        given(reviewMockService.getReview(reviewId)).willReturn(review);
+        given(followMockService.isTwoWayFollowRelationMembers(memberId, friendIds)).willReturn(false);
+        given(followMockService.isTwoWayFollowRelation(memberId, friendIds.get(1))).willReturn(false);
+
+
+        //when
+
+        //then
+        Assertions.assertThrows(NotTwoWayFollowRelationException.class, () -> reviewMockApplicationService.createReview(memberId, themeId, reviewCreateDto));
+
+        then(memberMockService).should(times(1)).getMember(memberId);
+        then(themeMockService).should(times(1)).getTheme(themeId);
+
+        then(followMockService).should(times(1)).isTwoWayFollowRelationMembers(memberId, friendIds);
+        then(memberMockService).should(times(0)).getMembers(friendIds);
+        then(followMockService).should(times(1)).isTwoWayFollowRelation(memberId, friendIds.get(0));
+        then(followMockService).should(times(0)).isTwoWayFollowRelation(memberId, friendIds.get(1));
+
+        then(reviewMockService).should(times(0)).saveReview(member, theme, reviewCreateDto);
+        then(reviewMockService).should(times(0)).getReview(reviewId);
+        then(reviewMockService).should(times(0)).addPlayTogetherFriendsToReview(review, friends);
+        then(memberPlayInclinationMockService).should(times(0)).reflectingPropensityOfMemberToPlay(member, theme.getGenres());
+        then(themeMockService).should(times(0)).increaseThemeRating(theme, reviewCreateDto.getRating());
+
     }
 
     @Test
@@ -179,7 +267,8 @@ class ReviewApplicationServiceUnitTest {
                 "update comment");
 
         given(reviewMockService.getReview(review.getId())).willReturn(review);
-        given(memberFriendMockService.getAcceptedFriends(member.getId(), friendIds)).willReturn(friends);
+        given(followMockService.isTwoWayFollowRelationMembers(member.getId(), friendIds)).willReturn(true);
+        given(memberMockService.getMembers(friendIds)).willReturn(friends);
 
         //when
         reviewMockApplicationService.updateReview(review.getId(), member.getId(), reviewUpdateDto);
@@ -193,7 +282,9 @@ class ReviewApplicationServiceUnitTest {
         then(reviewMockService).should(times(1)).clearReviewDetail(review);
 
         then(reviewMockService).should(times(1)).updateReviewBase(review, reviewUpdateDto.toReviewUpdateBaseDto());
-        then(memberFriendMockService).should(times(1)).getAcceptedFriends(member.getId(), friendIds);
+
+        then(followMockService).should(times(1)).isTwoWayFollowRelationMembers(member.getId(), friendIds);
+        then(memberMockService).should(times(1)).getMembers(friendIds);
         then(reviewMockService).should(times(1)).addPlayTogetherFriendsToReview(review, friends);
 
         then(reviewMockService).should(times(0)).addDetailToReview(review, reviewUpdateDto.toReviewDetailCreateDto());
@@ -252,7 +343,8 @@ class ReviewApplicationServiceUnitTest {
         ReviewUpdateDto mockReviewUpdateDto = mock(ReviewUpdateDto.class);
 
         given(reviewMockService.getReview(review.getId())).willReturn(review);
-        given(memberFriendMockService.getAcceptedFriends(member.getId(), friendIds)).willReturn(friends);
+        given(followMockService.isTwoWayFollowRelationMembers(member.getId(), friendIds)).willReturn(true);
+        given(memberMockService.getMembers(friendIds)).willReturn(friends);
         given(mockReviewUpdateDto.getRating()).willReturn(reviewUpdateDto.getRating());
         ReviewUpdateBaseDto reviewUpdateBaseDto = reviewUpdateDto.toReviewUpdateBaseDto();
         given(mockReviewUpdateDto.toReviewUpdateBaseDto()).willReturn(reviewUpdateBaseDto);
@@ -273,7 +365,8 @@ class ReviewApplicationServiceUnitTest {
         then(reviewMockService).should(times(1)).clearReviewDetail(review);
 
         then(reviewMockService).should(times(1)).updateReviewBase(review, reviewUpdateBaseDto);
-        then(memberFriendMockService).should(times(1)).getAcceptedFriends(member.getId(), friendIds);
+        then(followMockService).should(times(1)).isTwoWayFollowRelationMembers(member.getId(), friendIds);
+        then(memberMockService).should(times(1)).getMembers(friendIds);
         then(reviewMockService).should(times(1)).addPlayTogetherFriendsToReview(review, friends);
 
         then(reviewMockService).should(times(1)).addDetailToReview(review, reviewDetailCreateDto);

@@ -14,4 +14,8 @@ public class FindMemberIsWithdrawalOrBanException extends BadRequestException {
     public FindMemberIsWithdrawalOrBanException() {
         super(ResponseStatus.FIND_MEMBER_WITHDRAWAL_OR_BAN);
     }
+
+    public FindMemberIsWithdrawalOrBanException(Long memberId) {
+        super(ResponseStatus.FIND_MEMBER_WITHDRAWAL_OR_BAN, ResponseStatus.FIND_MEMBER_WITHDRAWAL_OR_BAN.getMessage() + " memberId : " + memberId);
+    }
 }

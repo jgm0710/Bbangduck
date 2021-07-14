@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
-import bbangduck.bd.bbangduck.domain.friend.service.MemberFriendService;
+import bbangduck.bd.bbangduck.domain.follow.service.FollowService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -41,7 +41,7 @@ public class MemberReviewApiController{
 
     private final MemberService memberService;
 
-    private final MemberFriendService memberFriendService;
+    private final FollowService followService;
 
     private final ReviewService reviewService;
 
@@ -99,7 +99,7 @@ public class MemberReviewApiController{
                 break;
             case ONLY_FRIENDS_OPEN:
                 if (!myId) {
-                    boolean isFriend = memberFriendService.isFriend(memberId, currentMember.getId());
+                    boolean isFriend = followService.isTwoWayFollowRelation(memberId, currentMember.getId());
                     if (!isFriend) {
                         throw new MemberRoomEscapeRecodesAreOnlyFriendOpenException();
                     }

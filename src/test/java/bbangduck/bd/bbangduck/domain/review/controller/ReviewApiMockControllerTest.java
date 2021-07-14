@@ -203,7 +203,7 @@ class ReviewApiMockControllerTest extends BaseJGMApiControllerTest {
 
         Theme theme = createThemeSample();
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
         Review review = Review.builder()
                 .id(1L)

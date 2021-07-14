@@ -2,7 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.service;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.friend.exception.RelationOfMemberAndFriendIsNotFriendException;
+import bbangduck.bd.bbangduck.domain.follow.exception.NotTwoWayFollowRelationException;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -316,7 +316,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
+        assertThrows(NotTwoWayFollowRelationException.class, () -> reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto));
 
     }
 
@@ -1189,7 +1189,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(RelationOfMemberAndFriendIsNotFriendException.class, () -> reviewApplicationService.updateReview(createdReviewId, signUpId, reviewUpdateRequestDto.toServiceDto()));
+        assertThrows(NotTwoWayFollowRelationException.class, () -> reviewApplicationService.updateReview(createdReviewId, signUpId, reviewUpdateRequestDto.toServiceDto()));
 
     }
 

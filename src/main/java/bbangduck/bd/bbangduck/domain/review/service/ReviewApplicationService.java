@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
-import bbangduck.bd.bbangduck.domain.friend.service.MemberFriendService;
+import bbangduck.bd.bbangduck.domain.follow.exception.NotTwoWayFollowRelationException;
+import bbangduck.bd.bbangduck.domain.follow.service.FollowService;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.service.GenreService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsList;
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 
 /**
@@ -43,7 +45,7 @@ public class ReviewApplicationService {
 
     private final MemberPlayInclinationService memberPlayInclinationService;
 
-    private final MemberFriendService memberFriendService;
+    private final FollowService followService;
 
     private final GenreService genreService;
 
@@ -55,18 +57,36 @@ public class ReviewApplicationService {
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
         Member member = memberService.getMember(memberId);
         Theme theme = themeService.getTheme(themeId);
-        List<Member> acceptedFriends = memberFriendService.getAcceptedFriends(memberId, reviewCreateDto.getFriendIds());
+
+        List<Member> twoWayFollowMembers = getTwoWayFollowMembers(memberId, reviewCreateDto.getFriendIds());
 
         Long reviewId = reviewService.saveReview(member, theme, reviewCreateDto);
         Review review = reviewService.getReview(reviewId);
 
-        reviewService.addPlayTogetherFriendsToReview(review, acceptedFriends);
+        reviewService.addPlayTogetherFriendsToReview(review, twoWayFollowMembers);
 
         memberPlayInclinationService.reflectingPropensityOfMemberToPlay(member, theme.getGenres());
 
         themeService.increaseThemeRating(theme, reviewCreateDto.getRating());
 
         return reviewId;
+    }
+
+    private List<Member> getTwoWayFollowMembers(Long followingMemberId, List<Long> followedMemberIds) {
+        if (existsList(followedMemberIds)) {
+            boolean isTwoWayFollowMembers = followService.isTwoWayFollowRelationMembers(followingMemberId, followedMemberIds);
+            if (isTwoWayFollowMembers) {
+                return memberService.getMembers(followedMemberIds);
+            } else {
+                followedMemberIds.forEach(followedMemberId -> {
+                    boolean isTwoWayFollowMember = followService.isTwoWayFollowRelation(followingMemberId, followedMemberId);
+                    if (!isTwoWayFollowMember) {
+                        throw new NotTwoWayFollowRelationException(followingMemberId, followedMemberId);
+                    }
+                });
+            }
+        }
+        return null;
     }
 
     @Transactional
@@ -106,8 +126,8 @@ public class ReviewApplicationService {
         reviewService.clearReviewDetail(review);
 
         reviewService.updateReviewBase(review, reviewUpdateDto.toReviewUpdateBaseDto());
-        List<Member> acceptedFriends = memberFriendService.getAcceptedFriends(reviewMember.getId(), reviewUpdateDto.getFriendIds());
-        reviewService.addPlayTogetherFriendsToReview(review, acceptedFriends);
+        List<Member> twoWayFollowMembers = getTwoWayFollowMembers(reviewMember.getId(), reviewUpdateDto.getFriendIds());
+        reviewService.addPlayTogetherFriendsToReview(review, twoWayFollowMembers);
         if (reviewUpdateDto.getReviewType() == ReviewType.DETAIL) {
             reviewService.addDetailToReview(review, reviewUpdateDto.toReviewDetailCreateDto());
         }
