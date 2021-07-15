@@ -86,4 +86,58 @@ class FollowQueryRepositoryIntegrationTest extends BaseTest {
         });
 
     }
+
+    @Test
+    @DisplayName("팔로우 되는 회원 ID 를 통한 팔로우 목록 조회")
+    public void findListByFollowedMemberId() {
+        //given
+        Member followedMember1 = Member.builder().build();
+        Member followedMember2 = Member.builder().build();
+
+        memberRepository.save(followedMember1);
+        memberRepository.save(followedMember2);
+
+        List<Member> followingMembers1 = new ArrayList<>();
+        List<Member> followingMembers2 = new ArrayList<>();
+        for (long i = 0; i < 3; i++) {
+            Member followingMember1 = Member.builder().build();
+            Follow follow1 = Follow.builder()
+                    .followingMember(followingMember1)
+                    .followedMember(followedMember1)
+                    .build();
+
+            memberRepository.save(followingMember1);
+            followRepository.save(follow1);
+
+            Member followingMember2 = Member.builder().build();
+            Follow follow2 = Follow.builder()
+                    .followingMember(followingMember2)
+                    .followedMember(followedMember2)
+                    .build();
+
+            memberRepository.save(followingMember2);
+            followRepository.save(follow2);
+
+            followingMembers1.add(followingMember1);
+            followingMembers2.add(followingMember2);
+        }
+
+        //when
+        System.out.println("==========================================================================================");
+        List<Follow> findFollows1 = followQueryRepository.findListByFollowedMemberId(followedMember1.getId(), new CriteriaDto());
+        System.out.println("==========================================================================================");
+
+        //then
+        assertEquals(3, findFollows1.size(), "조회된 목록은 3개이다.");
+        findFollows1.forEach(follow -> {
+            Member findFollowingMember = follow.getFollowingMember();
+            Member findFollowedMember = follow.getFollowedMember();
+
+            assertEquals(followedMember1.getId(), findFollowedMember.getId(), "조회된 팔로우 목록의 팔로우된 회원은 항상 followedMember1 이어야 한다.");
+
+            boolean anyMatch = followingMembers1.stream().anyMatch(member -> member.getId().equals(findFollowingMember.getId()));
+            assertTrue(anyMatch, "조회된 팔로우 목록의 팔로우한 회원 중 하나는 followedMember1 을 팔로우 한 회원 중 하나와 일치해야 한다.");
+        });
+
+    }
 }

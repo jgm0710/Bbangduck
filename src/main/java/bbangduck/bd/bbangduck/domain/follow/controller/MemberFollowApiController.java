@@ -27,8 +27,7 @@ import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
 public class MemberFollowApiController {
 
     private final FollowApplicationService followApplicationService;
-
-    // TODO: 2021-07-14 특전 회원의 팔로윙 목록 조회 기능 구현
+    
     @GetMapping("/followings")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<List<FollowMemberResponseDto>> getFollowingMemberList(
@@ -45,9 +44,15 @@ public class MemberFollowApiController {
     // TODO: 2021-07-14 특정 회원의 팔로워 목록 조회 기능 구현
     @GetMapping("/followers")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity getFollowedList(
-            @PathVariable Long memberId
+    public ResponseEntity<List<FollowMemberResponseDto>> getFollowerMemberList(
+            @PathVariable Long memberId,
+            @ModelAttribute @Valid CriteriaDto criteria,
+            BindingResult bindingResult
     ) {
-        return null;
+        hasErrorsThrow(ResponseStatus.GET_FOLLOWER_MEMBER_LIST_NOT_VALID, bindingResult);
+        List<FollowMemberResponseDto> result = followApplicationService.getFollowerMemberList(memberId, criteria);
+
+        return ResponseEntity.ok(result);
     }
+
 }
