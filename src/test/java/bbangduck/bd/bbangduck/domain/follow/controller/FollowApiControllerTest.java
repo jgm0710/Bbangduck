@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -72,10 +74,17 @@ class FollowApiControllerTest extends BaseControllerTest {
         perform
                 .andExpect(status().isOk())
                 .andDo(document(
-                        "request-follow-success"
+                        "request-follow-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description("인증에 필요한 Access Token 기입")
+                        )
                 ))
         ;
-
     }
+
+    // TODO: 2021-07-15 팔로우 요청 - 인증되지 않은 경우
+    // TODO: 2021-07-15 팔로우 요청 - 탈퇴한 회원인 경우
+    // TODO: 2021-07-15 팔로우 대상이 탈퇴하거나 활동이 정지된 경우
+    // TODO: 2021-07-15 팔로우 대상을 찾을 수 없는 경우
 
 }
