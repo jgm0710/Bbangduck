@@ -178,6 +178,7 @@ public enum ResponseStatus {
     NOT_TWO_WAY_FOLLOW_RELATION(7401, "요청된 두 회원은 서로를 팔로우하지 않았습니다.", "요청된 두 회원이 서로 팔로우하는 관계가 아닌 경우"),
     FOLLOW_BLOCKED_MEMBER(7402, "차단한 회원에게는 팔로우 요청을 할 수 없습니다.", "차단한 회원에게 팔로우 요청을 하는 경우"),
     GET_FOLLOWING_MEMBER_LIST_NOT_VALID(7403, "회원이 팔로우한 회원 목록 조회 시 기입 사항이 올바르지 않습니다.", "회원이 팔로우한 회원 목록 조회 시 기입 사항이 올바르지 않은 경우"),
+    GET_FOLLOWER_MEMBER_LIST_NOT_VALID(7404, "회원을 팔로우하는 회원 목록 조회 시 기입 사항이 올바르지 않습니다.", "특정 회원을 팔로우하는 회원 목록 조회 시 기입 사항을 올바르게 기입하지 않은 경우"),
 
 
     /**

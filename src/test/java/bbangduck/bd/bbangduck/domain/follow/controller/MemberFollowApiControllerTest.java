@@ -309,4 +309,229 @@ class MemberFollowApiControllerTest extends BaseControllerTest {
 
     }
 
+    @Test
+    @DisplayName("팔로워 목록 조회")
+    public void getFollowerMemberList() throws Exception {
+        //given
+        Member followedMember = Member.builder()
+                .id(1000L)
+                .email("followedMember@emai.com")
+                .nickname("followedMember")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        List<Follow> followedList = new ArrayList<>();
+        for (long i = 1; i < 6; i++) {
+            Member followingMember = Member.builder()
+                    .id(i)
+                    .nickname("member" + i)
+                    .description("description" + i)
+                    .build();
+
+            int randomInt = new Random().nextInt(100);
+            MemberProfileImage profileImage = MemberProfileImage.builder()
+                    .fileStorageId((long) randomInt)
+                    .fileName(UUID.randomUUID() + "fileName" + randomInt)
+                    .build();
+
+            followingMember.setProfileImage(profileImage);
+
+            Follow follow = Follow.builder()
+                    .followingMember(followingMember)
+                    .followedMember(followedMember)
+                    .build();
+            followedList.add(follow);
+        }
+
+
+        given(memberRepository.findById(followedMember.getId())).willReturn(Optional.of(followedMember));
+        given(followQueryRepository.findListByFollowedMemberId(any(), any())).willReturn(followedList);
+
+        String accessToken = jwtTokenProvider.createToken(followedMember.getEmail(), followedMember.getRoleNameList());
+        given(memberRepository.findByEmail(followedMember.getEmail())).willReturn(Optional.of(followedMember));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/followers", followedMember.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+                .param("pageNum", "1")
+                .param("amount","20")
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "get-follower-member-list-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader())   .description("인증에 필요한 Access Token 기입")
+                        ),
+                        requestParameters(
+                                parameterWithName("pageNum").description("조회할 페이지 기입"),
+                                parameterWithName("amount").description("조회할 수량 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].memberId").description("해당 회원을 팔로우한 회원의 식별 ID"),
+                                fieldWithPath("[].nickname").description("해당 회원을 팔로우한 회원의 닉네임"),
+                                fieldWithPath("[].description").description("해당 회원을 팔로우한 회원의 자기소개"),
+                                fieldWithPath("[].profileImageUrl").description("해당 회원을 팔로우한 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("[].profileImageThumbnailUrl").description("해당 회원을 팔로우한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL")
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("팔로워 목록 조회 - 조회되는 회원을 찾을 수 없는 경우")
+    public void getFollowerMemberList_MemberNotFound() throws Exception {
+         //given
+        Member followedMember = Member.builder()
+                .id(1000L)
+                .email("followedMember@emai.com")
+                .nickname("followedMember")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+
+        given(memberRepository.findById(followedMember.getId())).willReturn(Optional.empty());
+
+        String accessToken = jwtTokenProvider.createToken(followedMember.getEmail(), followedMember.getRoleNameList());
+        given(memberRepository.findByEmail(followedMember.getEmail())).willReturn(Optional.of(followedMember));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/followers", followedMember.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_NOT_FOUND.getMessage()))
+        ;
+    }
+
+    @Test
+    @DisplayName("팔로워 목록 조회 - 조회되는 회원이 탈퇴된 회원인 경우")
+    public void getFollowerMemberList_FindMemberIsWithdrawalMember() throws Exception {
+         //given
+        Member followedMember = Member.builder()
+                .id(1000L)
+                .email("followedMember@emai.com")
+                .nickname("followedMember")
+                .roles(Set.of(MemberRole.WITHDRAWAL))
+                .build();
+
+        given(memberRepository.findById(followedMember.getId())).willReturn(Optional.of(followedMember));
+
+        Member member2 = Member.builder()
+                .id(2000L)
+                .email("member2@email.com")
+                .nickname("member2")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        String accessToken = jwtTokenProvider.createToken(member2.getEmail(), member2.getRoleNameList());
+        given(memberRepository.findByEmail(member2.getEmail())).willReturn(Optional.of(member2));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/followers", followedMember.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.FIND_MEMBER_WITHDRAWAL_OR_BAN.getStatus()))
+                .andExpect(jsonPath("message").value(new FindMemberIsWithdrawalOrBanException(followedMember.getId()).getMessage()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersFor_getFollowingMemberList_NotValid")
+    @DisplayName("팔로워 목록 조회 - 페이징 기입 값을 잘못 기입한 경우")
+    public void getFollowerMemberList_NotValid(CriteriaDto criteriaDto) throws Exception {
+         //given
+        Member followedMember = Member.builder()
+                .id(1000L)
+                .email("followedMember@emai.com")
+                .nickname("followedMember")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        given(memberRepository.findById(followedMember.getId())).willReturn(Optional.of(followedMember));
+
+        String accessToken = jwtTokenProvider.createToken(followedMember.getEmail(), followedMember.getRoleNameList());
+        given(memberRepository.findByEmail(followedMember.getEmail())).willReturn(Optional.of(followedMember));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/followers", followedMember.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+                        .param("pageNum", String.valueOf(criteriaDto.getPageNum()))
+                        .param("amount", String.valueOf(criteriaDto.getAmount()))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_FOLLOWER_MEMBER_LIST_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_FOLLOWER_MEMBER_LIST_NOT_VALID.getMessage()));
+    }
+
+    @Test
+    @DisplayName("팔로워 목록 조회 - 인증되지 않은 경우")
+    public void getFollowerMemberList_Unauthorized() throws Exception {
+         //given
+        Member followedMember = Member.builder()
+                .id(1000L)
+                .email("followedMember@emai.com")
+                .nickname("followedMember")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/followers", followedMember.getId())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("팔로워 목록 조회 - 탈퇴한 회원이 리소스 접근")
+    public void getFollowerMemberList_Forbidden() throws Exception {
+         //given
+        Member followedMember = Member.builder()
+                .id(1000L)
+                .email("followedMember@emai.com")
+                .nickname("followedMember")
+                .roles(Set.of(MemberRole.WITHDRAWAL))
+                .build();
+
+        String accessToken = jwtTokenProvider.createToken(followedMember.getEmail(), followedMember.getRoleNameList());
+        given(memberRepository.findByEmail(followedMember.getEmail())).willReturn(Optional.of(followedMember));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/followers", followedMember.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.FORBIDDEN.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.FORBIDDEN.getMessage()));
+
+    }
+
+
 }

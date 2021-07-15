@@ -33,8 +33,15 @@ public class FollowApplicationService {
 
     public List<FollowMemberResponseDto> getFollowingMemberList(Long memberId, CriteriaDto criteria) {
         memberService.getMember(memberId);
-        List<Follow> followings = followService.getFollowingList(memberId, criteria);
-        List<Member> followedMembers = followings.stream().map(Follow::getFollowedMember).collect(Collectors.toList());
+        List<Follow> followingList = followService.getFollowsByFollowingMemberId(memberId, criteria);
+        List<Member> followedMembers = followingList.stream().map(Follow::getFollowedMember).collect(Collectors.toList());
         return followedMembers.stream().map(FollowMemberResponseDto::convert).collect(Collectors.toList());
+    }
+
+    public List<FollowMemberResponseDto> getFollowerMemberList(Long memberId, CriteriaDto criteria) {
+        memberService.getMember(memberId);
+        List<Follow> followedList = followService.getFollowsByFollowedMemberId(memberId, criteria);
+        List<Member> followingMembers = followedList.stream().map(Follow::getFollowingMember).collect(Collectors.toList());
+        return followingMembers.stream().map(FollowMemberResponseDto::convert).collect(Collectors.toList());
     }
 }

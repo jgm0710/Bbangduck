@@ -94,16 +94,74 @@ class FollowApplicationServiceUnitTest {
         CriteriaDto criteriaDto = new CriteriaDto();
 
         given(memberService.getMember(member.getId())).willReturn(member);
-        given(followService.getFollowingList(member.getId(), criteriaDto)).willReturn(follows);
+        given(followService.getFollowsByFollowingMemberId(member.getId(), criteriaDto)).willReturn(follows);
 
         //when
         List<FollowMemberResponseDto> followingMemberList = followApplicationService.getFollowingMemberList(member.getId(), criteriaDto);
 
         //then
         then(memberService).should(times(1)).getMember(member.getId());
-        then(followService).should(times(1)).getFollowingList(member.getId(), criteriaDto);
+        then(followService).should(times(1)).getFollowsByFollowingMemberId(member.getId(), criteriaDto);
 
         followingMemberList.forEach(followMemberResponseDto -> {
+            System.out.println("followMemberResponseDto = " + followMemberResponseDto);
+            assertNotNull(followMemberResponseDto.getMemberId());
+            assertNotNull(followMemberResponseDto.getNickname());
+            assertNotNull(followMemberResponseDto.getDescription());
+            assertNotNull(followMemberResponseDto.getProfileImageUrl());
+            assertNotNull(followMemberResponseDto.getProfileImageThumbnailUrl());
+        });
+
+    }
+
+    @Test
+    @DisplayName("특정 회원을 팔로우하는 회원 목록 조회")
+    public void getFollowerMemberList() {
+        //given
+        Member followedMember = Member.builder()
+                .id(1000L)
+                .build();
+
+        List<Member> followingMembers = new ArrayList<>();
+        List<Follow> followedList = new ArrayList<>();
+        for (long i = 0; i < 5; i++) {
+            Member followingMember = Member.builder()
+                    .id(i)
+                    .nickname("member"+i)
+                    .description("description"+i)
+                    .build();
+
+            int nextInt = new Random().nextInt(100);
+            MemberProfileImage memberProfileImage = MemberProfileImage.builder()
+                    .id(i)
+                    .fileStorageId((long) nextInt)
+                    .fileName("fileName" + nextInt)
+                    .build();
+
+            followingMember.setProfileImage(memberProfileImage);
+
+            Follow follow = Follow.builder()
+                    .followingMember(followingMember)
+                    .followedMember(followedMember)
+                    .build();
+
+            followingMembers.add(followingMember);
+            followedList.add(follow);
+        }
+
+        CriteriaDto criteriaDto = new CriteriaDto();
+
+        given(memberService.getMember(followedMember.getId())).willReturn(followedMember);
+        given(followService.getFollowsByFollowedMemberId(followedMember.getId(), criteriaDto)).willReturn(followedList);
+
+        //when
+        List<FollowMemberResponseDto> followerMemberList = followApplicationService.getFollowerMemberList(followedMember.getId(), criteriaDto);
+
+        //then
+        then(memberService).should(times(1)).getMember(followedMember.getId());
+        then(followService).should(times(1)).getFollowsByFollowedMemberId(followedMember.getId(), criteriaDto);
+
+        followerMemberList.forEach(followMemberResponseDto -> {
             System.out.println("followMemberResponseDto = " + followMemberResponseDto);
             assertNotNull(followMemberResponseDto.getMemberId());
             assertNotNull(followMemberResponseDto.getNickname());
