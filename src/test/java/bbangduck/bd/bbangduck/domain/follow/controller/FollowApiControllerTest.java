@@ -148,7 +148,7 @@ class FollowApiControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     @DisplayName("팔로우 해제 - 인증되지 않은 경우")
-    public void unfollow_Unauthorized() {
+    public void unfollow_Unauthorized() throws Exception {
         //given
         Member followingMember = Member.builder()
                 .id(1L)

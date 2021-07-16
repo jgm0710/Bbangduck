@@ -3,7 +3,7 @@ package bbangduck.bd.bbangduck.domain.member.service;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.exception.FindMemberIsWithdrawalOrBanException;
+import bbangduck.bd.bbangduck.domain.member.exception.FoundMemberIsWithdrawalOrBanException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberPlayInclinationQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberProfileImageRepository;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberQueryRepository;
@@ -69,7 +69,7 @@ class MemberServiceUnitTest {
         //when
 
         //then
-        Assertions.assertThrows(FindMemberIsWithdrawalOrBanException.class, () -> memberService.getMembers(memberIds));
+        Assertions.assertThrows(FoundMemberIsWithdrawalOrBanException.class, () -> memberService.getMembers(memberIds));
 
     }
 

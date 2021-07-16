@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.follow.dto.controller.response;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
+import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,16 +34,26 @@ public class FollowMemberResponseDto {
     private String profileImageThumbnailUrl;
 
     public static FollowMemberResponseDto convert(Member member) {
-        MemberProfileImage profileImage = member.getProfileImage();
-        String profileImageUrl = linkToFileDownload(profileImage.getFileName());
-        String profileImageThumbnailUrl = linkToImageFileThumbnailDownload(profileImage.getFileName());
-
         return FollowMemberResponseDto.builder()
                 .memberId(member.getId())
                 .nickname(member.getNickname())
                 .description(member.getDescription())
-                .profileImageUrl(profileImageUrl)
-                .profileImageThumbnailUrl(profileImageThumbnailUrl)
+                .profileImageUrl(getProfileImageUrl(member.getProfileImage()))
+                .profileImageThumbnailUrl(getProfileImageThumbnailUrl(member.getProfileImage()))
                 .build();
+    }
+
+    private static String getProfileImageThumbnailUrl(MemberProfileImage profileImage) {
+        if (NullCheckUtils.isNotNull(profileImage)) {
+            return linkToImageFileThumbnailDownload(profileImage.getFileName());
+        }
+        return null;
+    }
+
+    private static String getProfileImageUrl(MemberProfileImage profileImage) {
+        if (NullCheckUtils.isNotNull(profileImage)) {
+            return linkToFileDownload(profileImage.getFileName());
+        }
+        return null;
     }
 }

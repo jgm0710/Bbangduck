@@ -3,11 +3,12 @@ package bbangduck.bd.bbangduck.domain.follow.controller;
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
 import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
+import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowQueryRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.exception.FindMemberIsWithdrawalOrBanException;
+import bbangduck.bd.bbangduck.domain.member.exception.FoundMemberIsWithdrawalOrBanException;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -52,6 +53,8 @@ class MemberFollowApiControllerTest extends BaseControllerTest {
 
     @Autowired
     SecurityJwtProperties securityJwtProperties;
+
+    private final String TOKEN_DESCRIPTION = "인증에 필요한 Access Token 기입";
 
 
     @Test
@@ -115,7 +118,7 @@ class MemberFollowApiControllerTest extends BaseControllerTest {
                 .andDo(document(
                         "get-following-member-list-success",
                         requestHeaders(
-                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description("인증에 필요한 Access Token 기입")
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(TOKEN_DESCRIPTION)
                         ),
                         requestParameters(
                                 parameterWithName("pageNum").description("조회할 페이지 기입"),
@@ -242,8 +245,8 @@ class MemberFollowApiControllerTest extends BaseControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.FIND_MEMBER_WITHDRAWAL_OR_BAN.getStatus()))
-                .andExpect(jsonPath("message").value(new FindMemberIsWithdrawalOrBanException(member.getId()).getMessage()))
+                .andExpect(jsonPath("status").value(ResponseStatus.FOUND_MEMBER_IS_WITHDRAWAL_OR_BAN.getStatus()))
+                .andExpect(jsonPath("message").value(new FoundMemberIsWithdrawalOrBanException(member.getId()).getMessage()))
         ;
 
     }
@@ -445,8 +448,8 @@ class MemberFollowApiControllerTest extends BaseControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.FIND_MEMBER_WITHDRAWAL_OR_BAN.getStatus()))
-                .andExpect(jsonPath("message").value(new FindMemberIsWithdrawalOrBanException(followedMember.getId()).getMessage()));
+                .andExpect(jsonPath("status").value(ResponseStatus.FOUND_MEMBER_IS_WITHDRAWAL_OR_BAN.getStatus()))
+                .andExpect(jsonPath("message").value(new FoundMemberIsWithdrawalOrBanException(followedMember.getId()).getMessage()));
     }
 
     @ParameterizedTest
@@ -531,6 +534,247 @@ class MemberFollowApiControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.FORBIDDEN.getStatus()))
                 .andExpect(jsonPath("message").value(ResponseStatus.FORBIDDEN.getMessage()));
 
+    }
+
+    @Test
+    @DisplayName("맞팔로우 회원 목록 조회")
+    public void getTwoWayFollowMemberList() throws Exception {
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .email("member@email.com")
+                .nickname("member")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+
+        List<Member> followedMembers = new ArrayList<>();
+        List<Follow> twoWayFollows = new ArrayList<>();
+        for (long i = 4; i < 4 + 5; i++) {
+            Member followedMember = Member.builder()
+                    .id(i)
+                    .nickname("member" + i)
+                    .description("description" + i)
+                    .build();
+
+            int nextInt = new Random().nextInt(100);
+            MemberProfileImage memberProfileImage = MemberProfileImage.builder()
+                    .id(i)
+                    .fileStorageId((long) nextInt)
+                    .fileName(UUID.randomUUID()+"fileName" + nextInt)
+                    .build();
+
+            followedMember.setProfileImage(memberProfileImage);
+
+            followedMembers.add(followedMember);
+
+            Follow following = Follow.builder()
+                    .id(i + 100)
+                    .followingMember(member)
+                    .followedMember(followedMember)
+                    .status(FollowStatus.TWO_WAY_FOLLOW)
+                    .build();
+
+            twoWayFollows.add(following);
+        }
+
+        CriteriaDto criteriaDto = new CriteriaDto();
+
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+        given(followQueryRepository.findTwoWayFollowListByFollowingMemberId(any(), any())).willReturn(twoWayFollows);
+
+        String accessToken = jwtTokenProvider.createToken(member.getEmail(), member.getRoleNameList());
+        given(memberRepository.findByEmail(member.getEmail())).willReturn(Optional.of(member));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/two-way-followers", member.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+                        .param("pageNum", String.valueOf(criteriaDto.getPageNum()))
+                        .param("amount", String.valueOf(criteriaDto.getAmount()))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "get-two-way-followers-success",
+                        requestHeaders(
+                                headerWithName(securityJwtProperties.getJwtTokenHeader()).description(TOKEN_DESCRIPTION)
+                        ),
+                        requestParameters(
+                                parameterWithName("pageNum").description("조회할 페이지 기입"),
+                                parameterWithName("amount").description("조회할 수량 기입")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].memberId").description("맞팔로우한 회원의 식별 ID"),
+                                fieldWithPath("[].nickname").description("맞팔로우한 회원의 닉네임"),
+                                fieldWithPath("[].description").description("맞팔로우한 회원의 자기소개"),
+                                fieldWithPath("[].profileImageUrl").description("맞팔로우한 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("[].profileImageThumbnailUrl").description("맞팔로우한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL")
+                        )
+                ))
+        ;
+
+    }
+
+    @Test
+    @DisplayName("맞팔로우 회원 목록 조회 - 조회할 회원을 찾을 수 없는 경우")
+    public void getTwoWayFollowMemberList_MemberNotFound() throws Exception {
+         //given
+        Member member = Member.builder()
+                .id(1L)
+                .email("member@email.com")
+                .nickname("member")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        CriteriaDto criteriaDto = new CriteriaDto();
+
+        given(memberRepository.findById(member.getId())).willReturn(Optional.empty());
+
+        String accessToken = jwtTokenProvider.createToken(member.getEmail(), member.getRoleNameList());
+        given(memberRepository.findByEmail(member.getEmail())).willReturn(Optional.of(member));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/two-way-followers", member.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+                        .param("pageNum", String.valueOf(criteriaDto.getPageNum()))
+                        .param("amount", String.valueOf(criteriaDto.getAmount()))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("status").value(ResponseStatus.MEMBER_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("맞팔로우 회원 목록 조회 - 조회할 회원이 탈퇴된 회원일 경우 ")
+    public void getTwoWayFollowMemberList_FindMemberIsWithdrawal() throws Exception {
+         //given
+        Member member = Member.builder()
+                .id(1L)
+                .email("member@email.com")
+                .nickname("member")
+                .roles(Set.of(MemberRole.WITHDRAWAL))
+                .build();
+
+        CriteriaDto criteriaDto = new CriteriaDto();
+
+
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+
+        Member member2 = Member.builder()
+                .email("member2@email.com")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+        String accessToken = jwtTokenProvider.createToken(member2.getEmail(), member2.getRoleNameList());
+        given(memberRepository.findByEmail(member2.getEmail())).willReturn(Optional.of(member2));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/two-way-followers", member.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+                        .param("pageNum", String.valueOf(criteriaDto.getPageNum()))
+                        .param("amount", String.valueOf(criteriaDto.getAmount()))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.FOUND_MEMBER_IS_WITHDRAWAL_OR_BAN.getStatus()))
+                .andExpect(jsonPath("message").value(new FoundMemberIsWithdrawalOrBanException(member.getId()).getMessage()));
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("parametersFor_getFollowingMemberList_NotValid")
+    @DisplayName("맞팔로우 회원 목록 조회 - 페이징 값을 잘못 기입한 경우")
+    public void getTwoWayFollowMemberList_NotValid(CriteriaDto criteriaDto) throws Exception {
+         //given
+        Member member = Member.builder()
+                .id(1L)
+                .email("member@email.com")
+                .nickname("member")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        String accessToken = jwtTokenProvider.createToken(member.getEmail(), member.getRoleNameList());
+        given(memberRepository.findByEmail(member.getEmail())).willReturn(Optional.of(member));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/two-way-followers", member.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+                        .param("pageNum", String.valueOf(criteriaDto.getPageNum()))
+                        .param("amount", String.valueOf(criteriaDto.getAmount()))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("status").value(ResponseStatus.GET_TWO_WAY_FOLLOW_MEMBER_LIST_NOT_VALID.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.GET_TWO_WAY_FOLLOW_MEMBER_LIST_NOT_VALID.getMessage()));
+    }
+
+    @Test
+    @DisplayName("맞팔로우 회원 목록 조회 - 인증되지 않음 ")
+    public void getTwoWayFollowMemberList_Unauthorized() throws Exception {
+         //given
+        Member member = Member.builder()
+                .id(1L)
+                .email("member@email.com")
+                .nickname("member")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/two-way-followers", member.getId())
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("status").value(ResponseStatus.UNAUTHORIZED.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.UNAUTHORIZED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("맞팔로우 회원 목록 조회 - 탈퇴된 회원이 리소스 접근")
+    public void getTwoWayFollowMemberList_Forbidden() throws Exception {
+         //given
+        Member member = Member.builder()
+                .id(1L)
+                .email("member@email.com")
+                .nickname("member")
+                .roles(Set.of(MemberRole.WITHDRAWAL))
+                .build();
+
+        CriteriaDto criteriaDto = new CriteriaDto();
+
+        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+
+        String accessToken = jwtTokenProvider.createToken(member.getEmail(), member.getRoleNameList());
+        given(memberRepository.findByEmail(member.getEmail())).willReturn(Optional.of(member));
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/members/{memberId}/two-way-followers", member.getId())
+                        .header(securityJwtProperties.getJwtTokenHeader(), accessToken)
+                        .param("pageNum", String.valueOf(criteriaDto.getPageNum()))
+                        .param("amount", String.valueOf(criteriaDto.getAmount()))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("status").value(ResponseStatus.FORBIDDEN.getStatus()))
+                .andExpect(jsonPath("message").value(ResponseStatus.FORBIDDEN.getMessage()));
     }
 
 

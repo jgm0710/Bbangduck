@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
+import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import lombok.RequiredArgsConstructor;
@@ -149,6 +150,10 @@ public class ReviewValidator {
     }
 
     private void validateReviewImages(List<ReviewImageRequestDto> reviewImageRequestDtos, Errors errors) {
+        if (!NullCheckUtils.existsList(reviewImageRequestDtos)) {
+            return;
+        }
+
         for (int i = 0; i < reviewImageRequestDtos.size(); i++) {
             ReviewImageRequestDto reviewImageRequestDto = reviewImageRequestDtos.get(i);
 

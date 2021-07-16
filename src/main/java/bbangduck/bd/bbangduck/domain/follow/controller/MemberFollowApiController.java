@@ -41,7 +41,6 @@ public class MemberFollowApiController {
         return ResponseEntity.ok(result);
     }
 
-    // TODO: 2021-07-14 특정 회원의 팔로워 목록 조회 기능 구현
     @GetMapping("/followers")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<List<FollowMemberResponseDto>> getFollowerMemberList(
@@ -51,6 +50,19 @@ public class MemberFollowApiController {
     ) {
         hasErrorsThrow(ResponseStatus.GET_FOLLOWER_MEMBER_LIST_NOT_VALID, bindingResult);
         List<FollowMemberResponseDto> result = followApplicationService.getFollowerMemberList(memberId, criteria);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/two-way-followers")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<List<FollowMemberResponseDto>> getTwoWayFollowMemberList(
+            @PathVariable Long memberId,
+            @ModelAttribute @Valid CriteriaDto criteria,
+            BindingResult bindingResult
+    ) {
+        hasErrorsThrow(ResponseStatus.GET_TWO_WAY_FOLLOW_MEMBER_LIST_NOT_VALID, bindingResult);
+        List<FollowMemberResponseDto> result = followApplicationService.getTwoWayFollowMemberList(memberId, criteria);
 
         return ResponseEntity.ok(result);
     }

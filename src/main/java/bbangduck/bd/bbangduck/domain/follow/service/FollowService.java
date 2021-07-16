@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.follow.service;
 
 import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
+import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowQueryRepository;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -29,24 +31,45 @@ public class FollowService {
 
     @Transactional
     public void follow(Member followingMember, Member followedMember) {
-        Follow follow = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).orElse(Follow.init(followingMember, followedMember));
+        Follow newFollow = Follow.init(followingMember, followedMember);
+        followRepository.findByFollowingMemberAndFollowedMember(followedMember, followingMember).ifPresent(followed -> {
+            followed.updateStatus(FollowStatus.TWO_WAY_FOLLOW);
+            newFollow.updateStatus(FollowStatus.TWO_WAY_FOLLOW);
+        });
+        Follow follow = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).orElse(newFollow);
         followRepository.save(follow);
     }
 
     @Transactional(readOnly = true)
     public boolean isTwoWayFollowRelationMembers(Long followingMemberId, List<Long> followedMemberIds) {
-        List<Follow> follows1 = followQueryRepository.findByFollowingMemberIdAndFollowedMemberIds(followingMemberId, followedMemberIds);
-        List<Follow> follows2 = followQueryRepository.findByFollowingMemberIdsAndFollowedMemberId(followedMemberIds, followingMemberId);
+        List<Follow> findFollows = followQueryRepository.findByFollowingMemberIdAndFollowedMemberIds(followingMemberId, followedMemberIds);
+        if (findFollows.size() != followedMemberIds.size()) {
+            return false;
+        }
 
-        return follows1.size() == follows2.size();
+        for (Follow findFollow : findFollows) {
+            FollowStatus status = findFollow.getStatus();
+            if (status != FollowStatus.TWO_WAY_FOLLOW) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Transactional(readOnly = true)
     public boolean isTwoWayFollowRelation(Long followingMemberId, Long followedMemberId) {
-        boolean present1 = followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followingMemberId, followedMemberId).isPresent();
-        boolean present2 = followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followedMemberId, followingMemberId).isPresent();
+        Optional<Follow> optionalFollow1 = followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followingMemberId, followedMemberId);
+        Optional<Follow> optionalFollow2 = followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followedMemberId, followingMemberId);
 
-        return present1 && present2;
+        if (optionalFollow1.isEmpty() || optionalFollow2.isEmpty()) {
+            return false;
+        } else {
+            Follow following = optionalFollow1.get();
+            Follow followed = optionalFollow2.get();
+
+            return following.getStatus() == FollowStatus.TWO_WAY_FOLLOW && followed.getStatus() == FollowStatus.TWO_WAY_FOLLOW;
+        }
     }
 
     @Transactional(readOnly = true)
@@ -61,6 +84,15 @@ public class FollowService {
 
     @Transactional
     public void unfollow(Long followingMemberId, Long followedMemberId) {
-        followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followingMemberId, followedMemberId).ifPresent(followRepository::delete);
+        followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followingMemberId, followedMemberId).ifPresent(following -> {
+            followRepository.delete(following);
+            followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followedMemberId, followingMemberId)
+                    .ifPresent(followed -> followed.updateStatus(FollowStatus.ONE_WAY_FOLLOW));
+        });
+    }
+
+    @Transactional(readOnly = true)
+    public List<Follow> getTwoWayFollowsByMemberId(Long memberId, CriteriaDto criteria) {
+        return followQueryRepository.findTwoWayFollowListByFollowingMemberId(memberId, criteria);
     }
 }

@@ -8,7 +8,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberSearchKeywordType;
-import bbangduck.bd.bbangduck.domain.member.exception.FindMemberIsWithdrawalOrBanException;
+import bbangduck.bd.bbangduck.domain.member.exception.FoundMemberIsWithdrawalOrBanException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
@@ -57,7 +57,7 @@ public class MemberService {
     private void checkMemberIsWithdrawalOrBan(Member member) {
         Set<MemberRole> roles = member.getRoles();
         if (roles.contains(MemberRole.WITHDRAWAL) || roles.contains(MemberRole.BAN)) {
-            throw new FindMemberIsWithdrawalOrBanException(member.getId());
+            throw new FoundMemberIsWithdrawalOrBanException(member.getId());
         }
     }
 
