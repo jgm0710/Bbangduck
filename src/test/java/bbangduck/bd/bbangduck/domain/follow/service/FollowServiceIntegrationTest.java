@@ -226,6 +226,31 @@ class FollowServiceIntegrationTest extends BaseTest {
         assertTrue(twoWayFollowRelationships.contains(false), "개별적으로 조회할 경우에도 양방향 팔로우 관계가 아닌 회원이 존재해야한다.");
     }
 
+    @Test
+    @DisplayName("팔로우 해제")
+    public void unfollow() {
+        //given
+        Member followingMember = Member.builder().build();
+        Member followedMember = Member.builder().build();
+
+        Follow follow = Follow.builder()
+                .followingMember(followingMember)
+                .followedMember(followedMember)
+                .build();
+
+        memberRepository.save(followingMember);
+        memberRepository.save(followedMember);
+        followRepository.save(follow);
+
+        assertTrue(followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).isPresent());
+
+        //when
+        followService.unfollow(followingMember.getId(), followedMember.getId());
+
+        //then
+        assertTrue(followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).isEmpty(), "팔로우 해제 시 팔로우가 조회되지 않아야 한다.");
+    }
+
 
 
 }

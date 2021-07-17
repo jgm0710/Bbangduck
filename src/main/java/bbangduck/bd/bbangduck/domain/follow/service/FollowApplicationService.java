@@ -7,6 +7,7 @@ import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,12 +26,14 @@ public class FollowApplicationService {
 
     private final FollowService followService;
 
+    @Transactional
     public void requestFollow(Long followingMemberId, Long followedMemberId) {
         Member followingMember = memberService.getMember(followingMemberId);
         Member followedMember = memberService.getMember(followedMemberId);
         followService.follow(followingMember, followedMember);
     }
 
+    @Transactional(readOnly = true)
     public List<FollowMemberResponseDto> getFollowingMemberList(Long memberId, CriteriaDto criteria) {
         memberService.getMember(memberId);
         List<Follow> followingList = followService.getFollowsByFollowingMemberId(memberId, criteria);
@@ -38,10 +41,16 @@ public class FollowApplicationService {
         return followedMembers.stream().map(FollowMemberResponseDto::convert).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<FollowMemberResponseDto> getFollowerMemberList(Long memberId, CriteriaDto criteria) {
         memberService.getMember(memberId);
         List<Follow> followedList = followService.getFollowsByFollowedMemberId(memberId, criteria);
         List<Member> followingMembers = followedList.stream().map(Follow::getFollowingMember).collect(Collectors.toList());
         return followingMembers.stream().map(FollowMemberResponseDto::convert).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void unfollow(Long followingMemberId, Long followedMemberId) {
+        followService.unfollow(followingMemberId, followedMemberId);
     }
 }

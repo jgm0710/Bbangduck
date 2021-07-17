@@ -33,6 +33,7 @@ public class FollowService {
         followRepository.save(follow);
     }
 
+    @Transactional(readOnly = true)
     public boolean isTwoWayFollowRelationMembers(Long followingMemberId, List<Long> followedMemberIds) {
         List<Follow> follows1 = followQueryRepository.findByFollowingMemberIdAndFollowedMemberIds(followingMemberId, followedMemberIds);
         List<Follow> follows2 = followQueryRepository.findByFollowingMemberIdsAndFollowedMemberId(followedMemberIds, followingMemberId);
@@ -40,6 +41,7 @@ public class FollowService {
         return follows1.size() == follows2.size();
     }
 
+    @Transactional(readOnly = true)
     public boolean isTwoWayFollowRelation(Long followingMemberId, Long followedMemberId) {
         boolean present1 = followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followingMemberId, followedMemberId).isPresent();
         boolean present2 = followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followedMemberId, followingMemberId).isPresent();
@@ -47,11 +49,18 @@ public class FollowService {
         return present1 && present2;
     }
 
+    @Transactional(readOnly = true)
     public List<Follow> getFollowsByFollowingMemberId(Long followingMemberId, CriteriaDto criteria) {
         return followQueryRepository.findListByFollowingMemberId(followingMemberId, criteria);
     }
 
+    @Transactional(readOnly = true)
     public List<Follow> getFollowsByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
         return followQueryRepository.findListByFollowedMemberId(followedMemberId, criteria);
+    }
+
+    @Transactional
+    public void unfollow(Long followingMemberId, Long followedMemberId) {
+        followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followingMemberId, followedMemberId).ifPresent(followRepository::delete);
     }
 }

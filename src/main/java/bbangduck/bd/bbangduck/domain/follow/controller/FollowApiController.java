@@ -6,10 +6,7 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 팔로우와 관련된 EndPoint 를 구현한 Api Controller
@@ -31,6 +28,17 @@ public class FollowApiController {
             @CurrentUser Member currentMember
     ) {
         followApplicationService.requestFollow(currentMember.getId(), followedMemberId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{memberId}/unfollow")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Object> unfollow(
+            @PathVariable("memberId") Long followedMemberId,
+            @CurrentUser Member currentMember
+    ) {
+        followApplicationService.unfollow(currentMember.getId(), followedMemberId);
 
         return ResponseEntity.ok().build();
     }
