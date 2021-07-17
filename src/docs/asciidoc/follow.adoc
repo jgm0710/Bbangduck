@@ -32,6 +32,12 @@
 | 1403
 | 해당 리소스에 접근할 수 없는 회원입니다.
 
+| <<resources-request-follow>>
+| 이미 팔로우 관계인 회원에게 팔로우 요청을 하는 경우
+| 400
+| 7406
+| 이미 팔로우한 회원은 다시 팔로우 할 수 없습니다.
+
 | <<resources-get-following-member-list>>
 | 팔로우 목록을 조회하려는 회원을 찾을 수 없는 경우
 | 404
@@ -86,6 +92,12 @@
 | 7405
 | 회원과 서로 팔로우한 회원 목록 조회 시 기입 사항이 올바르지 않습니다.
 
+| <<resources-unfollow>>
+| 팔로우 해제 시 팔로우 내역을 찾을 수 없는 경우
+| 404
+| 7407
+| 팔로우 내역을 찾을 수 없습니다.
+
 |===
 
 == 히스토리
@@ -110,7 +122,7 @@
 [[resources-request-follow]]
 == 팔로우 요청
 
-* `POST` `/api/follows/{memberId}/request-follow`
+* `POST` `/api/members/{memberId}/follows`
 
 * 회원 식별 ID 를 통해 해당 회원에게 팔로우 요청을 보냅니다.
 ** 팔로우 요청은 단방향입니다.
@@ -118,6 +130,8 @@
 * 해당 리소스는 인증된 사용자만 접근이 가능합니다.
 ** 인증된 사용자가 대상 회원에게 팔로우 요청을 보냅니다.
 ** 탈퇴된 회원은 해당 리소스에 접근이 불가능합니다.
+
+* 응답 HttpStatus : `201 Created`
 
 operation::request-follow-success[snippets='curl-request,http-response']
 
@@ -132,6 +146,8 @@ operation::request-follow-success[snippets='curl-request,http-response']
     ** 1 페이지 이하는 조회할 수 없습니다.
     ** 조회 가능 수량은 1~500 개 입니다.
 
+* 응답 HttpStatus : `200 OK`
+
 operation::get-following-member-list-success[snippets='request-headers,request-parameters,response-fields,curl-request,http-response']
 
 [[resources-get-follower-member-list]]
@@ -144,6 +160,8 @@ operation::get-following-member-list-success[snippets='request-headers,request-p
 * 입력 규칙
     ** 1 페이지 이하는 조회할 수 없습니다.
     ** 조회 가능 수량은 1~500 개 입니다.
+
+* 응답 HttpStatus : `200 OK`
 
 
 operation::get-follower-member-list-success[snippets='request-headers,request-parameters,response-fields,curl-request,http-response']
@@ -159,12 +177,14 @@ operation::get-follower-member-list-success[snippets='request-headers,request-pa
     ** 1 페이지 이하는 조회할 수 없습니다.
     ** 조회 가능 수량은 1~500 개 입니다.
 
+* 응답 HttpStatus : `200 OK`
+
 operation::get-two-way-followers-success[snippets='request-headers,request-parameters,response-fields,curl-request,http-response']
 
 [[resources-unfollow]]
 == 팔로우 해제
 
-* `DELETE` `/api/follows/{memberId}/unfollow`
+* `DELETE` `/api/members/{memberId}/follows`
 
 * 팔로우를 해제합니다.
     ** 인증된 회원이 지정한 회원에 대한 팔로우를 해제합니다.
@@ -173,7 +193,7 @@ operation::get-two-way-followers-success[snippets='request-headers,request-param
     ** 탈퇴한 사용자는 해당 리소스에 접근이 불가능합니다.
 
 
-* 별도의 응답 Body Data 는 제공되지 않습니다.
+* 응답 HttpStatus : `204 No Content`
 
 operation::unfollow-success[snippets='request-headers,curl-request,http-response']
 

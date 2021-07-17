@@ -59,58 +59,6 @@ class FollowServiceIntegrationTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("팔로우 - 기존에 팔로우 했던 회원인 경우")
-    public void follow_AlreadyFollow() {
-        //given
-        Member followingMember = Member.builder().build();
-        Member followedMember = Member.builder().build();
-
-        memberRepository.save(followingMember);
-        memberRepository.save(followedMember);
-
-        Follow follow = Follow.builder()
-                .followingMember(followingMember)
-                .followedMember(followedMember)
-                .status(FollowStatus.ONE_WAY_FOLLOW)
-                .build();
-        Follow savedFollow = followRepository.save(follow);
-
-        //when
-        followService.follow(followingMember, followedMember);
-
-        //then
-        Follow findFollow = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).orElseThrow(EntityNotFoundException::new);
-        assertEquals(savedFollow.getId(), findFollow.getId(), "기존에 팔로우를 했던 경우 새로 팔로우 했을 때 followId 가 바뀌지 않아야 한다.");
-        assertEquals(FollowStatus.ONE_WAY_FOLLOW, findFollow.getStatus(), "여전히 단방향 팔로우 관계이다.");
-    }
-
-    @Test
-    @DisplayName("팔로우 - 기존에 팔로우 했던 회원인 경우, 양방향 팔로우 관계인 경우")
-    public void follow_AlreadyFollow_TwoWayFollow() {
-        //given
-        Member followingMember = Member.builder().build();
-        Member followedMember = Member.builder().build();
-
-        memberRepository.save(followingMember);
-        memberRepository.save(followedMember);
-
-        Follow follow = Follow.builder()
-                .followingMember(followingMember)
-                .followedMember(followedMember)
-                .status(FollowStatus.TWO_WAY_FOLLOW)
-                .build();
-        Follow savedFollow = followRepository.save(follow);
-
-        //when
-        followService.follow(followingMember, followedMember);
-
-        //then
-        Follow findFollow = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).orElseThrow(EntityNotFoundException::new);
-        assertEquals(savedFollow.getId(), findFollow.getId(), "기존에 팔로우를 했던 경우 새로 팔로우 했을 때 followId 가 바뀌지 않아야 한다.");
-        assertEquals(FollowStatus.TWO_WAY_FOLLOW, findFollow.getStatus(), "여전히 양방향 팔로우 관계이다.");
-    }
-
-    @Test
     @DisplayName("팔로우 - 상대가 나를 팔로우 하고 있을 경우")
     public void follow_FollowedMemberFollowMe() {
         //given

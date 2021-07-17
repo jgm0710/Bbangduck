@@ -2,6 +2,8 @@ package bbangduck.bd.bbangduck.domain.follow.service;
 
 import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
 import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
+import bbangduck.bd.bbangduck.domain.follow.exception.AlreadyFollowMemberException;
+import bbangduck.bd.bbangduck.domain.follow.exception.FollowNotFoundException;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowQueryRepository;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -31,12 +33,14 @@ public class FollowService {
 
     @Transactional
     public void follow(Member followingMember, Member followedMember) {
-        Follow newFollow = Follow.init(followingMember, followedMember);
+        if (followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).isPresent()) {
+            throw new AlreadyFollowMemberException();
+        }
+        Follow follow = Follow.init(followingMember, followedMember);
         followRepository.findByFollowingMemberAndFollowedMember(followedMember, followingMember).ifPresent(followed -> {
             followed.updateStatus(FollowStatus.TWO_WAY_FOLLOW);
-            newFollow.updateStatus(FollowStatus.TWO_WAY_FOLLOW);
+            follow.updateStatus(FollowStatus.TWO_WAY_FOLLOW);
         });
-        Follow follow = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).orElse(newFollow);
         followRepository.save(follow);
     }
 
@@ -84,11 +88,13 @@ public class FollowService {
 
     @Transactional
     public void unfollow(Long followingMemberId, Long followedMemberId) {
-        followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followingMemberId, followedMemberId).ifPresent(following -> {
-            followRepository.delete(following);
-            followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followedMemberId, followingMemberId)
-                    .ifPresent(followed -> followed.updateStatus(FollowStatus.ONE_WAY_FOLLOW));
-        });
+        Follow follow = followQueryRepository
+                .findByFollowingMemberIdAndFollowedMemberId(followingMemberId, followedMemberId)
+                .orElseThrow(FollowNotFoundException::new);
+
+        followRepository.delete(follow);
+        followQueryRepository.findByFollowingMemberIdAndFollowedMemberId(followedMemberId, followingMemberId)
+                .ifPresent(followed -> followed.updateStatus(FollowStatus.ONE_WAY_FOLLOW));
     }
 
     @Transactional(readOnly = true)
