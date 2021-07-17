@@ -47,7 +47,11 @@ public class FollowService {
         return present1 && present2;
     }
 
-    public List<Follow> getFollowingList(Long followingMemberId, CriteriaDto criteria) {
+    public List<Follow> getFollowsByFollowingMemberId(Long followingMemberId, CriteriaDto criteria) {
         return followQueryRepository.findListByFollowingMemberId(followingMemberId, criteria);
+    }
+
+    public List<Follow> getFollowsByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
+        return followQueryRepository.findListByFollowedMemberId(followedMemberId, criteria);
     }
 }

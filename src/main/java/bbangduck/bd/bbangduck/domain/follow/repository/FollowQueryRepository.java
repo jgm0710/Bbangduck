@@ -85,4 +85,16 @@ public class FollowQueryRepository {
                 .fetch();
     }
 
+    public List<Follow> findListByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
+        return queryFactory
+                .selectFrom(follow)
+                .join(follow.followingMember).fetchJoin()
+                .join(follow.followedMember).fetchJoin()
+                .where(
+                        followedMemberIdEq(followedMemberId)
+                )
+                .offset(criteria.getOffset())
+                .limit(criteria.getAmount())
+                .fetch();
+    }
 }
