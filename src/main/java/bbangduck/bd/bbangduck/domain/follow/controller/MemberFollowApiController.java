@@ -1,13 +1,19 @@
 package bbangduck.bd.bbangduck.domain.follow.controller;
 
+import bbangduck.bd.bbangduck.domain.follow.dto.controller.response.FollowMemberResponseDto;
 import bbangduck.bd.bbangduck.domain.follow.service.FollowApplicationService;
+import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+import static bbangduck.bd.bbangduck.global.common.ThrowUtils.hasErrorsThrow;
 
 /**
  * 특정 회원과 관련된 팔로우에 대한 EndPoint 를 구현한 Api Controller
@@ -25,10 +31,15 @@ public class MemberFollowApiController {
     // TODO: 2021-07-14 특전 회원의 팔로윙 목록 조회 기능 구현
     @GetMapping("/followings")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity getFollowList(
-            @PathVariable Long memberId
+    public ResponseEntity<List<FollowMemberResponseDto>> getFollowingMemberList(
+            @PathVariable Long memberId,
+            @ModelAttribute @Valid CriteriaDto criteria,
+            BindingResult bindingResult
     ) {
-        return null;
+        hasErrorsThrow(ResponseStatus.GET_FOLLOWING_MEMBER_LIST_NOT_VALID, bindingResult);
+        List<FollowMemberResponseDto> result = followApplicationService.getFollowingMemberList(memberId, criteria);
+
+        return ResponseEntity.ok(result);
     }
 
     // TODO: 2021-07-14 특정 회원의 팔로워 목록 조회 기능 구현
