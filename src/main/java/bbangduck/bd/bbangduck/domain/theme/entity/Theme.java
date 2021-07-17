@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNull;
+
 /**
  * 작성자 : 정구민 <br><br>
  * <p>
@@ -217,5 +219,9 @@ public class Theme extends BaseEntityDateTime {
 
     public void decreaseTotalEvaluatedCount() {
         this.totalEvaluatedCount--;
+    }
+
+    public float getRating() {
+        return isNull(this.totalRating) || isNull(this.totalEvaluatedCount) ? 0 : (float) this.totalRating / (float) this.totalEvaluatedCount;
     }
 }

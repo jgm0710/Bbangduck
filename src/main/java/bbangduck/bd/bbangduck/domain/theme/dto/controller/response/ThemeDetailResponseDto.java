@@ -35,6 +35,8 @@ public class ThemeDetailResponseDto {
 
     private String  themeDescription;
 
+    private Float themeRating;
+
     private List<ThemeGenreResponseDto> themeGenres;
 
     private ThemeShopSimpleInfoResponseDto shopInfo;
@@ -55,6 +57,7 @@ public class ThemeDetailResponseDto {
                 .themeImage(ThemeImageResponseDto.convert(theme.getThemeImage()))
                 .themeName(theme.getName())
                 .themeDescription(theme.getDescription())
+                .themeRating(theme.getRating())
                 .themeGenres(convertThemeGenres(theme.getGenres()))
                 .shopInfo(ThemeShopSimpleInfoResponseDto.convert(theme.getShop()))
                 .playTime(theme.getPlayTime())

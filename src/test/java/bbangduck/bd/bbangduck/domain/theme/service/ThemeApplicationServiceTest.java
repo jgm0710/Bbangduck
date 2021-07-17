@@ -69,6 +69,8 @@ class ThemeApplicationServiceTest {
                 .difficulty(Difficulty.NORMAL)
                 .activity(Activity.NORMAL)
                 .horrorGrade(HorrorGrade.NORMAL)
+                .totalRating(60L)
+                .totalEvaluatedCount(16L)
                 .shop(shop)
                 .build();
 
@@ -90,6 +92,7 @@ class ThemeApplicationServiceTest {
         assertEquals(theme.getId(), themeDetailResponseDto.getThemeId());
         assertEquals(theme.getName(), themeDetailResponseDto.getThemeName());
         assertEquals(theme.getDescription(), themeDetailResponseDto.getThemeDescription());
+        assertEquals(60f / 16f, themeDetailResponseDto.getThemeRating());
         assertEquals(theme.getPlayTime(), themeDetailResponseDto.getPlayTime());
         assertEquals(theme.getNumberOfPeoples(), themeDetailResponseDto.getNumberOfPeoples());
         assertEquals(theme.getDifficulty(), themeDetailResponseDto.getDifficulty());
