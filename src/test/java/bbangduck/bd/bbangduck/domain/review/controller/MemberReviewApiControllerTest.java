@@ -39,7 +39,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
         Theme themeSample = createThemeSample();
 
@@ -98,7 +98,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long member1Id = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, member1Id);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, member1Id);
 
         Theme themeSample = createThemeSample();
 
@@ -140,7 +140,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
         Theme themeSample = createThemeSample();
 
@@ -171,7 +171,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
         Theme themeSample = createThemeSample();
 
@@ -211,7 +211,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
         MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
         Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        List<Long> friendIds = createFriendToMember(memberSocialSignUpRequestDto, signUpId);
+        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
 
         Theme themeSample = createThemeSample();
 

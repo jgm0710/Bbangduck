@@ -72,4 +72,17 @@ public class MemberQueryRepository {
         }
         return member.nickname.eq(keyword);
     }
+
+    public List<Member> findByMemberIds(List<Long> memberIds) {
+        return queryFactory
+                .selectFrom(member)
+                .where(
+                        memberIdsIn(memberIds)
+                )
+                .fetch();
+    }
+
+    private BooleanExpression memberIdsIn(List<Long> memberIds) {
+        return member.id.in(memberIds);
+    }
 }

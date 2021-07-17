@@ -15,6 +15,10 @@ public class MemberNotFoundException extends NotFoundException {
         super(ResponseStatus.MEMBER_NOT_FOUND);
     }
 
+    public MemberNotFoundException(Long memberId) {
+        super(ResponseStatus.MEMBER_NOT_FOUND, ResponseStatus.MEMBER_NOT_FOUND.getMessage() + " memberId : " + memberId);
+    }
+
     public MemberNotFoundException(String email) {
         super(ResponseStatus.MEMBER_NOT_FOUND, "해당 Email 로 조회되는 회원이 존재하지 않습니다. Email : " + email);
     }

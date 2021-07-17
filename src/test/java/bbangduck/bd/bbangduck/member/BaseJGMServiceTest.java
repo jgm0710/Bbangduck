@@ -7,29 +7,29 @@ import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpReque
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
-import bbangduck.bd.bbangduck.domain.friend.repository.MemberFriendQueryRepository;
-import bbangduck.bd.bbangduck.domain.friend.repository.MemberFriendRepository;
+import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
+import bbangduck.bd.bbangduck.domain.follow.repository.FollowQueryRepository;
+import bbangduck.bd.bbangduck.domain.follow.repository.FollowRepository;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
 import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.friend.entity.MemberFriend;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
-import bbangduck.bd.bbangduck.domain.friend.enumerate.MemberFriendState;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.repository.*;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.model.emumerate.*;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.repository.*;
-import bbangduck.bd.bbangduck.domain.review.service.*;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
-import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
+import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
 import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
@@ -70,7 +70,7 @@ public class BaseJGMServiceTest extends BaseTest {
     protected ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
 
     @Autowired
-    protected MemberFriendQueryRepository memberFriendQueryRepository;
+    protected FollowQueryRepository followQueryRepository;
 
     @Autowired
     protected ReviewProperties reviewProperties;
@@ -82,7 +82,7 @@ public class BaseJGMServiceTest extends BaseTest {
     protected MemberPlayInclinationQueryRepository memberPlayInclinationQueryRepository;
 
     @Autowired
-    protected MemberFriendRepository memberFriendRepository;
+    protected FollowRepository followRepository;
 
     @Autowired
     protected ReviewService reviewService;
@@ -179,7 +179,7 @@ public class BaseJGMServiceTest extends BaseTest {
         franchiseRepository.deleteAll();
         adminInfoRepository.deleteAll();
         memberPlayInclinationRepository.deleteAll();
-        memberFriendRepository.deleteAll();
+        followRepository.deleteAll();
         memberRepository.deleteAll();
     }
 
@@ -258,13 +258,12 @@ public class BaseJGMServiceTest extends BaseTest {
 
         Member signUpMember = memberService.getMember(signUpId);
         Member notFriendMember = memberService.getMember(notFriendId);
-        MemberFriend memberFriend = MemberFriend.builder()
-                .member(signUpMember)
-                .friend(notFriendMember)
-                .state(MemberFriendState.REQUEST)
+        Follow follow = Follow.builder()
+                .followingMember(signUpMember)
+                .followedMember(notFriendMember)
                 .build();
-        MemberFriend savedMemberFriend = memberFriendRepository.save(memberFriend);
-        return savedMemberFriend.getFriend();
+        Follow savedFollow = followRepository.save(follow);
+        return savedFollow.getFollowedMember();
     }
 
 
@@ -278,14 +277,19 @@ public class BaseJGMServiceTest extends BaseTest {
             Long friendMemberId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
             Member friendMember = memberService.getMember(friendMemberId);
 
-            MemberFriend memberFriend = MemberFriend.builder()
-                    .member(signUpMember)
-                    .friend(friendMember)
-                    .state(MemberFriendState.ACCEPT)
+            Follow follow1 = Follow.builder()
+                    .followingMember(signUpMember)
+                    .followedMember(friendMember)
                     .build();
 
-            MemberFriend savedMemberFriend = memberFriendRepository.save(memberFriend);
-            Member savedFriend = savedMemberFriend.getFriend();
+            Follow follow2 = Follow.builder()
+                    .followingMember(friendMember)
+                    .followedMember(signUpMember)
+                    .build();
+
+            Follow savedFollow = followRepository.save(follow1);
+            followRepository.save(follow2);
+            Member savedFriend = savedFollow.getFollowedMember();
             friendIds.add(savedFriend.getId());
         }
         return friendIds;

@@ -1,0 +1,48 @@
+= BbangDuck API Guide
+정구민;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+:docinfo: shared-head
+
+[[overview]]
+= 개요
+== link:/docs/index.html[home]
+== 오류 코드
+
+|===
+| 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
+
+|===
+
+== 히스토리
+
+히스토리는 문서의 변경이력을 표시합니다.
+
+2021-07-14 :::
+* <<resources-request-follow>> 기능 구현
+
+
+[[resources-follow]]
+= 팔로우 관련 리소스
+
+[[resources-request-follow]]
+== 팔로우 요청
+
+* `POST` `/api/follows/{memberId}/request-follow`
+
+* 회원 식별 ID 를 통해 해당 회원에게 팔로우 요청을 보냅니다.
+** 팔로우 요청은 단방향입니다.
+
+* 해당 리소스는 인증된 사용자만 접근이 가능합니다.
+** 인증된 사용자가 대상 회원에게 팔로우 요청을 보냅니다.
+** 탈퇴된 회원은 해당 리소스에 접근이 불가능합니다.
+
+operation::request-follow-success[snippets='curl-request,http-response']
+
+

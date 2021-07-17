@@ -50,13 +50,14 @@ public class MemberService {
 
     public Member getMember(Long memberId) {
         Member findMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        checkMemberIsWithdrawalOrBan(findMember.getRoles());
+        checkMemberIsWithdrawalOrBan(findMember);
         return findMember;
     }
 
-    private void checkMemberIsWithdrawalOrBan(Set<MemberRole> roles) {
+    private void checkMemberIsWithdrawalOrBan(Member member) {
+        Set<MemberRole> roles = member.getRoles();
         if (roles.contains(MemberRole.WITHDRAWAL) || roles.contains(MemberRole.BAN)) {
-            throw new FindMemberIsWithdrawalOrBanException();
+            throw new FindMemberIsWithdrawalOrBanException(member.getId());
         }
     }
 
@@ -146,5 +147,14 @@ public class MemberService {
      */
     public Member searchMember(MemberSearchKeywordType searchType, String keyword) {
         return memberQueryRepository.findBySearchTypeAndKeyword(searchType, keyword).orElseThrow(() -> new MemberNotFoundException(searchType, keyword));
+    }
+
+    public List<Member> getMembers(List<Long> memberIds) {
+        List<Member> members = memberQueryRepository.findByMemberIds(memberIds);
+        if (members.size() != memberIds.size()) {
+            memberIds.forEach(memberId -> memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId)));
+        }
+        members.forEach(this::checkMemberIsWithdrawalOrBan);
+        return members;
     }
 }
