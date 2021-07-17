@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.follow.service;
 
 import bbangduck.bd.bbangduck.common.BaseTest;
 import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
+import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,13 +51,16 @@ class FollowServiceIntegrationTest extends BaseTest {
         followService.follow(followingMember, followedMember);
 
         //then
-        boolean present = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).isPresent();
+        Optional<Follow> optionalFollow = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember);
+        boolean present = optionalFollow.isPresent();
         assertTrue(present, "팔로우가 있어야 한다.");
+        Follow follow = optionalFollow.orElseThrow(EntityNotFoundException::new);
+        assertEquals(FollowStatus.ONE_WAY_FOLLOW, follow.getStatus(), "단방향 팔로우 관계이다.");
     }
 
     @Test
-    @DisplayName("팔로우 - 기존에 팔로우 했던 회원인 경우")
-    public void follow_AlreadyFollow() {
+    @DisplayName("팔로우 - 상대가 나를 팔로우 하고 있을 경우")
+    public void follow_FollowedMemberFollowMe() {
         //given
         Member followingMember = Member.builder().build();
         Member followedMember = Member.builder().build();
@@ -63,18 +68,18 @@ class FollowServiceIntegrationTest extends BaseTest {
         memberRepository.save(followingMember);
         memberRepository.save(followedMember);
 
-        Follow follow = Follow.builder()
-                .followingMember(followingMember)
-                .followedMember(followedMember)
-                .build();
-        Follow savedFollow = followRepository.save(follow);
+        Follow followed = Follow.init(followedMember, followingMember);
+        followRepository.save(followed);
 
         //when
         followService.follow(followingMember, followedMember);
 
         //then
-        Follow findFollow = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).orElseThrow(EntityNotFoundException::new);
-        assertEquals(savedFollow.getId(), findFollow.getId(), "기존에 팔로우를 했던 경우 새로 팔로우 했을 때 followId 가 바뀌지 않아야 한다.");
+        Follow findFollowing = followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).orElseThrow(EntityNotFoundException::new);
+        Follow findFollowed = followRepository.findByFollowingMemberAndFollowedMember(followedMember, followingMember).orElseThrow(EntityNotFoundException::new);
+
+        assertEquals(FollowStatus.TWO_WAY_FOLLOW, findFollowing.getStatus(), "양방향 팔로우 관계여야한다.");
+        assertEquals(FollowStatus.TWO_WAY_FOLLOW, findFollowed.getStatus(), "양방향 팔로우 관계여야한다.");
     }
 
     @Test
@@ -90,10 +95,12 @@ class FollowServiceIntegrationTest extends BaseTest {
         Follow follow1 = Follow.builder()
                 .followingMember(member1)
                 .followedMember(member2)
+                .status(FollowStatus.TWO_WAY_FOLLOW)
                 .build();
         Follow follow2 = Follow.builder()
                 .followingMember(member2)
                 .followedMember(member1)
+                .status(FollowStatus.TWO_WAY_FOLLOW)
                 .build();
 
         followRepository.save(follow1);
@@ -122,6 +129,7 @@ class FollowServiceIntegrationTest extends BaseTest {
         Follow follow1 = Follow.builder()
                 .followingMember(member1)
                 .followedMember(member2)
+                .status(FollowStatus.ONE_WAY_FOLLOW)
                 .build();
 
         followRepository.save(follow1);
@@ -150,11 +158,13 @@ class FollowServiceIntegrationTest extends BaseTest {
             Follow follow1 = Follow.builder()
                     .followingMember(member1)
                     .followedMember(member)
+                    .status(FollowStatus.TWO_WAY_FOLLOW)
                     .build();
 
             Follow follow2 = Follow.builder()
                     .followingMember(member)
                     .followedMember(member1)
+                    .status(FollowStatus.TWO_WAY_FOLLOW)
                     .build();
 
             followRepository.save(follow1);
@@ -192,11 +202,13 @@ class FollowServiceIntegrationTest extends BaseTest {
             Follow follow1 = Follow.builder()
                     .followingMember(member1)
                     .followedMember(member)
+                    .status(FollowStatus.ONE_WAY_FOLLOW)
                     .build();
 
             Follow follow2 = Follow.builder()
                     .followingMember(member)
                     .followedMember(member1)
+                    .status(FollowStatus.ONE_WAY_FOLLOW)
                     .build();
 
             followRepository.save(follow1);
@@ -208,6 +220,7 @@ class FollowServiceIntegrationTest extends BaseTest {
         Follow otherFollow = Follow.builder()
                 .followingMember(member1)
                 .followedMember(otherMember)
+                .status(FollowStatus.ONE_WAY_FOLLOW)
                 .build();
         followRepository.save(otherFollow);
 
@@ -233,14 +246,22 @@ class FollowServiceIntegrationTest extends BaseTest {
         Member followingMember = Member.builder().build();
         Member followedMember = Member.builder().build();
 
-        Follow follow = Follow.builder()
+        Follow following = Follow.builder()
                 .followingMember(followingMember)
                 .followedMember(followedMember)
+                .status(FollowStatus.TWO_WAY_FOLLOW)
+                .build();
+
+        Follow followed = Follow.builder()
+                .followingMember(followedMember)
+                .followedMember(followingMember)
+                .status(FollowStatus.TWO_WAY_FOLLOW)
                 .build();
 
         memberRepository.save(followingMember);
         memberRepository.save(followedMember);
-        followRepository.save(follow);
+        followRepository.save(following);
+        followRepository.save(followed);
 
         assertTrue(followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).isPresent());
 
@@ -249,8 +270,9 @@ class FollowServiceIntegrationTest extends BaseTest {
 
         //then
         assertTrue(followRepository.findByFollowingMemberAndFollowedMember(followingMember, followedMember).isEmpty(), "팔로우 해제 시 팔로우가 조회되지 않아야 한다.");
+
+        Follow findFollowed = followRepository.findByFollowingMemberAndFollowedMember(followedMember, followingMember).orElseThrow(EntityNotFoundException::new);
+        assertEquals(FollowStatus.ONE_WAY_FOLLOW, findFollowed.getStatus(), "양방향 팔로우 관계인 경우 상대의 팔로우 상태는 단방향으로 변경되어야 한다.");
     }
-
-
 
 }

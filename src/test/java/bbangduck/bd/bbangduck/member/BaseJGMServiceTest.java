@@ -8,6 +8,7 @@ import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
 import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
+import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowQueryRepository;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowRepository;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
@@ -280,11 +281,13 @@ public class BaseJGMServiceTest extends BaseTest {
             Follow follow1 = Follow.builder()
                     .followingMember(signUpMember)
                     .followedMember(friendMember)
+                    .status(FollowStatus.TWO_WAY_FOLLOW)
                     .build();
 
             Follow follow2 = Follow.builder()
                     .followingMember(friendMember)
                     .followedMember(signUpMember)
+                    .status(FollowStatus.TWO_WAY_FOLLOW)
                     .build();
 
             Follow savedFollow = followRepository.save(follow1);

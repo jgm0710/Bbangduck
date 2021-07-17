@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.follow.repository;
 
 import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
+import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.follow.entity.QFollow;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -97,4 +98,19 @@ public class FollowQueryRepository {
                 .limit(criteria.getAmount())
                 .fetch();
     }
+
+    public List<Follow> findTwoWayFollowListByFollowingMemberId(Long followingMemberId, CriteriaDto criteria) {
+        return queryFactory
+                .selectFrom(follow)
+                .join(follow.followingMember).fetchJoin()
+                .join(follow.followedMember).fetchJoin()
+                .where(
+                        followingMemberIdEq(followingMemberId),
+                        follow.status.eq(FollowStatus.TWO_WAY_FOLLOW)
+                )
+                .offset(criteria.getOffset())
+                .limit(criteria.getAmount())
+                .fetch();
+    }
+
 }

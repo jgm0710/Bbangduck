@@ -25,17 +25,22 @@ public class Follow extends BaseEntityDateTime {
     @JoinColumn(name = "friend_id")
     private Member followedMember;
 
+    @Enumerated(EnumType.STRING)
+    private FollowStatus status;
+
     @Builder
-    public Follow(Long id, Member followingMember, Member followedMember) {
+    public Follow(Long id, Member followingMember, Member followedMember, FollowStatus status) {
         this.id = id;
         this.followingMember = followingMember;
         this.followedMember = followedMember;
+        this.status = status;
     }
 
     public static Follow init(Member followingMember, Member followedMember) {
         return Follow.builder()
                 .followingMember(followingMember)
                 .followedMember(followedMember)
+                .status(FollowStatus.ONE_WAY_FOLLOW)
                 .build();
     }
 
@@ -51,4 +56,11 @@ public class Follow extends BaseEntityDateTime {
         return followedMember;
     }
 
+    public void updateStatus(FollowStatus status) {
+        this.status = status;
+    }
+
+    public FollowStatus getStatus() {
+        return status;
+    }
 }

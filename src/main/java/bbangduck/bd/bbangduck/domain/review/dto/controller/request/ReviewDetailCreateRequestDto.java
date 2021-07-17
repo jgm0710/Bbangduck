@@ -1,6 +1,8 @@
 package bbangduck.bd.bbangduck.domain.review.dto.controller.request;
 
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewDetailCreateDto;
+import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
+import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,9 +33,16 @@ public class ReviewDetailCreateRequestDto {
 
     public ReviewDetailCreateDto toServiceDto() {
         return ReviewDetailCreateDto.builder()
-                .reviewImageDtos(reviewImages.stream().map(ReviewImageRequestDto::toServiceDto).collect(Collectors.toList()))
+                .reviewImageDtos(convertReviewImages())
                 .comment(comment)
                 .build();
+    }
+
+    private List<ReviewImageDto> convertReviewImages() {
+        if (NullCheckUtils.existsList(this.reviewImages)) {
+            return reviewImages.stream().map(ReviewImageRequestDto::toServiceDto).collect(Collectors.toList());
+        }
+        return null;
     }
 
 }

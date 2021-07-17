@@ -19,18 +19,24 @@
 | 발생 API | CAUSE | HTTP_STATUS |CODE | MESSAGE
 
 | <<resources-request-follow>> / <<resources-get-following-member-list>> / <<resources-get-follower-member-list>>
- / <<resources-unfollow>>
+ / <<resources-get-two-way-followers>> / <<resources-unfollow>>
 | 인증되지 않은 사용자가 리소스에 접근하는 경우
 | 401
 | 1401
 | 인증되지 않은 사용자가 리소스에 접근했습니다. 인증 토큰을 다시 확인해 주세요.
 
 | <<resources-request-follow>> / <<resources-get-following-member-list>> / <<resources-get-follower-member-list>>
- / <<resources-unfollow>>
+ / <<resources-get-two-way-followers>> / <<resources-unfollow>>
 | 탈퇴하거나, 계정이 정지된 회원이 리소스에 접근하는 경우
 | 403
 | 1403
 | 해당 리소스에 접근할 수 없는 회원입니다.
+
+| <<resources-request-follow>>
+| 이미 팔로우 관계인 회원에게 팔로우 요청을 하는 경우
+| 400
+| 7406
+| 이미 팔로우한 회원은 다시 팔로우 할 수 없습니다.
 
 | <<resources-get-following-member-list>>
 | 팔로우 목록을 조회하려는 회원을 찾을 수 없는 경우
@@ -68,6 +74,30 @@
 | 7404
 | 회원을 팔로우하는 회원 목록 조회 시 기입 사항이 올바르지 않습니다.
 
+| <<resources-get-two-way-followers>>
+| 맞팔로우 목록을 조회할 회원을 찾을 수 없는 경우
+| 404
+| 2401
+| 해당 회원이 존재하지 않습니다.
+
+| <<resources-get-two-way-followers>>
+| 맞팔로우 목록을 조회할 회원이 탈퇴되거나, 활동이 정지된 회원일 경우
+| 400
+| 2413
+| 조회된 회원은 탈퇴했거나, 계정이 정지된 회원입니다.
+
+| <<resources-get-two-way-followers>>
+| 맞팔로우 목록 조회 시 기입 사항을 올바르게 기입하지 않은 경우
+| 400
+| 7405
+| 회원과 서로 팔로우한 회원 목록 조회 시 기입 사항이 올바르지 않습니다.
+
+| <<resources-unfollow>>
+| 팔로우 해제 시 팔로우 내역을 찾을 수 없는 경우
+| 404
+| 7407
+| 팔로우 내역을 찾을 수 없습니다.
+
 |===
 
 == 히스토리
@@ -82,6 +112,9 @@
 * <<resources-get-follower-member-list>> 기능 구현
 * <<resources-unfollow>> 기능 구현
 
+2021-07-15 :::
+* <<resources-get-two-way-followers>> 기능 구현
+
 
 [[resources-follow]]
 = 팔로우 관련 리소스
@@ -89,7 +122,7 @@
 [[resources-request-follow]]
 == 팔로우 요청
 
-* `POST` `/api/follows/{memberId}/request-follow`
+* `POST` `/api/members/{memberId}/follows`
 
 * 회원 식별 ID 를 통해 해당 회원에게 팔로우 요청을 보냅니다.
 ** 팔로우 요청은 단방향입니다.
@@ -98,12 +131,14 @@
 ** 인증된 사용자가 대상 회원에게 팔로우 요청을 보냅니다.
 ** 탈퇴된 회원은 해당 리소스에 접근이 불가능합니다.
 
+* 응답 HttpStatus : `201 Created`
+
 operation::request-follow-success[snippets='curl-request,http-response']
 
 [[resources-get-following-member-list]]
 == 팔로우한 회원 목록 조회
 
-* `GET` `/api/members/{memberId}/followings/{parameters}`
+* `GET` `/api/members/{memberId}/followings?{parameters}`
 
 * 특정 회원이 팔로우한 회원 목록을 조회합니다.
 
@@ -111,12 +146,14 @@ operation::request-follow-success[snippets='curl-request,http-response']
     ** 1 페이지 이하는 조회할 수 없습니다.
     ** 조회 가능 수량은 1~500 개 입니다.
 
+* 응답 HttpStatus : `200 OK`
+
 operation::get-following-member-list-success[snippets='request-headers,request-parameters,response-fields,curl-request,http-response']
 
 [[resources-get-follower-member-list]]
 == 회원을 팔로우한 팔로워 목록 조회
 
-* `GET` `/api/members/{memberId}/followers/{parameters}`
+* `GET` `/api/members/{memberId}/followers?{parameters}`
 
 * 특정 회원을 팔로우한 회원 목록을 조회합니다.
 
@@ -124,13 +161,30 @@ operation::get-following-member-list-success[snippets='request-headers,request-p
     ** 1 페이지 이하는 조회할 수 없습니다.
     ** 조회 가능 수량은 1~500 개 입니다.
 
+* 응답 HttpStatus : `200 OK`
+
 
 operation::get-follower-member-list-success[snippets='request-headers,request-parameters,response-fields,curl-request,http-response']
+
+[[resources-get-two-way-followers]]
+== 맞팔로우한 회원 목록 조회
+
+* `GET` `/api/members/{memberId}/two-way-followers`
+
+* 특정 회원과 서로 팔로우한 회원 목록을 조회합니다.
+
+* 입력 규칙
+    ** 1 페이지 이하는 조회할 수 없습니다.
+    ** 조회 가능 수량은 1~500 개 입니다.
+
+* 응답 HttpStatus : `200 OK`
+
+operation::get-two-way-followers-success[snippets='request-headers,request-parameters,response-fields,curl-request,http-response']
 
 [[resources-unfollow]]
 == 팔로우 해제
 
-* `DELETE` `/api/follows/{memberId}/unfollow`
+* `DELETE` `/api/members/{memberId}/follows`
 
 * 팔로우를 해제합니다.
     ** 인증된 회원이 지정한 회원에 대한 팔로우를 해제합니다.
@@ -139,7 +193,7 @@ operation::get-follower-member-list-success[snippets='request-headers,request-pa
     ** 탈퇴한 사용자는 해당 리소스에 접근이 불가능합니다.
 
 
-* 별도의 응답 Body Data 는 제공되지 않습니다.
+* 응답 HttpStatus : `204 No Content`
 
 operation::unfollow-success[snippets='request-headers,curl-request,http-response']
 

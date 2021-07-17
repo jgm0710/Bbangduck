@@ -7,7 +7,7 @@ import bbangduck.bd.bbangduck.domain.member.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberSearchKeywordType;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
-import bbangduck.bd.bbangduck.domain.member.exception.FindMemberIsWithdrawalOrBanException;
+import bbangduck.bd.bbangduck.domain.member.exception.FoundMemberIsWithdrawalOrBanException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
@@ -971,9 +971,9 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("status").value(ResponseStatus.FIND_MEMBER_WITHDRAWAL_OR_BAN.getStatus()))
+                .andExpect(jsonPath("status").value(ResponseStatus.FOUND_MEMBER_IS_WITHDRAWAL_OR_BAN.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(new FindMemberIsWithdrawalOrBanException(signUpId).getMessage()));
+                .andExpect(jsonPath("message").value(new FoundMemberIsWithdrawalOrBanException(signUpId).getMessage()));
 
     }
 

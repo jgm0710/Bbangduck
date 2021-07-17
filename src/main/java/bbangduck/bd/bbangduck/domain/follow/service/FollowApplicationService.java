@@ -37,20 +37,25 @@ public class FollowApplicationService {
     public List<FollowMemberResponseDto> getFollowingMemberList(Long memberId, CriteriaDto criteria) {
         memberService.getMember(memberId);
         List<Follow> followingList = followService.getFollowsByFollowingMemberId(memberId, criteria);
-        List<Member> followedMembers = followingList.stream().map(Follow::getFollowedMember).collect(Collectors.toList());
-        return followedMembers.stream().map(FollowMemberResponseDto::convert).collect(Collectors.toList());
+        return followingList.stream().map(follow -> FollowMemberResponseDto.convert(follow.getFollowedMember())).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<FollowMemberResponseDto> getFollowerMemberList(Long memberId, CriteriaDto criteria) {
         memberService.getMember(memberId);
         List<Follow> followedList = followService.getFollowsByFollowedMemberId(memberId, criteria);
-        List<Member> followingMembers = followedList.stream().map(Follow::getFollowingMember).collect(Collectors.toList());
-        return followingMembers.stream().map(FollowMemberResponseDto::convert).collect(Collectors.toList());
+        return followedList.stream().map(follow -> FollowMemberResponseDto.convert(follow.getFollowingMember())).collect(Collectors.toList());
     }
 
     @Transactional
     public void unfollow(Long followingMemberId, Long followedMemberId) {
         followService.unfollow(followingMemberId, followedMemberId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FollowMemberResponseDto> getTwoWayFollowMemberList(Long memberId, CriteriaDto criteria) {
+        memberService.getMember(memberId);
+        List<Follow> findFollows = followService.getTwoWayFollowsByMemberId(memberId, criteria);
+        return findFollows.stream().map(follow -> FollowMemberResponseDto.convert(follow.getFollowedMember())).collect(Collectors.toList());
     }
 }

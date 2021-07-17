@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.follow.service;
 
 import bbangduck.bd.bbangduck.domain.follow.dto.controller.response.FollowMemberResponseDto;
 import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
+import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -68,8 +70,8 @@ class FollowApplicationServiceUnitTest {
         for (long i = 2; i < 6; i++) {
             Member followedMember = Member.builder()
                     .id(i)
-                    .nickname("member"+i)
-                    .description("description"+i)
+                    .nickname("member" + i)
+                    .description("description" + i)
                     .build();
 
             int nextInt = new Random().nextInt(100);
@@ -83,10 +85,7 @@ class FollowApplicationServiceUnitTest {
 
             followedMembers.add(followedMember);
 
-            Follow follow = Follow.builder()
-                    .followingMember(member)
-                    .followedMember(followedMember)
-                    .build();
+            Follow follow = Follow.init(member, followedMember);
 
             follows.add(follow);
         }
@@ -110,6 +109,9 @@ class FollowApplicationServiceUnitTest {
             assertNotNull(followMemberResponseDto.getDescription());
             assertNotNull(followMemberResponseDto.getProfileImageUrl());
             assertNotNull(followMemberResponseDto.getProfileImageThumbnailUrl());
+
+            assertTrue(followedMembers.stream().anyMatch(member1 -> member1.getId().equals(followMemberResponseDto.getMemberId())),
+                    "조회되는 회원의 식별 ID 중 하나는 member 가 팔로우하는 회원의 식별 ID 중 하나여야한다.");
         });
 
     }
@@ -127,8 +129,8 @@ class FollowApplicationServiceUnitTest {
         for (long i = 0; i < 5; i++) {
             Member followingMember = Member.builder()
                     .id(i)
-                    .nickname("member"+i)
-                    .description("description"+i)
+                    .nickname("member" + i)
+                    .description("description" + i)
                     .build();
 
             int nextInt = new Random().nextInt(100);
@@ -140,10 +142,7 @@ class FollowApplicationServiceUnitTest {
 
             followingMember.setProfileImage(memberProfileImage);
 
-            Follow follow = Follow.builder()
-                    .followingMember(followingMember)
-                    .followedMember(followedMember)
-                    .build();
+            Follow follow = Follow.init(followingMember, followedMember);
 
             followingMembers.add(followingMember);
             followedList.add(follow);
@@ -168,7 +167,76 @@ class FollowApplicationServiceUnitTest {
             assertNotNull(followMemberResponseDto.getDescription());
             assertNotNull(followMemberResponseDto.getProfileImageUrl());
             assertNotNull(followMemberResponseDto.getProfileImageThumbnailUrl());
+
+            assertTrue(followingMembers.stream().anyMatch(member -> member.getId().equals(followMemberResponseDto.getMemberId())),
+                    "조회된 회원 목록의 식별 ID 중 하나는 followedMember 를 팔로우하는 회원 중 하나의 식별 ID 와 일치해야 한다.");
         });
+
+    }
+
+    @Test
+    @DisplayName("맞팔로우 회원 목록 조회")
+    public void getTwoWayFollowMemberList() {
+        //given
+        Member followingMember = Member.builder()
+                .id(1L)
+                .build();
+
+
+        List<Member> followedMembers = new ArrayList<>();
+        List<Follow> twoWayFollows = new ArrayList<>();
+        for (long i = 4; i < 4 + 5; i++) {
+            Member followedMember = Member.builder()
+                    .id(i)
+                    .nickname("member" + i)
+                    .description("description" + i)
+                    .build();
+
+            int nextInt = new Random().nextInt(100);
+            MemberProfileImage memberProfileImage = MemberProfileImage.builder()
+                    .id(i)
+                    .fileStorageId((long) nextInt)
+                    .fileName("fileName" + nextInt)
+                    .build();
+
+            followedMember.setProfileImage(memberProfileImage);
+
+            followedMembers.add(followedMember);
+
+            Follow following = Follow.builder()
+                    .id(i + 100)
+                    .followingMember(followingMember)
+                    .followedMember(followedMember)
+                    .status(FollowStatus.TWO_WAY_FOLLOW)
+                    .build();
+
+            twoWayFollows.add(following);
+        }
+
+        CriteriaDto criteriaDto = new CriteriaDto();
+
+        given(memberService.getMember(followingMember.getId())).willReturn(followingMember);
+        given(followService.getTwoWayFollowsByMemberId(followingMember.getId(), criteriaDto)).willReturn(twoWayFollows);
+
+        //when
+        List<FollowMemberResponseDto> twoWayFollowMemberList = followApplicationService.getTwoWayFollowMemberList(followingMember.getId(), criteriaDto);
+
+        //then
+        then(memberService).should(times(1)).getMember(followingMember.getId());
+        then(followService).should(times(1)).getTwoWayFollowsByMemberId(followingMember.getId(), criteriaDto);
+
+        twoWayFollowMemberList.forEach(followMemberResponseDto -> {
+            System.out.println("followMemberResponseDto = " + followMemberResponseDto);
+            assertNotNull(followMemberResponseDto.getMemberId());
+            assertNotNull(followMemberResponseDto.getNickname());
+            assertNotNull(followMemberResponseDto.getDescription());
+            assertNotNull(followMemberResponseDto.getProfileImageUrl());
+            assertNotNull(followMemberResponseDto.getProfileImageThumbnailUrl());
+
+            assertTrue(followedMembers.stream().anyMatch(member -> member.getId().equals(followMemberResponseDto.getMemberId())),
+                    "조회된 회원 목록의 식별 ID 중 하나는 followingMember 와 서로 팔로우하는 회원 중 하나의 식별 ID 와 일치해야 한다.");
+        });
+
 
     }
 
