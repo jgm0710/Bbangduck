@@ -14,6 +14,7 @@ import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
+import com.querydsl.core.QueryResults;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -246,7 +247,8 @@ class FollowApiControllerTest extends BaseControllerTest {
         CriteriaDto criteriaDto = new CriteriaDto(1,4);
 
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-        given(followQueryRepository.findListByFollowingMemberId(any(Long.class), any(CriteriaDto.class))).willReturn(follows);
+        QueryResults<Follow> followQueryResults = new QueryResults<>(follows, (long) criteriaDto.getAmount(), (long) criteriaDto.getOffset(), 132);
+        given(followQueryRepository.findListByFollowingMemberId(any(Long.class), any(CriteriaDto.class))).willReturn(followQueryResults);
 
         String accessToken = jwtTokenProvider.createToken(member.getEmail(), member.getRoleNameList());
         given(memberRepository.findByEmail(member.getEmail())).willReturn(Optional.of(member));
@@ -273,11 +275,15 @@ class FollowApiControllerTest extends BaseControllerTest {
                                 parameterWithName("amount").description("조회할 수량 기입")
                         ),
                         responseFields(
-                                fieldWithPath("[].memberId").description("팔로우한 회원의 식별 ID"),
-                                fieldWithPath("[].nickname").description("팔로우한 회원의 닉네임"),
-                                fieldWithPath("[].description").description("팔로우한 회원의 자기소개"),
-                                fieldWithPath("[].profileImageUrl").description("팔로우한 회원의 프로필 이미지 다운로드 URL"),
-                                fieldWithPath("[].profileImageThumbnailUrl").description("팔로우한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL")
+                                fieldWithPath("contents").description("실제 응답 내용"),
+                                fieldWithPath("contents[].memberId").description("팔로우한 회원의 식별 ID"),
+                                fieldWithPath("contents[].nickname").description("팔로우한 회원의 닉네임"),
+                                fieldWithPath("contents[].description").description("팔로우한 회원의 자기소개"),
+                                fieldWithPath("contents[].profileImageUrl").description("팔로우한 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("contents[].profileImageThumbnailUrl").description("팔로우한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("nowPageNum").description("현재 요청된 페이지"),
+                                fieldWithPath("requestAmount").description("현재 요청된 수량"),
+                                fieldWithPath("totalResultsCount").description("조회 결과 총 개수")
                         )
                 ))
         ;

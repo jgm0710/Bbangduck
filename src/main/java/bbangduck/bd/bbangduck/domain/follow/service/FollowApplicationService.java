@@ -5,6 +5,8 @@ import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
+import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,10 +36,18 @@ public class FollowApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<FollowMemberResponseDto> getFollowingMemberList(Long memberId, CriteriaDto criteria) {
+    public PaginationResultResponseDto<FollowMemberResponseDto> getFollowingMemberList(Long memberId, CriteriaDto criteria) {
         memberService.getMember(memberId);
-        List<Follow> followingList = followService.getFollowsByFollowingMemberId(memberId, criteria);
-        return followingList.stream().map(follow -> FollowMemberResponseDto.convert(follow.getFollowedMember())).collect(Collectors.toList());
+        QueryResults<Follow> followsQueryResults = followService.getFollowsByFollowingMemberId(memberId, criteria);
+        List<Member> followedMembers = followsQueryResults.getResults().stream()
+                .map(Follow::getFollowedMember).collect(Collectors.toList());
+
+        PaginationResultResponseDto<Member> resultResponseDto = new PaginationResultResponseDto<>(followedMembers,
+                criteria.getPageNum(),
+                criteria.getAmount(),
+                followsQueryResults.getTotal());
+
+        return resultResponseDto.convert(FollowMemberResponseDto::convert);
     }
 
     @Transactional(readOnly = true)

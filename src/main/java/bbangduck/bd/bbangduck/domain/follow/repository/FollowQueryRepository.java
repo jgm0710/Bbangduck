@@ -4,6 +4,7 @@ import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
 import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.follow.entity.QFollow;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,7 @@ public class FollowQueryRepository {
         return follow.followingMember.id.eq(followingMemberId);
     }
 
-    public List<Follow> findListByFollowingMemberId(Long followingMemberId, CriteriaDto criteria) {
+    public QueryResults<Follow> findListByFollowingMemberId(Long followingMemberId, CriteriaDto criteria) {
         return queryFactory
                 .selectFrom(follow)
                 .join(follow.followingMember).fetchJoin()
@@ -83,7 +84,7 @@ public class FollowQueryRepository {
                 )
                 .offset(criteria.getOffset())
                 .limit(criteria.getAmount())
-                .fetch();
+                .fetchResults();
     }
 
     public List<Follow> findListByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {

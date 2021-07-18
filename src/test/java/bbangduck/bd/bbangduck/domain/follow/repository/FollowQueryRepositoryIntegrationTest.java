@@ -6,6 +6,7 @@ import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import com.querydsl.core.QueryResults;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,7 +72,8 @@ class FollowQueryRepositoryIntegrationTest extends BaseTest {
 
         //when
         System.out.println("==========================================================================================");
-        List<Follow> findFollows1 = followQueryRepository.findListByFollowingMemberId(followingMember1.getId(), new CriteriaDto());
+        QueryResults<Follow> followQueryResults = followQueryRepository.findListByFollowingMemberId(followingMember1.getId(), new CriteriaDto());
+        List<Follow> findFollows1 = followQueryResults.getResults();
         System.out.println("==========================================================================================");
 
         //then
