@@ -99,7 +99,7 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public List<Follow> getTwoWayFollowsByMemberId(Long memberId, CriteriaDto criteria) {
+    public QueryResults<Follow> getTwoWayFollowsByMemberId(Long memberId, CriteriaDto criteria) {
         return followQueryRepository.findTwoWayFollowListByFollowingMemberId(memberId, criteria);
     }
 }

@@ -72,9 +72,17 @@ public class FollowApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<FollowMemberResponseDto> getTwoWayFollowMemberList(Long memberId, CriteriaDto criteria) {
+    public PaginationResultResponseDto<FollowMemberResponseDto> getTwoWayFollowMemberList(Long memberId, CriteriaDto criteria) {
         memberService.getMember(memberId);
-        List<Follow> findFollows = followService.getTwoWayFollowsByMemberId(memberId, criteria);
-        return findFollows.stream().map(follow -> FollowMemberResponseDto.convert(follow.getFollowedMember())).collect(Collectors.toList());
+        QueryResults<Follow> followQueryResults = followService.getTwoWayFollowsByMemberId(memberId, criteria);
+        List<Member> twoWayFollowMembers = followQueryResults.getResults().stream()
+                .map(Follow::getFollowedMember).collect(Collectors.toList());
+
+        PaginationResultResponseDto<Member> resultResponseDto = new PaginationResultResponseDto<>(twoWayFollowMembers,
+                criteria.getPageNum(),
+                criteria.getAmount(),
+                followQueryResults.getTotal());
+
+        return resultResponseDto.convert(FollowMemberResponseDto::convert);
     }
 }
