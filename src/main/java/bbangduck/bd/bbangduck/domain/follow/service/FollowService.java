@@ -83,7 +83,7 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public List<Follow> getFollowsByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
+    public QueryResults<Follow> getFollowsByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
         return followQueryRepository.findListByFollowedMemberId(followedMemberId, criteria);
     }
 

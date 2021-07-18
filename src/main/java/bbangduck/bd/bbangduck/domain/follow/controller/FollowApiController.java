@@ -56,7 +56,7 @@ public class FollowApiController {
     @GetMapping("/followers")
     @PreAuthorize("hasRole('ROLE_USER')")
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
-    public List<FollowMemberResponseDto> getFollowerMemberList(
+    public PaginationResultResponseDto<FollowMemberResponseDto> getFollowerMemberList(
             @PathVariable Long memberId,
             @ModelAttribute @Valid CriteriaDto criteria,
             BindingResult bindingResult

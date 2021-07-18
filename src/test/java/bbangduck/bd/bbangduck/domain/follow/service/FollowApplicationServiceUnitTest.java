@@ -158,11 +158,15 @@ class FollowApplicationServiceUnitTest {
 
         CriteriaDto criteriaDto = new CriteriaDto();
 
+        QueryResults<Follow> followedQueryResults = new QueryResults<>(followedList, (long) criteriaDto.getAmount(), (long) criteriaDto.getOffset(), followedList.size());
+
         given(memberService.getMember(followedMember.getId())).willReturn(followedMember);
-        given(followService.getFollowsByFollowedMemberId(followedMember.getId(), criteriaDto)).willReturn(followedList);
+        given(followService.getFollowsByFollowedMemberId(followedMember.getId(), criteriaDto)).willReturn(followedQueryResults);
 
         //when
-        List<FollowMemberResponseDto> followerMemberList = followApplicationService.getFollowerMemberList(followedMember.getId(), criteriaDto);
+//        List<FollowMemberResponseDto> followerMemberList = followApplicationService.getFollowerMemberList(followedMember.getId(), criteriaDto);
+        PaginationResultResponseDto<FollowMemberResponseDto> resultResponseDto = followApplicationService.getFollowerMemberList(followedMember.getId(), criteriaDto);
+        List<FollowMemberResponseDto> followerMemberList = resultResponseDto.getContents();
 
         //then
         then(memberService).should(times(1)).getMember(followedMember.getId());

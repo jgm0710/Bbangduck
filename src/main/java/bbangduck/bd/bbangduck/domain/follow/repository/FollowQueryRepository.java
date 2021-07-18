@@ -87,7 +87,7 @@ public class FollowQueryRepository {
                 .fetchResults();
     }
 
-    public List<Follow> findListByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
+    public QueryResults<Follow> findListByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
         return queryFactory
                 .selectFrom(follow)
                 .join(follow.followingMember).fetchJoin()
@@ -97,7 +97,7 @@ public class FollowQueryRepository {
                 )
                 .offset(criteria.getOffset())
                 .limit(criteria.getAmount())
-                .fetch();
+                .fetchResults();
     }
 
     public List<Follow> findTwoWayFollowListByFollowingMemberId(Long followingMemberId, CriteriaDto criteria) {

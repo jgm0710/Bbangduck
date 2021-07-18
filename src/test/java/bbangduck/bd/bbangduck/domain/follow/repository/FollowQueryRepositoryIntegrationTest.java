@@ -127,7 +127,8 @@ class FollowQueryRepositoryIntegrationTest extends BaseTest {
 
         //when
         System.out.println("==========================================================================================");
-        List<Follow> findFollows1 = followQueryRepository.findListByFollowedMemberId(followedMember1.getId(), new CriteriaDto());
+        QueryResults<Follow> followQueryResults = followQueryRepository.findListByFollowedMemberId(followedMember1.getId(), new CriteriaDto());
+        List<Follow> findFollows1 =  followQueryResults.getResults();
         System.out.println("==========================================================================================");
 
         //then

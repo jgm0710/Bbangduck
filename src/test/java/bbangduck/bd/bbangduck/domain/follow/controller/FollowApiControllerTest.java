@@ -500,9 +500,10 @@ class FollowApiControllerTest extends BaseControllerTest {
             followedList.add(follow);
         }
 
+        QueryResults<Follow> followQueryResults = new QueryResults<>(followedList, 1L, 1L, 1);
 
         given(memberRepository.findById(followedMember.getId())).willReturn(Optional.of(followedMember));
-        given(followQueryRepository.findListByFollowedMemberId(any(), any())).willReturn(followedList);
+        given(followQueryRepository.findListByFollowedMemberId(any(), any())).willReturn(followQueryResults);
 
         String accessToken = jwtTokenProvider.createToken(followedMember.getEmail(), followedMember.getRoleNameList());
         given(memberRepository.findByEmail(followedMember.getEmail())).willReturn(Optional.of(followedMember));
@@ -528,11 +529,15 @@ class FollowApiControllerTest extends BaseControllerTest {
                                 parameterWithName("amount").description("조회할 수량 기입")
                         ),
                         responseFields(
-                                fieldWithPath("[].memberId").description("해당 회원을 팔로우한 회원의 식별 ID"),
-                                fieldWithPath("[].nickname").description("해당 회원을 팔로우한 회원의 닉네임"),
-                                fieldWithPath("[].description").description("해당 회원을 팔로우한 회원의 자기소개"),
-                                fieldWithPath("[].profileImageUrl").description("해당 회원을 팔로우한 회원의 프로필 이미지 다운로드 URL"),
-                                fieldWithPath("[].profileImageThumbnailUrl").description("해당 회원을 팔로우한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL")
+                                fieldWithPath("contents").description("실제 응답 내용"),
+                                fieldWithPath("contents[].memberId").description("해당 회원을 팔로우한 회원의 식별 ID"),
+                                fieldWithPath("contents[].nickname").description("해당 회원을 팔로우한 회원의 닉네임"),
+                                fieldWithPath("contents[].description").description("해당 회원을 팔로우한 회원의 자기소개"),
+                                fieldWithPath("contents[].profileImageUrl").description("해당 회원을 팔로우한 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("contents[].profileImageThumbnailUrl").description("해당 회원을 팔로우한 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("nowPageNum").description("현재 요청된 페이지"),
+                                fieldWithPath("requestAmount").description("현재 요청된 수량"),
+                                fieldWithPath("totalResultsCount").description("조회 결과 총 개수")
                         )
                 ))
         ;
