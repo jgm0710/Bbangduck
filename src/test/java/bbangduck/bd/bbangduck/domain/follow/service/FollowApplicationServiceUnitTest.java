@@ -7,6 +7,8 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
+import com.querydsl.core.QueryResults;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -93,14 +94,17 @@ class FollowApplicationServiceUnitTest {
         CriteriaDto criteriaDto = new CriteriaDto();
 
         given(memberService.getMember(member.getId())).willReturn(member);
-        given(followService.getFollowsByFollowingMemberId(member.getId(), criteriaDto)).willReturn(follows);
+        QueryResults<Follow> followQueryResults = new QueryResults<>(follows, (long) criteriaDto.getAmount(), (long) criteriaDto.getOffset(), follows.size());
+        given(followService.getFollowsByFollowingMemberId(member.getId(), criteriaDto)).willReturn(followQueryResults);
 
         //when
-        List<FollowMemberResponseDto> followingMemberList = followApplicationService.getFollowingMemberList(member.getId(), criteriaDto);
+        PaginationResultResponseDto<FollowMemberResponseDto> resultResponseDto = followApplicationService.getFollowingMemberList(member.getId(), criteriaDto);
 
         //then
         then(memberService).should(times(1)).getMember(member.getId());
         then(followService).should(times(1)).getFollowsByFollowingMemberId(member.getId(), criteriaDto);
+
+        List<FollowMemberResponseDto> followingMemberList = resultResponseDto.getContents();
 
         followingMemberList.forEach(followMemberResponseDto -> {
             System.out.println("followMemberResponseDto = " + followMemberResponseDto);
@@ -113,6 +117,10 @@ class FollowApplicationServiceUnitTest {
             assertTrue(followedMembers.stream().anyMatch(member1 -> member1.getId().equals(followMemberResponseDto.getMemberId())),
                     "조회되는 회원의 식별 ID 중 하나는 member 가 팔로우하는 회원의 식별 ID 중 하나여야한다.");
         });
+
+        assertEquals(criteriaDto.getPageNum(),resultResponseDto.getNowPageNum());
+        assertEquals(criteriaDto.getAmount(), resultResponseDto.getRequestAmount());
+        assertEquals(follows.size(), resultResponseDto.getTotalResultsCount());
 
     }
 
@@ -150,11 +158,15 @@ class FollowApplicationServiceUnitTest {
 
         CriteriaDto criteriaDto = new CriteriaDto();
 
+        QueryResults<Follow> followedQueryResults = new QueryResults<>(followedList, (long) criteriaDto.getAmount(), (long) criteriaDto.getOffset(), followedList.size());
+
         given(memberService.getMember(followedMember.getId())).willReturn(followedMember);
-        given(followService.getFollowsByFollowedMemberId(followedMember.getId(), criteriaDto)).willReturn(followedList);
+        given(followService.getFollowsByFollowedMemberId(followedMember.getId(), criteriaDto)).willReturn(followedQueryResults);
 
         //when
-        List<FollowMemberResponseDto> followerMemberList = followApplicationService.getFollowerMemberList(followedMember.getId(), criteriaDto);
+//        List<FollowMemberResponseDto> followerMemberList = followApplicationService.getFollowerMemberList(followedMember.getId(), criteriaDto);
+        PaginationResultResponseDto<FollowMemberResponseDto> resultResponseDto = followApplicationService.getFollowerMemberList(followedMember.getId(), criteriaDto);
+        List<FollowMemberResponseDto> followerMemberList = resultResponseDto.getContents();
 
         //then
         then(memberService).should(times(1)).getMember(followedMember.getId());
@@ -215,11 +227,14 @@ class FollowApplicationServiceUnitTest {
 
         CriteriaDto criteriaDto = new CriteriaDto();
 
+        QueryResults<Follow> followQueryResults = new QueryResults<>(twoWayFollows, (long) criteriaDto.getAmount(), (long) criteriaDto.getOffset(), twoWayFollows.size());
+
         given(memberService.getMember(followingMember.getId())).willReturn(followingMember);
-        given(followService.getTwoWayFollowsByMemberId(followingMember.getId(), criteriaDto)).willReturn(twoWayFollows);
+        given(followService.getTwoWayFollowsByMemberId(followingMember.getId(), criteriaDto)).willReturn(followQueryResults);
 
         //when
-        List<FollowMemberResponseDto> twoWayFollowMemberList = followApplicationService.getTwoWayFollowMemberList(followingMember.getId(), criteriaDto);
+        PaginationResultResponseDto<FollowMemberResponseDto> resultResponseDto = followApplicationService.getTwoWayFollowMemberList(followingMember.getId(), criteriaDto);
+        List<FollowMemberResponseDto> twoWayFollowMemberList = resultResponseDto.getContents();
 
         //then
         then(memberService).should(times(1)).getMember(followingMember.getId());

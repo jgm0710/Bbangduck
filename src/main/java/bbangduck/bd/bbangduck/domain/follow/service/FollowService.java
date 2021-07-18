@@ -8,6 +8,7 @@ import bbangduck.bd.bbangduck.domain.follow.repository.FollowQueryRepository;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
+import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,12 +78,12 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public List<Follow> getFollowsByFollowingMemberId(Long followingMemberId, CriteriaDto criteria) {
+    public QueryResults<Follow> getFollowsByFollowingMemberId(Long followingMemberId, CriteriaDto criteria) {
         return followQueryRepository.findListByFollowingMemberId(followingMemberId, criteria);
     }
 
     @Transactional(readOnly = true)
-    public List<Follow> getFollowsByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
+    public QueryResults<Follow> getFollowsByFollowedMemberId(Long followedMemberId, CriteriaDto criteria) {
         return followQueryRepository.findListByFollowedMemberId(followedMemberId, criteria);
     }
 
@@ -98,7 +99,7 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public List<Follow> getTwoWayFollowsByMemberId(Long memberId, CriteriaDto criteria) {
+    public QueryResults<Follow> getTwoWayFollowsByMemberId(Long memberId, CriteriaDto criteria) {
         return followQueryRepository.findTwoWayFollowListByFollowingMemberId(memberId, criteria);
     }
 }
