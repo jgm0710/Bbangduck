@@ -1,9 +1,9 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
-import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeAnalysesResponseDto;
-import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeDetailResponseDto;
-import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeGetListResponseDto;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.*;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
@@ -51,5 +51,15 @@ public class ThemeApplicationService {
         themeService.getTheme(themeId);
         List<ThemeAnalysis> themeAnalyses = themeAnalysisService.getThemeAnalyses(themeId);
         return themeAnalyses.stream().map(ThemeAnalysesResponseDto::convert).collect(Collectors.toList());
+    }
+
+    public ThemePlayMemberListResponseDto getThemePlayMemberList(Long themeId, ThemeGetPlayMemberListDto themeGetPlayMemberListDto) {
+        themeService.getTheme(themeId);
+        List<Member> themePlayMemberList = themeService.findThemePlayMemberList(themeId, themeGetPlayMemberListDto);
+        long themePlayMembersCount = themeService.getThemePlayMembersCount(themeId);
+
+        return ThemePlayMemberListResponseDto.convert(themePlayMemberList,
+                themeGetPlayMemberListDto.getAmount(),
+                themePlayMembersCount);
     }
 }

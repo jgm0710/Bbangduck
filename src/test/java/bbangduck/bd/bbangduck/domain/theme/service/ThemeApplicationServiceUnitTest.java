@@ -1,6 +1,9 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberProfileImageResponseDto;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -9,34 +12,33 @@ import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.*;
+import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeImage;
-import org.junit.jupiter.api.BeforeEach;
+import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeGetMemberListSortCondition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
-class ThemeApplicationServiceTest {
+class ThemeApplicationServiceUnitTest {
 
-    ThemeApplicationService themeMockApplicationService;
 
     ThemeService themeMockService = mock(ThemeService.class);
-
     ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
 
-    @BeforeEach
-    public void setThemeApplicationService() {
-        themeMockApplicationService = new ThemeApplicationService(themeMockService, themeAnalysisMockService);
-    }
+    ThemeApplicationService themeMockApplicationService = new ThemeApplicationService(themeMockService, themeAnalysisMockService);
 
     @Test
     @DisplayName("테마 조회")
@@ -159,6 +161,59 @@ class ThemeApplicationServiceTest {
                 }
         );
 
+    }
+
+    @Test
+    @DisplayName("테마를 플레이한 회원 목록 조회")
+    public void getThemePlayMemberList() {
+        //given
+        Long themeId = 1L;
+        List<Member> themePlayMemberList = new ArrayList<>();
+        for (long i = 0; i < 4; i++) {
+            Member member = Member.builder()
+                    .id(i)
+                    .nickname("member" + i)
+                    .build();
+
+            long randomLong = new Random().nextInt(100);
+            MemberProfileImage profileImage = MemberProfileImage.builder()
+                    .id(i)
+                    .fileStorageId(randomLong)
+                    .fileName(UUID.randomUUID() + "fileName" + randomLong)
+                    .build();
+
+            member.setProfileImage(profileImage);
+
+            themePlayMemberList.add(member);
+        }
+
+        ThemeGetPlayMemberListDto themeGetPlayMemberListDto = new ThemeGetPlayMemberListDto(10, ThemeGetMemberListSortCondition.REVIEW_LIKE_COUNT_DESC);
+
+        given(themeMockService.findThemePlayMemberList(themeId, themeGetPlayMemberListDto)).willReturn(themePlayMemberList);
+        given(themeMockService.getThemePlayMembersCount(themeId)).willReturn(4L);
+
+        //when
+        ThemePlayMemberListResponseDto themePlayMemberListResponseDto = themeMockApplicationService.getThemePlayMemberList(themeId, themeGetPlayMemberListDto);
+
+        //then
+        then(themeMockService).should(times(1)).getTheme(themeId);
+        then(themeMockService).should(times(1)).findThemePlayMemberList(themeId, themeGetPlayMemberListDto);
+        then(themeMockService).should(times(1)).getThemePlayMembersCount(themeId);
+
+        List<ThemePlayMemberSimpleInfoResponseDto> membersInfo = themePlayMemberListResponseDto.getMembersInfo();
+
+        membersInfo.forEach(themePlayMemberSimpleInfoResponseDto -> {
+            assertNotNull(themePlayMemberSimpleInfoResponseDto.getMemberId());
+            assertNotNull(themePlayMemberSimpleInfoResponseDto.getNickname());
+            MemberProfileImageResponseDto profileImageResponseDto = themePlayMemberSimpleInfoResponseDto.getProfileImage();
+            assertNotNull(profileImageResponseDto);
+            assertNotNull(profileImageResponseDto.getProfileImageId());
+            assertNotNull(profileImageResponseDto.getProfileImageUrl());
+            assertNotNull(profileImageResponseDto.getProfileImageThumbnailUrl());
+        });
+
+        assertEquals(themeGetPlayMemberListDto.getAmount(), themePlayMemberListResponseDto.getRequestAmount());
+        assertEquals(4L, themePlayMemberListResponseDto.getThemePlayMembersCount());
     }
 
 }

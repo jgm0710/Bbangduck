@@ -3,16 +3,24 @@ package bbangduck.bd.bbangduck.domain.theme.repository;
 import bbangduck.bd.bbangduck.common.BaseTest;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
+import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeGenre;
+import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeGetMemberListSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import com.querydsl.core.QueryResults;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ThemeQueryRepositoryTest extends BaseTest {
 
@@ -34,6 +45,20 @@ class ThemeQueryRepositoryTest extends BaseTest {
 
     @Autowired
     ThemeQueryRepository themeQueryRepository;
+
+    @Autowired
+    ReviewRepository reviewRepository;
+
+    @Autowired
+    MemberRepository memberRepository;
+
+    @AfterEach
+    void tearDown() {
+        reviewRepository.deleteAll();
+        memberRepository.deleteAll();
+        themeRepository.deleteAll();
+        genreRepository.deleteAll();
+    }
 
     /**
      * 쿼리 나가는 부분이랑, 결과 눈으로 확인함
@@ -177,6 +202,100 @@ class ThemeQueryRepositoryTest extends BaseTest {
             default:
                 return Activity.VERY_ACTIVITY;
         }
+    }
+
+    @Test
+    @DisplayName("테마를 플레이한 회원 수 조회")
+    public void getThemePlayMembersCount() {
+        //given
+        Theme theme = Theme.builder().build();
+
+        themeRepository.save(theme);
+
+        //탈퇴한 회원
+        Member member1 = Member.builder()
+                .nickname("member1")
+                .roles(Set.of(MemberRole.WITHDRAWAL))
+                .build();
+
+        Member member2 = Member.builder()
+                .nickname("member2")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+        Member member3 = Member.builder()
+                .nickname("member3")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        Member member4 = Member.builder()
+                .nickname("member4")
+                .roles(Set.of(MemberRole.USER))
+                .build();
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        memberRepository.save(member3);
+        memberRepository.save(member4);
+
+        Review review1 = Review.builder()
+                .member(member1)
+                .theme(theme)
+                .likeCount(1)
+                .deleteYN(false)
+                .build();
+
+        Review review2 = Review.builder()
+                .member(member2)
+                .theme(theme)
+                .likeCount(2)
+                .deleteYN(false)
+                .build();
+
+        Review review3 = Review.builder()
+                .member(member2)
+                .theme(theme)
+                .likeCount(4)
+                .deleteYN(false)
+                .build();
+
+        Review review4 = Review.builder()
+                .member(member3)
+                .theme(theme)
+                .likeCount(3)
+                .deleteYN(false)
+                .build();
+
+        Review review5 = Review.builder()
+                .member(member3)
+                .theme(theme)
+                .likeCount(5)
+                .deleteYN(false)
+                .build();
+
+        //삭제된 리뷰
+        Review review6 = Review.builder()
+                .member(member4)
+                .theme(theme)
+                .likeCount(5)
+                .deleteYN(true)
+                .build();
+
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+        reviewRepository.save(review3);
+        reviewRepository.save(review4);
+        reviewRepository.save(review5);
+        reviewRepository.save(review6);
+
+        ThemeGetPlayMemberListDto themeGetPlayMemberListDto = new ThemeGetPlayMemberListDto(2, ThemeGetMemberListSortCondition.REVIEW_LIKE_COUNT_DESC);
+
+        //when
+        System.out.println("=================================================================================");
+        long themePlayMembersCount = themeQueryRepository.getThemePlayMembersCount(theme.getId());
+        System.out.println("=================================================================================");
+
+        //then
+        assertEquals(2, themePlayMembersCount, "리뷰를 작성한 회원 중 한명이 탈퇴한 회원했고, 한명은 리뷰를 삭제했기 때문에 테마를 플레이한 회원의 수는 총 2명이다.");
     }
 
 }

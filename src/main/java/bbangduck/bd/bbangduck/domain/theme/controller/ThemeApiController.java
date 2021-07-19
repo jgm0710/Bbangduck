@@ -1,20 +1,22 @@
 package bbangduck.bd.bbangduck.domain.theme.controller;
 
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.request.ThemeGetListRequestDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.request.ThemeGetPlayMemberListRequestDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeAnalysesResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeDetailResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeGetListResponseDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemePlayMemberListResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeApplicationService;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -37,8 +39,7 @@ public class ThemeApiController {
     public ResponseEntity<PaginationResultResponseDto<ThemeGetListResponseDto>> getThemeList(
             @ModelAttribute @Valid CriteriaDto criteriaDto,
             BindingResult bindingResult,
-            @ModelAttribute @Valid ThemeGetListRequestDto requestDto,
-            HttpServletRequest request
+            @ModelAttribute @Valid ThemeGetListRequestDto requestDto
     ) {
         hasErrorsThrow(ResponseStatus.GET_THEME_LIST_NOT_VALID, bindingResult);
 
@@ -62,6 +63,17 @@ public class ThemeApiController {
     ) {
         List<ThemeAnalysesResponseDto> themeAnalyses = themeApplicationService.getThemeAnalyses(themeId);
         return ResponseEntity.ok(themeAnalyses);
+    }
+
+    @GetMapping("{themeId}/members")
+    @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
+    public ThemePlayMemberListResponseDto getThemePlayMemberList(
+            @PathVariable Long themeId,
+            @Valid ThemeGetPlayMemberListRequestDto requestDto,
+            BindingResult bindingResult
+    ) {
+        hasErrorsThrow(ResponseStatus.GET_THEME_PLAY_MEMBER_LIST_NOT_VALID, bindingResult);
+        return themeApplicationService.getThemePlayMemberList(themeId, requestDto.toServiceDto());
     }
 
     // TODO: 2021-06-28 테마 검색 구현

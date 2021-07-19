@@ -10,6 +10,7 @@ import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.global.common.BaseEntityDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -21,12 +22,13 @@ import java.util.stream.Collectors;
 
 /**
  * 작성자 : 정구민 <br><br>
- *
+ * <p>
  * 회원 Entity <br>
  * Database 의 회원 테이블과 연결
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class Member extends BaseEntityDateTime {
 
     @Id
@@ -58,19 +60,6 @@ public class Member extends BaseEntityDateTime {
     @CollectionTable(name = "member_role", joinColumns = @JoinColumn(name = "member_id"))
     @Enumerated(EnumType.STRING)
     private Set<MemberRole> roles;
-
-
-//.id()
-//.email()
-//.password()
-//.profileImage()
-//.socialAccountList()
-//.nickname()
-//.simpleIntroduction()
-//.reviewCount()
-//.refreshInfo()
-//.roles()
-
 
     @Builder
     public Member(Long id, String email, String password, String nickname, String description, Set<MemberRole> roles, MemberRoomEscapeRecodesOpenStatus roomEscapeRecodesOpenStatus, RefreshInfo refreshInfo) {

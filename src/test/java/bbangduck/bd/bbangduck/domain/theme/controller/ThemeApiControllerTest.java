@@ -2,6 +2,8 @@ package bbangduck.bd.bbangduck.domain.theme.controller;
 
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
 import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -9,9 +11,11 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
 import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.request.ThemeGetPlayMemberListRequestDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeImage;
+import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeGetMemberListSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeRatingFilteringType;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
@@ -450,6 +454,76 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.MANIPULATE_DELETED_THEME.getStatus()))
                 .andExpect(jsonPath("message").value(ResponseStatus.MANIPULATE_DELETED_THEME.getMessage()));
 
+    }
+
+    @Test
+    @DisplayName("테마 플레이 회원 목록 조회")
+    public void getThemePlayMemberList() throws Exception {
+        //given
+        Long themeId = 1L;
+        Theme theme = Theme.builder()
+                .id(themeId)
+                .build();
+
+        List<Member> themePlayMemberList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            long randomLong = new Random().nextInt(50);
+            Member member = Member.builder()
+                    .id(randomLong)
+                    .nickname("member" + randomLong)
+                    .build();
+
+            long randomLong2 = new Random().nextInt(50);
+            MemberProfileImage profileImage = MemberProfileImage.builder()
+                    .id(randomLong)
+                    .fileStorageId(randomLong2)
+                    .fileName(UUID.randomUUID() + "fileName" + randomLong2)
+                    .build();
+            member.setProfileImage(profileImage);
+
+            themePlayMemberList.add(member);
+        }
+
+        ThemeGetPlayMemberListRequestDto themeGetPlayMemberListRequestDto = ThemeGetPlayMemberListRequestDto.builder()
+                .amount(5)
+                .sortCondition(ThemeGetMemberListSortCondition.REVIEW_LIKE_COUNT_DESC)
+                .build();
+
+        given(themeRepository.findById(themeId)).willReturn(Optional.of(theme));
+        given(themeQueryRepository.findThemePlayMemberList(any(), any())).willReturn(themePlayMemberList);
+        given(themeQueryRepository.getThemePlayMembersCount(themeId)).willReturn(74L);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/api/themes/{themeId}/members", themeId)
+                        .param("amount", String.valueOf(themeGetPlayMemberListRequestDto.getAmount()))
+                        .param("sortCondition", String.valueOf(themeGetPlayMemberListRequestDto.getSortCondition()))
+        ).andDo(print());
+
+        //then
+        perform
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "get-theme-play-member-list-success",
+                        requestParameters(
+                                parameterWithName("amount").description("몇 명의 회원을 조회할 것인지 기입 +\n" +
+                                        "기입하지 않을 경우 기본 3"),
+                                parameterWithName("sortCondition").description("회원 목록 조회 시 어떤 기준으로 조회할 것인지 기입 +\n" +
+                                        "기본은 리뷰에 좋아요를 많이 받은 회원 순으로 내림차순 정렬 +\n" +
+                                        ThemeGetMemberListSortCondition.getNameList())
+                        ),
+                        responseFields(
+                                fieldWithPath("membersInfo").description("조회된 회원 목록의 간단한 정보"),
+                                fieldWithPath("membersInfo[].memberId").description("조회된 회원의 식별 ID"),
+                                fieldWithPath("membersInfo[].nickname").description("조회된 회원의 닉네임"),
+                                fieldWithPath("membersInfo[].profileImage.profileImageId").description("조회된 회원의 프로필 이미지 식별 ID"),
+                                fieldWithPath("membersInfo[].profileImage.profileImageUrl").description("조회된 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("membersInfo[].profileImage.profileImageThumbnailUrl").description("조회된 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("requestAmount").description("요청된 회원 목록 수량"),
+                                fieldWithPath("themePlayMembersCount").description("테마를 플레이한 전체 회원 수")
+                        )
+                ))
+        ;
     }
 
 }

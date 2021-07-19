@@ -1,11 +1,15 @@
 package bbangduck.bd.bbangduck.domain.theme.repository;
 
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeGetMemberListSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeRatingFilteringType;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
@@ -22,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static bbangduck.bd.bbangduck.domain.genre.entity.QGenre.genre;
+import static bbangduck.bd.bbangduck.domain.member.entity.QMember.member;
+import static bbangduck.bd.bbangduck.domain.review.entity.QReview.review;
 import static bbangduck.bd.bbangduck.domain.theme.entity.QTheme.theme;
 import static bbangduck.bd.bbangduck.domain.theme.entity.QThemeGenre.themeGenre;
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsString;
@@ -54,14 +60,14 @@ public class ThemeQueryRepository {
                         theme.deleteYN.eq(false)
                 )
                 .orderBy(
-                        sortConditionEq(themeGetListDto.getSortCondition())
+                        themeSortConditionEq(themeGetListDto.getSortCondition())
                 )
                 .offset(criteriaDto.getOffset())
                 .limit(criteriaDto.getAmount())
                 .fetchResults();
     }
 
-    private OrderSpecifier<?>[] sortConditionEq(ThemeSortCondition sortCondition) {
+    private OrderSpecifier<?>[] themeSortConditionEq(ThemeSortCondition sortCondition) {
         List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 
         if (isNotNull(sortCondition)) {
@@ -131,5 +137,49 @@ public class ThemeQueryRepository {
 
     private BooleanExpression genreCodeEq(String genreCode) {
         return existsString(genreCode) ? genre.code.eq(genreCode) : null;
+    }
+    
+    public List<Member> findThemePlayMemberList(Long themeId, ThemeGetPlayMemberListDto themeGetPlayMemberListDto) {
+        return queryFactory
+                .select(member)
+                .from(review)
+                .join(member).on(review.member.eq(member))
+                .join(theme).on(review.theme.eq(theme))
+                .where(
+                        theme.id.eq(themeId),
+                        review.deleteYN.eq(false),
+                        member.roles.contains(MemberRole.USER)
+                )
+                .orderBy(
+                        themePlayMemberSortConditionEq(themeGetPlayMemberListDto.getSortCondition())
+                )
+                .limit(themeGetPlayMemberListDto.getAmount() * 5L)
+                .fetch();
+    }
+
+    public long getThemePlayMembersCount(Long themeId) {
+        return queryFactory
+                .select(member).distinct()
+                .from(member)
+                .join(review).on(review.member.eq(member))
+                .where(
+                        review.theme.id.eq(themeId),
+                        review.deleteYN.eq(false),
+                        member.roles.contains(MemberRole.USER)
+                )
+                .fetchCount();
+    }
+
+    private OrderSpecifier<?> themePlayMemberSortConditionEq(ThemeGetMemberListSortCondition sortCondition) {
+        switch (sortCondition) {
+            case LATEST:
+                return review.registerTimes.desc();
+            case OLDEST:
+                return review.registerTimes.asc();
+            case REVIEW_LIKE_COUNT_ASC:
+                return review.likeCount.asc();
+            default:
+                return review.likeCount.desc();
+        }
     }
 }
