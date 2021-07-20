@@ -1,5 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
+import bbangduck.bd.bbangduck.api.document.utils.DocUrl;
+import bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
@@ -29,6 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.*;
+import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.*;
+import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.generateLinkCode;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -81,7 +86,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("clearYN").description("테마 클리어 여부를 기입"),
                                 fieldWithPath("clearTime").description("테마를 클리어하는데 걸린 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("테마를 클리어하는데 사용한 힌트 개수 기입 +\n" +
-                                        ReviewHintUsageCount.getNameList()),
+                                        generateLinkCode(REVIEW_HINT_USAGE_COUNT)),
                                 fieldWithPath("rating").description("테마에 대한 평점 기입 +\n" +
                                         "테마에 대한 평점은 1~5 점 사이의 점수로만 평가가 가능합니다."),
                                 fieldWithPath("friendIds").description("테마를 함께 플레이한 친구를 등록하기 위해 친구 회원 식별 ID 목록 기입")
@@ -99,7 +104,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("themeInfo.themeImageUrl").description("리뷰가 생성된 테마의 이미지 다운로드 URL"),
                                 fieldWithPath("themeInfo.themeImageThumbnailUrl").description("리뷰가 생성된 테마의 이미지 썸네일 이미지 다운로드 URL"),
                                 fieldWithPath("reviewType").description("리뷰의 Type +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("reviewRecodeNumber").description("생성된 리뷰의 기록 번호"),
                                 fieldWithPath("themeClearYN").description("테마 클리어 여부"),
                                 fieldWithPath("themeClearTime").description("테마를 클리어하는데 걸린 시간"),
@@ -584,7 +589,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
                                         "한 번에 조회 가능한 수량은 1~200 개 입니다. +\n" +
                                         "해당 수량은 추후 변경 될 수 있습니다."),
                                 parameterWithName("sortCondition").description("조회 시 정렬 조건 기입 +\n" +
-                                        ReviewSortCondition.getNameList())
+                                        generateLinkCode(REVIEW_SORT_CONDITION))
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("contents").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
