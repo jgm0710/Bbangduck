@@ -1,10 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.enumerate;
 
+import bbangduck.bd.bbangduck.global.common.EnumType;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 작성자 : Gumin Jeong
@@ -14,7 +11,7 @@ import java.util.stream.Stream;
  * 리뷰에 등록할 힌트 사용 개수를 표현할 Enum
  */
 @RequiredArgsConstructor
-public enum ReviewHintUsageCount {
+public enum ReviewHintUsageCount implements EnumType {
     NONE("힌트를 사용하지 않음"),
     ONE("힌트 1개 사용"),
     TWO("힌트 2개 사용"),
@@ -23,8 +20,8 @@ public enum ReviewHintUsageCount {
 
     public final String description;
 
-    public static List<String> getNameList() {
-        return Stream.of(ReviewHintUsageCount.values()).map(Enum::name).collect(Collectors.toList());
+    @Override
+    public String getDescription() {
+        return description;
     }
-
 }

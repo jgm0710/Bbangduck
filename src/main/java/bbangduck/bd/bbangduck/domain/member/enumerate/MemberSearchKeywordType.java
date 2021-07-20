@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.enumerate;
 
-import lombok.Getter;
+import bbangduck.bd.bbangduck.global.common.EnumType;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -14,14 +14,14 @@ import java.util.stream.Stream;
  * @author jgm
  */
 @RequiredArgsConstructor
-@Getter
-public enum MemberSearchKeywordType {
+public enum MemberSearchKeywordType implements EnumType {
     EMAIL("이메일로 회원 검색"),
     NICKNAME("닉네임으로 회원 검색");
 
     private final String description;
 
-    public static List<String> getNameList() {
-        return Stream.of(MemberSearchKeywordType.values()).map(Enum::name).collect(Collectors.toList());
+    @Override
+    public String getDescription() {
+        return description;
     }
 }

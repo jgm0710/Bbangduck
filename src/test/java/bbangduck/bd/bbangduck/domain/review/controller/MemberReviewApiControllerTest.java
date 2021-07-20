@@ -1,5 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
+import bbangduck.bd.bbangduck.api.document.utils.DocUrl;
+import bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
@@ -17,6 +19,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.REVIEW_SEARCH_TYPE;
+import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -77,7 +81,7 @@ class MemberReviewApiControllerTest extends BaseJGMApiControllerTest {
                                         "해당 수량은 추후 변경 될 수 있습니다."),
                                 parameterWithName("searchType").description("조회 조건 입력 +\n" +
                                         "전체 조회, 클리어 성공한 리뷰 조회, 클리어 실패한 리뷰 조회를 지정하여 검색 +\n" +
-                                        ReviewSearchType.getNameList())
+                                        generateLinkCode(REVIEW_SEARCH_TYPE))
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("contents").description("조회된 리뷰 목록에 대한 실제 응답 Data +\n" +
