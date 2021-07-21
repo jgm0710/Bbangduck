@@ -22,13 +22,13 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS;
-import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.MEMBER_SEARCH_KEYWORD_TYPE;
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.*;
 import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.generateLinkCode;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -813,41 +813,29 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("memberId").isNumber())
-                .andExpect(jsonPath("profileImage.profileImageId").isNumber())
-                .andExpect(jsonPath("profileImage.profileImageUrl").isString())
-                .andExpect(jsonPath("profileImage.profileImageThumbnailUrl").isString())
-                .andExpect(jsonPath("nickname").isString())
-                .andExpect(jsonPath("description").isString())
-                .andExpect(jsonPath("roomEscapeStatus.challengesCount").isNumber())
-                .andExpect(jsonPath("roomEscapeStatus.successCount").isNumber())
-                .andExpect(jsonPath("roomEscapeStatus.failCount").isNumber())
-                .andExpect(jsonPath("roomEscapeRecodesOpenStatus").isString())
-                .andExpect(jsonPath("playInclinations[0].genre.genreCode").isString())
-                .andExpect(jsonPath("playInclinations[0].genre.genreName").isString())
-                .andExpect(jsonPath("playInclinations[0].playCount").isNumber())
                 .andDo(document(
                         "get-different-member-profile-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("memberId").description("조회된 회원의 식별 ID"),
-                                fieldWithPath("profileImage.profileImageId").description("조회된 회원에게 등록된 프로필 이미지의 식별 ID \n" +
+                                fieldWithPath("memberId").type(NUMBER).description("조회된 회원의 식별 ID"),
+                                fieldWithPath("profileImage.profileImageId").type(NUMBER).description("조회된 회원에게 등록된 프로필 이미지의 식별 ID \n" +
                                         "프로필 이미지 삭제 요청 등에 사용될 수 있음"),
-                                fieldWithPath("profileImage.profileImageUrl").description("조회된 회원에게 등록된 프로필 이미지 다운로드 URL"),
-                                fieldWithPath("profileImage.profileImageThumbnailUrl").description("조회된 회원에게 등록된 프로필 이미지의 썸네일 이미지 다운로드 URL"),
-                                fieldWithPath("nickname").description("조회된 회원의 닉네임"),
-                                fieldWithPath("description").description("조회된 회원의 자기소개"),
-                                fieldWithPath("roomEscapeStatus.challengesCount").description("조회된 회원이 테마에 도전한 총 횟수 +\n" +
+                                fieldWithPath("profileImage.profileImageUrl").type(STRING).description("조회된 회원에게 등록된 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("profileImage.profileImageThumbnailUrl").type(STRING).description("조회된 회원에게 등록된 프로필 이미지의 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("nickname").type(STRING).description("조회된 회원의 닉네임"),
+                                fieldWithPath("description").type(STRING).description("조회된 회원의 자기소개"),
+                                fieldWithPath("roomEscapeStatus.challengesCount").type(NUMBER).description("조회된 회원이 테마에 도전한 총 횟수 +\n" +
                                         "(리뷰를 작성한 횟수라고 생각해도 무방)"),
-                                fieldWithPath("roomEscapeStatus.successCount").description("조회된 회원이 테마 클리어에 성공한 횟수"),
-                                fieldWithPath("roomEscapeStatus.failCount").description("조회된 회원이 테마 클리어에 실패한 횟수"),
-                                fieldWithPath("roomEscapeRecodesOpenStatus").description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
+                                fieldWithPath("roomEscapeStatus.successCount").type(NUMBER).description("조회된 회원이 테마 클리어에 성공한 횟수"),
+                                fieldWithPath("roomEscapeStatus.failCount").type(NUMBER).description("조회된 회원이 테마 클리어에 실패한 횟수"),
+                                fieldWithPath("roomEscapeRecodesOpenStatus").type(STRING).description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
                                         generateLinkCode(MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS)),
-                                fieldWithPath("playInclinations[0].genre.genreCode").description("조회된 회원의 플레이 성향에 등록된 장르의 코드값"),
-                                fieldWithPath("playInclinations[0].genre.genreName").description("조회된 회원의 플레이 성향에 등록된 장르의 이름"),
-                                fieldWithPath("playInclinations[0].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
+                                fieldWithPath("playInclinations").type(ARRAY).description("조회된 회원의 플레이 성향"),
+                                fieldWithPath("playInclinations[].genre").type(STRING).description("조회된 회원의 플레이 성향에 등록된 장르 +\n" +
+                                        generateLinkCode(GENRE)),
+                                fieldWithPath("playInclinations[].playCount").type(NUMBER).description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
                                 fieldWithPath("myProfile").description("자신의 프로필을 조회했는지 여부")
                         )
                 ))
@@ -885,24 +873,6 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("memberId").isNumber())
-                .andExpect(jsonPath("profileImage.profileImageId").isNumber())
-                .andExpect(jsonPath("profileImage.profileImageUrl").isString())
-                .andExpect(jsonPath("profileImage.profileImageThumbnailUrl").isString())
-                .andExpect(jsonPath("nickname").isString())
-                .andExpect(jsonPath("description").isString())
-                .andExpect(jsonPath("roomEscapeStatus.challengesCount").isNumber())
-                .andExpect(jsonPath("roomEscapeStatus.successCount").isNumber())
-                .andExpect(jsonPath("roomEscapeStatus.failCount").isNumber())
-                .andExpect(jsonPath("roomEscapeRecodesOpenStatus").isString())
-                .andExpect(jsonPath("playInclinations[0].genre.genreCode").isString())
-                .andExpect(jsonPath("playInclinations[0].genre.genreName").isString())
-                .andExpect(jsonPath("playInclinations[0].playCount").isNumber())
-                .andExpect(jsonPath("email").isString())
-                .andExpect(jsonPath("socialAccounts[0].socialId").isString())
-                .andExpect(jsonPath("socialAccounts[0].socialType").isString())
-                .andExpect(jsonPath("registerTimes").isString())
-                .andExpect(jsonPath("updateTimes").isString())
                 .andDo(document(
                         "get-my-profile-success",
                         requestHeaders(
@@ -922,9 +892,10 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("roomEscapeStatus.failCount").description("조회된 회원이 테마 클리어에 실패한 횟수"),
                                 fieldWithPath("roomEscapeRecodesOpenStatus").description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
                                         generateLinkCode(MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS)),
-                                fieldWithPath("playInclinations[0].genre.genreCode").description("조회된 회원의 플레이 성향에 등록된 장르의 코드값"),
-                                fieldWithPath("playInclinations[0].genre.genreName").description("조회된 회원의 플레이 성향에 등록된 장르의 이름"),
-                                fieldWithPath("playInclinations[0].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
+                                fieldWithPath("playInclinations").description("조회된 회원의 플레이 성향"),
+                                fieldWithPath("playInclinations[].genre").description("조회된 회원의 플레이 성향에 등록된 장르 +\n" +
+                                        generateLinkCode(GENRE)),
+                                fieldWithPath("playInclinations[].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
                                 fieldWithPath("email").description("조회된 회원의 Email"),
                                 fieldWithPath("socialAccounts[0].socialId").description("조회된 회원에 등록된 소셜 계정의 (여러개 일 수 있습니다.) 식별 ID (소셜 매체에서 응답된 회원 식별 ID)"),
                                 fieldWithPath("socialAccounts[0].socialType").description("조회된 회원에 등록된 소셜 계정의 (여러개 일 수 있습니다.) 타입 (어떤 소셜 매체를 통해 등록되었는지)"),
@@ -1100,21 +1071,17 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("playInclinations").isArray())
-                .andExpect(jsonPath("playInclinations[0].genre.genreCode").isString())
-                .andExpect(jsonPath("playInclinations[0].genre.genreName").isString())
-                .andExpect(jsonPath("playInclinations[0].playCount").isNumber())
-                .andExpect(jsonPath("totalThemeEvaluatesCount").isNumber())
                 .andDo(document(
                         "get-member-play-inclination-success",
                         requestHeaders(
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         responseFields(
-                                fieldWithPath("playInclinations[0].genre.genreCode").description("회원의 플레이 성향에 등록된 장르의 코드값"),
-                                fieldWithPath("playInclinations[0].genre.genreName").description("회원의 플레이 성향에 등록된 장르의 이름"),
-                                fieldWithPath("playInclinations[0].playCount").description("회원이 플레이 성향에 등록된 장르를 플레이한 횟수"),
-                                fieldWithPath("totalThemeEvaluatesCount").description("회원이 테마를 평가한 총 횟수")
+                                fieldWithPath("playInclinations").type(ARRAY).description("회원의 플레이 성향"),
+                                fieldWithPath("playInclinations[].genre").type(STRING).description("회원의 플레이 성향에 등록된 장르 +\n" +
+                                        generateLinkCode(GENRE)),
+                                fieldWithPath("playInclinations[].playCount").type(NUMBER).description("회원이 플레이 성향에 등록된 장르를 플레이한 횟수"),
+                                fieldWithPath("totalThemeEvaluatesCount").type(NUMBER).description("회원이 테마를 평가한 총 횟수")
                         )
                 ))
         ;
@@ -1175,20 +1142,21 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                                         "정확한 이메일, 닉네임을 지정해야 검색할 수 있습니다.")
                         ),
                         responseFields(
-                                fieldWithPath("memberId").description("검색된 회원의 식별 ID"),
-                                fieldWithPath("profileImage.profileImageId").description("검색된 회원에 등록된 프로필 이미지의 식별 ID"),
-                                fieldWithPath("profileImage.profileImageUrl").description("검색된 회원에 등록된 프로필 이미지 다운로드 URL"),
-                                fieldWithPath("profileImage.profileImageThumbnailUrl").description("검색된 회원에 등록횐 프로필 이미지의 썸네일 이미지 다운로드 URL"),
-                                fieldWithPath("nickname").description("검색된 회원의 닉네임"),
-                                fieldWithPath("description").description("검색된 회원의 자기소개"),
-                                fieldWithPath("roomEscapeStatus.challengesCount").description("검색된 회원이 테마에 도전한 총 횟수"),
-                                fieldWithPath("roomEscapeStatus.successCount").description("검색된 회원이 테마 클리어에 성공한 총 횟수"),
-                                fieldWithPath("roomEscapeStatus.failCount").description("검색된 회원이 테마 클리어에 실패한 총 횟수"),
-                                fieldWithPath("roomEscapeRecodesOpenStatus").description("검색된 회원의 방탈출 공개 상태"),
-                                fieldWithPath("playInclinations[0].genre.genreCode").description("검색된 회원이 플레이한 장르의 코드"),
-                                fieldWithPath("playInclinations[0].genre.genreName").description("검색된 회원이 플레이한 장르의 이름"),
-                                fieldWithPath("playInclinations[0].playCount").description("검색된 회원이 해당 장르 플레이한 횟수"),
-                                fieldWithPath("myProfile").description("자신의 프로필을 조회했는지 여부 +\n" +
+                                fieldWithPath("memberId").type(NUMBER).description("검색된 회원의 식별 ID"),
+                                fieldWithPath("profileImage.profileImageId").type(NUMBER).description("검색된 회원에 등록된 프로필 이미지의 식별 ID"),
+                                fieldWithPath("profileImage.profileImageUrl").type(STRING).description("검색된 회원에 등록된 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("profileImage.profileImageThumbnailUrl").type(STRING).description("검색된 회원에 등록횐 프로필 이미지의 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("nickname").type(STRING).description("검색된 회원의 닉네임"),
+                                fieldWithPath("description").type(STRING).description("검색된 회원의 자기소개"),
+                                fieldWithPath("roomEscapeStatus.challengesCount").type(NUMBER).description("검색된 회원이 테마에 도전한 총 횟수"),
+                                fieldWithPath("roomEscapeStatus.successCount").type(NUMBER).description("검색된 회원이 테마 클리어에 성공한 총 횟수"),
+                                fieldWithPath("roomEscapeStatus.failCount").type(NUMBER).description("검색된 회원이 테마 클리어에 실패한 총 횟수"),
+                                fieldWithPath("roomEscapeRecodesOpenStatus").type(STRING).description("검색된 회원의 방탈출 공개 상태"),
+                                fieldWithPath("playInclinations").type(ARRAY).description("검색된 회원이 플레이 성향"),
+                                fieldWithPath("playInclinations[].genre").type(STRING).description("검색된 회원이 플레이한 장르 +\n" +
+                                        generateLinkCode(GENRE)),
+                                fieldWithPath("playInclinations[].playCount").type(NUMBER).description("검색된 회원이 해당 장르 플레이한 횟수"),
+                                fieldWithPath("myProfile").type(BOOLEAN).description("자신의 프로필을 조회했는지 여부 +\n" +
                                         "자신의 프로필은 조회한 경우 민감한 정보들이 추가적으로 응답")
                         )
                 ))

@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.dto.controller.request;
 
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -22,7 +23,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ThemeGetListRequestDto {
 
-    private String genreCode;
+    private Genre genre;
 
     private ThemeType themeType;
 
@@ -39,7 +40,7 @@ public class ThemeGetListRequestDto {
     private ThemeSortCondition sortCondition;
 
     public ThemeGetListRequestDto() {
-        this.genreCode = null;
+        this.genre = null;
         this.themeType = null;
         this.rating = null;
         this.difficulty = null;
@@ -49,7 +50,7 @@ public class ThemeGetListRequestDto {
 
     public ThemeGetListDto toServiceDto() {
         return ThemeGetListDto.builder()
-                .genreCode(genreCode)
+                .genre(genre)
                 .themeType(themeType)
                 .rating(rating)
                 .difficulty(difficulty)

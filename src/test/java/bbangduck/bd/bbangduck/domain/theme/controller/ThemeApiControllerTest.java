@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.controller;
 
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -220,6 +220,7 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 .numberOfPeoples(List.of(NumberOfPeople.ONE, NumberOfPeople.TWO))
                 .difficulty(Difficulty.NORMAL)
                 .activity(Activity.NORMAL)
+                .genre(Genre.ACTION)
                 .horrorGrade(HorrorGrade.NORMAL)
                 .shop(shop)
                 .build();
@@ -231,20 +232,6 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 .build();
 
         theme.setThemeImage(themeImage);
-
-        Genre genre1 = Genre.builder()
-                .id(1L)
-                .code("GR1")
-                .name("genre1")
-                .build();
-
-        Genre genre2 = Genre.builder()
-                .id(2L)
-                .code("GR2")
-                .name("genre2")
-                .build();
-        theme.addGenre(genre1);
-        theme.addGenre(genre2);
 
         given(themeRepository.findById(theme.getId())).willReturn(Optional.of(theme));
 
@@ -267,10 +254,8 @@ class ThemeApiControllerTest extends BaseControllerTest {
                                 fieldWithPath("themeName").description("조회된 테마의 이름"),
                                 fieldWithPath("themeDescription").description("조회된 테마에 대한 설명"),
                                 fieldWithPath("themeRating").description("조회된 테마의 평점"),
-                                fieldWithPath("themeGenres").description("조회된 테마의 장르 정보들"),
-                                fieldWithPath("themeGenres[].genreId").description("조회된 테마의 장르의 식별 ID"),
-                                fieldWithPath("themeGenres[].genreCode").description("조회된 테마의 장르의 코드 값"),
-                                fieldWithPath("themeGenres[].genreName").description("조회된 테마의 장르의 이름"),
+                                fieldWithPath("themeGenre").description("조회된 테마의 장르 +\n" +
+                                        generateLinkCode(GENRE)),
                                 fieldWithPath("shopInfo").description("조회된 테마의 샵 정보"),
                                 fieldWithPath("shopInfo.franchiseInfo").description("조회된 테마의 샵의 프랜차이즈 정보"),
                                 fieldWithPath("shopInfo.franchiseInfo.franchiseId").description("조회된 테마의 샵의 프렌차이즈의 식별 ID"),
@@ -351,19 +336,35 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 .build();
 
         List<ThemeAnalysis> themeAnalyses = new ArrayList<>();
-        for (long i = 1; i < 6; i++) {
-            Genre genre = Genre.builder()
-                    .id(i)
-                    .code("GR" + i)
-                    .name("genreName" + i)
-                    .build();
 
-            ThemeAnalysis themeAnalysis = ThemeAnalysis.builder()
-                    .genre(genre)
-                    .evaluatedCount((long) new Random().nextInt(4) + 1)
-                    .build();
-            themeAnalyses.add(themeAnalysis);
-        }
+        ThemeAnalysis themeAnalysis1 = ThemeAnalysis.builder()
+                .id(1L)
+                .genre(Genre.ACTION)
+                .evaluatedCount((long) new Random().nextInt(4) + 1)
+                .build();
+        themeAnalyses.add(themeAnalysis1);
+
+        ThemeAnalysis themeAnalysis2 = ThemeAnalysis.builder()
+                .id(2L)
+                .genre(Genre.ADULT)
+                .evaluatedCount((long) new Random().nextInt(4) + 1)
+                .build();
+        themeAnalyses.add(themeAnalysis2);
+
+        ThemeAnalysis themeAnalysis3 = ThemeAnalysis.builder()
+                .id(3L)
+                .genre(Genre.ADVENTURE)
+                .evaluatedCount((long) new Random().nextInt(4) + 1)
+                .build();
+        themeAnalyses.add(themeAnalysis3);
+
+        ThemeAnalysis themeAnalysis4 = ThemeAnalysis.builder()
+                .id(4L)
+                .genre(Genre.ARCADE)
+                .evaluatedCount((long) new Random().nextInt(4) + 1)
+                .build();
+        themeAnalyses.add(themeAnalysis4);
+
 
         themeAnalyses.sort((o1, o2) -> {
             Long evaluatedCount1 = o1.getEvaluatedCount();
@@ -372,15 +373,7 @@ class ThemeApiControllerTest extends BaseControllerTest {
             if (evaluatedCount1 > evaluatedCount2) {
                 return -1;
             } else if (evaluatedCount1.equals(evaluatedCount2)) {
-                Genre o1Genre = o1.getGenre();
-                Genre o2Genre = o2.getGenre();
-
-                int genreCompare = o1Genre.getName().compareTo(o2Genre.getName());
-                if (genreCompare > -1) {
-                    return 1;
-                } else {
-                    return -1;
-                }
+                return 0;
             } else {
                 return 1;
             }
@@ -400,10 +393,9 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 .andDo(document(
                         "get-theme-analyses-success",
                         responseFields(
-                                fieldWithPath("[0].genre.genreId").description("테마 분석의 장르의 식별 ID"),
-                                fieldWithPath("[0].genre.genreCode").description("테마 분석의 장르의 코드 값"),
-                                fieldWithPath("[0].genre.genreName").description("테마 분석의 장르의 이름"),
-                                fieldWithPath("[0].evaluatedCount").description("테마 분석의 해당 장르로 평가된 횟수")
+                                fieldWithPath("[].genre").description("테마 분석의 장르 +\n" +
+                                        generateLinkCode(GENRE)),
+                                fieldWithPath("[].evaluatedCount").description("테마 분석의 해당 장르로 평가된 횟수")
                         )
                 ))
         ;

@@ -1,7 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.entity;
 
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -14,9 +14,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 작성자 : 정구민 <br><br>
@@ -35,8 +33,13 @@ public class ReviewSurvey extends BaseEntityDateTime {
     @OneToOne(mappedBy = "reviewSurvey")
     private Review review;
 
-    @OneToMany(mappedBy = "reviewSurvey", cascade = CascadeType.ALL)
-    private List<ReviewPerceivedThemeGenre> perceivedThemeGenres = new ArrayList<>();
+//    @OneToMany(mappedBy = "reviewSurvey", cascade = CascadeType.ALL)
+//    private List<ReviewPerceivedThemeGenre> perceivedThemeGenres = new ArrayList<>();
+
+    @ElementCollection(targetClass = Genre.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "review_perceived_theme_genres", joinColumns = @JoinColumn(name = "review_survey_id"))
+    @Enumerated(EnumType.STRING)
+    private List<Genre> perceivedThemeGenres;
 
     @Enumerated(EnumType.STRING)
     private Difficulty perceivedDifficulty;
@@ -57,9 +60,10 @@ public class ReviewSurvey extends BaseEntityDateTime {
     private Satisfaction problemConfigurationSatisfaction;
 
     @Builder
-    public ReviewSurvey(Long id, Review review, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
+    public ReviewSurvey(Long id, Review review, List<Genre> perceivedThemeGenres, Difficulty perceivedDifficulty, HorrorGrade perceivedHorrorGrade, Activity perceivedActivity, Satisfaction scenarioSatisfaction, Satisfaction interiorSatisfaction, Satisfaction problemConfigurationSatisfaction) {
         this.id = id;
         this.review = review;
+        this.perceivedThemeGenres = perceivedThemeGenres;
         this.perceivedDifficulty = perceivedDifficulty;
         this.perceivedHorrorGrade = perceivedHorrorGrade;
         this.perceivedActivity = perceivedActivity;
@@ -68,18 +72,10 @@ public class ReviewSurvey extends BaseEntityDateTime {
         this.problemConfigurationSatisfaction = problemConfigurationSatisfaction;
     }
 
-    public void addPerceivedThemeGenre(Genre genre) {
-        ReviewPerceivedThemeGenre reviewPerceivedThemeGenre = ReviewPerceivedThemeGenre.builder()
-                .reviewSurvey(this)
-                .genre(genre)
-                .build();
-
-        this.perceivedThemeGenres.add(reviewPerceivedThemeGenre);
-    }
-
     public static ReviewSurvey create(ReviewSurveyCreateDto reviewSurveyCreateDto) {
         return ReviewSurvey.builder()
                 .review(null)
+                .perceivedThemeGenres(reviewSurveyCreateDto.getPerceivedThemeGenres())
                 .perceivedDifficulty(reviewSurveyCreateDto.getPerceivedDifficulty())
                 .perceivedHorrorGrade(reviewSurveyCreateDto.getPerceivedHorrorGrade())
                 .perceivedActivity(reviewSurveyCreateDto.getPerceivedActivity())
@@ -99,10 +95,6 @@ public class ReviewSurvey extends BaseEntityDateTime {
 
     public Review getReview() {
         return review;
-    }
-
-    public List<ReviewPerceivedThemeGenre> getPerceivedThemeGenreEntities() {
-        return perceivedThemeGenres;
     }
 
     public Difficulty getPerceivedDifficulty() {
@@ -130,7 +122,7 @@ public class ReviewSurvey extends BaseEntityDateTime {
     }
 
     public List<Genre> getPerceivedThemeGenres() {
-        return this.perceivedThemeGenres.stream().map(ReviewPerceivedThemeGenre::getGenre).collect(Collectors.toList());
+        return perceivedThemeGenres;
     }
 
     public void update(ReviewSurveyUpdateDto reviewSurveyUpdateDto) {

@@ -1,15 +1,13 @@
 package bbangduck.bd.bbangduck.domain.theme.repository;
 
 import bbangduck.bd.bbangduck.common.BaseTest;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
-import bbangduck.bd.bbangduck.domain.theme.entity.ThemeGenre;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import com.querydsl.core.QueryResults;
@@ -17,20 +15,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 class ThemeQueryRepositoryTest extends BaseTest {
 
     @Autowired
-    GenreRepository genreRepository;
-
-    @Autowired
     ThemeRepository themeRepository;
-
-    @Autowired
-    ThemeGenreRepository themeGenreRepository;
 
     @Autowired
     ThemeQueryRepository themeQueryRepository;
@@ -44,24 +36,13 @@ class ThemeQueryRepositoryTest extends BaseTest {
     @DisplayName("테마 리스트 조회")
     public void findList() {
         //given
-        List<Genre> genres = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            Genre genre = Genre.builder()
-                    .code("GenreCode" + i)
-                    .name("GenreName" + i)
-                    .build();
-            Genre savedGenre = genreRepository.save(genre);
-            genres.add(savedGenre);
-        }
-
         for (int i = 0; i < 30; i++) {
             ThemeType randomThemeType = getRandomThemeType();
             Activity randomActivity = getRandomActivity();
             Difficulty randomDifficulty = getRandomDifficulty();
             HorrorGrade randomHorrorGrade = getRandomHorrorGrade();
             List<NumberOfPeople> randomNumberOfPeoples = getRandomNumberOfPeoples();
-            Genre randomGenre = getRandomGenre(genres);
+            Genre randomGenre = Arrays.stream(Genre.values()).findAny().orElseThrow();
             long randomTotalEvaluatedCount = new Random().nextInt(50) + 20;
             long randomTotalRating = randomTotalEvaluatedCount * new Random().nextInt(5);
 
@@ -74,14 +55,9 @@ class ThemeQueryRepositoryTest extends BaseTest {
                     .horrorGrade(randomHorrorGrade)
                     .type(randomThemeType)
                     .numberOfPeoples(randomNumberOfPeoples)
-                    .build();
-            Theme savedTheme = themeRepository.save(theme);
-
-            ThemeGenre themeGenre = ThemeGenre.builder()
-                    .theme(savedTheme)
                     .genre(randomGenre)
                     .build();
-            themeGenreRepository.save(themeGenre);
+            themeRepository.save(theme);
         }
 
         CriteriaDto criteriaDto = new CriteriaDto();
@@ -106,10 +82,6 @@ class ThemeQueryRepositoryTest extends BaseTest {
         System.out.println("====================================================================================================");
         themes.forEach(theme -> System.out.println("theme = " + theme));
 
-    }
-
-    private Genre getRandomGenre(List<Genre> genres) {
-        return genres.get(new Random().nextInt(5));
     }
 
     private ThemeType getRandomThemeType() {

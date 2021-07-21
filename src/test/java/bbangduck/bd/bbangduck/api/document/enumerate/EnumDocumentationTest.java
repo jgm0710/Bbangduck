@@ -72,7 +72,8 @@ public class EnumDocumentationTest extends BaseControllerTest {
                         customResponseFields("reviewHintUsageCounts", "리뷰 힌트 사용 개수", enumConvertFieldDescriptor(enumDocument.getReviewHintUsageCounts())),
                         customResponseFields("reviewSearchTypes", "리뷰 목록 조회 조건", enumConvertFieldDescriptor(enumDocument.getReviewSearchTypes())),
                         customResponseFields("reviewSortConditions", "리뷰 목록 조회 정렬 조건", enumConvertFieldDescriptor(enumDocument.getReviewSortConditions())),
-                        customResponseFields("reviewTypes", "리뷰 타입", enumConvertFieldDescriptor(enumDocument.getReviewTypes()))
+                        customResponseFields("reviewTypes", "리뷰 타입", enumConvertFieldDescriptor(enumDocument.getReviewTypes())),
+                        customResponseFields("genres", "장르", enumConvertFieldDescriptor(enumDocument.getGenres()))
                 ));
     }
 

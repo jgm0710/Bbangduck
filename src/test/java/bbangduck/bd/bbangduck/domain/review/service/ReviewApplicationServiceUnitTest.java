@@ -2,8 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.service;
 
 import bbangduck.bd.bbangduck.domain.follow.exception.NotTwoWayFollowRelationException;
 import bbangduck.bd.bbangduck.domain.follow.service.FollowService;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.service.GenreService;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberPlayInclinationService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -37,7 +36,6 @@ class ReviewApplicationServiceUnitTest {
     MemberService memberMockService = mock(MemberService.class);
     MemberPlayInclinationService memberPlayInclinationMockService = mock(MemberPlayInclinationService.class);
     FollowService followMockService = mock(FollowService.class);
-    GenreService genreMockService = mock(GenreService.class);
     ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
     ReviewLikeService reviewLikeMockService = mock(ReviewLikeService.class);
 
@@ -47,7 +45,6 @@ class ReviewApplicationServiceUnitTest {
             memberMockService,
             memberPlayInclinationMockService,
             followMockService,
-            genreMockService,
             themeAnalysisMockService,
             reviewLikeMockService
     );
@@ -71,20 +68,8 @@ class ReviewApplicationServiceUnitTest {
         Theme theme = Theme.builder()
                 .id(1L)
                 .name("theme")
+                .genre(Genre.ACTION)
                 .build();
-
-        Genre genre1 = Genre.builder()
-                .code("GR1")
-                .name("genre1")
-                .build();
-
-        Genre genre2 = Genre.builder()
-                .code("GR2")
-                .name("genre2")
-                .build();
-
-        theme.addGenre(genre1);
-        theme.addGenre(genre2);
 
         Long reviewId = 1L;
 
@@ -129,7 +114,7 @@ class ReviewApplicationServiceUnitTest {
         then(memberMockService).should(times(1)).getMembers(friendIds);
         then(followMockService).should(times(0)).isTwoWayFollowRelation(memberId, friendIds.get(0));
         then(reviewMockService).should(times(1)).addPlayTogetherFriendsToReview(review, friends);
-        then(memberPlayInclinationMockService).should(times(1)).reflectingPropensityOfMemberToPlay(member, theme.getGenres());
+        then(memberPlayInclinationMockService).should(times(1)).reflectingPropensityOfMemberToPlay(member, theme.getGenre());
         then(themeMockService).should(times(1)).increaseThemeRating(theme, reviewCreateDto.getRating());
     }
 
@@ -149,20 +134,8 @@ class ReviewApplicationServiceUnitTest {
         Theme theme = Theme.builder()
                 .id(1L)
                 .name("theme")
+                .genre(Genre.ACTION)
                 .build();
-
-        Genre genre1 = Genre.builder()
-                .code("GR1")
-                .name("genre1")
-                .build();
-
-        Genre genre2 = Genre.builder()
-                .code("GR2")
-                .name("genre2")
-                .build();
-
-        theme.addGenre(genre1);
-        theme.addGenre(genre2);
 
         Long reviewId = 1L;
 
@@ -211,7 +184,7 @@ class ReviewApplicationServiceUnitTest {
         then(reviewMockService).should(times(0)).saveReview(member, theme, reviewCreateDto);
         then(reviewMockService).should(times(0)).getReview(reviewId);
         then(reviewMockService).should(times(0)).addPlayTogetherFriendsToReview(review, friends);
-        then(memberPlayInclinationMockService).should(times(0)).reflectingPropensityOfMemberToPlay(member, theme.getGenres());
+        then(memberPlayInclinationMockService).should(times(0)).reflectingPropensityOfMemberToPlay(member, theme.getGenre());
         then(themeMockService).should(times(0)).increaseThemeRating(theme, reviewCreateDto.getRating());
 
     }
@@ -427,28 +400,15 @@ class ReviewApplicationServiceUnitTest {
 
         review.addReviewSurvey(reviewSurvey);
 
-        Genre genre1 = Genre.builder()
-                .id(1L)
-                .code("genre1")
-                .name("genre1")
-                .build();
 
-        Genre genre2 = Genre.builder()
-                .id(2L)
-                .code("genre2")
-                .name("genre2")
-                .build();
-
-        List<Genre> genres = List.of(genre1, genre2);
-        List<String> genreCodes = List.of(genre1.getCode(), genre2.getCode());
+        List<Genre> genres = List.of(Genre.ACTION, Genre.ADVENTURE);
 
 
         ReviewSurveyCreateDto reviewSurveyCreateDto = ReviewSurveyCreateDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(genres)
                 .build();
 
         given(reviewMockService.getReview(review.getId())).willReturn(review);
-        given(genreMockService.getGenresByCodes(genreCodes)).willReturn(genres);
 
         //when
         reviewMockApplicationService.addSurveyToReview(review.getId(), member.getId(), reviewSurveyCreateDto);
@@ -456,9 +416,7 @@ class ReviewApplicationServiceUnitTest {
         //then
         then(reviewMockService).should().getReview(review.getId());
         then(reviewMockService).should().checkIfMyReview(review.getId(), member.getId());
-        then(genreMockService).should().getGenresByCodes(genreCodes);
         then(reviewMockService).should().addSurveyToReview(review, reviewSurveyCreateDto);
-        then(reviewMockService).should().addGenresToReviewSurvey(reviewSurvey, genres);
         then(themeAnalysisMockService).should().reflectingThemeAnalyses(theme, genres);
     }
 

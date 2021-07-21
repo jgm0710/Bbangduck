@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.dto.service;
 
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ThemeGetListDto {
 
-    private String genreCode;
+    private Genre genre;
 
     private ThemeType themeType;
 

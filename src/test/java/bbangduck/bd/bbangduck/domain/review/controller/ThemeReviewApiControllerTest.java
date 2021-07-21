@@ -1,7 +1,5 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
-import bbangduck.bd.bbangduck.api.document.utils.DocUrl;
-import bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
@@ -12,7 +10,6 @@ import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewImageRe
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
-import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewSortCondition;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -32,7 +29,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.*;
-import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.*;
 import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.generateLinkCode;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -278,8 +274,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        List<String> genreCodes = createGenreCodes();
-
         ReviewCreateRequestDto reviewCreateRequestDto = ReviewCreateRequestDto.builder()
                 .build();
 
@@ -331,7 +325,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        List<String> genreCodes = createGenreCodes();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
@@ -372,7 +365,6 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
 
-        List<String> genreCodes = createGenreCodes();
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
 
@@ -1001,7 +993,7 @@ class ThemeReviewApiControllerTest extends BaseJGMApiControllerTest {
         reviewRepository.save(member2DetailReview2);
         reviewRepository.save(member3DetailReview2);
 
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(createGenreCodes());
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(createPerceivedThemeGenres());
         reviewApplicationService.addSurveyToReview(member3SimpleReview1.getId(), member3.getId(),reviewSurveyCreateRequestDto.toServiceDto());
         reviewApplicationService.addSurveyToReview(member2SimpleReview2.getId(), member2.getId(), reviewSurveyCreateRequestDto.toServiceDto());
         reviewApplicationService.addSurveyToReview(member1DetailReview1.getId(), member1.getId(), reviewSurveyCreateRequestDto.toServiceDto());

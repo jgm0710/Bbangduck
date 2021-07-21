@@ -3,6 +3,7 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
@@ -74,10 +75,10 @@ class ReviewApiMockControllerTest extends BaseJGMApiControllerTest {
 
 //        reviewRepository.save(review);
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.NORMAL)
                 .perceivedActivity(Activity.NORMAL)

@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.api.controller;
 
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberSearchKeywordType;
@@ -50,6 +51,7 @@ public class EnumViewController {
                 .reviewSearchTypes(getDocs(ReviewSearchType.values()))
                 .reviewSortConditions(getDocs(ReviewSortCondition.values()))
                 .reviewTypes(getDocs(ReviewType.values()))
+                .genres(getDocs(Genre.values()))
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.genre;
 
+import bbangduck.bd.bbangduck.global.common.EnumType;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -9,7 +10,7 @@ import lombok.RequiredArgsConstructor;
  * @since 2021-07-21
  */
 @RequiredArgsConstructor
-public enum GenreType {
+public enum Genre implements EnumType {
     HORROR("공포"),
     THRILLER("스릴러"),
     ROMANCE("로멘스"),
@@ -29,9 +30,13 @@ public enum GenreType {
     MYSTERY("미스터리"),
     ARCADE("아케이드"),
     OUTDOOR("야외"),
-    OTHER("기타"),
+    OTHERS("기타"),
     ;
 
     private final String description;
 
+    @Override
+    public String getDescription() {
+        return description;
+    }
 }

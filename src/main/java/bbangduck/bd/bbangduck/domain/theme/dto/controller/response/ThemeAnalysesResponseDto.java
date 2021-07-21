@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.dto.controller.response;
 
 
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,12 +18,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ThemeAnalysesResponseDto {
-    private ThemeGenreResponseDto genre;
+    private Genre genre;
     private Long evaluatedCount;
 
     public static ThemeAnalysesResponseDto convert(ThemeAnalysis themeAnalysis) {
         return ThemeAnalysesResponseDto.builder()
-                .genre(ThemeGenreResponseDto.convert(themeAnalysis.getGenre()))
+                .genre(themeAnalysis.getGenre())
                 .evaluatedCount(themeAnalysis.getEvaluatedCount())
                 .build();
     }

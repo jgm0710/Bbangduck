@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -127,11 +128,7 @@ class ThemeApplicationServiceTest {
         List<ThemeAnalysis> themeAnalyses = new ArrayList<>();
 
         for (long i = 0; i < 5; i++) {
-            Genre genre = Genre.builder()
-                    .id(i)
-                    .code("GR" + i)
-                    .name("genreName" + i)
-                    .build();
+            Genre genre = Arrays.stream(Genre.values()).findAny().orElseThrow();
 
             ThemeAnalysis themeAnalysis = ThemeAnalysis.builder()
                     .genre(genre)
@@ -150,12 +147,7 @@ class ThemeApplicationServiceTest {
         themeAnalysesResponseDtos.forEach(
                 themeAnalysesResponseDto -> {
                     assertNotNull(themeAnalysesResponseDto.getEvaluatedCount());
-
-                    ThemeGenreResponseDto themeGenreResponseDto = themeAnalysesResponseDto.getGenre();
-                    assertNotNull(themeGenreResponseDto.getGenreId());
-                    assertNotNull(themeGenreResponseDto.getGenreCode());
-                    assertNotNull(themeGenreResponseDto.getGenreName());
-
+                    assertNotNull(themeAnalysesResponseDto.getGenre());
                 }
         );
 

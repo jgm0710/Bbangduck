@@ -35,6 +35,7 @@ public class EnumDocument {
     Map<String, String> reviewSearchTypes;
     Map<String, String> reviewSortConditions;
     Map<String, String> reviewTypes;
+    Map<String, String> genres;
 
 
 }

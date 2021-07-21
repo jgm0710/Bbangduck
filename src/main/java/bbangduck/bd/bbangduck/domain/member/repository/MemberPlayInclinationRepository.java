@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import org.springframework.data.jpa.repository.JpaRepository;
