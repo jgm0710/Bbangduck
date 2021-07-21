@@ -2,8 +2,6 @@ package bbangduck.bd.bbangduck.domain.theme.repository;
 
 import bbangduck.bd.bbangduck.common.BaseTest;
 import bbangduck.bd.bbangduck.domain.genre.Genre;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
@@ -16,7 +14,6 @@ import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
-import bbangduck.bd.bbangduck.domain.theme.entity.ThemeGenre;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeGetMemberListSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;

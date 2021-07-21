@@ -2,6 +2,8 @@ package bbangduck.bd.bbangduck.domain.theme.controller;
 
 import bbangduck.bd.bbangduck.common.BaseControllerTest;
 import bbangduck.bd.bbangduck.domain.genre.Genre;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
+import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;

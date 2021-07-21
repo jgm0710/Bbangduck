@@ -26,7 +26,6 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static bbangduck.bd.bbangduck.domain.genre.entity.QGenre.genre;
 import static bbangduck.bd.bbangduck.domain.member.entity.QMember.member;
 import static bbangduck.bd.bbangduck.domain.review.entity.QReview.review;
 import static bbangduck.bd.bbangduck.domain.theme.entity.QTheme.theme;

@@ -1,7 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
 import bbangduck.bd.bbangduck.domain.genre.Genre;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.response.MemberProfileImageResponseDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberProfileImage;
