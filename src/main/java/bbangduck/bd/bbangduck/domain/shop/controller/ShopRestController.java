@@ -1,18 +1,15 @@
 package bbangduck.bd.bbangduck.domain.shop.controller;
 
-import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopCreateDto;
-import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopFindByLocationRequestDto;
-import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopLocationPageResponseDto;
-import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopSearchDto;
+import bbangduck.bd.bbangduck.domain.shop.dto.controller.*;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
-import bbangduck.bd.bbangduck.domain.shop.service.ShopFindApplicationService;
 import bbangduck.bd.bbangduck.domain.shop.service.ShopApplicationService;
+import bbangduck.bd.bbangduck.domain.shop.service.ShopFindApplicationService;
+import bbangduck.bd.bbangduck.global.common.SliceResultResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,18 +22,19 @@ public class ShopRestController {
   private final static Integer DISTANCE = 5;
 
   @GetMapping("/now-location")
-  public ResponseEntity<ShopLocationPageResponseDto> getShopsByNowLocation(
+  @ResponseStatus(HttpStatus.OK)
+  public SliceResultResponseDto<ShopLocationResponseDto> getShopsByNowLocation(
       ShopFindByLocationRequestDto request
   ) {
-    return ResponseEntity.ok(
-        shopFindApplicationService.findAllByDistance(new Location(request.getLatitude(), request.getLongitude()), DISTANCE)
-    );
+    Location location = new Location(request.getLatitude(), request.getLongitude());
+    SliceResultResponseDto<Shop> result = shopFindApplicationService.findAllByDistance(location, DISTANCE, request.getAmount(),request.getPageNum());
+    return result.convert(it -> ShopLocationResponseDto.byWith(it, location));
   }
 
-  @PostMapping(value = "/")
-  public ResponseEntity<Shop> shopSave(ShopCreateDto shopCreateDto) {
+  @PostMapping
+  public ResponseEntity<ShopResponseDto> shopSave(ShopCreateDto shopCreateDto) {
     Shop shop = shopApplicationService.saveShop(shopCreateDto.toCreateDto());
-    return ResponseEntity.ok().body(shop);
+    return ResponseEntity.ok().body(ShopResponseDto.by(shop));
   }
 
   @DeleteMapping("/{shop_id}")
@@ -47,15 +45,9 @@ public class ShopRestController {
 
 
   @GetMapping("/{shop_id}")
-  public ResponseEntity<Shop> shopSearch(@PathVariable("shop_id") Long shopId) {
+  @ResponseStatus(HttpStatus.OK)
+  public ShopResponseDto shopFindById(@PathVariable("shop_id") Long shopId) {
     Shop shop = shopFindApplicationService.getShop(shopId);
-    return ResponseEntity.ok(shop);
-  }
-
-
-  @GetMapping("/search")
-  public ResponseEntity<List<Shop>> shopSearchList(ShopSearchDto shopSearchDto) {
-    List<Shop> shops = shopFindApplicationService.search(shopSearchDto);
-    return ResponseEntity.ok().body(shops);
+    return ShopResponseDto.by(shop);
   }
 }

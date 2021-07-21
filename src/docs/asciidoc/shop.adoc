@@ -26,22 +26,21 @@
 히스토리는 문서의 변경이력을 표시합니다.
 
 
-2021-06-17 :::
-* <<resources-get-member-profile>> 기능 구현
+2021-07-24 :::
+* <<resources-get-shop-by-now-location>> 기능 구현
     ** 자신의 프로필 조회, 다른 회원의 프로필 조회를 하나의 API 를 통해 구현
-* <<resources-get-member-play-inclinations>> 기능 구현
-    ** 장르별 플레이 횟수, 테마 평가 총 횟수 응답
+
 
 
 [[resources-shop]]
-= 회원 관련 리소스
+= 샵 관련 리소스
 
-[[resources-get-member-profile]]
-== 회원 프로필 조회
+[[resources-get-shop]]
+== 샵 조회
 
 
-[[resources-get-my-profile]]
-=== 자신의 프로필 조회
+[[resources-get-shop-by-now-location]]
+=== 현재 위경도
 
 * 응답 HttpStatus : `200 OK`
 

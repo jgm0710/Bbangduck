@@ -143,19 +143,16 @@ public class EventTestContoller {
 
         Shop shop = Shop.builder()
                 .address("서울시")
-                .area(area)
                 .name("용미니네")
                 .franchise(franchise)
                 .location(Location.builder().latitude(33.).longitude(33.).build())
 //                .shopImage(ShopImage.getInstance())
-                .shopInfo("개발자 세상")
 //                .shopPrices()
                 .shopUrl("www.google.com")
                 .deleteYN(false)
                 .build();
         ShopImage shopImage = ShopImage.builder()
                 .fileName("미니 사진")
-                .shop(shop)
                 .fileStorageId(1l)
                 .build();
         ShopPrice shopPrice = ShopPrice.builder()

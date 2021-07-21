@@ -1,10 +1,7 @@
 package bbangduck.bd.bbangduck.domain.admin.contoller;
 
 import bbangduck.bd.bbangduck.domain.admin.dto.AdminInfoDto;
-import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.domain.admin.service.AdminInfoService;
-import bbangduck.bd.bbangduck.global.common.ResponseDto;
-import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Project : bbangduck

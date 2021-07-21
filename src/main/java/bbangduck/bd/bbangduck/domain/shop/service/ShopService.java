@@ -25,10 +25,14 @@ public class ShopService {
     }
 
     public void delete(Long shopId) {
-        this.shopRepository.deleteYN(shopId);
+        shopRepository.findById(shopId).orElseThrow().delete();
     }
 
     public Shop getById(Long shopId) {
-        return this.shopRepository.findById(shopId).orElseThrow();
+        Shop shop = shopRepository.findById(shopId).orElseThrow();
+        if(shop.isDeleted()){
+            throw new RuntimeException();
+        }
+        return shop;
     }
 }

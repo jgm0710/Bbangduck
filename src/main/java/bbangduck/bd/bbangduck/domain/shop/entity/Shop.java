@@ -49,7 +49,8 @@ public class Shop {
 
 
   @Builder
-  public Shop(Franchise franchise, ShopImage shopImage, String name, String shopUrl, String description, List<ShopPrice> shopPrices, Location location, String address, boolean deleteYN) {
+  public Shop(Long id, Franchise franchise, ShopImage shopImage, String name, String shopUrl, String description, List<ShopPrice> shopPrices, Location location, String address, boolean deleteYN) {
+    this.id = id;
     this.franchise = franchise;
     this.shopImage = shopImage;
     this.name = name;
@@ -79,6 +80,10 @@ public class Shop {
     shopPrice.setShop(this);
   }
 
+  public Long getId() {
+    return id;
+  }
+
   public double getLatitude() {
     return location.getLatitude();
   }
@@ -93,5 +98,37 @@ public class Shop {
 
   public String getName() {
     return name;
+  }
+
+  public String getImageUrl() {
+    return shopImage.getFileName();
+  }
+
+  public String getUrl() {
+    return shopUrl;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public void delete() {
+    deleteYN = true;
+  }
+
+  public boolean isDeleted() {
+    return deleteYN;
+  }
+
+  public Franchise getFranchise() {
+    return franchise;
+  }
+
+  public Area getArea() {
+    return Area.builder().build().areaMock().get(0);
   }
 }

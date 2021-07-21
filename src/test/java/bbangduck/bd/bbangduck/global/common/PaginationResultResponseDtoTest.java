@@ -33,7 +33,6 @@ class PaginationResultResponseDtoTest {
             Shop shop = Shop.builder()
                     .id(i)
                     .name("shopName" + i)
-                    .area(area)
                     .franchise(franchise)
                     .build();
 

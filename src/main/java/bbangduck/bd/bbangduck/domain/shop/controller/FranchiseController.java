@@ -27,6 +27,6 @@ public class FranchiseController {
 
   @PostMapping
   public ResponseEntity<Franchise> createFranchise(@RequestBody FranchiseCreateDto franchiseCreateDto) {
-
+    return null;
   }
 }

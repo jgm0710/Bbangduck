@@ -213,7 +213,6 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 .id(1L)
                 .name("shopName")
                 .franchise(franchise)
-                .area(area)
                 .build();
 
         Theme theme = Theme.builder()

@@ -81,11 +81,9 @@ public class ThemeDeveloperService {
                 .shopImage(null)
                 .name("비트포비아 미션브레이크 CGV 용산점")
                 .shopUrl("https://www.xphobia.net/")
-                .shopInfo("비트포비아 미션브레이크 CGV 용산점")
                 .shopPrices(null)
                 .location(new Location(14133650.372479577, 4513209.6607917305))
                 .address("서울 용산구 한강대로23길 55")
-                .area(area)
                 .deleteYN(false)
                 .build();
 
@@ -139,11 +137,9 @@ public class ThemeDeveloperService {
                 .shopImage(null)
                 .name("넥스트에디션 건대2호점")
                 .shopUrl("https://www.nextedition.co.kr/")
-                .shopInfo("넥스트에디션 건대2호점")
                 .shopPrices(null)
                 .location(new Location(14144808.949181106, 4514864.163597779))
                 .address("서울 광진구 아차산로 192")
-                .area(area)
                 .deleteYN(false)
                 .build();
 
@@ -221,11 +217,9 @@ public class ThemeDeveloperService {
                 .shopImage(null)
                 .name("셜록홈즈 연신내점")
                 .shopUrl("http://sherlock-holmes.co.kr/")
-                .shopInfo("셜록홈즈 연신내점")
                 .shopPrices(null)
                 .location(new Location(14128510.562346522, 4525780.074472591))
                 .address("서울 은평구 연서로29길 16")
-                .area(area)
                 .deleteYN(false)
                 .build();
 
@@ -277,11 +271,9 @@ public class ThemeDeveloperService {
                 .shopImage(null)
                 .name("도어 이스케이프 블루 신논현점")
                 .shopUrl("http://blue.doorescape.co.kr/")
-                .shopInfo("도어 이스케이프 블루 신논현점")
                 .shopPrices(null)
                 .location(new Location(14140016.522651013, 4509711.059601137))
                 .address("서울 서초구 사평대로53길 8-1")
-                .area(area)
                 .deleteYN(false)
                 .build();
 
@@ -333,11 +325,9 @@ public class ThemeDeveloperService {
                 .shopImage(null)
                 .name("마포점")
                 .shopUrl("https://www.roomescape.co.kr/theme/detail.php?theme=3424")
-                .shopInfo(null)
                 .shopPrices(null)
                 .location(new Location(14128869.857135002, 4516369.540955951))
                 .address("서울 마포구 와우산로21길 37")
-                .area(area)
                 .deleteYN(false)
                 .build();
 

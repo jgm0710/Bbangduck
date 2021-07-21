@@ -21,10 +21,11 @@ public class ShopQueryRepository {
     jpaQueryFactory = new JPAQueryFactory(em);
   }
 
-  public List<Shop> findByRangeLocation(double topLatitude, double bottomLatitude, double leftLongitude, double rightLongitude) {
+  public List<Shop> findByRangeLocation(double topLatitude, double bottomLatitude, double leftLongitude, double rightLongitude, Integer limit, Long offset) {
     return jpaQueryFactory.selectFrom(QShop.shop)
         .where(QShop.shop.location.latitude.between(bottomLatitude, topLatitude).and(
             QShop.shop.location.longitude.between(leftLongitude, rightLongitude)
-        )).fetch();
+        )).limit(limit).offset(offset)
+        .fetch();
   }
 }

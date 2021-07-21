@@ -1,8 +1,8 @@
 package bbangduck.bd.bbangduck.domain.shop.dto.controller;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import bbangduck.bd.bbangduck.global.common.PageRequest;
+import lombok.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -10,7 +10,10 @@ import javax.validation.constraints.NotNull;
 
 import static bbangduck.bd.bbangduck.global.common.constant.DefaultValue.*;
 
-public class ShopFindByLocationRequestDto {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ShopFindByLocationRequestDto implements PageRequest {
   @Getter
   @Setter
   @NotNull
@@ -24,13 +27,13 @@ public class ShopFindByLocationRequestDto {
   @Setter
   @Min(0)
   @NotNull
-  private Long page = PAGE;
+  private long pageNum = PAGE;
 
   @Getter
   @Setter
   @Min(0)
   @Max(100)
   @NotNull
-  private Integer contentCount = CONTENT_COUNT;
+  private int amount = CONTENT_COUNT;
 
 }

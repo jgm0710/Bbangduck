@@ -21,9 +21,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class SliceResultResponseDto<T> {
     private List<T> contents;
-    private int nowPageNum;
+    private long nowPageNum;
     private int requestAmount;
     private boolean hasNextPage;
+
+    public static <T>SliceResultResponseDto<T> by(List<T> list,long pageNum,int amount){
+        return new SliceResultResponseDto(list.subList(0, amount), pageNum, amount, list.size() == amount + 1);
+    }
 
     public <R> SliceResultResponseDto<R> convert(Convertor<T, R> convertor) {
         List<R> results = contents.stream().map(convertor::convert).collect(Collectors.toList());

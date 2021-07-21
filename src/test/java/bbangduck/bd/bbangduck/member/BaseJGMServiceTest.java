@@ -349,10 +349,8 @@ public class BaseJGMServiceTest extends BaseTest {
                 .franchise(franchise)
                 .name("빵덕 샵")
                 .shopUrl(null)
-                .shopInfo(null)
                 .location(null)
                 .address("서울 강남구 어딘가")
-                .area(area)
                 .deleteYN(false)
                 .build();
 

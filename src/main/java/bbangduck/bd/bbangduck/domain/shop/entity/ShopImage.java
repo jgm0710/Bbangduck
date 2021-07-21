@@ -10,6 +10,11 @@ public class ShopImage {
 
   private String fileName;
 
+
+  public String getFileName() {
+    return fileName;
+  }
+
   @Builder
   public ShopImage(Long fileStorageId, String fileName) {
     this.fileStorageId = fileStorageId;

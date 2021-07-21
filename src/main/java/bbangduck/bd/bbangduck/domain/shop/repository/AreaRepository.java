@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AreaRepository extends JpaRepository<Area, Long> {
-
-    Area findByName(String 강남);
 }
+
+

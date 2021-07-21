@@ -60,7 +60,6 @@ class ThemeApplicationServiceUnitTest {
                 .id(1L)
                 .name("shopName")
                 .franchise(franchise)
-                .area(area)
                 .build();
 
         Theme theme = Theme.builder()
