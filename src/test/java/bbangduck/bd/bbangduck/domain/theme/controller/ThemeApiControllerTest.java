@@ -36,6 +36,8 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.*;
+import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.generateLinkCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -122,19 +124,19 @@ class ThemeApiControllerTest extends BaseControllerTest {
                                 parameterWithName("genreCode").description("어떤 장르의 테마를 조회할 것인지 기입 +\n" +
                                         "장르 코드는 장르 목록 조회 API 를 별도로 제공"),
                                 parameterWithName("themeType").description("어떤 유형의 테마를 조회할 것인지 기입 +\n" +
-                                        ThemeType.getNameList()),
+                                        generateLinkCode(THEME_TYPE)),
                                 parameterWithName("rating").description("몇 점 이상의 평점을 가진 테마를 조회할 것인지 기입 +\n" +
-                                        ThemeRatingFilteringType.getNameList()),
+                                        generateLinkCode(THEME_RATING_FILTERING_TYPE)),
                                 parameterWithName("numberOfPeople").description("적정 인원이 N 명인 테마 목록을 조회하기 위해 기입 +\n" +
-                                        NumberOfPeople.getNameList()),
+                                        generateLinkCode(NUMBER_OF_PEOPLE)),
                                 parameterWithName("difficulty").description("어떤 난이도의 테마를 조회할 것인지 기입 +\n" +
-                                        Difficulty.getNameList()),
+                                        generateLinkCode(DIFFICULTY)),
                                 parameterWithName("activity").description("활동성 정도 필터링 조건 기입 +\n" +
-                                        Activity.getNameList()),
+                                        generateLinkCode(ACTIVITY)),
                                 parameterWithName("horrorGrade").description("공포도 정도 필터링 조건 기입 +\n" +
-                                        HorrorGrade.getNameList()),
+                                        generateLinkCode(HORROR_GRADE)),
                                 parameterWithName("sortCondition").description("테마 목록 정렬 조건 기입 +\n" +
-                                        ThemeSortCondition.getNameList())
+                                        generateLinkCode(THEME_SORT_CONDITION))
                         ),
                         responseFields(
                                 fieldWithPath("contents").description("조회 결과 목록"),
@@ -285,13 +287,13 @@ class ThemeApiControllerTest extends BaseControllerTest {
                                 fieldWithPath("shopInfo.areaInfo.areaName").description("조회된 테마의 샵의 지역의 이름"),
                                 fieldWithPath("playTime").description("조회된 테마의 플레이 시간"),
                                 fieldWithPath("numberOfPeoples").description("조회된 테마의 참여 가능 인원 수 목록 +\n" +
-                                        NumberOfPeople.getNameList()),
+                                        generateLinkCode(NUMBER_OF_PEOPLE)),
                                 fieldWithPath("difficulty").description("조회된 테마의 난이도 +\n" +
-                                        Difficulty.getNameList()),
+                                        generateLinkCode(DIFFICULTY)),
                                 fieldWithPath("activity").description("조회된 테마의 활동성 +\n" +
-                                        Activity.getNameList()),
+                                        generateLinkCode(ACTIVITY)),
                                 fieldWithPath("horrorGrade").description("조회된 테마의 공포도 +\n" +
-                                        HorrorGrade.getNameList())
+                                        generateLinkCode(HORROR_GRADE))
                         )
                 ))
         ;

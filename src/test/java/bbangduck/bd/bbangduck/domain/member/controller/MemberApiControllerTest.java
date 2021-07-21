@@ -4,13 +4,13 @@ import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpReque
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.*;
+import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberSearchKeywordType;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.FoundMemberIsWithdrawalOrBanException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberProfileImageNotFoundException;
-import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -22,6 +22,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS;
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.MEMBER_SEARCH_KEYWORD_TYPE;
+import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.generateLinkCode;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -712,7 +715,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("roomEscapeRecodesOpenStatus").description("변경할 방탈출 기록 공개 상태 기입 +\n" +
-                                        MemberRoomEscapeRecodesOpenStatus.getNameList())
+                                        generateLinkCode(MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS))
                         )
                 ))
         ;
@@ -841,7 +844,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("roomEscapeStatus.successCount").description("조회된 회원이 테마 클리어에 성공한 횟수"),
                                 fieldWithPath("roomEscapeStatus.failCount").description("조회된 회원이 테마 클리어에 실패한 횟수"),
                                 fieldWithPath("roomEscapeRecodesOpenStatus").description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
-                                        MemberRoomEscapeRecodesOpenStatus.getNameList()),
+                                        generateLinkCode(MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS)),
                                 fieldWithPath("playInclinations[0].genre.genreCode").description("조회된 회원의 플레이 성향에 등록된 장르의 코드값"),
                                 fieldWithPath("playInclinations[0].genre.genreName").description("조회된 회원의 플레이 성향에 등록된 장르의 이름"),
                                 fieldWithPath("playInclinations[0].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
@@ -918,7 +921,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("roomEscapeStatus.successCount").description("조회된 회원이 테마 클리어에 성공한 횟수"),
                                 fieldWithPath("roomEscapeStatus.failCount").description("조회된 회원이 테마 클리어에 실패한 횟수"),
                                 fieldWithPath("roomEscapeRecodesOpenStatus").description("조회된 회원의 방탈출 기록 공개 상태 +\n" +
-                                        MemberRoomEscapeRecodesOpenStatus.getNameList()),
+                                        generateLinkCode(MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS)),
                                 fieldWithPath("playInclinations[0].genre.genreCode").description("조회된 회원의 플레이 성향에 등록된 장르의 코드값"),
                                 fieldWithPath("playInclinations[0].genre.genreName").description("조회된 회원의 플레이 성향에 등록된 장르의 이름"),
                                 fieldWithPath("playInclinations[0].playCount").description("조회된 회원의 플레이 성항에 등록된 장르를 플레이한 횟수"),
@@ -1167,7 +1170,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("searchType").description("회원 검색 시 이메일을 통해 검색할 것인지, 닉네임을 통해 검색할 것인지 기입 +\n" +
-                                        MemberSearchKeywordType.getNameList()),
+                                        generateLinkCode(MEMBER_SEARCH_KEYWORD_TYPE)),
                                 fieldWithPath("keyword").description("회원 검색 시 필요한 키워드 +\n" +
                                         "정확한 이메일, 닉네임을 지정해야 검색할 수 있습니다.")
                         ),

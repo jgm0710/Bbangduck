@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.enumerate;
 
+import bbangduck.bd.bbangduck.global.common.EnumType;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -15,15 +16,15 @@ import java.util.stream.Stream;
  * 회원의 방탈출 기록 공개 상태를 표현할 Enum
  */
 @RequiredArgsConstructor
-public enum MemberRoomEscapeRecodesOpenStatus {
+public enum MemberRoomEscapeRecodesOpenStatus implements EnumType {
     OPEN("방탈출 기록 공개"),
     ONLY_FRIENDS_OPEN("방탈출 기록 친구에게만 공개"),
     CLOSE("방탈출 기록 비공개 -> 본인만 확인 가능");
 
     public final String description;
 
-    public static List<String> getNameList() {
-        return Stream.of(MemberRoomEscapeRecodesOpenStatus.values()).map(Enum::name).collect(Collectors.toList());
+    @Override
+    public String getDescription() {
+        return description;
     }
-
 }

@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.model.emumerate;
 
+import bbangduck.bd.bbangduck.global.common.EnumType;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-public enum NumberOfPeople {
+public enum NumberOfPeople implements EnumType {
     ONE("한 사람"),
     TWO("두 사람"),
     THREE("세 사람"),
@@ -16,8 +17,8 @@ public enum NumberOfPeople {
 
     private final String description;
 
-    public static List<String> getNameList() {
-        return Stream.of(NumberOfPeople.values()).map(Enum::name).collect(Collectors.toList());
+    @Override
+    public String getDescription() {
+        return description;
     }
-
 }

@@ -4,15 +4,13 @@ import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpReque
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
-import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Satisfaction;
-import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
-import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -32,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.*;
+import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.generateLinkCode;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -121,7 +121,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
                                 fieldWithPath("themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
                                 fieldWithPath("reviewType").description("조회된 리뷰의 Type +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
                                 fieldWithPath("themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
@@ -288,7 +288,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
                                 fieldWithPath("themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
                                 fieldWithPath("reviewType").description("조회된 리뷰의 Type +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
                                 fieldWithPath("themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
@@ -407,7 +407,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
                                 fieldWithPath("themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
                                 fieldWithPath("reviewType").description("조회된 리뷰의 Type +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
                                 fieldWithPath("themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
@@ -532,7 +532,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("themeInfo.themeImageUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일 Download Url"),
                                 fieldWithPath("themeInfo.themeImageThumbnailUrl").description("조회된 리뷰가 등록된 테마에 등록된 이미지 파일의 썸네일 이미지 파일 Download Url"),
                                 fieldWithPath("reviewType").description("조회된 리뷰의 Type +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("reviewRecodeNumber").description("조회된 리뷰의 기록 번호 +\n" +
                                         "리뷰 생성 시 회원별 방탈출 기록 번호를 매긴다고 생각하면 된다. (주로 회원의 방탈출 기록 조회 시 사용)"),
                                 fieldWithPath("themeClearYN").description("조회된 리뷰의 테마 클리어 여부"),
@@ -716,17 +716,17 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         requestFields(
                                 fieldWithPath("genreCodes").description("리뷰에 추가할 설문에 등록할 체감 테마 장르 코드 기입"),
                                 fieldWithPath("perceivedDifficulty").description("리뷰에 추가할 설문에 등록할 체감 난이도 기입 +\n" +
-                                        Difficulty.getNameList()),
+                                        generateLinkCode(DIFFICULTY)),
                                 fieldWithPath("perceivedHorrorGrade").description("리뷰에 추가할 설문에 등록할 체감 공포도 기입 +\n" +
-                                        HorrorGrade.getNameList()),
+                                        generateLinkCode(HORROR_GRADE)),
                                 fieldWithPath("perceivedActivity").description("리뷰에 추가할 설문에 등록할 체감 활동성 기입 +\n" +
-                                        Activity.getNameList()),
+                                        generateLinkCode(ACTIVITY)),
                                 fieldWithPath("scenarioSatisfaction").description("리뷰에 추가할 설문에 등록할 시나리오 만족도 기입 +\n" +
-                                        Satisfaction.getNameList()),
+                                        generateLinkCode(SATISFACTION)),
                                 fieldWithPath("interiorSatisfaction").description("리뷰에 추가할 설문에 등록할 인테리어 만족도 기입 +\n" +
-                                        Satisfaction.getNameList()),
+                                        generateLinkCode(SATISFACTION)),
                                 fieldWithPath("problemConfigurationSatisfaction").description("리뷰에 추가할 설문에 등록할 문제 구성 만족도 기입 +\n" +
-                                        Satisfaction.getNameList())
+                                        generateLinkCode(SATISFACTION))
                         ),
                         responseFields(
                                 fieldWithPath("reviewId").description("리뷰의 식별 ID"),
@@ -741,7 +741,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("themeInfo.themeImageUrl").description("리뷰가 생성된 테마의 이미지 다운로드 URL"),
                                 fieldWithPath("themeInfo.themeImageThumbnailUrl").description("리뷰가 생성된 테마의 이미지 썸네일 이미지 다운로드 URL"),
                                 fieldWithPath("reviewType").description("리뷰의 Type +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("reviewRecodeNumber").description("생성된 리뷰의 기록 번호"),
                                 fieldWithPath("themeClearYN").description("테마 클리어 여부"),
                                 fieldWithPath("themeClearTime").description("테마를 클리어하는데 걸린 시간"),
@@ -1857,11 +1857,11 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("reviewType").description("수정할 ReviewType 기입 +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("clearYN").description("수정할 클리어 여부 기입"),
                                 fieldWithPath("clearTime").description("수정할 클리어 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입 +\n" +
-                                        ReviewHintUsageCount.getNameList()),
+                                        generateLinkCode(REVIEW_HINT_USAGE_COUNT)),
                                 fieldWithPath("rating").description("수정할 테마에 대한 평점 기입 +\n" +
                                         "테마에 대한 평점은 1~5 점 사이의 점수만 기입이 가능합니다."),
                                 fieldWithPath("friendIds").description("수정 시 리뷰에 등록할 친구 ID 목록 기입"),
@@ -2004,11 +2004,11 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("reviewType").description("수정할 ReviewType 기입 +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("clearYN").description("수정할 클리어 여부 기입"),
                                 fieldWithPath("clearTime").description("수정할 클리어 시간 기입"),
                                 fieldWithPath("hintUsageCount").description("수정할 힌트 사용 개수 기입 +\n" +
-                                        ReviewHintUsageCount.getNameList()),
+                                        generateLinkCode(REVIEW_HINT_USAGE_COUNT)),
                                 fieldWithPath("rating").description("수정할 테마에 대한 평점 기입 +\n" +
                                         "테마에 대한 평점은 1~5 점 사이의 점수만 기입이 가능합니다."),
                                 fieldWithPath("friendIds").description("수정 시 리뷰에 등록할 친구 ID 목록 기입"),
@@ -2348,7 +2348,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("themeInfo.themeImageUrl").description("리뷰가 생성된 테마의 이미지 다운로드 URL"),
                                 fieldWithPath("themeInfo.themeImageThumbnailUrl").description("리뷰가 생성된 테마의 이미지 썸네일 이미지 다운로드 URL"),
                                 fieldWithPath("reviewType").description("리뷰의 Type +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("reviewRecodeNumber").description("생성된 리뷰의 기록 번호"),
                                 fieldWithPath("themeClearYN").description("테마 클리어 여부"),
                                 fieldWithPath("themeClearTime").description("테마를 클리어하는데 걸린 시간"),
@@ -2440,7 +2440,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("themeInfo.themeImageUrl").description("리뷰가 생성된 테마의 이미지 다운로드 URL"),
                                 fieldWithPath("themeInfo.themeImageThumbnailUrl").description("리뷰가 생성된 테마의 이미지 썸네일 이미지 다운로드 URL"),
                                 fieldWithPath("reviewType").description("리뷰의 Type +\n" +
-                                        ReviewType.getNameList()),
+                                        generateLinkCode(REVIEW_TYPE)),
                                 fieldWithPath("reviewRecodeNumber").description("생성된 리뷰의 기록 번호"),
                                 fieldWithPath("themeClearYN").description("테마 클리어 여부"),
                                 fieldWithPath("themeClearTime").description("테마를 클리어하는데 걸린 시간"),

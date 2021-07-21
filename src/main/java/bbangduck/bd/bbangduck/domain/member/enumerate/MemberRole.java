@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.enumerate;
 
+import bbangduck.bd.bbangduck.global.common.EnumType;
 import lombok.RequiredArgsConstructor;
 
 
@@ -9,7 +10,7 @@ import lombok.RequiredArgsConstructor;
  * 회원의 권한을 담는 Enum
  */
 @RequiredArgsConstructor
-public enum MemberRole {
+public enum MemberRole implements EnumType {
     USER("ROLE_USER", "일반 회원"),
     ADMIN("ROLE_ADMIN", "관리자"),
     WITHDRAWAL("ROLE_WITHDRAWAL", "탈퇴"),
@@ -24,6 +25,7 @@ public enum MemberRole {
         return roleName;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }

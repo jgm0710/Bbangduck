@@ -9,7 +9,6 @@ import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberCheckIf
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
-import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberEmailDuplicateException;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNicknameDuplicateException;
@@ -31,6 +30,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS;
+import static bbangduck.bd.bbangduck.api.document.utils.DocUrl.SOCIAL_TYPE;
+import static bbangduck.bd.bbangduck.api.document.utils.DocumentLinkGenerator.generateLinkCode;
 import static bbangduck.bd.bbangduck.global.common.ResponseStatus.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -77,7 +79,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("email").description("회원 식별에 필요한 Email 기입"),
                                 fieldWithPath("nickname").description("회원 활동 시 필요한 Nickname 기입"),
                                 fieldWithPath("socialType").description("Social 인증을 통해 회원가입을 진행하는 경우 어떠한 Social 매체를 사용하여 회원가입을 진행하는 지 명시 + \n" +
-                                        socialTypeList),
+                                        generateLinkCode(SOCIAL_TYPE)),
                                 fieldWithPath("socialId").description("Social 인증을 통해 회원가입을 진행하는 경우 해당 Social 매체 내에서 회원을 식별하기 위해 사용하는 ID 값을 기입 + \n" +
                                         "해당 SocialId 를 통해 회원을 식별합니다.")
                         ),
@@ -90,7 +92,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("memberInfo.socialAccounts[0].socialType").description("Social 인증을 통해 가입된 회원이 사용한 Social 매체"),
                                 fieldWithPath("memberInfo.description").description("간략한 자기 소개 (null)"),
                                 fieldWithPath("memberInfo.roomEscapeRecodesOpenStatus").description("방탈출 기록 공개 여부 +\n" +
-                                        MemberRoomEscapeRecodesOpenStatus.getNameList()),
+                                        generateLinkCode(MEMBER_ROOM_ESCAPE_RECODES_OPEN_STATUS)),
                                 fieldWithPath("memberInfo.roomEscapeStatus.challengesCount").description("회원의 테마 도전 횟수 [0]"),
                                 fieldWithPath("memberInfo.roomEscapeStatus.successCount").description("회원의 테마 클리어에 성공한 횟수 [0]"),
                                 fieldWithPath("memberInfo.roomEscapeStatus.failCount").description("회원이 테마 클리어에 실패한 횟수 [0]"),
