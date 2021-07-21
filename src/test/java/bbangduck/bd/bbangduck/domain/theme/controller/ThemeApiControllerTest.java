@@ -103,7 +103,7 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 get("/api/themes")
                         .param("pageNum", "2")
                         .param("amount", "5")
-                        .param("genreCode", "GR1")
+                        .param("genre", Genre.ACTION.name())
                         .param("themeType", ThemeType.HALF.name())
                         .param("rating", ThemeRatingFilteringType.TWO_OR_MORE.name())
                         .param("numberOfPeople", NumberOfPeople.TWO.name())
@@ -121,8 +121,8 @@ class ThemeApiControllerTest extends BaseControllerTest {
                         requestParameters(
                                 parameterWithName("pageNum").description("조회할 페이지 기입"),
                                 parameterWithName("amount").description("조회할 수량 기입"),
-                                parameterWithName("genreCode").description("어떤 장르의 테마를 조회할 것인지 기입 +\n" +
-                                        "장르 코드는 장르 목록 조회 API 를 별도로 제공"),
+                                parameterWithName("genre").description("어떤 장르의 테마를 조회할 것인지 기입 +\n" +
+                                        generateLinkCode(GENRE)),
                                 parameterWithName("themeType").description("어떤 유형의 테마를 조회할 것인지 기입 +\n" +
                                         generateLinkCode(THEME_TYPE)),
                                 parameterWithName("rating").description("몇 점 이상의 평점을 가진 테마를 조회할 것인지 기입 +\n" +
