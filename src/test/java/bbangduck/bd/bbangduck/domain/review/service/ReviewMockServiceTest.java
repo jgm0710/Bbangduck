@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewSurveyCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
@@ -59,9 +60,9 @@ class ReviewMockServiceTest extends BaseJGMServiceTest {
 
         given(reviewRepository.findById(any())).willReturn(Optional.of(review));
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(perceivedThemeGenres);
 
         //when
 

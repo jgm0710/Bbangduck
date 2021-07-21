@@ -1,6 +1,5 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.*;
@@ -98,10 +97,6 @@ public class ReviewService {
         long periodForAddingSurveys = reviewProperties.getPeriodForAddingSurveys();
         LocalDateTime periodForAddingSurveysDateTime = LocalDateTime.now().minusDays(periodForAddingSurveys);
         return reviewRegisterTimes.isAfter(periodForAddingSurveysDateTime);
-    }
-
-    public void addGenresToReviewSurvey(ReviewSurvey reviewSurvey, List<Genre> genres) {
-        genres.forEach(reviewSurvey::addPerceivedThemeGenre);
     }
 
 //    // TODO: 2021-06-13 우선은 사용하지 않는 기능

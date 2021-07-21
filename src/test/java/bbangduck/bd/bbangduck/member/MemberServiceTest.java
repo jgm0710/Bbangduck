@@ -3,8 +3,7 @@ package bbangduck.bd.bbangduck.member;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.file.exception.StoredFileNotFoundException;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
@@ -25,7 +24,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -247,8 +245,6 @@ class MemberServiceTest extends BaseJGMServiceTest {
         assertEquals(storedFile.getId(), profileImage.getFileStorageId());
         assertEquals(storedFile.getFileName(), profileImage.getFileName());
 
-        Long profileImageId = profileImage.getId();
-
         //when
 
         //then
@@ -277,8 +273,6 @@ class MemberServiceTest extends BaseJGMServiceTest {
         assertNotNull(profileImage);
         assertEquals(storedFile.getId(), profileImage.getFileStorageId());
         assertEquals(storedFile.getFileName(), profileImage.getFileName());
-
-        Long profileImageId = profileImage.getId();
 
         //when
         memberService.deleteProfileImage(signUpId);
@@ -452,12 +446,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
 
-        List<Genre> genres = new ArrayList<>();
-        genres.add(genreRepository.findByCode("HR1").orElseThrow(GenreNotFoundException::new));
-        genres.add(genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new));
-        genres.add(genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new));
-        genres.add(genreRepository.findByCode("CRI1").orElseThrow(GenreNotFoundException::new));
-        genres.add(genreRepository.findByCode("ADVT1").orElseThrow(GenreNotFoundException::new));
+        List<Genre> genres = List.of(Genre.CRIME, Genre.DRAMA, Genre.ARCADE, Genre.SF, Genre.HISTORY);
 
         genres.forEach(genre -> {
             MemberPlayInclination memberPlayInclination = MemberPlayInclination.builder()
@@ -519,12 +508,7 @@ class MemberServiceTest extends BaseJGMServiceTest {
 
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
 
-        List<Genre> genres = new ArrayList<>();
-        genres.add(genreRepository.findByCode("HR1").orElseThrow(GenreNotFoundException::new));
-        genres.add(genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new));
-        genres.add(genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new));
-        genres.add(genreRepository.findByCode("CRI1").orElseThrow(GenreNotFoundException::new));
-        genres.add(genreRepository.findByCode("ADVT1").orElseThrow(GenreNotFoundException::new));
+        List<Genre> genres = List.of(Genre.CRIME, Genre.DRAMA, Genre.ARCADE, Genre.SF, Genre.HISTORY);
 
         genres.forEach(genre -> {
             MemberPlayInclination memberPlayInclination = MemberPlayInclination.builder()

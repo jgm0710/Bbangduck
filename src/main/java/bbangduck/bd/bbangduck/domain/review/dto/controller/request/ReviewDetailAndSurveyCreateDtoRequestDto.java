@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.dto.controller.request;
 
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -38,7 +39,7 @@ public class ReviewDetailAndSurveyCreateDtoRequestDto {
     private String comment;
 
     @NotEmpty(message = "테마 체감 장르에 대한 코드를 기입해 주세요.")
-    private List<String> genreCodes;
+    private List<Genre> perceivedThemeGenres;
 
     @NotNull(message = "채감 난이도를 기입해 주세요.")
     private Difficulty perceivedDifficulty;
@@ -67,7 +68,7 @@ public class ReviewDetailAndSurveyCreateDtoRequestDto {
 
     public ReviewSurveyCreateDto toSurveyServiceDto() {
         return ReviewSurveyCreateDto.builder()
-                .genreCodes(this.genreCodes)
+                .perceivedThemeGenres(this.perceivedThemeGenres)
                 .perceivedDifficulty(this.perceivedDifficulty)
                 .perceivedHorrorGrade(this.perceivedHorrorGrade)
                 .perceivedActivity(this.perceivedActivity)

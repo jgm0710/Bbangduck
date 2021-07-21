@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.entity;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -16,7 +16,6 @@ import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNull;
 
@@ -50,8 +49,8 @@ public class Theme extends BaseEntityDateTime {
     @Column(length = 3000)
     private String description;
 
-    @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
-    private List<ThemeGenre> themeGenres = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private Genre genre;
 
     @Enumerated(EnumType.STRING)
     private ThemeType type;
@@ -80,11 +79,12 @@ public class Theme extends BaseEntityDateTime {
     private boolean deleteYN;
 
     @Builder
-    public Theme(Long id, Shop shop, String name, String description, ThemeType type, List<NumberOfPeople> numberOfPeoples, Difficulty difficulty, Activity activity, HorrorGrade horrorGrade, LocalTime playTime, Long totalRating, Long totalEvaluatedCount, boolean deleteYN) {
+    public Theme(Long id, Shop shop, String name, String description, Genre genre, ThemeType type, List<NumberOfPeople> numberOfPeoples, Difficulty difficulty, Activity activity, HorrorGrade horrorGrade, LocalTime playTime, Long totalRating, Long totalEvaluatedCount, boolean deleteYN) {
         this.id = id;
         this.shop = shop;
         this.name = name;
         this.description = description;
+        this.genre = genre;
         this.type = type;
         this.numberOfPeoples = numberOfPeoples;
         this.difficulty = difficulty;
@@ -104,15 +104,6 @@ public class Theme extends BaseEntityDateTime {
     public void setThemeImage(ThemeImage themeImage) {
         this.themeImage = themeImage;
         themeImage.setTheme(this);
-    }
-
-    public void addGenre(Genre genre) {
-        ThemeGenre themeGenre = ThemeGenre.builder()
-                .theme(this)
-                .genre(genre)
-                .build();
-
-        this.themeGenres.add(themeGenre);
     }
 
     public Long getId() {
@@ -157,10 +148,6 @@ public class Theme extends BaseEntityDateTime {
 
     public boolean isDeleteYN() {
         return deleteYN;
-    }
-
-    public List<Genre> getGenres() {
-        return themeGenres.stream().map(ThemeGenre::getGenre).collect(Collectors.toList());
     }
 
     public ThemeType getType() {
@@ -223,5 +210,9 @@ public class Theme extends BaseEntityDateTime {
 
     public float getRating() {
         return isNull(this.totalRating) || isNull(this.totalEvaluatedCount) ? 0 : (float) this.totalRating / (float) this.totalEvaluatedCount;
+    }
+
+    public Genre getGenre() {
+        return genre;
     }
 }

@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.entity;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -25,8 +25,7 @@ public class ThemeAnalysis {
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id")
+    @Enumerated(EnumType.STRING)
     private Genre genre;
 
     private Long evaluatedCount;

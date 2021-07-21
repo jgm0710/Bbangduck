@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeAnalysisQueryRepository;

@@ -1,8 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.repository;
 
 import bbangduck.bd.bbangduck.common.BaseTest;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -27,9 +27,6 @@ class ThemeAnalysisQueryRepositoryTest extends BaseTest {
 
     @Autowired
     ThemeRepository themeRepository;
-
-    @Autowired
-    GenreRepository genreRepository;
 
     @Autowired
     EntityManager em;
@@ -51,15 +48,11 @@ class ThemeAnalysisQueryRepositoryTest extends BaseTest {
 
 
         for (int i = 0; i < 15; i++) {
-            Genre genre = Genre.builder()
-                    .code("CD" + i)
-                    .name("genre" + i)
-                    .build();
-            Genre savedGenre = genreRepository.save(genre);
+            Genre genre = Arrays.stream(Genre.values()).findAny().get();
 
             ThemeAnalysis themeAnalysis = ThemeAnalysis.builder()
                     .theme(savedTheme1)
-                    .genre(savedGenre)
+                    .genre(genre)
                     .evaluatedCount((long) new Random().nextInt(15))
                     .build();
             themeAnalysisRepository.save(themeAnalysis);
@@ -79,13 +72,6 @@ class ThemeAnalysisQueryRepositoryTest extends BaseTest {
             ThemeAnalysis nextThemeAnalysis = findThemeAnalyses.get(i + 1);
 
             assertTrue(nowThemeAnalysis.getEvaluatedCount() >= nextThemeAnalysis.getEvaluatedCount());
-
-            if (nowThemeAnalysis.getEvaluatedCount().equals(nextThemeAnalysis.getEvaluatedCount())) {
-                Genre nowThemeAnalysisGenre = nowThemeAnalysis.getGenre();
-                Genre nextThemeAnalysisGenre = nextThemeAnalysis.getGenre();
-
-                assertTrue(nowThemeAnalysisGenre.getName().compareTo(nextThemeAnalysisGenre.getName())<0);
-            }
 
             Theme nowThemeAnalysisTheme = nowThemeAnalysis.getTheme();
             assertEquals(theme1.getId(), nowThemeAnalysisTheme.getId());

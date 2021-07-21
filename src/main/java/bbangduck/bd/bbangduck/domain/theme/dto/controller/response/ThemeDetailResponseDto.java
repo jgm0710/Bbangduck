@@ -1,12 +1,11 @@
 package bbangduck.bd.bbangduck.domain.theme.dto.controller.response;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
-import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 테마 상세 조회에 대한 응답 Body Data 를 담을 Dto
@@ -37,7 +35,7 @@ public class ThemeDetailResponseDto {
 
     private Float themeRating;
 
-    private List<ThemeGenreResponseDto> themeGenres;
+    private Genre themeGenre;
 
     private ThemeShopSimpleInfoResponseDto shopInfo;
 
@@ -58,7 +56,7 @@ public class ThemeDetailResponseDto {
                 .themeName(theme.getName())
                 .themeDescription(theme.getDescription())
                 .themeRating(theme.getRating())
-                .themeGenres(convertThemeGenres(theme.getGenres()))
+                .themeGenre(theme.getGenre())
                 .shopInfo(ThemeShopSimpleInfoResponseDto.convert(theme.getShop()))
                 .playTime(theme.getPlayTime())
                 .numberOfPeoples(theme.getNumberOfPeoples())
@@ -67,13 +65,4 @@ public class ThemeDetailResponseDto {
                 .horrorGrade(theme.getHorrorGrade())
                 .build();
     }
-
-    private static List<ThemeGenreResponseDto> convertThemeGenres(List<Genre> genres) {
-        if (!NullCheckUtils.existsList(genres)) {
-            return null;
-        }
-
-        return genres.stream().map(ThemeGenreResponseDto::convert).collect(Collectors.toList());
-    }
-
 }

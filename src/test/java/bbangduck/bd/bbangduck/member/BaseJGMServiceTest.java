@@ -11,9 +11,7 @@ import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
 import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowQueryRepository;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowRepository;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
-import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
@@ -68,9 +66,6 @@ public class BaseJGMServiceTest extends BaseTest {
     protected ReviewLikeService reviewLikeService;
 
     @Autowired
-    protected ReviewPerceivedThemeGenreRepository reviewPerceivedThemeGenreRepository;
-
-    @Autowired
     protected FollowQueryRepository followQueryRepository;
 
     @Autowired
@@ -117,9 +112,6 @@ public class BaseJGMServiceTest extends BaseTest {
 
     @Autowired
     protected MemberProfileImageRepository memberProfileImageRepository;
-
-    @Autowired
-    protected GenreRepository genreRepository;
 
     @Autowired
     protected MemberPlayInclinationRepository memberPlayInclinationRepository;
@@ -190,55 +182,6 @@ public class BaseJGMServiceTest extends BaseTest {
         String contentType = URLConnection.guessContentTypeFromName(filename);
 
         return new MockMultipartFile(paramName, filename, contentType, classPathResource.getInputStream());
-    }
-
-    @BeforeEach
-    public void genreSetUp() {
-        Genre horror = Genre.builder()
-                .code("HR1")
-                .name("공포")
-                .build();
-
-        Genre reasoning = Genre.builder()
-                .code("RSN1")
-                .name("추리")
-                .build();
-
-        Genre romance = Genre.builder()
-                .code("RMC1")
-                .name("로멘스")
-                .build();
-
-        Genre crime = Genre.builder()
-                .code("CRI1")
-                .name("범죄")
-                .build();
-
-        Genre adventure = Genre.builder()
-                .code("ADVT1")
-                .name("모험")
-                .build();
-
-        if (genreRepository.findByCode(horror.getCode()).isEmpty()) {
-            genreRepository.save(horror);
-        }
-
-        if (genreRepository.findByCode(reasoning.getCode()).isEmpty()) {
-            genreRepository.save(reasoning);
-        }
-
-        if (genreRepository.findByCode(romance.getCode()).isEmpty()) {
-            genreRepository.save(romance);
-        }
-
-        if (genreRepository.findByCode(crime.getCode()).isEmpty()) {
-            genreRepository.save(crime);
-        }
-
-        if (genreRepository.findByCode(adventure.getCode()).isEmpty()) {
-            genreRepository.save(adventure);
-        }
-
     }
 
     protected MemberSocialSignUpRequestDto createMemberSignUpRequestDto() {
@@ -326,11 +269,8 @@ public class BaseJGMServiceTest extends BaseTest {
         return reviewImageRequestDtos;
     }
 
-    protected List<String> createGenreCodes() {
-        List<String> genreCodes = new ArrayList<>();
-        genreCodes.add("RSN1");
-        genreCodes.add("RMC1");
-        return genreCodes;
+    protected List<Genre> createPerceivedThemeGenres() {
+        return List.of(Genre.ACTION, Genre.CRIME);
     }
 
     protected Theme createThemeSample() {
@@ -348,6 +288,7 @@ public class BaseJGMServiceTest extends BaseTest {
         Theme theme = Theme.builder()
                 .shop(shop)
                 .name("이방인")
+                .genre(Genre.ACTION)
                 .description("\" Loading...80%\n" +
                         "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
                 .numberOfPeoples(List.of(NumberOfPeople.FIVE))
@@ -358,11 +299,6 @@ public class BaseJGMServiceTest extends BaseTest {
                 .totalEvaluatedCount(0L)
                 .deleteYN(false)
                 .build();
-
-        Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
-        Genre rmc1 = genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new);
-        theme.addGenre(rsn1);
-        theme.addGenre(rmc1);
 
         return themeRepository.save(theme);
     }
@@ -466,9 +402,9 @@ public class BaseJGMServiceTest extends BaseTest {
                 .build();
     }
 
-    protected ReviewSurveyCreateRequestDto createReviewSurveyCreateRequestDto(List<String> genreCodes) {
+    protected ReviewSurveyCreateRequestDto createReviewSurveyCreateRequestDto(List<Genre> perceivedThemeGenres) {
         return ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
                 .perceivedActivity(Activity.NORMAL)
@@ -530,6 +466,7 @@ public class BaseJGMServiceTest extends BaseTest {
         Theme theme = Theme.builder()
                 .shop(shop)
                 .name("이방인")
+                .genre(Genre.ACTION)
                 .description("\" Loading...80%\n" +
                         "분명 시험이 끝난 기념으로 술을 마시고 있었는데...여긴 어디지!? \"")
                 .numberOfPeoples(List.of(NumberOfPeople.FIVE))
@@ -538,9 +475,6 @@ public class BaseJGMServiceTest extends BaseTest {
                 .playTime(LocalTime.of(1, 0))
                 .deleteYN(true)
                 .build();
-
-        Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
-        theme.addGenre(rsn1);
 
         return themeRepository.save(theme);
 
@@ -553,11 +487,11 @@ public class BaseJGMServiceTest extends BaseTest {
                 .build();
     }
 
-    protected ReviewDetailAndSurveyCreateDtoRequestDto createReviewDetailAndSurveyCreateDtoRequestDto(List<ReviewImageRequestDto> reviewImageRequestDtos, List<String> genreCodes) {
+    protected ReviewDetailAndSurveyCreateDtoRequestDto createReviewDetailAndSurveyCreateDtoRequestDto(List<ReviewImageRequestDto> reviewImageRequestDtos, List<Genre> perceivedThemeGenres) {
         return ReviewDetailAndSurveyCreateDtoRequestDto.builder()
                 .reviewImages(reviewImageRequestDtos)
                 .comment("test review detail comment")
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
                 .perceivedActivity(Activity.NORMAL)

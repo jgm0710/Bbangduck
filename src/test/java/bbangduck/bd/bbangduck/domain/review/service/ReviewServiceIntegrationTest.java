@@ -2,8 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.service;
 
 import bbangduck.bd.bbangduck.common.BaseTest;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
@@ -33,8 +32,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("ReviewService 통합 테스트")
 class ReviewServiceIntegrationTest extends BaseTest {
@@ -49,9 +47,6 @@ class ReviewServiceIntegrationTest extends BaseTest {
     ThemeRepository themeRepository;
 
     @Autowired
-    GenreRepository genreRepository;
-
-    @Autowired
     ReviewRepository reviewRepository;
 
     @Autowired
@@ -61,7 +56,6 @@ class ReviewServiceIntegrationTest extends BaseTest {
     void tearDown() {
         reviewRepository.deleteAll();
         themeRepository.deleteAll();
-        genreRepository.deleteAll();
         memberRepository.deleteAll();
     }
 
@@ -78,16 +72,10 @@ class ReviewServiceIntegrationTest extends BaseTest {
         Member savedMember = memberRepository.save(member);
 
 
-        Genre genre = Genre.builder()
-                .code("SRITGR1")
-                .name("장르")
-                .build();
-        Genre savedGenre = genreRepository.save(genre);
-
         Theme theme = Theme.builder()
                 .name("theme")
+                .genre(Genre.ACTION)
                 .build();
-        theme.addGenre(savedGenre);
 
         Theme savedTheme = themeRepository.save(theme);
 
@@ -108,12 +96,6 @@ class ReviewServiceIntegrationTest extends BaseTest {
         assertEquals(reviewCreateDto.isClearYN(), savedReview.isClearYN());
         assertEquals(reviewCreateDto.getClearTime(), savedReview.getClearTime());
         assertEquals(reviewCreateDto.getHintUsageCount(), savedReview.getHintUsageCount());
-
-        //final
-        reviewRepository.delete(savedReview);
-        themeRepository.delete(savedTheme);
-        genreRepository.delete(genre);
-        memberRepository.delete(savedMember);
     }
 
     @Test
@@ -148,7 +130,10 @@ class ReviewServiceIntegrationTest extends BaseTest {
                 .build();
         Review savedReview = reviewRepository.save(review);
 
+        List<Genre> genres = List.of(Genre.ACTION, Genre.ARCADE);
+
         ReviewSurveyCreateDto reviewSurveyCreateDto = ReviewSurveyCreateDto.builder()
+                .perceivedThemeGenres(genres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.VERY_HORROR)
                 .perceivedActivity(Activity.VERY_ACTIVITY)
@@ -175,61 +160,10 @@ class ReviewServiceIntegrationTest extends BaseTest {
         assertEquals(reviewSurveyCreateDto.getScenarioSatisfaction(), reviewSurvey.getScenarioSatisfaction());
         assertEquals(reviewSurveyCreateDto.getInteriorSatisfaction(), reviewSurvey.getInteriorSatisfaction());
         assertEquals(reviewSurveyCreateDto.getProblemConfigurationSatisfaction(), reviewSurvey.getProblemConfigurationSatisfaction());
+        reviewSurvey.getPerceivedThemeGenres().forEach(genre -> assertTrue(genres.stream().anyMatch(genre1 -> genre1 == genre)));
 
         //final
         reviewRepository.delete(review);
-    }
-
-    @Test
-    @DisplayName("리뷰 설문에 장르 목록 추가")
-    @Transactional
-    public void addGenresToReviewSurvey() {
-        //given
-        Review review = Review.builder()
-                .deleteYN(false)
-                .build();
-        ReviewSurvey reviewSurvey = ReviewSurvey.builder()
-                .build();
-        review.addReviewSurvey(reviewSurvey);
-
-        Review savedReview = reviewRepository.save(review);
-
-        Genre genre1 = Genre.builder()
-                .code("agtrgr1")
-                .name("genre1")
-                .build();
-
-        Genre genre2 = Genre.builder()
-                .code("agtrgr2")
-                .name("genre2")
-                .build();
-
-        Genre savedGenre1 = genreRepository.save(genre1);
-        Genre savedGenre2 = genreRepository.save(genre2);
-
-        List<Genre> genres = List.of(savedGenre1, savedGenre2);
-
-        ReviewSurvey savedReviewReviewSurvey = savedReview.getReviewSurvey();
-
-        //when
-        reviewService.addGenresToReviewSurvey(savedReviewReviewSurvey, genres);
-        em.flush();
-        em.clear();
-
-        //then
-        Review findReview = reviewRepository.findById(savedReview.getId()).orElseThrow(ReviewNotFoundException::new);
-        ReviewSurvey findReviewReviewSurvey = findReview.getReviewSurvey();
-        List<Genre> findReviewReviewSurveyPerceivedThemeGenres = findReviewReviewSurvey.getPerceivedThemeGenres();
-
-        findReviewReviewSurveyPerceivedThemeGenres.forEach(genre -> {
-            boolean anyMatch = genres.stream().anyMatch(g -> g.getId().equals(genre.getId()));
-            Assertions.assertTrue(anyMatch,"조회된 리뷰의 설문의 체감 장르에는 리뷰 설문에 추가한 장르 중 하나가 포함되어 있어야 한다.");
-        });
-
-        //final
-        reviewRepository.delete(savedReview);
-        genreRepository.delete(savedGenre1);
-        genreRepository.delete(savedGenre2);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.dto.controller.response;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
@@ -12,7 +12,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 작성자 : 정구민 <br>
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 @Data
 public class SimpleAndSurveyReviewResponseDto extends SimpleReviewResponseDto {
 
-    private List<ReviewPerceivedThemeGenreResponseDto> perceivedThemeGenres;
+    private List<Genre> perceivedThemeGenres;
     private Difficulty perceivedDifficulty;
     private HorrorGrade perceivedHorrorGrade;
     private Activity perceivedActivity;
@@ -40,9 +39,8 @@ public class SimpleAndSurveyReviewResponseDto extends SimpleReviewResponseDto {
         super(review, currentMember, existReviewLike, possibleOfAddReviewSurvey);
 
         ReviewSurvey reviewSurvey = review.getReviewSurvey();
-        List<Genre> perceivedThemeGenres = reviewSurvey.getPerceivedThemeGenres();
 
-        this.perceivedThemeGenres = perceivedThemeGenres.stream().map(ReviewPerceivedThemeGenreResponseDto::convert).collect(Collectors.toList());
+        this.perceivedThemeGenres = reviewSurvey.getPerceivedThemeGenres();
         this.perceivedDifficulty = reviewSurvey.getPerceivedDifficulty();
         this.perceivedHorrorGrade = reviewSurvey.getPerceivedHorrorGrade();
         this.perceivedActivity = reviewSurvey.getPerceivedActivity();

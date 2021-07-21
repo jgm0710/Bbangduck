@@ -3,8 +3,7 @@ package bbangduck.bd.bbangduck.domain.review.service;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.follow.exception.NotTwoWayFollowRelationException;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
@@ -69,7 +68,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         //when
@@ -80,7 +78,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Member reviewMember = findReview.getMember();
         Theme reviewTheme = findReview.getTheme();
-        List<Genre> reviewThemeGenres = reviewTheme.getGenres();
+        Genre genre = reviewTheme.getGenre();
 //        List<ReviewImage> reviewImages = findReview.getReviewImages();
 
         assertEquals(signUpId, reviewMember.getId(), "리뷰 생성 요청 회원의 ID 와 생성된 리뷰의 회원 ID 는 같아야한다.");
@@ -91,8 +89,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<MemberPlayInclination> memberPlayInclinations = memberPlayInclinationQueryRepository.findAllByMember(reviewMember.getId());
         memberPlayInclinations.forEach(memberPlayInclination -> {
             Genre memberPlayInclinationGenre = memberPlayInclination.getGenre();
-            boolean reviewThemeGenresExists = reviewThemeGenres.stream().anyMatch(genre -> genre.getId().equals(memberPlayInclinationGenre.getId()));
-            assertTrue(reviewThemeGenresExists, "생성된 리뷰를 작성한 회원의 플레이 성향에 생성된 리뷰가 등록된 테마의 장르가 반영되어 있어야 한다.");
             assertEquals(1, memberPlayInclination.getPlayCount(), "회원가입 이후 처음 리뷰를 작성한 것으로 회원 성향의 play count 는 모두 1이어야 한다.");
         });
 
@@ -126,7 +122,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         //when
@@ -152,7 +147,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
@@ -183,7 +177,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         //when
@@ -209,7 +202,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         //when
@@ -235,7 +227,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         //when
@@ -262,7 +253,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
@@ -310,7 +300,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         //when
@@ -336,7 +325,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         FileStorage storedFile = fileStorageService.getStoredFile(uploadImageFileId);
         List<FileStorage> storedFiles = List.of(storedFile);
 
-        List<String> genreCodes = createGenreCodes();
         ReviewCreateDto reviewCreateDto = createReviewCreateDto(storedFiles, friendIds);
 
         Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
@@ -569,9 +557,9 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), reviewCreateDto);
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(perceivedThemeGenres);
         ReviewSurveyCreateDto reviewSurveyCreateDto = reviewSurveyCreateRequestDto.toServiceDto();
 
         em.flush();
@@ -596,9 +584,9 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         assertEquals(reviewSurveyCreateDto.getInteriorSatisfaction(), findReviewReviewSurvey.getInteriorSatisfaction());
         assertEquals(reviewSurveyCreateDto.getProblemConfigurationSatisfaction(), findReviewReviewSurvey.getProblemConfigurationSatisfaction());
 
-        List<Genre> perceivedThemeGenres = findReviewReviewSurvey.getPerceivedThemeGenres();
-        genreCodes.forEach(genreCode -> {
-            boolean genreCodesAnyMatch = perceivedThemeGenres.stream().anyMatch(genre -> genre.getCode().equals(genreCode));
+        List<Genre> findReviewReviewSurveyPerceivedThemeGenres = findReviewReviewSurvey.getPerceivedThemeGenres();
+        findReviewReviewSurveyPerceivedThemeGenres.forEach(findGenre -> {
+            boolean genreCodesAnyMatch = perceivedThemeGenres.stream().anyMatch(genre -> genre == findGenre);
             assertTrue(genreCodesAnyMatch, "리뷰 설문 추가 메소드 호출 시 입력한 장르 코드 중 하나는 추가된 설문에 등록된 장르의 장르 코드 중 하나로 있어야 한다.");
         });
 
@@ -623,9 +611,9 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), reviewCreateDto);
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(perceivedThemeGenres);
         ReviewSurveyCreateDto reviewSurveyCreateDto = reviewSurveyCreateRequestDto.toServiceDto();
 
         em.flush();
@@ -663,9 +651,9 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), reviewCreateDto);
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(perceivedThemeGenres);
         ReviewSurveyCreateDto reviewSurveyCreateDto = reviewSurveyCreateRequestDto.toServiceDto();
 
         em.flush();
@@ -675,41 +663,6 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         //then
         assertThrows(ReviewNotFoundException.class, () -> reviewApplicationService.addSurveyToReview(10000L, signUpId, reviewSurveyCreateDto));
-
-    }
-
-    @Test
-    @DisplayName("리뷰에 설문 정보 추가 - 리뷰 설문에 등록할 장르를 찾을 수 없는 경우")
-    @Transactional
-    public void addSurveyToReview_GenreNotFound() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSignUpRequestDto = createMemberSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSignUpRequestDto.toServiceDto());
-
-        Theme theme = createThemeSample();
-
-        MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
-        Long uploadFileId = fileStorageService.uploadImageFile(files);
-        FileStorage storedFile = fileStorageService.getStoredFile(uploadFileId);
-
-        List<Long> friendIds = createFriendToMember(memberSignUpRequestDto, signUpId);
-
-        ReviewCreateDto reviewCreateDto = createReviewCreateDto(List.of(storedFile), friendIds);
-
-        Long reviewId = reviewApplicationService.createReview(signUpId, theme.getId(), reviewCreateDto);
-
-        List<String> genreCodes = List.of("AMGN1", "AMGN2");
-
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
-        ReviewSurveyCreateDto reviewSurveyCreateDto = reviewSurveyCreateRequestDto.toServiceDto();
-
-        em.flush();
-        em.clear();
-
-        //when
-
-        //then
-        assertThrows(GenreNotFoundException.class, () -> reviewApplicationService.addSurveyToReview(reviewId, signUpId, reviewSurveyCreateDto));
 
     }
 
@@ -1248,9 +1201,9 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         Long reviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
-        ReviewDetailAndSurveyCreateDtoRequestDto reviewDetailAndSurveyCreateDtoRequestDto = createReviewDetailAndSurveyCreateDtoRequestDto(reviewImageRequestDtos, genreCodes);
+        ReviewDetailAndSurveyCreateDtoRequestDto reviewDetailAndSurveyCreateDtoRequestDto = createReviewDetailAndSurveyCreateDtoRequestDto(reviewImageRequestDtos, perceivedThemeGenres);
 
         //when
         reviewApplicationService.addDetailToReview(reviewId, signUpId, reviewDetailAndSurveyCreateDtoRequestDto.toDetailServiceDto());
@@ -1274,7 +1227,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         assertEquals(ReviewType.DETAIL, findReview.getReviewType(), "리뷰 상세가 추가된 리뷰는 ReviewType 이 Detail 이어야 한다.");
 
         ReviewSurvey findReviewReviewSurvey = findReview.getReviewSurvey();
-        findReviewReviewSurvey.getPerceivedThemeGenres().forEach(genre -> assertTrue(genreCodes.stream().anyMatch(genreCode -> genreCode.equals(genre.getCode())),
+        findReviewReviewSurvey.getPerceivedThemeGenres().forEach(findGenre -> assertTrue(perceivedThemeGenres.stream().anyMatch(genre -> genre == findGenre),
                 "조회된 리뷰에 등록된 체감 장르 목록에는 리뷰 설문 추가 시 등록한 장르코드에 해당하는 장르가 있어야 한다."));
         assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getPerceivedDifficulty(), findReviewReviewSurvey.getPerceivedDifficulty());
         assertEquals(reviewDetailAndSurveyCreateDtoRequestDto.getPerceivedHorrorGrade(), findReviewReviewSurvey.getPerceivedHorrorGrade());

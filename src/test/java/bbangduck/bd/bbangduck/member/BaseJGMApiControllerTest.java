@@ -11,9 +11,7 @@ import bbangduck.bd.bbangduck.domain.follow.entity.Follow;
 import bbangduck.bd.bbangduck.domain.follow.entity.FollowStatus;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowQueryRepository;
 import bbangduck.bd.bbangduck.domain.follow.repository.FollowRepository;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
-import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
@@ -93,9 +91,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
     @Autowired
     protected ReviewLikeRepository reviewLikeRepository;
-
-    @Autowired
-    protected GenreRepository genreRepository;
 
     @Autowired
     protected PasswordEncoder passwordEncoder;
@@ -198,55 +193,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         deleteAll();
     }
 
-    @BeforeEach
-    public void genreSetUp() {
-        Genre horror = Genre.builder()
-                .code("HR1")
-                .name("공포")
-                .build();
-
-        Genre reasoning = Genre.builder()
-                .code("RSN1")
-                .name("추리")
-                .build();
-
-        Genre romance = Genre.builder()
-                .code("RMC1")
-                .name("로멘스")
-                .build();
-
-        Genre crime = Genre.builder()
-                .code("CRI1")
-                .name("범죄")
-                .build();
-
-        Genre adventure = Genre.builder()
-                .code("ADVT1")
-                .name("모험")
-                .build();
-
-        if (genreRepository.findByCode(horror.getCode()).isEmpty()) {
-            genreRepository.save(horror);
-        }
-
-        if (genreRepository.findByCode(reasoning.getCode()).isEmpty()) {
-            genreRepository.save(reasoning);
-        }
-
-        if (genreRepository.findByCode(romance.getCode()).isEmpty()) {
-            genreRepository.save(romance);
-        }
-
-        if (genreRepository.findByCode(crime.getCode()).isEmpty()) {
-            genreRepository.save(crime);
-        }
-
-        if (genreRepository.findByCode(adventure.getCode()).isEmpty()) {
-            genreRepository.save(adventure);
-        }
-
-    }
-
     protected MockMultipartFile createMockMultipartFile(String paramName, String path) throws IOException {
         ClassPathResource classPathResource = new ClassPathResource(path);
         String filename = classPathResource.getFilename();
@@ -312,11 +258,8 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return followedMemberIds;
     }
 
-    protected List<String> createGenreCodes() {
-        List<String> genreCodes = new ArrayList<>();
-        genreCodes.add("RSN1");
-        genreCodes.add("RMC1");
-        return genreCodes;
+    protected List<Genre> createPerceivedThemeGenres() {
+        return List.of(Genre.ACTION, Genre.COMEDY, Genre.DRAMA);
     }
 
     protected Theme createThemeSample() throws IOException {
@@ -342,6 +285,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .deleteYN(false)
                 .totalEvaluatedCount(0L)
                 .totalRating(0L)
+                .genre(Genre.ACTION)
                 .build();
 
         MockMultipartFile files = createMockMultipartFile("files", IMAGE_FILE_CLASS_PATH);
@@ -352,11 +296,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .fileName(storedFile.getFileName())
                 .build();
         theme.setThemeImage(themeImage);
-
-        Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
-        Genre rmc1 = genreRepository.findByCode("RMC1").orElseThrow(GenreNotFoundException::new);
-        theme.addGenre(rsn1);
-        theme.addGenre(rmc1);
 
         return themeRepository.save(theme);
     }
@@ -382,10 +321,8 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .activity(Activity.LITTLE_ACTIVITY)
                 .playTime(LocalTime.of(1, 0))
                 .deleteYN(true)
+                .genre(Genre.ACTION)
                 .build();
-
-        Genre rsn1 = genreRepository.findByCode("RSN1").orElseThrow(GenreNotFoundException::new);
-        theme.addGenre(rsn1);
 
         return themeRepository.save(theme);
 
@@ -512,9 +449,9 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 //                .build();
 //    }
 
-    protected ReviewSurveyCreateRequestDto createReviewSurveyCreateRequestDto(List<String> genreCodes) {
+    protected ReviewSurveyCreateRequestDto createReviewSurveyCreateRequestDto(List<Genre> perceivedThemeGenres) {
         return ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
                 .perceivedActivity(Activity.NORMAL)
@@ -829,11 +766,11 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .build();
     }
 
-    protected ReviewDetailAndSurveyCreateDtoRequestDto createReviewDetailAndSurveyCreateDtoRequestDto(List<ReviewImageRequestDto> reviewImageRequestDtos, List<String> genreCodes) {
+    protected ReviewDetailAndSurveyCreateDtoRequestDto createReviewDetailAndSurveyCreateDtoRequestDto(List<ReviewImageRequestDto> reviewImageRequestDtos, List<Genre> perceivedThemeGenres) {
         return ReviewDetailAndSurveyCreateDtoRequestDto.builder()
                 .reviewImages(reviewImageRequestDtos)
                 .comment("test review detail comment")
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.LITTLE_HORROR)
                 .perceivedActivity(Activity.NORMAL)
@@ -844,7 +781,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     }
 
     protected void createReviewSampleList(Long memberId, List<Long> friendIds, Long themeId) throws IOException {
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
         for (int i = 0; i < 30; i++) {
             boolean clearYN = true;
             LocalTime clearTime = LocalTime.of(0, new Random().nextInt(15) + 30, new Random().nextInt(59));
@@ -870,7 +807,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
             }
 
             if (i % 4 == 0) {
-                ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+                ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(perceivedThemeGenres);
                 reviewApplicationService.addSurveyToReview(reviewId, memberId, reviewSurveyCreateRequestDto.toServiceDto());
             }
 

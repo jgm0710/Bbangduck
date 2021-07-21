@@ -1,8 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
-import bbangduck.bd.bbangduck.domain.genre.repository.GenreRepository;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -42,19 +40,15 @@ public class ThemeDeveloperService {
 
     private final ThemeRepository themeRepository;
 
-    private final GenreRepository genreRepository;
-
     @Transactional
     public void dummyDataSetUp() {
         if (!themeRepository.findAll().isEmpty()) {
             return;
         }
 
-        createGenresSample();
-
-        Genre rsn1 = genreRepository.findByCode("TMPRSN1").orElseThrow(GenreNotFoundException::new);
-        Genre od1 = genreRepository.findByCode("TMPOD1").orElseThrow(GenreNotFoundException::new);
-        Genre cmd1 = genreRepository.findByCode("TMPCMD1").orElseThrow(GenreNotFoundException::new);
+        Genre rsn1 = Genre.REASONING;
+        Genre od1 = Genre.OUTDOOR;
+        Genre cmd1 = Genre.COMEDY;
 
         createThemeSample1(od1);
         createThemeSample2(rsn1);
@@ -62,34 +56,6 @@ public class ThemeDeveloperService {
         createThemeSample4(cmd1);
         createThemeSample5(rsn1);
 
-    }
-
-    private void createGenresSample() {
-        if (genreRepository.findByCode("TMPRSN1").isEmpty()) {
-            Genre genre1 = Genre.builder()
-                    .code("TMPRSN1")
-                    .name("추리")
-                    .build();
-
-            Genre saved1 = genreRepository.save(genre1);
-        }
-
-        if (genreRepository.findByCode("TMPOD1").isEmpty()) {
-            Genre genre2 = Genre.builder()
-                    .code("TMPOD1")
-                    .name("야외")
-                    .build();
-
-            Genre saved2 = genreRepository.save(genre2);
-        }
-
-        if (genreRepository.findByCode("TMPCMD1").isEmpty()) {
-            Genre genre3 = Genre.builder()
-                    .code("TMPCMD1")
-                    .name("코메디")
-                    .build();
-            Genre saved3 = genreRepository.save(genre3);
-        }
     }
 
     private void createThemeSample5(Genre genre) {
@@ -143,10 +109,9 @@ public class ThemeDeveloperService {
                 .horrorGrade(HorrorGrade.LITTLE_HORROR)
                 .totalRating(0L)
                 .totalEvaluatedCount(0L)
+                .genre(genre)
                 .deleteYN(false)
                 .build();
-
-        theme.addGenre(genre);
 
         themeRepository.save(theme);
     }
@@ -227,9 +192,8 @@ public class ThemeDeveloperService {
                 .totalRating(0L)
                 .totalEvaluatedCount(0L)
                 .deleteYN(false)
+                .genre(genre)
                 .build();
-
-        theme.addGenre(genre);
 
         themeRepository.save(theme);
     }
@@ -283,10 +247,9 @@ public class ThemeDeveloperService {
                 .horrorGrade(HorrorGrade.NORMAL)
                 .totalRating(0L)
                 .totalEvaluatedCount(0L)
+                .genre(genre)
                 .deleteYN(false)
                 .build();
-
-        theme.addGenre(genre);
 
         themeRepository.save(theme);
     }
@@ -338,10 +301,10 @@ public class ThemeDeveloperService {
                 .horrorGrade(HorrorGrade.LITTLE_HORROR)
                 .totalRating(0L)
                 .totalEvaluatedCount(0L)
+                .genre(genre)
                 .deleteYN(false)
                 .build();
 
-        theme.addGenre(genre);
 
         themeRepository.save(theme);
     }
@@ -399,11 +362,10 @@ public class ThemeDeveloperService {
                 .activity(Activity.VERY_ACTIVITY)
                 .horrorGrade(HorrorGrade.LITTLE_HORROR)
                 .totalRating(0L)
+                .genre(genre)
                 .totalEvaluatedCount(0L)
                 .deleteYN(false)
                 .build();
-
-        theme.addGenre(genre);
 
         themeRepository.save(theme);
     }

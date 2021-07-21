@@ -21,6 +21,7 @@ public enum DocUrl {
     REVIEW_SEARCH_TYPE("reviewSearchType", "리뷰 목록 조회 조건"),
     REVIEW_SORT_CONDITION("reviewSortCondition", "리뷰 목록 조회 정렬 조건"),
     REVIEW_TYPE("reviewType", "리뷰 타입"),
+    GENRE("genre","장르")
     ;
 
     @Getter

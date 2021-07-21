@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.theme.repository;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
@@ -29,8 +30,6 @@ import static bbangduck.bd.bbangduck.domain.genre.entity.QGenre.genre;
 import static bbangduck.bd.bbangduck.domain.member.entity.QMember.member;
 import static bbangduck.bd.bbangduck.domain.review.entity.QReview.review;
 import static bbangduck.bd.bbangduck.domain.theme.entity.QTheme.theme;
-import static bbangduck.bd.bbangduck.domain.theme.entity.QThemeGenre.themeGenre;
-import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.existsString;
 import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 
 /**
@@ -47,10 +46,8 @@ public class ThemeQueryRepository {
     public QueryResults<Theme> findList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto) {
         return queryFactory
                 .selectFrom(theme)
-                .join(themeGenre).on(themeGenre.theme.eq(theme)).fetchJoin()
-                .join(genre).on(themeGenre.genre.eq(genre)).fetchJoin()
                 .where(
-                        genreCodeEq(themeGetListDto.getGenreCode()),
+                        genreEq(themeGetListDto.getGenre()),
                         typeEq(themeGetListDto.getThemeType()),
                         numberOfPeoplesContains(themeGetListDto.getNumberOfPeople()),
                         ratingEq(themeGetListDto.getRating()),
@@ -135,10 +132,10 @@ public class ThemeQueryRepository {
         return isNotNull(themeType) ? theme.type.eq(themeType) : null;
     }
 
-    private BooleanExpression genreCodeEq(String genreCode) {
-        return existsString(genreCode) ? genre.code.eq(genreCode) : null;
+    private BooleanExpression genreEq(Genre genre) {
+        return isNotNull(genre) ? theme.genre.eq(genre) : null;
     }
-    
+
     public List<Member> findThemePlayMemberList(Long themeId, ThemeGetPlayMemberListDto themeGetPlayMemberListDto) {
         return queryFactory
                 .select(member)

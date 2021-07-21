@@ -1,6 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.controller;
 
-import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewDetailAndSurveyCreateDtoRequestDto;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.global.common.NullCheckUtils;
@@ -62,22 +62,22 @@ public class ReviewValidator {
     public void validateAddSurveyToReview(ReviewSurveyCreateRequestDto requestDto, Errors errors) {
         hasErrorsThrow(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID, errors);
 
-        List<String> genreCodes = requestDto.getGenreCodes();
+        List<Genre> perceivedThemeGenres = requestDto.getPerceivedThemeGenres();
         int perceivedThemeGenresCountLimit = reviewProperties.getPerceivedThemeGenresCountLimit();
-        checkPerceivedThemeGenresCount(genreCodes, perceivedThemeGenresCountLimit, errors);
+        checkPerceivedThemeGenresCount(perceivedThemeGenres, perceivedThemeGenresCountLimit, errors);
 
         hasErrorsThrow(ResponseStatus.ADD_SURVEY_TO_REVIEW_NOT_VALID, errors);
     }
 
-    public void validateUpdateSurveyFromReview(ReviewSurveyUpdateRequestDto requestDto, Errors errors) {
-        hasErrorsThrow(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID, errors);
-
-        List<String> genreCodes = requestDto.getGenreCodes();
-        int perceivedThemeGenresCountLimit = reviewProperties.getPerceivedThemeGenresCountLimit();
-        checkPerceivedThemeGenresCount(genreCodes, perceivedThemeGenresCountLimit, errors);
-
-        hasErrorsThrow(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID, errors);
-    }
+//    public void validateUpdateSurveyFromReview(ReviewSurveyUpdateRequestDto requestDto, Errors errors) {
+//        hasErrorsThrow(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID, errors);
+//
+//        List<String> genreCodes = requestDto.getGenreCodes();
+//        int perceivedThemeGenresCountLimit = reviewProperties.getPerceivedThemeGenresCountLimit();
+//        checkPerceivedThemeGenresCount(genreCodes, perceivedThemeGenresCountLimit, errors);
+//
+//        hasErrorsThrow(ResponseStatus.UPDATE_SURVEY_FROM_REVIEW_NOT_VALID, errors);
+//    }
 
 
 
@@ -111,13 +111,13 @@ public class ReviewValidator {
         }
     }
 
-    private void checkPerceivedThemeGenresCount(List<String> genreCodes, int perceivedThemeGenresCountLimit, Errors errors) {
-        if (!existsList(genreCodes)) {
+    private void checkPerceivedThemeGenresCount(List<Genre> perceivedThemeGenres, int perceivedThemeGenresCountLimit, Errors errors) {
+        if (!existsList(perceivedThemeGenres)) {
             return;
         }
 
-        if (genreCodes.size() > perceivedThemeGenresCountLimit) {
-            errors.rejectValue("genreCodes", "ExceededDataCount", "리뷰 설문에 등록할 체감 장르의 개수가 제한된 개수보다 많습니다. 체감 테마 장르 등록 가능 개수 : " + perceivedThemeGenresCountLimit);
+        if (perceivedThemeGenres.size() > perceivedThemeGenresCountLimit) {
+            errors.rejectValue("perceivedThemeGenres", "ExceededDataCount", "리뷰 설문에 등록할 체감 장르의 개수가 제한된 개수보다 많습니다. 체감 테마 장르 등록 가능 개수 : " + perceivedThemeGenresCountLimit);
         }
     }
 
@@ -169,7 +169,7 @@ public class ReviewValidator {
 
     public void validateAddDetailAndSurveyToReview(ReviewDetailAndSurveyCreateDtoRequestDto requestDto, Errors errors) {
         validateReviewImages(requestDto.getReviewImages(), errors);
-        checkPerceivedThemeGenresCount(requestDto.getGenreCodes(), reviewProperties.getPerceivedThemeGenresCountLimit(), errors);
+        checkPerceivedThemeGenresCount(requestDto.getPerceivedThemeGenres(), reviewProperties.getPerceivedThemeGenresCountLimit(), errors);
 
         hasErrorsThrow(ResponseStatus.ADD_DETAIL_AND_SURVEY_TO_REVIEW_NOT_VALID, errors);
     }

@@ -2,8 +2,6 @@ package bbangduck.bd.bbangduck.domain.review.service;
 
 import bbangduck.bd.bbangduck.domain.follow.exception.NotTwoWayFollowRelationException;
 import bbangduck.bd.bbangduck.domain.follow.service.FollowService;
-import bbangduck.bd.bbangduck.domain.genre.entity.Genre;
-import bbangduck.bd.bbangduck.domain.genre.service.GenreService;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.service.MemberPlayInclinationService;
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
@@ -47,8 +45,6 @@ public class ReviewApplicationService {
 
     private final FollowService followService;
 
-    private final GenreService genreService;
-
     private final ThemeAnalysisService themeAnalysisService;
 
     private final ReviewLikeService reviewLikeService;
@@ -65,7 +61,7 @@ public class ReviewApplicationService {
 
         reviewService.addPlayTogetherFriendsToReview(review, twoWayFollowMembers);
 
-        memberPlayInclinationService.reflectingPropensityOfMemberToPlay(member, theme.getGenres());
+        memberPlayInclinationService.reflectingPropensityOfMemberToPlay(member, theme.getGenre());
 
         themeService.increaseThemeRating(theme, reviewCreateDto.getRating());
 
@@ -107,10 +103,8 @@ public class ReviewApplicationService {
         reviewService.checkIfMyReview(authenticatedMemberId, reviewMember.getId());
 
         reviewService.addSurveyToReview(review, reviewSurveyCreateDto);
-        List<Genre> genres = genreService.getGenresByCodes(reviewSurveyCreateDto.getGenreCodes());
-        reviewService.addGenresToReviewSurvey(review.getReviewSurvey(), genres);
 
-        themeAnalysisService.reflectingThemeAnalyses(review.getTheme(), genres);
+        themeAnalysisService.reflectingThemeAnalyses(review.getTheme(), reviewSurveyCreateDto.getPerceivedThemeGenres());
     }
 
     @Transactional

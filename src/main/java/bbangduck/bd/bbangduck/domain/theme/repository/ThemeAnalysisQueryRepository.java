@@ -23,11 +23,9 @@ public class ThemeAnalysisQueryRepository {
     public List<ThemeAnalysis> findByThemeId(Long themeId) {
         return queryFactory
                 .selectFrom(themeAnalysis)
-                .join(themeAnalysis.genre).fetchJoin()
                 .where(themeAnalysis.theme.id.eq(themeId))
                 .orderBy(
-                        themeAnalysis.evaluatedCount.desc(),
-                        themeAnalysis.genre.name.asc()
+                        themeAnalysis.evaluatedCount.desc()
                 )
                 .fetch();
     }

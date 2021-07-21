@@ -3,7 +3,7 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
-import bbangduck.bd.bbangduck.domain.genre.exception.GenreNotFoundException;
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
@@ -27,6 +27,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -219,8 +220,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long createdReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), simpleReviewCreateRequestDto.toServiceDto());
 
-        List<String> genreCodes = createGenreCodes();
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(perceivedThemeGenres);
         reviewApplicationService.addSurveyToReview(createdReviewId, signUpId, reviewSurveyCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@emailcom");
@@ -244,34 +245,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("reviewId").exists())
-                .andExpect(jsonPath("writerInfo").exists())
-                .andExpect(jsonPath("writerInfo.memberId").value(signUpId))
-                .andExpect(jsonPath("writerInfo.profileImageUrl").exists())
-                .andExpect(jsonPath("themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("reviewType").value(ReviewType.BASE.name()))
-                .andExpect(jsonPath("reviewRecodeNumber").value(1))
-                .andExpect(jsonPath("themeClearYN").value(simpleReviewCreateRequestDto.getClearYN()))
-                .andExpect(jsonPath("themeClearTime").value(simpleReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("hintUsageCount").value(simpleReviewCreateRequestDto.getHintUsageCount().name()))
-                .andExpect(jsonPath("rating").value(simpleReviewCreateRequestDto.getRating()))
-                .andExpect(jsonPath("playTogetherFriends").exists())
-                .andExpect(jsonPath("likeCount").value(1))
-                .andExpect(jsonPath("myReview").value(false))
-                .andExpect(jsonPath("like").value(true))
-                .andExpect(jsonPath("possibleRegisterForSurveyYN").value(true))
-                .andExpect(jsonPath("surveyYN").value(true))
-                .andExpect(jsonPath("registerTimes").exists())
-                .andExpect(jsonPath("updateTimes").exists())
-                .andExpect(jsonPath("perceivedThemeGenres[0].genreId").exists())
-                .andExpect(jsonPath("perceivedThemeGenres[0].genreCode").exists())
-                .andExpect(jsonPath("perceivedThemeGenres[0].genreName").exists())
-                .andExpect(jsonPath("perceivedDifficulty").value(reviewSurveyCreateRequestDto.getPerceivedDifficulty().name()))
-                .andExpect(jsonPath("perceivedHorrorGrade").value(reviewSurveyCreateRequestDto.getPerceivedHorrorGrade().name()))
-                .andExpect(jsonPath("perceivedActivity").value(reviewSurveyCreateRequestDto.getPerceivedActivity().name()))
-                .andExpect(jsonPath("scenarioSatisfaction").value(reviewSurveyCreateRequestDto.getScenarioSatisfaction().name()))
-                .andExpect(jsonPath("interiorSatisfaction").value(reviewSurveyCreateRequestDto.getInteriorSatisfaction().name()))
-                .andExpect(jsonPath("problemConfigurationSatisfaction").value(reviewSurveyCreateRequestDto.getProblemConfigurationSatisfaction().name()))
                 .andDo(document(
                         "get-simple-and-survey-review-success",
                         requestHeaders(
@@ -307,9 +280,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
                                         "리뷰를 생성한 이후 일정 기간이 지나면 설문을 등록할 수 없습니다."),
                                 fieldWithPath("surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
-                                fieldWithPath("perceivedThemeGenres[0].genreId").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 식별 ID"),
-                                fieldWithPath("perceivedThemeGenres[0].genreCode").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 코드"),
-                                fieldWithPath("perceivedThemeGenres[0].genreName").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 이름"),
+                                fieldWithPath("perceivedThemeGenres").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르 목록 +\n" +
+                                        generateLinkCode(GENRE)),
                                 fieldWithPath("perceivedDifficulty").description("조회된 리뷰에 등록된 설문에 등록된 체감 난이도"),
                                 fieldWithPath("perceivedHorrorGrade").description("조회된 리뷰에 등록된 설문에 등록된 체감 공포도"),
                                 fieldWithPath("perceivedActivity").description("조회된 리뷰에 등록된 설문에 등록된 체감 활동성"),
@@ -461,8 +433,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         reviewApplicationService.addDetailToReview(createdReviewId, signUpId, reviewDetailCreateRequestDto.toServiceDto());
 
-        List<String> genreCodes = createGenreCodes();
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(genreCodes);
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
+        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = createReviewSurveyCreateRequestDto(perceivedThemeGenres);
         reviewApplicationService.addSurveyToReview(createdReviewId, signUpId, reviewSurveyCreateRequestDto.toServiceDto());
 
         memberSocialSignUpRequestDto.setEmail("member2@emailcom");
@@ -486,36 +458,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("reviewId").exists())
-                .andExpect(jsonPath("writerInfo").exists())
-                .andExpect(jsonPath("writerInfo.memberId").value(signUpId))
-                .andExpect(jsonPath("writerInfo.profileImageUrl").exists())
-                .andExpect(jsonPath("themeInfo.themeId").value(theme.getId()))
-                .andExpect(jsonPath("reviewType").value(ReviewType.DETAIL.name()))
-                .andExpect(jsonPath("reviewRecodeNumber").value(1))
-                .andExpect(jsonPath("themeClearYN").value(detailReviewCreateRequestDto.getClearYN()))
-                .andExpect(jsonPath("themeClearTime").value(detailReviewCreateRequestDto.getClearTime().toString()))
-                .andExpect(jsonPath("hintUsageCount").value(detailReviewCreateRequestDto.getHintUsageCount().name()))
-                .andExpect(jsonPath("rating").value(detailReviewCreateRequestDto.getRating()))
-                .andExpect(jsonPath("playTogetherFriends").exists())
-                .andExpect(jsonPath("reviewImages").exists())
-                .andExpect(jsonPath("comment").exists())
-                .andExpect(jsonPath("likeCount").value(1))
-                .andExpect(jsonPath("myReview").value(false))
-                .andExpect(jsonPath("like").value(true))
-                .andExpect(jsonPath("possibleRegisterForSurveyYN").value(true))
-                .andExpect(jsonPath("surveyYN").value(true))
-                .andExpect(jsonPath("perceivedThemeGenres[0].genreId").exists())
-                .andExpect(jsonPath("perceivedThemeGenres[0].genreCode").exists())
-                .andExpect(jsonPath("perceivedThemeGenres[0].genreName").exists())
-                .andExpect(jsonPath("perceivedDifficulty").value(reviewSurveyCreateRequestDto.getPerceivedDifficulty().name()))
-                .andExpect(jsonPath("perceivedHorrorGrade").value(reviewSurveyCreateRequestDto.getPerceivedHorrorGrade().name()))
-                .andExpect(jsonPath("perceivedActivity").value(reviewSurveyCreateRequestDto.getPerceivedActivity().name()))
-                .andExpect(jsonPath("scenarioSatisfaction").value(reviewSurveyCreateRequestDto.getScenarioSatisfaction().name()))
-                .andExpect(jsonPath("interiorSatisfaction").value(reviewSurveyCreateRequestDto.getInteriorSatisfaction().name()))
-                .andExpect(jsonPath("problemConfigurationSatisfaction").value(reviewSurveyCreateRequestDto.getProblemConfigurationSatisfaction().name()))
-                .andExpect(jsonPath("registerTimes").exists())
-                .andExpect(jsonPath("updateTimes").exists())
                 .andDo(document(
                         "get-detail-and-survey-review-success",
                         requestHeaders(
@@ -555,9 +497,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("possibleRegisterForSurveyYN").description("조회된 리뷰에 설문이 등록 가능한지 여부 +\n" +
                                         "리뷰를 생성한 이후 일정 기간이 지나면 설문을 등록할 수 없습니다."),
                                 fieldWithPath("surveyYN").description("조회된 리뷰에 설문이 등록되어 있는지 여부"),
-                                fieldWithPath("perceivedThemeGenres[0].genreId").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 식별 ID"),
-                                fieldWithPath("perceivedThemeGenres[0].genreCode").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 코드"),
-                                fieldWithPath("perceivedThemeGenres[0].genreName").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르의 이름"),
+                                fieldWithPath("perceivedThemeGenres").description("조회된 리뷰에 등록된 설문에 등록된 체감 테마 장르 목록 +\n" +
+                                        generateLinkCode(GENRE)),
                                 fieldWithPath("perceivedDifficulty").description("조회된 리뷰에 등록된 설문에 등록된 체감 난이도"),
                                 fieldWithPath("perceivedHorrorGrade").description("조회된 리뷰에 등록된 설문에 등록된 체감 공포도"),
                                 fieldWithPath("perceivedActivity").description("조회된 리뷰에 등록된 설문에 등록된 체감 활동성"),
@@ -682,10 +623,10 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.NORMAL)
                 .perceivedActivity(Activity.NORMAL)
@@ -714,7 +655,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 headerWithName(securityJwtProperties.getJwtTokenHeader()).description(JWT_TOKEN_HEADER_DESCRIPTION)
                         ),
                         requestFields(
-                                fieldWithPath("genreCodes").description("리뷰에 추가할 설문에 등록할 체감 테마 장르 코드 기입"),
+                                fieldWithPath("perceivedThemeGenres").description("리뷰에 추가할 설문에 등록할 체감 테마 장르 기입 +\n" +
+                                        generateLinkCode(GENRE)),
                                 fieldWithPath("perceivedDifficulty").description("리뷰에 추가할 설문에 등록할 체감 난이도 기입 +\n" +
                                         generateLinkCode(DIFFICULTY)),
                                 fieldWithPath("perceivedHorrorGrade").description("리뷰에 추가할 설문에 등록할 체감 공포도 기입 +\n" +
@@ -757,10 +699,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("like").description("좋아요를 등록한 리뷰인지 여부"),
                                 fieldWithPath("possibleRegisterForSurveyYN").description("리뷰에 설문 추가가 가능한지 여부"),
                                 fieldWithPath("surveyYN").description("리뷰에 설문이 등록되었는지 여부"),
-                                fieldWithPath("perceivedThemeGenres").description("테마에 대한 평가한 체감 장르 목록 정보"),
-                                fieldWithPath("perceivedThemeGenres[].genreId").description("장르 식별 ID"),
-                                fieldWithPath("perceivedThemeGenres[].genreCode").description("장르 코드 값"),
-                                fieldWithPath("perceivedThemeGenres[].genreName").description("장르명"),
+                                fieldWithPath("perceivedThemeGenres").description("테마에 대한 평가한 체감 장르 목록 +\n" +
+                                        generateLinkCode(GENRE)),
                                 fieldWithPath("perceivedDifficulty").description("체감 난이도"),
                                 fieldWithPath("perceivedHorrorGrade").description("체감 공포도"),
                                 fieldWithPath("perceivedActivity").description("체감 활동성"),
@@ -792,10 +732,10 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.NORMAL)
                 .perceivedActivity(Activity.NORMAL)
@@ -843,13 +783,14 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
 //        List<String> genreCodes = createGenreCodes();
-        List<String> genreCodes = new ArrayList<>();
+        List<Genre> perceivedThemeGenres = new ArrayList<>();
         for (int i = 0; i < reviewProperties.getPerceivedThemeGenresCountLimit() + 2; i++) {
-            genreCodes.add("" + i);
+            Genre genre = Arrays.stream(Genre.values()).findAny().get();
+            perceivedThemeGenres.add(genre);
         }
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.NORMAL)
                 .perceivedActivity(Activity.NORMAL)
@@ -909,10 +850,10 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.NORMAL)
                 .perceivedActivity(Activity.NORMAL)
@@ -938,54 +879,6 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                 .andExpect(jsonPath("status").value(ResponseStatus.REVIEW_NOT_FOUND.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
                 .andExpect(jsonPath("message").value(ResponseStatus.REVIEW_NOT_FOUND.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("리뷰에 설문 등록 - 리뷰 설문에 등록할 장르를 찾을 수 없는 경우")
-    public void addSurveyToReview_GenreNotFound() throws Exception {
-        //given
-        MemberSocialSignUpRequestDto memberSocialSignUpRequestDto = createMemberSocialSignUpRequestDto();
-        Long signUpId = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
-
-        List<Long> friendIds = createTwoWayFollowMembers(memberSocialSignUpRequestDto, signUpId);
-
-        Theme theme = createThemeSample();
-
-        List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-
-        ReviewCreateRequestDto detailReviewCreateRequestDto = createReviewCreateRequestDto(friendIds);
-
-        Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
-
-        List<String> genreCodes = List.of("AMGN1", "AMGN2");
-
-        ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
-                .perceivedDifficulty(Difficulty.EASY)
-                .perceivedHorrorGrade(HorrorGrade.NORMAL)
-                .perceivedActivity(Activity.NORMAL)
-                .scenarioSatisfaction(Satisfaction.GOOD)
-                .interiorSatisfaction(Satisfaction.VERY_BAD)
-                .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
-                .build();
-
-        TokenDto tokenDto = authenticationService.signIn(signUpId);
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/api/reviews/" + savedReviewId + "/surveys")
-                        .header(securityJwtProperties.getJwtTokenHeader(), tokenDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewSurveyCreateRequestDto))
-        ).andDo(print());
-
-        //then
-        perform
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("status").value(ResponseStatus.GENRE_NOT_FOUND.getStatus()))
-                .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(new GenreNotFoundException("AMGN1").getMessage()));
 
     }
 
@@ -1042,11 +935,11 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
     }
 
     private static Stream<Arguments> provideReviewSurveyCreateRequestDtoForAddReviewSurveyValidation() {
-        List<String> genreCodes = List.of("RSN1");
+        List<Genre> perceivedThemeGenres = List.of(Genre.ACTION);
 
         return Stream.of(
                 Arguments.of(ReviewSurveyCreateRequestDto.builder()
-                        .genreCodes(null)
+                        .perceivedThemeGenres(null)
                         .perceivedDifficulty(Difficulty.EASY)
                         .perceivedHorrorGrade(HorrorGrade.NORMAL)
                         .perceivedActivity(Activity.NORMAL)
@@ -1055,7 +948,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                         .build()),
                 Arguments.of(ReviewSurveyCreateRequestDto.builder()
-                        .genreCodes(genreCodes)
+                        .perceivedThemeGenres(perceivedThemeGenres)
                         .perceivedDifficulty(null)
                         .perceivedHorrorGrade(HorrorGrade.NORMAL)
                         .perceivedActivity(Activity.NORMAL)
@@ -1064,7 +957,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                         .build()),
                 Arguments.of(ReviewSurveyCreateRequestDto.builder()
-                        .genreCodes(genreCodes)
+                        .perceivedThemeGenres(perceivedThemeGenres)
                         .perceivedDifficulty(Difficulty.EASY)
                         .perceivedHorrorGrade(null)
                         .perceivedActivity(Activity.NORMAL)
@@ -1073,7 +966,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                         .build()),
                 Arguments.of(ReviewSurveyCreateRequestDto.builder()
-                        .genreCodes(genreCodes)
+                        .perceivedThemeGenres(perceivedThemeGenres)
                         .perceivedDifficulty(Difficulty.EASY)
                         .perceivedHorrorGrade(HorrorGrade.NORMAL)
                         .perceivedActivity(null)
@@ -1082,7 +975,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                         .build()),
                 Arguments.of(ReviewSurveyCreateRequestDto.builder()
-                        .genreCodes(genreCodes)
+                        .perceivedThemeGenres(perceivedThemeGenres)
                         .perceivedDifficulty(Difficulty.EASY)
                         .perceivedHorrorGrade(HorrorGrade.NORMAL)
                         .perceivedActivity(Activity.NORMAL)
@@ -1091,7 +984,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                         .build()),
                 Arguments.of(ReviewSurveyCreateRequestDto.builder()
-                        .genreCodes(genreCodes)
+                        .perceivedThemeGenres(perceivedThemeGenres)
                         .perceivedDifficulty(Difficulty.EASY)
                         .perceivedHorrorGrade(HorrorGrade.NORMAL)
                         .perceivedActivity(Activity.NORMAL)
@@ -1100,7 +993,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                         .problemConfigurationSatisfaction(Satisfaction.VERY_GOOD)
                         .build()),
                 Arguments.of(ReviewSurveyCreateRequestDto.builder()
-                        .genreCodes(genreCodes)
+                        .perceivedThemeGenres(perceivedThemeGenres)
                         .perceivedDifficulty(Difficulty.EASY)
                         .perceivedHorrorGrade(HorrorGrade.NORMAL)
                         .perceivedActivity(Activity.NORMAL)
@@ -1129,10 +1022,10 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.NORMAL)
                 .perceivedActivity(Activity.NORMAL)
@@ -1182,10 +1075,10 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.NORMAL)
                 .perceivedActivity(Activity.NORMAL)
@@ -1230,10 +1123,10 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long savedReviewId = reviewApplicationService.createReview(signUpId, theme.getId(), detailReviewCreateRequestDto.toServiceDto());
 
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
         ReviewSurveyCreateRequestDto reviewSurveyCreateRequestDto = ReviewSurveyCreateRequestDto.builder()
-                .genreCodes(genreCodes)
+                .perceivedThemeGenres(perceivedThemeGenres)
                 .perceivedDifficulty(Difficulty.EASY)
                 .perceivedHorrorGrade(HorrorGrade.NORMAL)
                 .perceivedActivity(Activity.NORMAL)
@@ -2393,9 +2286,9 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         Long reviewId = reviewApplicationService.createReview(signUpId, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
         List<ReviewImageRequestDto> reviewImageRequestDtos = createReviewImageRequestDtos();
-        List<String> genreCodes = createGenreCodes();
+        List<Genre> perceivedThemeGenres = createPerceivedThemeGenres();
 
-        ReviewDetailAndSurveyCreateDtoRequestDto reviewDetailAndSurveyCreateDtoRequestDto = createReviewDetailAndSurveyCreateDtoRequestDto(reviewImageRequestDtos, genreCodes);
+        ReviewDetailAndSurveyCreateDtoRequestDto reviewDetailAndSurveyCreateDtoRequestDto = createReviewDetailAndSurveyCreateDtoRequestDto(reviewImageRequestDtos, perceivedThemeGenres);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
         //when
@@ -2419,7 +2312,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewImages[0].fileStorageId").description("리뷰 상세에 등록할 이미지 파일의 파일 저장소 ID 기입"),
                                 fieldWithPath("reviewImages[0].fileName").description("리뷰 상세에 등록할 이미지 파일의 파일 이름 기입"),
                                 fieldWithPath("comment").description("리뷰 상세에 등록할 코멘트 기입"),
-                                fieldWithPath("genreCodes").description("리뷰 설문에 등록할 체감 테마 장르 목록에 대한 코드값 기입"),
+                                fieldWithPath("perceivedThemeGenres").description("리뷰 설문에 등록할 체감 테마 장르 목록 기입 +\n" +
+                                        generateLinkCode(GENRE)),
                                 fieldWithPath("perceivedDifficulty").description("리뷰 설문에 등록할 체감 난이도 기입"),
                                 fieldWithPath("perceivedHorrorGrade").description("리뷰 설문에 등록할 체감 공포도 기입"),
                                 fieldWithPath("perceivedActivity").description("리뷰 설문에 등록할 체감 활동성 기입"),
@@ -2461,10 +2355,8 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
                                 fieldWithPath("reviewImages[].reviewImageUrl").description("상세 리뷰에 등록된 이미지의 다운로드 URL"),
                                 fieldWithPath("reviewImages[].reviewImageThumbnailUrl").description("상세 리뷰에 등록된 이미지의 썸네일 이미지 다운로드 URL"),
                                 fieldWithPath("comment").description("상세 리뷰에 등록된 코멘트"),
-                                fieldWithPath("perceivedThemeGenres").description("테마에 대한 평가한 체감 장르 목록 정보"),
-                                fieldWithPath("perceivedThemeGenres[].genreId").description("장르 식별 ID"),
-                                fieldWithPath("perceivedThemeGenres[].genreCode").description("장르 코드 값"),
-                                fieldWithPath("perceivedThemeGenres[].genreName").description("장르명"),
+                                fieldWithPath("perceivedThemeGenres").description("테마에 대한 평가한 체감 장르 목록 +\n" +
+                                        generateLinkCode(GENRE)),
                                 fieldWithPath("perceivedDifficulty").description("체감 난이도"),
                                 fieldWithPath("perceivedHorrorGrade").description("체감 공포도"),
                                 fieldWithPath("perceivedActivity").description("체감 활동성"),

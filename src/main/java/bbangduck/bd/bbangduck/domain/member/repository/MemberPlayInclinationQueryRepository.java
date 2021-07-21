@@ -1,6 +1,5 @@
 package bbangduck.bd.bbangduck.domain.member.repository;
 
-import bbangduck.bd.bbangduck.domain.genre.entity.QGenre;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import bbangduck.bd.bbangduck.domain.member.entity.QMember;
 import com.querydsl.core.types.OrderSpecifier;
@@ -10,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
-import static bbangduck.bd.bbangduck.domain.genre.entity.QGenre.genre;
 import static bbangduck.bd.bbangduck.domain.member.entity.QMemberPlayInclination.memberPlayInclination;
 
 /**
@@ -28,15 +25,12 @@ public class MemberPlayInclinationQueryRepository {
 
     public List<MemberPlayInclination> findTopByMember(Long memberId, long limit) {
         QMember member = QMember.member;
-        QGenre genre = QGenre.genre;
         return queryFactory
                 .selectFrom(memberPlayInclination)
                 .join(memberPlayInclination.member, member).fetchJoin()
-                .join(memberPlayInclination.genre, genre).fetchJoin()
                 .where(memberIdEq(memberId))
                 .orderBy(
-                        playCountDesc(),
-                        genre.name.asc()
+                        playCountDesc()
                 )
                 .offset(0)
                 .limit(limit)
@@ -45,33 +39,14 @@ public class MemberPlayInclinationQueryRepository {
 
     public List<MemberPlayInclination> findAllByMember(Long memberId) {
         QMember member = QMember.member;
-        QGenre genre = QGenre.genre;
         return queryFactory
                 .selectFrom(memberPlayInclination)
                 .join(memberPlayInclination.member, member).fetchJoin()
-                .join(memberPlayInclination.genre, genre).fetchJoin()
                 .where(memberIdEq(memberId))
                 .orderBy(
-                        playCountDesc(),
-                        genre.name.desc()
+                        playCountDesc()
                 )
                 .fetch();
-    }
-
-    public Optional<MemberPlayInclination> findOneByMemberAndGenre(Long memberId, Long genreId) {
-        MemberPlayInclination result = queryFactory
-                .selectFrom(memberPlayInclination)
-                .where(
-                        memberIdEq(memberId),
-                        genreIdEq(genreId)
-                )
-                .fetchFirst();
-
-        return Optional.ofNullable(result);
-    }
-
-    private BooleanExpression genreIdEq(Long genreId) {
-        return genre.id.eq(genreId);
     }
 
     private OrderSpecifier<Long> playCountDesc() {

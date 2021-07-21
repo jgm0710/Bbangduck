@@ -1,5 +1,6 @@
 package bbangduck.bd.bbangduck.domain.member.dto.controller.response;
 
+import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.entity.MemberPlayInclination;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,13 +20,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberPlayInclinationResponseDto {
 
-    private MemberPlayInclinationGenreSimpleInfoResponseDto genre;
+    private Genre genre;
 
     private Long playCount;
 
     public static MemberPlayInclinationResponseDto convert(MemberPlayInclination memberPlayInclination) {
         return MemberPlayInclinationResponseDto.builder()
-                .genre(MemberPlayInclinationGenreSimpleInfoResponseDto.convert(memberPlayInclination.getGenre()))
+                .genre(memberPlayInclination.getGenre())
                 .playCount(memberPlayInclination.getPlayCount())
                 .build();
     }
