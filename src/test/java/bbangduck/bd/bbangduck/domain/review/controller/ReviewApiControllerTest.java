@@ -2462,7 +2462,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         reviewApplicationService.addLikeToReview(member2Id, reviewId);
 
-        boolean existsReviewLike = reviewLikeService.getExistsReviewLike(member2Id, reviewId);
+        boolean existsReviewLike = reviewLikeService.isMemberLikeToReview(member2Id, reviewId);
         assertTrue(existsReviewLike, "리뷰에 좋아요가 등록되어 있어야 한다.");
 
         TokenDto tokenDto = authenticationService.signIn(member2Id);

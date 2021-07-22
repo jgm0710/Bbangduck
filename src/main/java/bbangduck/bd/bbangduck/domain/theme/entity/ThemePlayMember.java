@@ -86,4 +86,8 @@ public class ThemePlayMember {
                 ", reviewLikeCount=" + reviewLikeCount +
                 '}';
     }
+
+    public void decreaseReviewLikeCount() {
+        this.reviewLikeCount--;
+    }
 }

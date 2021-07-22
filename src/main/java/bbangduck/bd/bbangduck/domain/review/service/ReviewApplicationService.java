@@ -11,6 +11,7 @@ import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewDetailCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSurveyCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewLike;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -134,7 +135,7 @@ public class ReviewApplicationService {
     public ReviewResponseDto getReview(Long reviewId, Long authenticatedMemberId) {
         Review review = reviewService.getReview(reviewId);
         Member authenticatedMember = memberService.getMember(authenticatedMemberId);
-        boolean existsReviewLike = reviewLikeService.getExistsReviewLike(authenticatedMemberId, reviewId);
+        boolean existsReviewLike = reviewLikeService.isMemberLikeToReview(authenticatedMemberId, reviewId);
         boolean possibleOfAddReviewSurvey = reviewService.isPossibleOfAddReviewSurvey(review.getRegisterTimes());
         return convertReviewToResponseDto(review, authenticatedMember, existsReviewLike, possibleOfAddReviewSurvey);
     }
@@ -167,5 +168,17 @@ public class ReviewApplicationService {
         Member reviewMember = review.getMember();
         ThemePlayMember themePlayMember = themePlayMemberService.getThemePlayMember(reviewTheme.getId(), reviewMember.getId());
         themePlayMember.increaseReviewLikeCount();
+    }
+
+    public void removeLikeFromReview(Long memberId, Long reviewId) {
+        Review review = reviewService.getReview(reviewId);
+
+        ReviewLike reviewLike = reviewLikeService.getReviewLike(memberId, reviewId);
+        reviewLikeService.removeReviewLike(reviewLike);
+
+        Member reviewMember = review.getMember();
+        Theme reviewTheme = review.getTheme();
+        ThemePlayMember themePlayMember = themePlayMemberService.getThemePlayMember(reviewTheme.getId(), reviewMember.getId());
+        themePlayMember.decreaseReviewLikeCount();
     }
 }

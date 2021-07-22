@@ -8,6 +8,7 @@ import bbangduck.bd.bbangduck.domain.member.service.MemberPlayInclinationService
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.review.dto.service.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewLike;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
@@ -469,6 +470,57 @@ class ReviewApplicationServiceUnitTest {
         then(themePlayMemberMockService).should(times(1)).getThemePlayMember(member.getId(), theme.getId());
 
         assertEquals(1, themePlayMember.getReviewLikeCount());
+
+    }
+
+    @Test
+    @DisplayName("리뷰 좋아요 해제")
+    public void removeLikeFromReview() {
+        //given
+        Member reviewCreateMember = Member.builder()
+                .id(1L)
+                .build();
+        Member reviewLikeMember = Member.builder()
+                .id(2L)
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .build();
+
+        Review review = Review.builder()
+                .id(1L)
+                .member(reviewCreateMember)
+                .theme(theme)
+                .build();
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .id(1L)
+                .member(reviewCreateMember)
+                .theme(theme)
+                .reviewLikeCount(1L)
+                .build();
+
+        ReviewLike reviewLike = ReviewLike.builder()
+                .member(reviewLikeMember)
+                .review(review)
+                .build();
+
+
+        given(reviewMockService.getReview(review.getId())).willReturn(review);
+        given(reviewLikeMockService.getReviewLike(reviewLikeMember.getId(), review.getId())).willReturn(reviewLike);
+        given(themePlayMemberMockService.getThemePlayMember(theme.getId(), reviewCreateMember.getId())).willReturn(themePlayMember);
+
+        //when
+        reviewMockApplicationService.removeLikeFromReview(reviewLikeMember.getId(), review.getId());
+
+        //then
+        then(reviewMockService).should(times(1)).getReview(review.getId());
+        then(reviewLikeMockService).should(times(1)).getReviewLike(reviewLikeMember.getId(), review.getId());
+        then(reviewLikeMockService).should(times(1)).removeReviewLike(reviewLike);
+        then(themePlayMemberMockService).should(times(1)).getThemePlayMember(theme.getId(), reviewCreateMember.getId());
+
+        assertEquals(0, themePlayMember.getReviewLikeCount(), "테마 플레이 내역의 리뷰 좋아요 개수 1 감소");
 
     }
 

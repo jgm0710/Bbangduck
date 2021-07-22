@@ -4,6 +4,7 @@ import bbangduck.bd.bbangduck.common.BaseTest;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewLike;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -57,6 +58,29 @@ class ReviewLikeServiceIntegrationTest extends BaseTest {
         //then
         assertTrue(reviewLikeRepository.findByMemberAndReview(member1, review).isPresent(), "회원이 리뷰를 좋아요 한 내역이 존재해야 한다.");
         assertEquals(1, review.getLikeCount(), "리뷰의 likeCount 1 증가");
+    }
+
+    @Test
+    @DisplayName("리뷰 좋아요 해제")
+    public void removeReviewLike() {
+        //given
+        Member member = Member.builder().build();
+        Review review = Review.builder()
+                .likeCount(1)
+                .build();
+
+        ReviewLike reviewLike = ReviewLike.init(member, review);
+
+        memberRepository.save(member);
+        reviewRepository.save(review);
+        reviewLikeRepository.save(reviewLike);
+
+        //when
+        reviewLikeService.removeReviewLike(reviewLike);
+
+        //then
+        assertTrue(reviewLikeRepository.findByMemberAndReview(member, review).isEmpty(),"리뷰 좋아요 조회되지 않음");
+        assertEquals(0, review.getLikeCount(), "리뷰 좋아요 수 1 감소");
     }
 
 }

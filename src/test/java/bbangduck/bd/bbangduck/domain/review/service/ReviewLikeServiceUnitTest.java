@@ -5,6 +5,7 @@ import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewLike;
 import bbangduck.bd.bbangduck.domain.review.exception.AddLikeToMyReviewException;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewHasAlreadyBeenLikedException;
+import bbangduck.bd.bbangduck.domain.review.exception.ReviewLikeNotFoundException;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeQueryRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
 import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
@@ -15,6 +16,7 @@ import org.mockito.Mockito;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 class ReviewLikeServiceUnitTest {
@@ -80,6 +82,19 @@ class ReviewLikeServiceUnitTest {
 
         //then
         assertThrows(AddLikeToMyReviewException.class, () -> reviewLikeService.addLikeToReview(member, review));
+
+    }
+
+    @Test
+    @DisplayName("리뷰 좋아요 조회 - 리뷰 좋아요 내역을 찾을 수 없는 경우")
+    public void getReviewLike_NotFound() {
+        //given
+        given(reviewLikeQueryRepository.findByMemberIdAndReviewId(anyLong(), anyLong())).willReturn(Optional.empty());
+
+        //when
+
+        //then
+        assertThrows(ReviewLikeNotFoundException.class, () -> reviewLikeService.getReviewLike(1L, 1L));
 
     }
 
