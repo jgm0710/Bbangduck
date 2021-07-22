@@ -57,7 +57,7 @@ class ThemePlayMemberQueryRepositoryIntegrationTest extends BaseTest {
         themePlayMemberRepository.save(themePlayMember1);
 
         //when
-        ThemePlayMember findThemePlayMember = themePlayMemberQueryRepository.findThemePlayMemberByThemeIdAndMemberId(theme.getId(), user.getId()).orElseThrow(ThemePlayMemberNotFoundException::new);
+        ThemePlayMember findThemePlayMember = themePlayMemberQueryRepository.findByThemeIdAndMemberId(theme.getId(), user.getId()).orElseThrow(ThemePlayMemberNotFoundException::new);
 
         //then
         assertNotNull(findThemePlayMember);

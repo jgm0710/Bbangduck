@@ -72,7 +72,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long signUpId2 = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        reviewLikeService.addLikeToReview(signUpId2, createdReviewId);
+        reviewApplicationService.addLikeToReview(signUpId2, createdReviewId);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId2);
 
@@ -176,7 +176,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long signUpId2 = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        reviewLikeService.addLikeToReview(signUpId2, createdReviewId);
+        reviewApplicationService.addLikeToReview(signUpId2, createdReviewId);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId2);
 
@@ -230,7 +230,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long signUpId2 = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        reviewLikeService.addLikeToReview(signUpId2, createdReviewId);
+        reviewApplicationService.addLikeToReview(signUpId2, createdReviewId);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId2);
 
@@ -327,7 +327,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long signUpId2 = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        reviewLikeService.addLikeToReview(signUpId2, createdReviewId);
+        reviewApplicationService.addLikeToReview(signUpId2, createdReviewId);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId2);
 
@@ -443,7 +443,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long signUpId2 = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        reviewLikeService.addLikeToReview(signUpId2, createdReviewId);
+        reviewApplicationService.addLikeToReview(signUpId2, createdReviewId);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId2);
 
@@ -538,7 +538,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long signUpId2 = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        reviewLikeService.addLikeToReview(signUpId2, createdReviewId);
+        reviewApplicationService.addLikeToReview(signUpId2, createdReviewId);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId2);
 
@@ -584,7 +584,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         Long signUpId2 = authenticationService.signUp(memberSocialSignUpRequestDto.toServiceDto());
 
-        reviewLikeService.addLikeToReview(signUpId2, createdReviewId);
+        reviewApplicationService.addLikeToReview(signUpId2, createdReviewId);
 
         TokenDto tokenDto = authenticationService.signIn(signUpId2);
 
@@ -2460,7 +2460,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
         ReviewCreateRequestDto reviewCreateRequestDto = createReviewCreateRequestDto(null);
         Long reviewId = reviewApplicationService.createReview(member1Id, themeSample.getId(), reviewCreateRequestDto.toServiceDto());
 
-        reviewLikeService.addLikeToReview(member2Id, reviewId);
+        reviewApplicationService.addLikeToReview(member2Id, reviewId);
 
         boolean existsReviewLike = reviewLikeService.getExistsReviewLike(member2Id, reviewId);
         assertTrue(existsReviewLike, "리뷰에 좋아요가 등록되어 있어야 한다.");

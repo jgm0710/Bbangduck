@@ -41,6 +41,7 @@ import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeImage;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeAnalysisRepository;
+import bbangduck.bd.bbangduck.domain.theme.repository.ThemePlayMemberRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.FileStorageProperties;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
@@ -64,6 +65,9 @@ import java.util.Set;
 
 @Disabled
 public class BaseJGMApiControllerTest extends BaseControllerTest {
+
+    @Autowired
+    protected ThemePlayMemberRepository themePlayMemberRepository;
 
     @Autowired
     protected ReviewValidator reviewValidator;
@@ -177,6 +181,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     protected void deleteAll() {
         reviewLikeRepository.deleteAll();
         reviewRepository.deleteAll();
+        themePlayMemberRepository.deleteAll();
         themeAnalysisRepository.deleteAll();
         themeRepository.deleteAll();
         shopRepository.deleteAll();

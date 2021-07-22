@@ -1,8 +1,6 @@
 package bbangduck.bd.bbangduck.domain.review.service;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.member.exception.MemberNotFoundException;
-import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewLike;
 import bbangduck.bd.bbangduck.domain.review.exception.AddLikeToMyReviewException;
@@ -23,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ReviewLikeService {
 
     private final ReviewLikeRepository reviewLikeRepository;
@@ -32,51 +29,24 @@ public class ReviewLikeService {
 
     private final ReviewRepository reviewRepository;
 
-    private final MemberRepository memberRepository;
-
-    private final ReviewService reviewService;
-
+    @Transactional(readOnly = true)
     public boolean getExistsReviewLike(Long memberId, Long reviewId) {
-        return reviewLikeQueryRepository.findByMemberAndReview(memberId, reviewId).isPresent();
+        return reviewLikeQueryRepository.findByMemberIdAndReviewId(memberId, reviewId).isPresent();
     }
 
-    /**
-     * 기능 테스트 o
-     * - 리뷰 좋아요가 잘 등록되는지 확인 o
-     * - 리뷰의 likeCount 가 잘 증가하는지 확인 o
-     *
-     * todo : 실패 테스트 미완
-     *
-     * 실패 테스트
-     * - 이미 좋아요가 등록된 경우
-     * - 회원을 찾을 수 없는 경우
-     * - 리뷰를 찾을 수 없는 경우
-     * - 자신이 생성한 리뷰에 좋아요를 등록하는 경우
-     * - 삭제될 리뷰일 경우
-     */
     @Transactional
-    public Long addLikeToReview(Long memberId, Long reviewId) {
-        if (getExistsReviewLike(memberId, reviewId)) {
-            throw new ReviewHasAlreadyBeenLikedException(memberId, reviewId);
+    public void addLikeToReview(Member member, Review review) {
+        if (getExistsReviewLike(member.getId(), review.getId())) {
+            throw new ReviewHasAlreadyBeenLikedException(member.getId(), review.getId());
         }
-
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-//        Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
-        Review review = reviewService.getReview(reviewId);
-
         if (review.isMyReview(member)) {
             throw new AddLikeToMyReviewException();
         }
 
-        ReviewLike reviewLike = ReviewLike.builder()
-                .member(member)
-                .review(review)
-                .build();
-        ReviewLike savedReviewLike = reviewLikeRepository.save(reviewLike);
-
+        ReviewLike reviewLike = ReviewLike.init(member, review);
         review.increaseLikeCount();
 
-        return savedReviewLike.getId();
+        reviewLikeRepository.save(reviewLike);
     }
 
     /**
@@ -92,7 +62,7 @@ public class ReviewLikeService {
      */
     @Transactional
     public void removeLikeFromReview(Long memberId, Long reviewId) {
-        ReviewLike reviewLike = reviewLikeQueryRepository.findByMemberAndReview(memberId, reviewId).orElseThrow(() -> new ReviewLikeNotFoundException(memberId, reviewId));
+        ReviewLike reviewLike = reviewLikeQueryRepository.findByMemberIdAndReviewId(memberId, reviewId).orElseThrow(() -> new ReviewLikeNotFoundException(memberId, reviewId));
         reviewLikeRepository.delete(reviewLike);
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
         review.decreaseLikeCount();

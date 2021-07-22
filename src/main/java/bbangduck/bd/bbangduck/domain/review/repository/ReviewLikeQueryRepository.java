@@ -23,7 +23,7 @@ public class ReviewLikeQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Optional<ReviewLike> findByMemberAndReview(Long memberId, Long reviewId) {
+    public Optional<ReviewLike> findByMemberIdAndReviewId(Long memberId, Long reviewId) {
         ReviewLike reviewLike = queryFactory
                 .selectFrom(QReviewLike.reviewLike)
                 .where(

@@ -14,6 +14,7 @@ import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemePlayMember;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeAnalysisService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemePlayMemberService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeService;
@@ -33,7 +34,6 @@ import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ReviewApplicationService {
 
     private final MemberService memberService;
@@ -130,6 +130,7 @@ public class ReviewApplicationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public ReviewResponseDto getReview(Long reviewId, Long authenticatedMemberId) {
         Review review = reviewService.getReview(reviewId);
         Member authenticatedMember = memberService.getMember(authenticatedMemberId);
@@ -153,5 +154,18 @@ public class ReviewApplicationService {
             default:
                 return null;
         }
+    }
+
+    @Transactional
+    public void addLikeToReview(Long memberId, Long reviewId) {
+        Member member = memberService.getMember(memberId);
+        Review review = reviewService.getReview(reviewId);
+
+        reviewLikeService.addLikeToReview(member, review);
+
+        Theme reviewTheme = review.getTheme();
+        Member reviewMember = review.getMember();
+        ThemePlayMember themePlayMember = themePlayMemberService.getThemePlayMember(reviewTheme.getId(), reviewMember.getId());
+        themePlayMember.increaseReviewLikeCount();
     }
 }

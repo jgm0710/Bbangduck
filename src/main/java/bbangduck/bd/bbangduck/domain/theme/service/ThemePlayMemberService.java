@@ -30,7 +30,7 @@ public class ThemePlayMemberService {
 
     @Transactional(readOnly = true)
     public ThemePlayMember getThemePlayMember(Long themeId, Long memberId) {
-        return themePlayMemberQueryRepository.findThemePlayMemberByThemeIdAndMemberId(themeId, memberId).orElseThrow(ThemePlayMemberNotFoundException::new);
+        return themePlayMemberQueryRepository.findByThemeIdAndMemberId(themeId, memberId).orElseThrow(ThemePlayMemberNotFoundException::new);
     }
 
     @Transactional(readOnly = true)

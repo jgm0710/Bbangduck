@@ -25,7 +25,10 @@ import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewImageDto;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
-import bbangduck.bd.bbangduck.domain.review.repository.*;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewImageRepository;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewLikeRepository;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewQueryRepository;
+import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
@@ -37,6 +40,7 @@ import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeAnalysisRepository;
+import bbangduck.bd.bbangduck.domain.theme.repository.ThemePlayMemberRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.config.properties.ReviewProperties;
 import bbangduck.bd.bbangduck.global.config.properties.SecurityJwtProperties;
@@ -58,6 +62,9 @@ import java.util.Set;
 
 @Disabled
 public class BaseJGMServiceTest extends BaseTest {
+
+    @Autowired
+    protected ThemePlayMemberRepository themePlayMemberRepository;
 
     @Autowired
     protected MemberQueryRepository memberQueryRepository;
@@ -165,6 +172,7 @@ public class BaseJGMServiceTest extends BaseTest {
         reviewLikeRepository.deleteAll();
         reviewImageRepository.deleteAll();
         reviewRepository.deleteAll();
+        themePlayMemberRepository.deleteAll();
         themeAnalysisRepository.deleteAll();
         themeRepository.deleteAll();
         shopRepository.deleteAll();

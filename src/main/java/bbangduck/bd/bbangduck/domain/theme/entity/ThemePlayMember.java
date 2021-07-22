@@ -71,4 +71,19 @@ public class ThemePlayMember {
     public void refreshLastPlayDateTime() {
         this.lastPlayDateTime = LocalDateTime.now();
     }
+
+    public void increaseReviewLikeCount() {
+        this.reviewLikeCount++;
+    }
+
+    @Override
+    public String toString() {
+        return "ThemePlayMember{" +
+                "id=" + id +
+//                ", theme=" + theme +
+//                ", member=" + member +
+                ", lastPlayDateTime=" + lastPlayDateTime +
+                ", reviewLikeCount=" + reviewLikeCount +
+                '}';
+    }
 }

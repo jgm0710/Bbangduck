@@ -311,7 +311,7 @@ public class ReviewApiController {
             @PathVariable Long reviewId,
             @CurrentUser Member currentMember
     ) {
-        reviewLikeService.addLikeToReview(currentMember.getId(), reviewId);
+        reviewApplicationService.addLikeToReview(currentMember.getId(), reviewId);
 
         URI linkToGetReview = linkTo(methodOn(ReviewApiController.class).getReview(reviewId, currentMember)).toUri();
 

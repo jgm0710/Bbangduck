@@ -22,7 +22,7 @@ public class ThemePlayMemberQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Optional<ThemePlayMember> findThemePlayMemberByThemeIdAndMemberId(Long themeId, Long memberId) {
+    public Optional<ThemePlayMember> findByThemeIdAndMemberId(Long themeId, Long memberId) {
         ThemePlayMember findThemePlayMember = queryFactory
                 .selectFrom(QThemePlayMember.themePlayMember)
                 .where(

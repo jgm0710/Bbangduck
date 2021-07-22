@@ -12,10 +12,10 @@ import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemePlayMember;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeAnalysisService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemePlayMemberService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -173,7 +175,7 @@ class ReviewApplicationServiceUnitTest {
         //when
 
         //then
-        Assertions.assertThrows(NotTwoWayFollowRelationException.class, () -> reviewMockApplicationService.createReview(memberId, themeId, reviewCreateDto));
+        assertThrows(NotTwoWayFollowRelationException.class, () -> reviewMockApplicationService.createReview(memberId, themeId, reviewCreateDto));
 
         then(memberMockService).should(times(1)).getMember(memberId);
         then(themeMockService).should(times(1)).getTheme(themeId);
@@ -420,6 +422,54 @@ class ReviewApplicationServiceUnitTest {
         then(reviewMockService).should().checkIfMyReview(review.getId(), member.getId());
         then(reviewMockService).should().addSurveyToReview(review, reviewSurveyCreateDto);
         then(themeAnalysisMockService).should().reflectingThemeAnalyses(theme, genres);
+    }
+
+    @Test
+    @DisplayName("리뷰에 좋아요 추가")
+    public void addLikeToReview() {
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .build();
+
+        Member member2 = Member.builder()
+                .id(2L)
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .build();
+
+        Review review = Review.builder()
+                .id(1L)
+                .member(member)
+                .theme(theme)
+                .build();
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .id(1L)
+                .member(member)
+                .theme(theme)
+                .build();
+
+
+        given(memberMockService.getMember(member2.getId())).willReturn(member2);
+        given(reviewMockService.getReview(review.getId())).willReturn(review);
+        given(themePlayMemberMockService.getThemePlayMember(theme.getId(), member.getId())).willReturn(themePlayMember);
+
+        //when
+        reviewMockApplicationService.addLikeToReview(member2.getId(), review.getId());
+
+        //then
+        then(memberMockService).should(times(1)).getMember(member2.getId());
+        then(reviewMockService).should(times(1)).getReview(review.getId());
+
+        then(reviewLikeMockService).should(times(1)).addLikeToReview(member2, review);
+
+        then(themePlayMemberMockService).should(times(1)).getThemePlayMember(member.getId(), theme.getId());
+
+        assertEquals(1, themePlayMember.getReviewLikeCount());
+
     }
 
 }
