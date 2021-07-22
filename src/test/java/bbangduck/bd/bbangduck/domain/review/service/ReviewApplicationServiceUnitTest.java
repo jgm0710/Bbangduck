@@ -13,6 +13,7 @@ import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeAnalysisService;
+import bbangduck.bd.bbangduck.domain.theme.service.ThemePlayMemberService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -31,25 +32,25 @@ import static org.mockito.Mockito.times;
 @DisplayName("ReviewApplicationService 단위 테스트")
 class ReviewApplicationServiceUnitTest {
 
-    ReviewService reviewMockService = mock(ReviewService.class);
-    ThemeService themeMockService = mock(ThemeService.class);
     MemberService memberMockService = mock(MemberService.class);
     MemberPlayInclinationService memberPlayInclinationMockService = mock(MemberPlayInclinationService.class);
-    FollowService followMockService = mock(FollowService.class);
-    ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
+    ReviewService reviewMockService = mock(ReviewService.class);
     ReviewLikeService reviewLikeMockService = mock(ReviewLikeService.class);
+    ThemeService themeMockService = mock(ThemeService.class);
+    ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
+    ThemePlayMemberService themePlayMemberMockService = mock(ThemePlayMemberService.class);
+    FollowService followMockService = mock(FollowService.class);
 
     ReviewApplicationService reviewMockApplicationService = new ReviewApplicationService(
-            reviewMockService,
-            themeMockService,
             memberMockService,
             memberPlayInclinationMockService,
-            followMockService,
+            reviewMockService,
+            reviewLikeMockService,
+            themeMockService,
             themeAnalysisMockService,
-            reviewLikeMockService
+            themePlayMemberMockService,
+            followMockService
     );
-
-
 
 
     @Test
@@ -116,6 +117,7 @@ class ReviewApplicationServiceUnitTest {
         then(reviewMockService).should(times(1)).addPlayTogetherFriendsToReview(review, friends);
         then(memberPlayInclinationMockService).should(times(1)).reflectingPropensityOfMemberToPlay(member, theme.getGenre());
         then(themeMockService).should(times(1)).increaseThemeRating(theme, reviewCreateDto.getRating());
+        then(themePlayMemberMockService).should(times(1)).playTheme(theme, member);
     }
 
     @Test

@@ -15,6 +15,7 @@ import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeAnalysisService;
+import bbangduck.bd.bbangduck.domain.theme.service.ThemePlayMemberService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,19 +36,19 @@ import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
 @Transactional(readOnly = true)
 public class ReviewApplicationService {
 
+    private final MemberService memberService;
+    private final MemberPlayInclinationService memberPlayInclinationService;
+
     private final ReviewService reviewService;
+    private final ReviewLikeService reviewLikeService;
 
     private final ThemeService themeService;
-
-    private final MemberService memberService;
-
-    private final MemberPlayInclinationService memberPlayInclinationService;
+    private final ThemeAnalysisService themeAnalysisService;
+    private final ThemePlayMemberService themePlayMemberService;
 
     private final FollowService followService;
 
-    private final ThemeAnalysisService themeAnalysisService;
 
-    private final ReviewLikeService reviewLikeService;
 
     @Transactional
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
@@ -64,6 +65,8 @@ public class ReviewApplicationService {
         memberPlayInclinationService.reflectingPropensityOfMemberToPlay(member, theme.getGenre());
 
         themeService.increaseThemeRating(theme, reviewCreateDto.getRating());
+
+        themePlayMemberService.playTheme(theme, member);
 
         return reviewId;
     }
