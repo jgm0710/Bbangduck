@@ -5,7 +5,8 @@ import bbangduck.bd.bbangduck.domain.theme.dto.controller.request.ThemeGetPlayMe
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeAnalysesResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeDetailResponseDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeGetListResponseDto;
-import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemePlayMemberListResponseDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemePlayMemberSimpleInfoResponseDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemePlayMemberListResultDto;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeApplicationService;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
@@ -67,13 +68,21 @@ public class ThemeApiController {
 
     @GetMapping("{themeId}/members")
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
-    public ThemePlayMemberListResponseDto getThemePlayMemberList(
+    public PaginationResultResponseDto<ThemePlayMemberSimpleInfoResponseDto> getThemePlayMemberList(
             @PathVariable Long themeId,
             @Valid ThemeGetPlayMemberListRequestDto requestDto,
             BindingResult bindingResult
     ) {
         hasErrorsThrow(ResponseStatus.GET_THEME_PLAY_MEMBER_LIST_NOT_VALID, bindingResult);
-        return themeApplicationService.getThemePlayMemberList(themeId, requestDto.toServiceDto());
+
+        ThemePlayMemberListResultDto themePlayMemberListResultDto = themeApplicationService.getThemePlayMemberList(themeId, requestDto.toServiceDto());
+
+        return new PaginationResultResponseDto<>(
+                themePlayMemberListResultDto.getMembers(),
+                requestDto.getPageNum(),
+                requestDto.getAmount(),
+                themePlayMemberListResultDto.getThemePlayMembersCount()
+        ).convert(ThemePlayMemberSimpleInfoResponseDto::convert);
     }
 
     // TODO: 2021-06-28 테마 검색 구현

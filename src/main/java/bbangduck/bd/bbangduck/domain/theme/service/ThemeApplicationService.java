@@ -4,8 +4,10 @@ import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.*;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
+import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemePlayMemberListResultDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemePlayMember;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
 import com.querydsl.core.QueryResults;
@@ -30,6 +32,8 @@ public class ThemeApplicationService {
 
     private final ThemeAnalysisService themeAnalysisService;
 
+    private final ThemePlayMemberService themePlayMemberService;
+
     public PaginationResultResponseDto<ThemeGetListResponseDto> getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto) {
         QueryResults<Theme> themeQueryResults = themeService.getThemeList(criteriaDto, themeGetListDto);
 
@@ -53,13 +57,15 @@ public class ThemeApplicationService {
         return themeAnalyses.stream().map(ThemeAnalysesResponseDto::convert).collect(Collectors.toList());
     }
 
-    public ThemePlayMemberListResponseDto getThemePlayMemberList(Long themeId, ThemeGetPlayMemberListDto themeGetPlayMemberListDto) {
+    public ThemePlayMemberListResultDto getThemePlayMemberList(Long themeId, ThemeGetPlayMemberListDto themeGetPlayMemberListDto) {
         themeService.getTheme(themeId);
-        List<Member> themePlayMemberList = themeService.findThemePlayMemberList(themeId, themeGetPlayMemberListDto);
-        long themePlayMembersCount = themeService.getThemePlayMembersCount(themeId);
+        List<ThemePlayMember> themePlayMemberEntities = themePlayMemberService.findThemePlayMemberList(themeId, themeGetPlayMemberListDto);
+        List<Member> themePlayMembers = themePlayMemberEntities.stream().map(ThemePlayMember::getMember).collect(Collectors.toList());
+        long themePlayMembersCount = themePlayMemberService.getThemePlayMembersCount(themeId);
 
-        return ThemePlayMemberListResponseDto.convert(themePlayMemberList,
-                themeGetPlayMemberListDto.getAmount(),
-                themePlayMembersCount);
+        return ThemePlayMemberListResultDto.builder()
+                .members(themePlayMembers)
+                .themePlayMembersCount(themePlayMembersCount)
+                .build();
     }
 }

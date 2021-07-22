@@ -184,6 +184,8 @@ public class ReviewService {
      * - 이미 삭제된 리뷰일 경우
      * fixme : 리뷰 삭제 시 레코드 변호 update 하지 않도록 변경
      */
+    // TODO: 2021-07-22 리뷰 삭제 시 테마 플레이 회원의 리뷰 좋아요 수 감소
+    // TODO: 2021-07-22 리뷰 삭제 시 테마에 리뷰에 해당하는 회원이 해당 테마에 리뷰를 생성한 내역이 없을 경우 테마 플레이 내역 삭제
     @Transactional
     public void deleteReview(Long reviewId) {
         Review review = getReview(reviewId);

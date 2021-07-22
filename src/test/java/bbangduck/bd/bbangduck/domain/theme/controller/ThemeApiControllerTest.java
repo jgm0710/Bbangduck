@@ -15,11 +15,13 @@ import bbangduck.bd.bbangduck.domain.theme.dto.controller.request.ThemeGetPlayMe
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeImage;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemePlayMember;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeGetMemberListSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeRatingFilteringType;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeAnalysisQueryRepository;
+import bbangduck.bd.bbangduck.domain.theme.repository.ThemePlayMemberQueryRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeQueryRepository;
 import bbangduck.bd.bbangduck.domain.theme.repository.ThemeRepository;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -61,6 +63,9 @@ class ThemeApiControllerTest extends BaseControllerTest {
 
     @MockBean
     ThemeAnalysisQueryRepository themeAnalysisQueryRepository;
+
+    @MockBean
+    ThemePlayMemberQueryRepository themePlayMemberQueryRepository;
 
 
     @Test
@@ -459,7 +464,7 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 .id(themeId)
                 .build();
 
-        List<Member> themePlayMemberList = new ArrayList<>();
+        List<ThemePlayMember> themePlayMemberList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             long randomLong = new Random().nextInt(50);
             Member member = Member.builder()
@@ -475,7 +480,12 @@ class ThemeApiControllerTest extends BaseControllerTest {
                     .build();
             member.setProfileImage(profileImage);
 
-            themePlayMemberList.add(member);
+
+            ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                    .theme(theme)
+                    .member(member)
+                    .build();
+            themePlayMemberList.add(themePlayMember);
         }
 
         ThemeGetPlayMemberListRequestDto themeGetPlayMemberListRequestDto = ThemeGetPlayMemberListRequestDto.builder()
@@ -484,8 +494,8 @@ class ThemeApiControllerTest extends BaseControllerTest {
                 .build();
 
         given(themeRepository.findById(themeId)).willReturn(Optional.of(theme));
-        given(themeQueryRepository.findThemePlayMemberList(any(), any())).willReturn(themePlayMemberList);
-        given(themeQueryRepository.getThemePlayMembersCount(themeId)).willReturn(74L);
+        given(themePlayMemberQueryRepository.findListByThemeId(any(), any())).willReturn(themePlayMemberList);
+        given(themePlayMemberQueryRepository.getThemePlayMembersCount(themeId)).willReturn(74L);
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -507,14 +517,15 @@ class ThemeApiControllerTest extends BaseControllerTest {
                                         ThemeGetMemberListSortCondition.getNameList())
                         ),
                         responseFields(
-                                fieldWithPath("membersInfo").description("조회된 회원 목록의 간단한 정보"),
-                                fieldWithPath("membersInfo[].memberId").description("조회된 회원의 식별 ID"),
-                                fieldWithPath("membersInfo[].nickname").description("조회된 회원의 닉네임"),
-                                fieldWithPath("membersInfo[].profileImage.profileImageId").description("조회된 회원의 프로필 이미지 식별 ID"),
-                                fieldWithPath("membersInfo[].profileImage.profileImageUrl").description("조회된 회원의 프로필 이미지 다운로드 URL"),
-                                fieldWithPath("membersInfo[].profileImage.profileImageThumbnailUrl").description("조회된 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
-                                fieldWithPath("requestAmount").description("요청된 회원 목록 수량"),
-                                fieldWithPath("themePlayMembersCount").description("테마를 플레이한 전체 회원 수")
+                                fieldWithPath("contents").description("실제 응답 내용"),
+                                fieldWithPath("contents[].memberId").description("조회된 회원의 식별 ID"),
+                                fieldWithPath("contents[].nickname").description("조회된 회원의 닉네임"),
+                                fieldWithPath("contents[].profileImage.profileImageId").description("조회된 회원의 프로필 이미지 식별 ID"),
+                                fieldWithPath("contents[].profileImage.profileImageUrl").description("조회된 회원의 프로필 이미지 다운로드 URL"),
+                                fieldWithPath("contents[].profileImage.profileImageThumbnailUrl").description("조회된 회원의 프로필 이미지 썸네일 이미지 다운로드 URL"),
+                                fieldWithPath("nowPageNum").description("요청된 페이지"),
+                                fieldWithPath("requestAmount").description("요청된 수량"),
+                                fieldWithPath("totalResultsCount").description("테마를 플레이한 전체 회원 수")
                         )
                 ))
         ;

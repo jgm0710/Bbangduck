@@ -1,6 +1,7 @@
 package bbangduck.bd.bbangduck.domain.theme.dto.service;
 
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeGetMemberListSortCondition;
+import bbangduck.bd.bbangduck.global.common.util.PagingQuery;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,9 +17,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThemeGetPlayMemberListDto {
+public class ThemeGetPlayMemberListDto implements PagingQuery {
 
-    private Integer amount;
+    private long pageNum;
+
+    private int amount;
 
     private ThemeGetMemberListSortCondition sortCondition;
 

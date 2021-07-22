@@ -118,7 +118,7 @@ class FollowApplicationServiceUnitTest {
                     "조회되는 회원의 식별 ID 중 하나는 member 가 팔로우하는 회원의 식별 ID 중 하나여야한다.");
         });
 
-        assertEquals(criteriaDto.getPageNum(),resultResponseDto.getNowPageNum());
+        assertEquals((long) criteriaDto.getPageNum(), resultResponseDto.getNowPageNum());
         assertEquals(criteriaDto.getAmount(), resultResponseDto.getRequestAmount());
         assertEquals(follows.size(), resultResponseDto.getTotalResultsCount());
 

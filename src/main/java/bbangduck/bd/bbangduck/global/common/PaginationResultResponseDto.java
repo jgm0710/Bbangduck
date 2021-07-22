@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class PaginationResultResponseDto<T> {
     private List<T> contents;
-    private int nowPageNum;
+    private long nowPageNum;
     private int requestAmount;
     private long totalResultsCount;
 
