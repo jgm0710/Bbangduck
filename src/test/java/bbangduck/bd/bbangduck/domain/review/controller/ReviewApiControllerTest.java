@@ -180,7 +180,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(signUpId2);
 
-        reviewService.deleteReview(createdReviewId);
+        reviewApplicationService.deleteReview(signUpId, createdReviewId);
 
         //when
         System.out.println("================================================================================================================================================");
@@ -746,7 +746,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
-        reviewService.deleteReview(savedReviewId);
+        reviewApplicationService.deleteReview(signUpId, savedReviewId);
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -2081,7 +2081,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
-        reviewService.deleteReview(createdReviewId);
+        reviewApplicationService.deleteReview(signUpId, createdReviewId);
 
         //when
         ResultActions perform = mockMvc.perform(

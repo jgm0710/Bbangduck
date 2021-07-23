@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("ReviewService 단위 테스트")
@@ -48,13 +49,21 @@ class ReviewServiceUnitTest {
     @DisplayName("조작하는 리뷰가 자신의 리뷰인지 검증")
     public void checkIfMyReview() {
         //given
-        Long reviewMemberId = 1L;
-        Long authMemberId = 2L;
+        Member member = Member.builder()
+                .id(1L)
+                .build();
+
+        Review review = Review.builder()
+                .id(1L)
+                .member(member)
+                .build();
+
+        Long othersMemberId = 1000L;
 
         //when
 
         //then
-        assertThrows(ReviewCreatedByOtherMembersException.class, () -> reviewService.checkIfMyReview(authMemberId, reviewMemberId));
+        assertThrows(ReviewCreatedByOtherMembersException.class, () -> reviewService.checkIfMyReview(othersMemberId, review));
 
     }
 
@@ -236,6 +245,21 @@ class ReviewServiceUnitTest {
             boolean anyMatch = friends.stream().anyMatch(member -> member.getId().equals(reviewPlayTogetherMember.getId()));
             assertTrue(anyMatch, "리뷰의 함께 플레이한 회원 중 하나는 리뷰 함께 플레이한 친구 등록 시 기입한 회원 중 한명이 포함되어 있어야 한다.");
         });
+    }
+
+    @Test
+    @DisplayName("특정 회원이 테마에 리뷰를 생성한 내역이 있는지 조회")
+    public void isExistReviewHistory() {
+        //given
+        Long memberId = 1L;
+        Long themeId = 1L;
+        given(reviewQueryRepository.getReviewsCountByMemberIdAndThemeId(memberId,themeId)).willReturn(0L);
+
+        //when
+        boolean existReviewHistory = reviewService.isExistReviewHistory(memberId, themeId);
+
+        //then
+        assertFalse(existReviewHistory, "리뷰 내역이 0일 경우 리뷰는 존재하지 않음");
     }
 
 }

@@ -22,6 +22,7 @@ import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.review.exception.ManipulateDeletedReviewsException;
 import bbangduck.bd.bbangduck.domain.review.exception.ReviewNotFoundException;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemePlayMember;
 import bbangduck.bd.bbangduck.domain.theme.exception.ManipulateDeletedThemeException;
 import bbangduck.bd.bbangduck.domain.theme.exception.ThemeNotFoundException;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
@@ -329,7 +330,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         Long reviewId = reviewApplicationService.createReview(signUpId, savedTheme.getId(), reviewCreateDto);
 
-        reviewService.deleteReview(reviewId);
+        reviewApplicationService.deleteReview(signUpId, reviewId);
 
         em.flush();
         em.clear();
@@ -359,7 +360,20 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         List<Review> tmpReviewList = createTmpReviewList(member, theme);
 
         Theme theme2 = createThemeSample();
-        createTmpReviewList(member, theme2);
+        List<Review> reviewList = createTmpReviewList(member, theme2);
+
+        long reviewLikeCount = 0;
+        for (Review review : reviewList) {
+            reviewLikeCount += review.getLikeCount();
+        }
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .theme(theme)
+                .member(member)
+                .reviewLikeCount(reviewLikeCount)
+                .build();
+
+        themePlayMemberRepository.save(themePlayMember);
 
         em.flush();
         em.clear();
@@ -367,9 +381,9 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         Long deletedReviewId1 = tmpReviewList.get(13).getId();
         Long deletedReviewId2 = tmpReviewList.get(14).getId();
         Long deletedReviewId3 = tmpReviewList.get(15).getId();
-        reviewService.deleteReview(deletedReviewId1);
-        reviewService.deleteReview(deletedReviewId2);
-        reviewService.deleteReview(deletedReviewId3);
+        reviewApplicationService.deleteReview(member.getId(), deletedReviewId1);
+        reviewApplicationService.deleteReview(member.getId(), deletedReviewId2);
+        reviewApplicationService.deleteReview(member.getId(), deletedReviewId3);
 
         em.flush();
         em.clear();
@@ -619,7 +633,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         em.flush();
         em.clear();
 
-        reviewService.deleteReview(reviewId);
+        reviewApplicationService.deleteReview(signUpId, reviewId);
 
         em.flush();
         em.clear();
@@ -1050,7 +1064,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
         em.clear();
 
         System.out.println("================================================================================================================");
-        reviewService.deleteReview(createdReviewId);
+        reviewApplicationService.deleteReview(signUpId, createdReviewId);
 
         em.flush();
         em.clear();
@@ -1279,7 +1293,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
 
         //when
         System.out.println("============================================================================================");
-        reviewService.deleteReview(member1review2Id);
+        reviewApplicationService.deleteReview(member1Id, member1review2Id);
 
         em.flush();
         em.clear();
@@ -1387,7 +1401,7 @@ class ReviewServiceTest extends BaseJGMServiceTest {
             Long reviewId = reviewApplicationService.createReview(member1Id, themeSampleId, reviewCreateRequestDto.toServiceDto());
 
             if (i % 3 == 0) {
-                reviewService.deleteReview(reviewId);
+                reviewApplicationService.deleteReview(member1Id, reviewId);
             }
         }
     }

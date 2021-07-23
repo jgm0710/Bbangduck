@@ -65,4 +65,24 @@ class ThemePlayMemberServiceIntegrationTest extends BaseTest {
 
         assertEquals(0, findThemePlayMember.getReviewLikeCount());
     }
+
+    @Test
+    @DisplayName("테마 플레이 내역 삭제")
+    public void deleteThemePlayMember() {
+        //given
+        Member member = Member.builder().build();
+        Theme theme = Theme.builder().build();
+
+        memberRepository.save(member);
+        themeRepository.save(theme);
+
+        ThemePlayMember themePlayMember = ThemePlayMember.init(theme, member);
+
+        //when
+        themePlayMemberService.deleteThemePlayMember(themePlayMember);
+
+        //then
+        assertTrue(themePlayMemberRepository.findByThemeAndMember(theme, member).isEmpty());
+
+    }
 }

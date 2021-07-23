@@ -278,10 +278,7 @@ public class ReviewApiController {
             @PathVariable Long reviewId,
             @CurrentUser Member currentMember
     ) {
-        Review findReview = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, findReview);
-
-        reviewService.deleteReview(reviewId);
+        reviewApplicationService.deleteReview(currentMember.getId(),reviewId);
 
         return ResponseEntity.noContent().build();
     }

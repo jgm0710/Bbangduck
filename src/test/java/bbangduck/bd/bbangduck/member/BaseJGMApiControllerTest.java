@@ -817,7 +817,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
             }
 
             if (i % 3 == 0) {
-                reviewService.deleteReview(reviewId);
+                reviewApplicationService.deleteReview(memberId, reviewId);
             }
         }
     }

@@ -187,9 +187,8 @@ public class ReviewService {
     // TODO: 2021-07-22 리뷰 삭제 시 테마 플레이 회원의 리뷰 좋아요 수 감소
     // TODO: 2021-07-22 리뷰 삭제 시 테마에 리뷰에 해당하는 회원이 해당 테마에 리뷰를 생성한 내역이 없을 경우 테마 플레이 내역 삭제
     @Transactional
-    public void deleteReview(Long reviewId) {
-        Review review = getReview(reviewId);
-        long updateCount = reviewQueryRepository.decreaseRecodeNumberWhereInGreaterThenThisRecodeNumber(reviewId, review.getRecodeNumber());
+    public void deleteReview(Review review) {
+        long updateCount = reviewQueryRepository.decreaseRecodeNumberWhereInGreaterThenThisRecodeNumber(review.getId(), review.getRecodeNumber());
         log.debug("decreaseRecodeNumberWhereInGreaterThenThisRecodeNumber update count : {}", updateCount);
         review.delete();
     }
@@ -198,8 +197,9 @@ public class ReviewService {
         return reviewQueryRepository.findListByMember(memberId, reviewSearchDto);
     }
 
-    public void checkIfMyReview(Long authenticatedMemberId, Long reviewMemberId) {
-        if (!reviewMemberId.equals(authenticatedMemberId)) {
+    public void checkIfMyReview(Long authenticatedMemberId, Review review) {
+        Member reviewMember = review.getMember();
+        if (!reviewMember.getId().equals(authenticatedMemberId)) {
             throw new ReviewCreatedByOtherMembersException();
         }
     }
@@ -219,5 +219,10 @@ public class ReviewService {
         List<ReviewPlayTogether> reviewPlayTogetherEntities = review.getReviewPlayTogetherEntities();
         reviewPlayTogetherRepository.deleteInBatch(reviewPlayTogetherEntities);
         review.clearPlayTogether();
+    }
+
+    public boolean isExistReviewHistory(Long memberId, Long themeId) {
+        long reviewsCount = reviewQueryRepository.getReviewsCountByMemberIdAndThemeId(memberId, themeId);
+        return reviewsCount != 0;
     }
 }

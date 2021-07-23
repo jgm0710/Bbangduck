@@ -90,4 +90,8 @@ public class ThemePlayMember {
     public void decreaseReviewLikeCount() {
         this.reviewLikeCount--;
     }
+
+    public void decreaseReviewLikeCount(long reviewLikeCount) {
+        this.reviewLikeCount -= reviewLikeCount;
+    }
 }

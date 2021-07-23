@@ -44,7 +44,6 @@ public class ThemePlayMemberService {
     }
 
     @Transactional
-    // TODO: 2021-07-21 리뷰 삭제 시 회원이 테마에 리뷰를 남긴 내역이 없을 경우 테마 플레이 회원 삭제
     public void deleteThemePlayMember(ThemePlayMember themePlayMember) {
         themePlayMemberRepository.delete(themePlayMember);
     }

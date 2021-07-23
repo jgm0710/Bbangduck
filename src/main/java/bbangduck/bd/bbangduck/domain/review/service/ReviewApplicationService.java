@@ -92,9 +92,7 @@ public class ReviewApplicationService {
     @Transactional
     public void addDetailToReview(Long reviewId, Long authenticatedMemberId, ReviewDetailCreateDto reviewDetailCreateDto) {
         Review review = reviewService.getReview(reviewId);
-
-        Member reviewMember = review.getMember();
-        reviewService.checkIfMyReview(authenticatedMemberId, reviewMember.getId());
+        reviewService.checkIfMyReview(authenticatedMemberId, review);
 
         reviewService.addDetailToReview(review, reviewDetailCreateDto);
     }
@@ -102,9 +100,7 @@ public class ReviewApplicationService {
     @Transactional
     public void addSurveyToReview(Long reviewId, Long authenticatedMemberId, ReviewSurveyCreateDto reviewSurveyCreateDto) {
         Review review = reviewService.getReview(reviewId);
-
-        Member reviewMember = review.getMember();
-        reviewService.checkIfMyReview(authenticatedMemberId, reviewMember.getId());
+        reviewService.checkIfMyReview(authenticatedMemberId, review);
 
         reviewService.addSurveyToReview(review, reviewSurveyCreateDto);
 
@@ -114,9 +110,7 @@ public class ReviewApplicationService {
     @Transactional
     public void updateReview(Long reviewId, Long authenticatedMemberId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewService.getReview(reviewId);
-
-        Member reviewMember = review.getMember();
-        reviewService.checkIfMyReview(authenticatedMemberId, reviewMember.getId());
+        reviewService.checkIfMyReview(authenticatedMemberId, review);
 
         themeService.updateThemeRating(review.getTheme(), review.getRating(), reviewUpdateDto.getRating());
 
@@ -124,6 +118,7 @@ public class ReviewApplicationService {
         reviewService.clearReviewDetail(review);
 
         reviewService.updateReviewBase(review, reviewUpdateDto.toReviewUpdateBaseDto());
+        Member reviewMember = review.getMember();
         List<Member> twoWayFollowMembers = getTwoWayFollowMembers(reviewMember.getId(), reviewUpdateDto.getFriendIds());
         reviewService.addPlayTogetherFriendsToReview(review, twoWayFollowMembers);
         if (reviewUpdateDto.getReviewType() == ReviewType.DETAIL) {
@@ -154,6 +149,24 @@ public class ReviewApplicationService {
                         DetailReviewResponseDto.convert(review, currentMember, existsReviewLike, possibleOfAddReviewSurvey);
             default:
                 return null;
+        }
+    }
+
+    @Transactional
+    public void deleteReview(Long authenticatedMemberId, Long reviewId) {
+        Review review = reviewService.getReview(reviewId);
+        reviewService.checkIfMyReview(authenticatedMemberId, review);
+        reviewService.deleteReview(review);
+
+        Member reviewMember = review.getMember();
+        Theme reviewTheme = review.getTheme();
+        ThemePlayMember themePlayMember = themePlayMemberService.getThemePlayMember(reviewTheme.getId(), reviewMember.getId());
+
+        boolean existReviewHistory = reviewService.isExistReviewHistory(reviewMember.getId(), reviewTheme.getId());
+        if (existReviewHistory) {
+            themePlayMember.decreaseReviewLikeCount(review.getLikeCount());
+        } else {
+            themePlayMemberService.deleteThemePlayMember(themePlayMember);
         }
     }
 

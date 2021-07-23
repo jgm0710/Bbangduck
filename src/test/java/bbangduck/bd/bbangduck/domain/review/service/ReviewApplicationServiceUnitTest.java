@@ -253,7 +253,7 @@ class ReviewApplicationServiceUnitTest {
 
         //then
         then(reviewMockService).should(times(1)).getReview(review.getId());
-        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review);
         then(themeMockService).should(times(1)).updateThemeRating(theme, review.getRating(), reviewUpdateDto.getRating());
 
         then(reviewMockService).should(times(1)).clearReviewPlayTogether(review);
@@ -336,7 +336,7 @@ class ReviewApplicationServiceUnitTest {
 
         //then
         then(reviewMockService).should(times(1)).getReview(review.getId());
-        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review);
         then(themeMockService).should(times(1)).updateThemeRating(theme, review.getRating(), reviewUpdateDto.getRating());
 
         then(reviewMockService).should(times(1)).clearReviewPlayTogether(review);
@@ -375,7 +375,7 @@ class ReviewApplicationServiceUnitTest {
 
         //then
         then(reviewMockService).should(times(1)).getReview(review.getId());
-        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), member.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review);
         then(reviewMockService).should(times(1)).addDetailToReview(review, reviewDetailCreateDto);
     }
 
@@ -420,7 +420,7 @@ class ReviewApplicationServiceUnitTest {
 
         //then
         then(reviewMockService).should().getReview(review.getId());
-        then(reviewMockService).should().checkIfMyReview(review.getId(), member.getId());
+        then(reviewMockService).should().checkIfMyReview(member.getId(), review);
         then(reviewMockService).should().addSurveyToReview(review, reviewSurveyCreateDto);
         then(themeAnalysisMockService).should().reflectingThemeAnalyses(theme, genres);
     }
@@ -521,6 +521,103 @@ class ReviewApplicationServiceUnitTest {
         then(themePlayMemberMockService).should(times(1)).getThemePlayMember(theme.getId(), reviewCreateMember.getId());
 
         assertEquals(0, themePlayMember.getReviewLikeCount(), "테마 플레이 내역의 리뷰 좋아요 개수 1 감소");
+
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 - 삭제된 이후 회원이 테마에 리뷰를 생성한 내역이 존재하는 경우")
+    public void deleteReview_ExistReview() {
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .build();
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .id(1L)
+                .member(member)
+                .theme(theme)
+                .reviewLikeCount(200)
+                .build();
+
+        Review review1 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .likeCount(100)
+                .build();
+
+        Review review2 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .likeCount(100)
+                .build();
+
+        given(reviewMockService.getReview(review1.getId())).willReturn(review1);
+        given(themePlayMemberMockService.getThemePlayMember(theme.getId(), member.getId())).willReturn(themePlayMember);
+        given(reviewMockService.isExistReviewHistory(member.getId(), theme.getId())).willReturn(true);
+
+        //when
+        reviewMockApplicationService.deleteReview(member.getId(), review1.getId());
+
+        //then
+        then(reviewMockService).should(times(1)).getReview(review1.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review1);
+        then(reviewMockService).should(times(1)).deleteReview(review1);
+        then(themePlayMemberMockService).should(times(1)).getThemePlayMember(theme.getId(), member.getId());
+        then(reviewMockService).should(times(1)).isExistReviewHistory(member.getId(), theme.getId());
+        then(themePlayMemberMockService).should(times(0)).deleteThemePlayMember(themePlayMember);
+
+        assertEquals(100, themePlayMember.getReviewLikeCount(), "테마 플레이 내역의 리뷰 좋아요 개수는 삭제된 리뷰의 개수인 100 만큼 감소한다.");
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 - 삭제 이후 회원이 테마에 리뷰를 작성한 내역이 없는 경우")
+    public void deleteReview_NotExistReview() {
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .build();
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .id(1L)
+                .member(member)
+                .theme(theme)
+                .reviewLikeCount(200)
+                .build();
+
+        Review review1 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .likeCount(100)
+                .build();
+
+        Review review2 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .likeCount(100)
+                .build();
+
+        given(reviewMockService.getReview(review1.getId())).willReturn(review1);
+        given(themePlayMemberMockService.getThemePlayMember(theme.getId(), member.getId())).willReturn(themePlayMember);
+        given(reviewMockService.isExistReviewHistory(member.getId(), theme.getId())).willReturn(false);
+
+        //when
+        reviewMockApplicationService.deleteReview(member.getId(), review1.getId());
+
+        //then
+        then(reviewMockService).should(times(1)).getReview(review1.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review1);
+        then(reviewMockService).should(times(1)).deleteReview(review1);
+        then(themePlayMemberMockService).should(times(1)).getThemePlayMember(theme.getId(), member.getId());
+        then(reviewMockService).should(times(1)).isExistReviewHistory(member.getId(), theme.getId());
+        then(themePlayMemberMockService).should(times(1)).deleteThemePlayMember(themePlayMember);
 
     }
 
