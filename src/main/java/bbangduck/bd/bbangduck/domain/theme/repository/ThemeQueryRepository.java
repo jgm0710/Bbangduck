@@ -10,7 +10,6 @@ import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeRatingFilteringType;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
-import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -36,7 +35,7 @@ public class ThemeQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public QueryResults<Theme> findList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto) {
+    public QueryResults<Theme> findList(ThemeGetListDto themeGetListDto) {
         return queryFactory
                 .selectFrom(theme)
                 .where(
@@ -52,8 +51,8 @@ public class ThemeQueryRepository {
                 .orderBy(
                         themeSortConditionEq(themeGetListDto.getSortCondition())
                 )
-                .offset(criteriaDto.getOffset())
-                .limit(criteriaDto.getAmount())
+                .offset(themeGetListDto.getOffset())
+                .limit(themeGetListDto.getAmount())
                 .fetchResults();
     }
 

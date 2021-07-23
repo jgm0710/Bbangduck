@@ -79,6 +79,8 @@ class ThemeQueryRepositoryTest extends BaseTest {
         CriteriaDto criteriaDto = new CriteriaDto();
 
         ThemeGetListDto themeGetListDto = ThemeGetListDto.builder()
+                .pageNum(1L)
+                .amount(20)
 //                .genreCode(genres.get(1).getCode())
 //                .themeType(ThemeType.HALF)
 //                .rating(ThemeRatingFilteringType.TWO_OR_MORE)
@@ -91,7 +93,7 @@ class ThemeQueryRepositoryTest extends BaseTest {
 
         //when
         System.out.println("====================================================================================================");
-        QueryResults<Theme> queryResults = themeQueryRepository.findList(criteriaDto, themeGetListDto);
+        QueryResults<Theme> queryResults = themeQueryRepository.findList(themeGetListDto);
 
         //then
         List<Theme> themes = queryResults.getResults();

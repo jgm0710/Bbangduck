@@ -120,7 +120,7 @@ class ThemeApplicationServiceUnitTest {
         List<ThemeAnalysis> findThemeAnalyses = themeMockApplicationService.getThemeAnalyses(themeId);
 
         //then
-        then(themeMockApplicationService).should(times(1)).getThemeAnalyses(themeId);
+        then(themeAnalysisMockService).should(times(1)).getThemeAnalyses(themeId);
 
     }
 

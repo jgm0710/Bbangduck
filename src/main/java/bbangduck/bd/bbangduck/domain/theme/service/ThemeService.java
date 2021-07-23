@@ -24,8 +24,8 @@ public class ThemeService {
 
     private final ThemeQueryRepository themeQueryRepository;
 
-    public QueryResults<Theme> getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto) {
-        return themeQueryRepository.findList(criteriaDto, themeGetListDto);
+    public QueryResults<Theme> getThemeList(ThemeGetListDto themeGetListDto) {
+        return themeQueryRepository.findList(themeGetListDto);
     }
 
     public Theme getTheme(Long themeId) {

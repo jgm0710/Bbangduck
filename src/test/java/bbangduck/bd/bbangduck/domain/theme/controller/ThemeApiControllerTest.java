@@ -101,7 +101,7 @@ class ThemeApiControllerTest extends BaseControllerTest {
         }
 
         QueryResults<Theme> themeQueryResults = new QueryResults<>(themeList, 1L, 1L, 30);
-        given(themeQueryRepository.findList(any(), any())).willReturn(themeQueryResults);
+        given(themeQueryRepository.findList(any())).willReturn(themeQueryResults);
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -175,7 +175,7 @@ class ThemeApiControllerTest extends BaseControllerTest {
         }
 
         QueryResults<Theme> themeQueryResults = new QueryResults<>(themes, 1L, 1L, 1);
-        given(themeQueryRepository.findList(any(), any())).willReturn(themeQueryResults);
+        given(themeQueryRepository.findList(any())).willReturn(themeQueryResults);
 
         //when
         ResultActions perform = mockMvc.perform(

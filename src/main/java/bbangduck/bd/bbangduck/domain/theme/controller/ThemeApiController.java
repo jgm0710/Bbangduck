@@ -10,7 +10,6 @@ import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemePlayMemberListResult
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeApplicationService;
-import bbangduck.bd.bbangduck.global.common.CriteriaDto;
 import bbangduck.bd.bbangduck.global.common.PaginationResultDto;
 import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
 import bbangduck.bd.bbangduck.global.common.ResponseStatus;
@@ -18,7 +17,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -42,18 +44,17 @@ public class ThemeApiController {
     @GetMapping
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.OK)
     public PaginationResultResponseDto<ThemeGetListResponseDto> getThemeList(
-            @ModelAttribute @Valid CriteriaDto criteriaDto,
-            BindingResult bindingResult,
-            @ModelAttribute @Valid ThemeGetListRequestDto requestDto
+            @Valid ThemeGetListRequestDto requestDto,
+            BindingResult bindingResult
     ) {
         hasErrorsThrow(ResponseStatus.GET_THEME_LIST_NOT_VALID, bindingResult);
 
-        PaginationResultDto<Theme> result = themeApplicationService.getThemeList(criteriaDto, requestDto.toServiceDto());
+        PaginationResultDto<Theme> result = themeApplicationService.getThemeList(requestDto.toServiceDto());
 
         return new PaginationResultResponseDto<>(
                 result.getContents(),
-                criteriaDto.getPageNum(),
-                criteriaDto.getAmount(),
+                requestDto.getPageNum(),
+                requestDto.getAmount(),
                 result.getTotalResultsCount())
                 .convert(ThemeGetListResponseDto::convert);
     }

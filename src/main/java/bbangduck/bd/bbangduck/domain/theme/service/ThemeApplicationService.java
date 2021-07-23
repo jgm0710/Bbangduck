@@ -33,8 +33,8 @@ public class ThemeApplicationService {
     private final ThemePlayMemberService themePlayMemberService;
 
     @Transactional(readOnly = true)
-    public PaginationResultDto<Theme> getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto) {
-        QueryResults<Theme> themeQueryResults = themeService.getThemeList(criteriaDto, themeGetListDto);
+    public PaginationResultDto<Theme> getThemeList(ThemeGetListDto themeGetListDto) {
+        QueryResults<Theme> themeQueryResults = themeService.getThemeList(themeGetListDto);
 
         long totalResultsCount = themeQueryResults.getTotal();
         List<Theme> themes = themeQueryResults.getResults();
