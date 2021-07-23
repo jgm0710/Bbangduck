@@ -10,7 +10,6 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
 import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
-import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.*;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemePlayMemberListResultDto;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -24,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalTime;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -91,37 +89,11 @@ class ThemeApplicationServiceUnitTest {
 
 
         //when
-        ThemeDetailResponseDto themeDetailResponseDto = themeMockApplicationService.getTheme(theme.getId());
+        Theme findTheme = themeMockApplicationService.getTheme(theme.getId());
 
         //then
-        assertEquals(theme.getId(), themeDetailResponseDto.getThemeId());
-        assertEquals(theme.getName(), themeDetailResponseDto.getThemeName());
-        assertEquals(theme.getDescription(), themeDetailResponseDto.getThemeDescription());
-        assertEquals(60f / 16f, themeDetailResponseDto.getThemeRating());
-        assertEquals(theme.getPlayTime(), themeDetailResponseDto.getPlayTime());
-        assertEquals(theme.getNumberOfPeoples(), themeDetailResponseDto.getNumberOfPeoples());
-        assertEquals(theme.getDifficulty(), themeDetailResponseDto.getDifficulty());
-        assertEquals(theme.getActivity(), themeDetailResponseDto.getActivity());
-        assertEquals(theme.getHorrorGrade(), themeDetailResponseDto.getHorrorGrade());
+        then(themeMockService).should(times(1)).getTheme(theme.getId());
 
-        ThemeImageResponseDto findThemeImage = themeDetailResponseDto.getThemeImage();
-        assertEquals(themeImage.getId(), findThemeImage.getThemeImageId());
-        assertTrue(findThemeImage.getThemeImageUrl().contains(themeImage.getFileName()));
-        assertTrue(findThemeImage.getThemeImageThumbnailUrl().contains(themeImage.getFileName()));
-
-        ThemeShopSimpleInfoResponseDto shopInfo = themeDetailResponseDto.getShopInfo();
-        assertEquals(shop.getId(), shopInfo.getShopId());
-        assertEquals(shop.getName(), shopInfo.getShopName());
-
-
-        ThemeShopFranchiseSimpleInfoResponseDto franchiseInfo = shopInfo.getFranchiseInfo();
-        assertEquals(franchise.getId(), franchiseInfo.getFranchiseId());
-        assertEquals(franchise.getName(), franchiseInfo.getFranchiseName());
-
-        ThemeShopAreaResponseDto areaInfo = shopInfo.getAreaInfo();
-        assertEquals(area.getId(), areaInfo.getAreaId());
-        assertEquals(area.getCode(), areaInfo.getAreaCode());
-        assertEquals(area.getName(), areaInfo.getAreaName());
 
     }
 
@@ -145,15 +117,10 @@ class ThemeApplicationServiceUnitTest {
         given(themeAnalysisMockService.getThemeAnalyses(themeId)).willReturn(themeAnalyses);
 
         //when
-        List<ThemeAnalysesResponseDto> themeAnalysesResponseDtos = themeMockApplicationService.getThemeAnalyses(themeId);
+        List<ThemeAnalysis> findThemeAnalyses = themeMockApplicationService.getThemeAnalyses(themeId);
 
         //then
-        themeAnalysesResponseDtos.forEach(
-                themeAnalysesResponseDto -> {
-                    assertNotNull(themeAnalysesResponseDto.getEvaluatedCount());
-                    assertNotNull(themeAnalysesResponseDto.getGenre());
-                }
-        );
+        then(themeMockApplicationService).should(times(1)).getThemeAnalyses(themeId);
 
     }
 

@@ -1,7 +1,6 @@
 package bbangduck.bd.bbangduck.domain.theme.service;
 
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
-import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.*;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemePlayMemberListResultDto;
@@ -9,7 +8,7 @@ import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemeAnalysis;
 import bbangduck.bd.bbangduck.domain.theme.entity.ThemePlayMember;
 import bbangduck.bd.bbangduck.global.common.CriteriaDto;
-import bbangduck.bd.bbangduck.global.common.PaginationResultResponseDto;
+import bbangduck.bd.bbangduck.global.common.PaginationResultDto;
 import com.querydsl.core.QueryResults;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
  * @author jgm
  */
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ThemeApplicationService {
 
@@ -34,29 +32,28 @@ public class ThemeApplicationService {
 
     private final ThemePlayMemberService themePlayMemberService;
 
-    public PaginationResultResponseDto<ThemeGetListResponseDto> getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto) {
+    @Transactional(readOnly = true)
+    public PaginationResultDto<Theme> getThemeList(CriteriaDto criteriaDto, ThemeGetListDto themeGetListDto) {
         QueryResults<Theme> themeQueryResults = themeService.getThemeList(criteriaDto, themeGetListDto);
 
         long totalResultsCount = themeQueryResults.getTotal();
         List<Theme> themes = themeQueryResults.getResults();
 
-        return new PaginationResultResponseDto<>(themes,
-                criteriaDto.getPageNum(),
-                criteriaDto.getAmount(),
-                totalResultsCount).convert(ThemeGetListResponseDto::convert);
+        return new PaginationResultDto<>(themes, totalResultsCount);
     }
 
-    public ThemeDetailResponseDto getTheme(Long themeId) {
-        Theme theme = themeService.getTheme(themeId);
-        return ThemeDetailResponseDto.convert(theme);
+    @Transactional(readOnly = true)
+    public Theme getTheme(Long themeId) {
+        return themeService.getTheme(themeId);
     }
 
-    public List<ThemeAnalysesResponseDto> getThemeAnalyses(Long themeId) {
+    @Transactional(readOnly = true)
+    public List<ThemeAnalysis> getThemeAnalyses(Long themeId) {
         themeService.getTheme(themeId);
-        List<ThemeAnalysis> themeAnalyses = themeAnalysisService.getThemeAnalyses(themeId);
-        return themeAnalyses.stream().map(ThemeAnalysesResponseDto::convert).collect(Collectors.toList());
+        return themeAnalysisService.getThemeAnalyses(themeId);
     }
 
+    @Transactional(readOnly = true)
     public ThemePlayMemberListResultDto getThemePlayMemberList(Long themeId, ThemeGetPlayMemberListDto themeGetPlayMemberListDto) {
         themeService.getTheme(themeId);
         List<ThemePlayMember> themePlayMemberEntities = themePlayMemberService.findThemePlayMemberList(themeId, themeGetPlayMemberListDto);
