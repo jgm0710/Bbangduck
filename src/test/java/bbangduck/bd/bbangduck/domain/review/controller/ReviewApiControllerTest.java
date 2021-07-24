@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.review.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.service.KakaoSignInService;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.genre.Genre;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -44,6 +46,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ReviewApiControllerTest extends BaseJGMApiControllerTest {
+
+    @MockBean
+    KakaoSignInService kakaoSignInService;
 
     @Test
     @DisplayName("간단 리뷰 조회 - 다른 회원이 생성한 간단 리뷰 조회")
@@ -1137,7 +1142,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
-        authenticationService.withdrawal(signUpId);
+        authenticationApplicationService.withdrawal(signUpId, signUpId);
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -2169,7 +2174,7 @@ class ReviewApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
-        authenticationService.withdrawal(signUpId);
+        authenticationApplicationService.withdrawal(signUpId, signUpId);
 
         //when
         ResultActions perform = mockMvc.perform(

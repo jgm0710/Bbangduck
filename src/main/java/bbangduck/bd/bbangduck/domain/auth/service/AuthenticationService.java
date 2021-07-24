@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.JwtTokenProvider;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.exception.ManipulateOtherMembersInfoException;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenExpiredException;
 import bbangduck.bd.bbangduck.domain.auth.exception.RefreshTokenNotFoundException;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
@@ -35,6 +36,10 @@ public class AuthenticationService {
 
     private final MemberRepository memberRepository;
 
+    private final SecurityJwtProperties securityJwtProperties;
+
+    private final MemberQueryRepository memberQueryRepository;
+
     @Transactional
     public Long signUp(MemberSignUpDto signUpDto) {
         Member signUpMember = Member.signUp(signUpDto, securityJwtProperties.getRefreshTokenExpiredDate());
@@ -43,10 +48,6 @@ public class AuthenticationService {
         log.debug("savedMember : {}", savedMember);
         return savedMember.getId();
     }
-
-    private final SecurityJwtProperties securityJwtProperties;
-
-    private final MemberQueryRepository memberQueryRepository;
 
     @Transactional
     public TokenDto signIn(Long memberId) {
@@ -87,12 +88,6 @@ public class AuthenticationService {
                 .refreshToken(findMember.getRefreshToken())
                 .refreshTokenExpiredDate(findMember.getRefreshTokenExpiredDate())
                 .build();
-    }
-
-    @Transactional
-    public void withdrawal(Long memberId) {
-        Member findMember = getMember(memberId);
-        findMember.withdrawal();
     }
 
     @Transactional
@@ -146,5 +141,11 @@ public class AuthenticationService {
 
     public boolean checkIfNicknameIsAvailable(String nickname) {
         return memberRepository.findByNickname(nickname).isEmpty();
+    }
+
+    public void checkIfManipulateOtherMembersInfo(Long authenticatedMemberId, Long manipulatedMemberId) {
+        if (!authenticatedMemberId.equals(manipulatedMemberId)) {
+            throw new ManipulateOtherMembersInfoException();
+        }
     }
 }

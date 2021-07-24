@@ -1,13 +1,15 @@
 package bbangduck.bd.bbangduck.domain.auth.service;
 
 import bbangduck.bd.bbangduck.domain.auth.KakaoAuthorizationCodeConfiguration;
-import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
-import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
-import bbangduck.bd.bbangduck.domain.auth.exception.SocialAccessTokenRetrievalErrorException;
-import bbangduck.bd.bbangduck.domain.auth.exception.SocialSignInStateMismatchException;
-import bbangduck.bd.bbangduck.domain.auth.exception.SocialUserInfoRetrievalErrorException;
+import bbangduck.bd.bbangduck.domain.auth.dto.service.KakaoDisconnectResponseDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.KakaoOauth2TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.KakaoUserInfoDto;
+import bbangduck.bd.bbangduck.domain.auth.exception.SocialAccessTokenRetrievalErrorException;
+import bbangduck.bd.bbangduck.domain.auth.exception.SocialSignInStateMismatchException;
+import bbangduck.bd.bbangduck.domain.auth.exception.SocialAccountDisconnectFailException;
+import bbangduck.bd.bbangduck.domain.auth.exception.SocialUserInfoRetrievalErrorException;
+import bbangduck.bd.bbangduck.domain.member.enumerate.SocialType;
+import bbangduck.bd.bbangduck.global.config.properties.KakaoSignInProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -101,6 +103,26 @@ public class KakaoSignInService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new SocialUserInfoRetrievalErrorException(SocialType.KAKAO);
+        }
+    }
+
+    public void disconnectFromKakao(String kakaoUserId) {
+        try {
+            RequestEntity<Object> requestEntity = new RequestEntity<>(
+                    kakaoConfiguration.getDisconnectFromKakaoRequestBody(kakaoUserId),
+                    kakaoConfiguration.getDisconnectFromKakaoRequestHeader(),
+                    HttpMethod.POST,
+                    kakaoConfiguration.getDisconnectFromKakaoUri()
+            );
+
+            ResponseEntity<KakaoDisconnectResponseDto> responseEntity = restTemplate.exchange(requestEntity, KakaoDisconnectResponseDto.class);
+
+            if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+                throw new SocialAccountDisconnectFailException(SocialType.KAKAO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SocialAccountDisconnectFailException(SocialType.KAKAO);
         }
     }
 }
