@@ -139,7 +139,7 @@ class FileStorageApiControllerTest extends BaseJGMApiControllerTest {
 
         Long signUpMemberId = authenticationService.signUp(signUpDto.toServiceDto());
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
-        authenticationService.withdrawal(signUpMemberId);
+        authenticationApplicationService.withdrawal(signUpMemberId, signUpMemberId);
 
         //when
         ResultActions perform = mockMvc.perform(

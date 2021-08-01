@@ -34,6 +34,7 @@ public enum ResponseStatus {
     SOCIAL_ACCESS_TOKEN_RETRIEVAL_ERROR(1411, "소셜에서 받아온 인가 토큰을 통한 인증 토큰 발급에 실패했습니다.", "소셜 API 를 통해 받아온 인가 토큰을 통한 인증 토큰 발급이 실패한 경우"),
     SOCIAL_USER_INFO_RETRIEVAL_ERROR(1412, "소셜에서 받아온 인증 토큰을 통한 소셜 회원 정보 조회에 실패했습니다.", "소셜  API 를 통해 받아온 인증 토큰을 통한 소셜 회원 정보 조회에 실패한 경우"),
     SOCIAL_SIGN_IN_STATE_MISMATCH(1413, "소셜 인가 토큰 요청 시 기입한 state 값이 변형되었습니다.", "소셜 API 를 통한 인가 토큰 요청 시 CSRF 방지를 위해 기입한 state 값이 변형된 경우"),
+    SOCIAL_ACCOUNT_DISCONNECT_FAIL(1414, "소셜 계정 연결 해제 요청에 실패했습니다.", "소셜 계정 연결 해제 요청에 실패했을 경우"),
 
     KAKAO_USER_NOT_FOUND(1421, "해당 카카오 계정으로 가입된 회원이 존재하지 않습니다.", "카카오 로그인 시점에 해당 카카오 계정으로 회원가입을 진행하지 않은 회원인 경우"),
     NAVER_USER_NOT_FOUND(1422, "해당 네이버 계정으로 가입된 회원이 존재하지 않습니다.", "네이버 로그인 시점에 해당 네이버 계정으로 회원가입을 진행하지 않은 회원인 경우"),
@@ -42,7 +43,7 @@ public enum ResponseStatus {
     REFRESH_TOKEN_NOT_FOUND(1432, "해당 Refresh Token 을 통한 Access Token 재발급이 불가능합니다.", "요청을 통해 들어온 Refresh Token 을 통한 회원 조회에 실패했을 경우"),
     REFRESH_TOKEN_EXPIRED(1433, "Refresh Token 의 유효기간이 만료되었습니다.", "Access Token 재발급 요청 시 Refresh Token 의 유효기간이 만료된 경우"),
 
-    WITHDRAWAL_DIFFERENT_MEMBER(1441, "자신의 계정만 탈퇴가 가능합니다.", "회원 탈퇴 요청 시 자신이 아닌 다른 회원의 계정을 회원 탈퇴하는 경우"),
+    MANIPULATE_OTHER_MEMBERS_INFO(1441, "다른 회원의 정보는 조작할 수 없습니다.", "다른 회원의 정보를 조작하는 경우"),
     SIGN_OUT_DIFFERENT_MEMBER(1442, "자신의 계정만 로그아웃 할 수 있습니다.", "로그아웃 요청 시 다른 회원의 계정을 로그아웃하는 경우"),
 
     CHECK_IF_EMAIL_IS_AVAILABLE_NOT_VALID(1451, "이메일 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않았습니다.", "이메일 사용 가능 여부 체크 시 기입 사항을 올바르게 기입하지 않은 경우"),

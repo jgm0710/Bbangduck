@@ -2,6 +2,7 @@ package bbangduck.bd.bbangduck.domain.member.controller;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.service.KakaoSignInService;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.*;
 import bbangduck.bd.bbangduck.domain.member.dto.service.MemberProfileImageDto;
@@ -17,6 +18,7 @@ import bbangduck.bd.bbangduck.global.common.ResponseStatus;
 import bbangduck.bd.bbangduck.member.BaseJGMApiControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -36,6 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("회원(프로필 관리) 관련 API Controller 테스트")
 class MemberApiControllerTest extends BaseJGMApiControllerTest {
+
+    @MockBean
+    KakaoSignInService kakaoSignInService;
 
     @Test
     @DisplayName("회원 프로필 이미지 수정")
@@ -934,7 +939,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(member2Id);
 
-        authenticationService.withdrawal(signUpId);
+        authenticationApplicationService.withdrawal(signUpId, signUpId);
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -1031,7 +1036,7 @@ class MemberApiControllerTest extends BaseJGMApiControllerTest {
         TokenDto tokenDto = authenticationService.signIn(signUpMemberId);
         String totalAccessToken = tokenDto.getAccessToken();
 
-        authenticationService.withdrawal(signUpMemberId);
+        authenticationApplicationService.withdrawal(signUpMemberId, signUpMemberId);
 
         //when
         ResultActions perform = mockMvc.perform(

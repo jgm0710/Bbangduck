@@ -28,6 +28,12 @@ public class KakaoAuthorizationCodeConfiguration {
 
     private final URI kakaoGetUserInfoUri = URI.create("https://kapi.kakao.com/v2/user/me");
 
+    private final URI disconnectFromKakaoUri = URI.create("https://kapi.kakao.com/v1/user/unlink");
+
+    public URI getDisconnectFromKakaoUri() {
+        return this.disconnectFromKakaoUri;
+    }
+
     public URI getKakaoGetTokenUri() {
         return this.kakaoGetTokenUri;
     }
@@ -58,6 +64,19 @@ public class KakaoAuthorizationCodeConfiguration {
         LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         formData.add("Authorization", "Bearer " + accessToken);
+        return formData;
+    }
+
+    public MultiValueMap<String, String> getDisconnectFromKakaoRequestHeader() {
+        LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("Authorization", "KakaoAK " + kakaoSignInProperties.getAdminKey());
+        return formData;
+    }
+
+    public MultiValueMap<String, String> getDisconnectFromKakaoRequestBody(String kakaoUserId) {
+        LinkedMultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("target_id_type","user_id");
+        formData.add("target_id", kakaoUserId);
         return formData;
     }
 }

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("인증 관련 Service 로직 테스트")
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest extends BaseJGMServiceTest {
+
+    @MockBean
+    KakaoSignInService kakaoSignInService;
 
     @Transactional
     @Test
@@ -291,7 +295,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         assertNotNull(savedMember.getRefreshTokenExpiredDate());
 
         //when
-        authenticationService.withdrawal(signUpId);
+        authenticationApplicationService.withdrawal(signUpId, signUpId);
 
         //then
         Member findMember = memberRepository.findById(signUpId).orElseThrow(MemberNotFoundException::new);
@@ -318,7 +322,7 @@ class AuthenticationServiceTest extends BaseJGMServiceTest {
         //when
 
         //then
-        assertThrows(MemberNotFoundException.class, () -> authenticationService.withdrawal(10000L));
+        assertThrows(MemberNotFoundException.class, () -> authenticationApplicationService.withdrawal(10000L, 10000L));
 
     }
 

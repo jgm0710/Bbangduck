@@ -4,6 +4,7 @@ import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpReque
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.OnlyRefreshTokenRequestDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.MemberSignUpDto;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
+import bbangduck.bd.bbangduck.domain.auth.service.KakaoSignInService;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.CheckIfEmailIsAvailableRequestDto;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.MemberCheckIfNicknameIsAvailableRequestDto;
 import bbangduck.bd.bbangduck.domain.member.entity.Member;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -46,6 +48,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("인증 관련 API Controller 테스트")
 @ExtendWith(MockitoExtension.class)
 class AuthApiControllerTest extends BaseJGMApiControllerTest {
+
+    @MockBean
+    KakaoSignInService kakaoSignInService;
 
     @Test
     @DisplayName("소셜 회원가입 테스트")
@@ -525,7 +530,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
-        authenticationService.withdrawal(signUpId);
+        authenticationApplicationService.withdrawal(signUpId, signUpId);
 
         //when
         ResultActions perform = mockMvc.perform(
@@ -586,9 +591,9 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
         //then
         perform
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("status").value(WITHDRAWAL_DIFFERENT_MEMBER.getStatus()))
+                .andExpect(jsonPath("status").value(MANIPULATE_OTHER_MEMBERS_INFO.getStatus()))
                 .andExpect(jsonPath("data").doesNotExist())
-                .andExpect(jsonPath("message").value(WITHDRAWAL_DIFFERENT_MEMBER.getMessage()));
+                .andExpect(jsonPath("message").value(MANIPULATE_OTHER_MEMBERS_INFO.getMessage()));
 
     }
 
@@ -667,7 +672,7 @@ class AuthApiControllerTest extends BaseJGMApiControllerTest {
 
         TokenDto tokenDto = authenticationService.signIn(signUpId);
 
-        authenticationService.withdrawal(signUpId);
+        authenticationApplicationService.withdrawal(signUpId, signUpId);
 
         //when
         ResultActions perform = mockMvc.perform(

@@ -4,7 +4,7 @@ import bbangduck.bd.bbangduck.domain.auth.CurrentUser;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.*;
 import bbangduck.bd.bbangduck.domain.auth.dto.service.TokenDto;
 import bbangduck.bd.bbangduck.domain.auth.exception.SignOutDifferentMemberException;
-import bbangduck.bd.bbangduck.domain.auth.exception.WithdrawalDifferentMemberException;
+import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationApplicationService;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.member.controller.MemberApiController;
 import bbangduck.bd.bbangduck.domain.member.dto.controller.request.CheckIfEmailIsAvailableRequestDto;
@@ -36,9 +36,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @Slf4j
 public class AuthApiController {
 
+    private final AuthenticationApplicationService authenticationApplicationService;
+
     private final AuthenticationService authenticationService;
 
     private final MemberService memberService;
+
+
 
     @PostMapping(value = "/social/sign-up")
     public ResponseEntity<MemberSignUpResponseDto> signUp(
@@ -75,11 +79,7 @@ public class AuthApiController {
             @PathVariable Long memberId,
             @CurrentUser Member currentMember
     ) {
-        if (!currentMember.getId().equals(memberId)) {
-            throw new WithdrawalDifferentMemberException();
-        }
-
-        authenticationService.withdrawal(memberId);
+        authenticationApplicationService.withdrawal(currentMember.getId(), memberId);
 
         return ResponseEntity.noContent().build();
     }

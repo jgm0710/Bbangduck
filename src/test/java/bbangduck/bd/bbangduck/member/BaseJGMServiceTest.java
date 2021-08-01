@@ -4,6 +4,7 @@ import bbangduck.bd.bbangduck.common.BaseTest;
 import bbangduck.bd.bbangduck.domain.admin.entity.AdminInfo;
 import bbangduck.bd.bbangduck.domain.admin.repository.AdminInfoRepository;
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationApplicationService;
 import bbangduck.bd.bbangduck.domain.auth.service.AuthenticationService;
 import bbangduck.bd.bbangduck.domain.file.entity.FileStorage;
 import bbangduck.bd.bbangduck.domain.file.service.FileStorageService;
@@ -62,6 +63,9 @@ import java.util.Set;
 
 @Disabled
 public class BaseJGMServiceTest extends BaseTest {
+
+    @Autowired
+    protected AuthenticationApplicationService authenticationApplicationService;
 
     @Autowired
     protected ThemePlayMemberRepository themePlayMemberRepository;
