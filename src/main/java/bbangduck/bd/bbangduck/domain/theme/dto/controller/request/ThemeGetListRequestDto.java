@@ -9,9 +9,14 @@ import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetListDto;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeRatingFilteringType;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
+import bbangduck.bd.bbangduck.global.common.PageRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.Min;
 
 /**
  * 테마 목록 조회 요청 시 필요한 요청 Query Parameters 를 담을 Dto
@@ -21,35 +26,35 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class ThemeGetListRequestDto {
+@NoArgsConstructor
+public class ThemeGetListRequestDto implements PageRequest {
 
-    private Genre genre;
+    @Min(value = 1, message = "페이지 번호는 1보다 작을 수 없습니다.")
+    private Long pageNum = 1L;
 
-    private ThemeType themeType;
+    @Range(min = 1, max = 100, message = "조회 가능 수량은 1~100 사이 입니다.")
+    private Integer amount = 20;
 
-    private ThemeRatingFilteringType rating;
+    private Genre genre = null;
 
-    private NumberOfPeople numberOfPeople;
+    private ThemeType themeType = null;
 
-    private Difficulty difficulty;
+    private ThemeRatingFilteringType rating = null;
 
-    private Activity activity;
+    private NumberOfPeople numberOfPeople = null;
 
-    private HorrorGrade horrorGrade;
+    private Difficulty difficulty = null;
 
-    private ThemeSortCondition sortCondition;
+    private Activity activity = null;
 
-    public ThemeGetListRequestDto() {
-        this.genre = null;
-        this.themeType = null;
-        this.rating = null;
-        this.difficulty = null;
-        this.activity = null;
-        this.horrorGrade = null;
-    }
+    private HorrorGrade horrorGrade = null;
+
+    private ThemeSortCondition sortCondition = ThemeSortCondition.LATEST;
 
     public ThemeGetListDto toServiceDto() {
         return ThemeGetListDto.builder()
+                .pageNum(pageNum)
+                .amount(amount)
                 .genre(genre)
                 .themeType(themeType)
                 .rating(rating)
@@ -60,4 +65,13 @@ public class ThemeGetListRequestDto {
                 .build();
     }
 
+    @Override
+    public long getPageNum() {
+        return pageNum;
+    }
+
+    @Override
+    public int getAmount() {
+        return amount;
+    }
 }

@@ -8,13 +8,15 @@ import bbangduck.bd.bbangduck.domain.member.service.MemberPlayInclinationService
 import bbangduck.bd.bbangduck.domain.member.service.MemberService;
 import bbangduck.bd.bbangduck.domain.review.dto.service.*;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewLike;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewHintUsageCount;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemePlayMember;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeAnalysisService;
+import bbangduck.bd.bbangduck.domain.theme.service.ThemePlayMemberService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -31,25 +35,25 @@ import static org.mockito.Mockito.times;
 @DisplayName("ReviewApplicationService 단위 테스트")
 class ReviewApplicationServiceUnitTest {
 
-    ReviewService reviewMockService = mock(ReviewService.class);
-    ThemeService themeMockService = mock(ThemeService.class);
     MemberService memberMockService = mock(MemberService.class);
     MemberPlayInclinationService memberPlayInclinationMockService = mock(MemberPlayInclinationService.class);
-    FollowService followMockService = mock(FollowService.class);
-    ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
+    ReviewService reviewMockService = mock(ReviewService.class);
     ReviewLikeService reviewLikeMockService = mock(ReviewLikeService.class);
+    ThemeService themeMockService = mock(ThemeService.class);
+    ThemeAnalysisService themeAnalysisMockService = mock(ThemeAnalysisService.class);
+    ThemePlayMemberService themePlayMemberMockService = mock(ThemePlayMemberService.class);
+    FollowService followMockService = mock(FollowService.class);
 
     ReviewApplicationService reviewMockApplicationService = new ReviewApplicationService(
-            reviewMockService,
-            themeMockService,
             memberMockService,
             memberPlayInclinationMockService,
-            followMockService,
+            reviewMockService,
+            reviewLikeMockService,
+            themeMockService,
             themeAnalysisMockService,
-            reviewLikeMockService
+            themePlayMemberMockService,
+            followMockService
     );
-
-
 
 
     @Test
@@ -116,6 +120,7 @@ class ReviewApplicationServiceUnitTest {
         then(reviewMockService).should(times(1)).addPlayTogetherFriendsToReview(review, friends);
         then(memberPlayInclinationMockService).should(times(1)).reflectingPropensityOfMemberToPlay(member, theme.getGenre());
         then(themeMockService).should(times(1)).increaseThemeRating(theme, reviewCreateDto.getRating());
+        then(themePlayMemberMockService).should(times(1)).playTheme(theme, member);
     }
 
     @Test
@@ -171,7 +176,7 @@ class ReviewApplicationServiceUnitTest {
         //when
 
         //then
-        Assertions.assertThrows(NotTwoWayFollowRelationException.class, () -> reviewMockApplicationService.createReview(memberId, themeId, reviewCreateDto));
+        assertThrows(NotTwoWayFollowRelationException.class, () -> reviewMockApplicationService.createReview(memberId, themeId, reviewCreateDto));
 
         then(memberMockService).should(times(1)).getMember(memberId);
         then(themeMockService).should(times(1)).getTheme(themeId);
@@ -248,7 +253,7 @@ class ReviewApplicationServiceUnitTest {
 
         //then
         then(reviewMockService).should(times(1)).getReview(review.getId());
-        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review);
         then(themeMockService).should(times(1)).updateThemeRating(theme, review.getRating(), reviewUpdateDto.getRating());
 
         then(reviewMockService).should(times(1)).clearReviewPlayTogether(review);
@@ -331,7 +336,7 @@ class ReviewApplicationServiceUnitTest {
 
         //then
         then(reviewMockService).should(times(1)).getReview(review.getId());
-        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review);
         then(themeMockService).should(times(1)).updateThemeRating(theme, review.getRating(), reviewUpdateDto.getRating());
 
         then(reviewMockService).should(times(1)).clearReviewPlayTogether(review);
@@ -370,7 +375,7 @@ class ReviewApplicationServiceUnitTest {
 
         //then
         then(reviewMockService).should(times(1)).getReview(review.getId());
-        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), member.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review);
         then(reviewMockService).should(times(1)).addDetailToReview(review, reviewDetailCreateDto);
     }
 
@@ -415,9 +420,205 @@ class ReviewApplicationServiceUnitTest {
 
         //then
         then(reviewMockService).should().getReview(review.getId());
-        then(reviewMockService).should().checkIfMyReview(review.getId(), member.getId());
+        then(reviewMockService).should().checkIfMyReview(member.getId(), review);
         then(reviewMockService).should().addSurveyToReview(review, reviewSurveyCreateDto);
         then(themeAnalysisMockService).should().reflectingThemeAnalyses(theme, genres);
+    }
+
+    @Test
+    @DisplayName("리뷰에 좋아요 추가")
+    public void addLikeToReview() {
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .build();
+
+        Member member2 = Member.builder()
+                .id(2L)
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .build();
+
+        Review review = Review.builder()
+                .id(1L)
+                .member(member)
+                .theme(theme)
+                .build();
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .id(1L)
+                .member(member)
+                .theme(theme)
+                .build();
+
+
+        given(memberMockService.getMember(member2.getId())).willReturn(member2);
+        given(reviewMockService.getReview(review.getId())).willReturn(review);
+        given(themePlayMemberMockService.getThemePlayMember(theme.getId(), member.getId())).willReturn(themePlayMember);
+
+        //when
+        reviewMockApplicationService.addLikeToReview(member2.getId(), review.getId());
+
+        //then
+        then(memberMockService).should(times(1)).getMember(member2.getId());
+        then(reviewMockService).should(times(1)).getReview(review.getId());
+
+        then(reviewLikeMockService).should(times(1)).addLikeToReview(member2, review);
+
+        then(themePlayMemberMockService).should(times(1)).getThemePlayMember(member.getId(), theme.getId());
+
+        assertEquals(1, themePlayMember.getReviewLikeCount());
+
+    }
+
+    @Test
+    @DisplayName("리뷰 좋아요 해제")
+    public void removeLikeFromReview() {
+        //given
+        Member reviewCreateMember = Member.builder()
+                .id(1L)
+                .build();
+        Member reviewLikeMember = Member.builder()
+                .id(2L)
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .build();
+
+        Review review = Review.builder()
+                .id(1L)
+                .member(reviewCreateMember)
+                .theme(theme)
+                .build();
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .id(1L)
+                .member(reviewCreateMember)
+                .theme(theme)
+                .reviewLikeCount(1L)
+                .build();
+
+        ReviewLike reviewLike = ReviewLike.builder()
+                .member(reviewLikeMember)
+                .review(review)
+                .build();
+
+
+        given(reviewMockService.getReview(review.getId())).willReturn(review);
+        given(reviewLikeMockService.getReviewLike(reviewLikeMember.getId(), review.getId())).willReturn(reviewLike);
+        given(themePlayMemberMockService.getThemePlayMember(theme.getId(), reviewCreateMember.getId())).willReturn(themePlayMember);
+
+        //when
+        reviewMockApplicationService.removeLikeFromReview(reviewLikeMember.getId(), review.getId());
+
+        //then
+        then(reviewMockService).should(times(1)).getReview(review.getId());
+        then(reviewLikeMockService).should(times(1)).getReviewLike(reviewLikeMember.getId(), review.getId());
+        then(reviewLikeMockService).should(times(1)).removeReviewLike(reviewLike);
+        then(themePlayMemberMockService).should(times(1)).getThemePlayMember(theme.getId(), reviewCreateMember.getId());
+
+        assertEquals(0, themePlayMember.getReviewLikeCount(), "테마 플레이 내역의 리뷰 좋아요 개수 1 감소");
+
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 - 삭제된 이후 회원이 테마에 리뷰를 생성한 내역이 존재하는 경우")
+    public void deleteReview_ExistReview() {
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .build();
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .id(1L)
+                .member(member)
+                .theme(theme)
+                .reviewLikeCount(200)
+                .build();
+
+        Review review1 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .likeCount(100)
+                .build();
+
+        Review review2 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .likeCount(100)
+                .build();
+
+        given(reviewMockService.getReview(review1.getId())).willReturn(review1);
+        given(themePlayMemberMockService.getThemePlayMember(theme.getId(), member.getId())).willReturn(themePlayMember);
+        given(reviewMockService.isExistReviewHistory(member.getId(), theme.getId())).willReturn(true);
+
+        //when
+        reviewMockApplicationService.deleteReview(member.getId(), review1.getId());
+
+        //then
+        then(reviewMockService).should(times(1)).getReview(review1.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review1);
+        then(reviewMockService).should(times(1)).deleteReview(review1);
+        then(themePlayMemberMockService).should(times(1)).getThemePlayMember(theme.getId(), member.getId());
+        then(reviewMockService).should(times(1)).isExistReviewHistory(member.getId(), theme.getId());
+        then(themePlayMemberMockService).should(times(0)).deleteThemePlayMember(themePlayMember);
+
+        assertEquals(100, themePlayMember.getReviewLikeCount(), "테마 플레이 내역의 리뷰 좋아요 개수는 삭제된 리뷰의 개수인 100 만큼 감소한다.");
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 - 삭제 이후 회원이 테마에 리뷰를 작성한 내역이 없는 경우")
+    public void deleteReview_NotExistReview() {
+        //given
+        Member member = Member.builder()
+                .id(1L)
+                .build();
+
+        Theme theme = Theme.builder()
+                .id(1L)
+                .build();
+
+        ThemePlayMember themePlayMember = ThemePlayMember.builder()
+                .id(1L)
+                .member(member)
+                .theme(theme)
+                .reviewLikeCount(200)
+                .build();
+
+        Review review1 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .likeCount(100)
+                .build();
+
+        Review review2 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .likeCount(100)
+                .build();
+
+        given(reviewMockService.getReview(review1.getId())).willReturn(review1);
+        given(themePlayMemberMockService.getThemePlayMember(theme.getId(), member.getId())).willReturn(themePlayMember);
+        given(reviewMockService.isExistReviewHistory(member.getId(), theme.getId())).willReturn(false);
+
+        //when
+        reviewMockApplicationService.deleteReview(member.getId(), review1.getId());
+
+        //then
+        then(reviewMockService).should(times(1)).getReview(review1.getId());
+        then(reviewMockService).should(times(1)).checkIfMyReview(member.getId(), review1);
+        then(reviewMockService).should(times(1)).deleteReview(review1);
+        then(themePlayMemberMockService).should(times(1)).getThemePlayMember(theme.getId(), member.getId());
+        then(reviewMockService).should(times(1)).isExistReviewHistory(member.getId(), theme.getId());
+        then(themePlayMemberMockService).should(times(1)).deleteThemePlayMember(themePlayMember);
+
     }
 
 }

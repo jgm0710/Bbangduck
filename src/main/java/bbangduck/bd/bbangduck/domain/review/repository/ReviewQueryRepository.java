@@ -81,7 +81,7 @@ public class ReviewQueryRepository {
                 orderSpecifiers.add(reviewRegisterTimeDesc());
         }
 
-        return orderSpecifiers.toArray(new OrderSpecifier[orderSpecifiers.size()]);
+        return orderSpecifiers.toArray(new OrderSpecifier[0]);
     }
 
     private OrderSpecifier<LocalDateTime> reviewRegisterTimeDesc() {
@@ -168,6 +168,17 @@ public class ReviewQueryRepository {
                 )
                 .execute()
         ;
+    }
+
+    public long getReviewsCountByMemberIdAndThemeId(Long memberId, Long themeId) {
+        return queryFactory
+                .selectFrom(review)
+                .where(
+                        memberIdEq(memberId),
+                        themeIdEq(themeId),
+                        deleteYnEq(false)
+                )
+                .fetchCount();
     }
 
     public QueryResults<Review> findListByMember(Long memberId, ReviewSearchDto reviewSearchDto) {

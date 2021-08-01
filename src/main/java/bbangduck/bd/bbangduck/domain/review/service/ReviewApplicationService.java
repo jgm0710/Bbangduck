@@ -11,10 +11,13 @@ import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewDetailCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewSurveyCreateDto;
 import bbangduck.bd.bbangduck.domain.review.dto.service.ReviewUpdateDto;
 import bbangduck.bd.bbangduck.domain.review.entity.Review;
+import bbangduck.bd.bbangduck.domain.review.entity.ReviewLike;
 import bbangduck.bd.bbangduck.domain.review.entity.ReviewSurvey;
 import bbangduck.bd.bbangduck.domain.review.enumerate.ReviewType;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
+import bbangduck.bd.bbangduck.domain.theme.entity.ThemePlayMember;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeAnalysisService;
+import bbangduck.bd.bbangduck.domain.theme.service.ThemePlayMemberService;
 import bbangduck.bd.bbangduck.domain.theme.service.ThemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,22 +35,21 @@ import static bbangduck.bd.bbangduck.global.common.NullCheckUtils.isNotNull;
  */
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ReviewApplicationService {
 
+    private final MemberService memberService;
+    private final MemberPlayInclinationService memberPlayInclinationService;
+
     private final ReviewService reviewService;
+    private final ReviewLikeService reviewLikeService;
 
     private final ThemeService themeService;
-
-    private final MemberService memberService;
-
-    private final MemberPlayInclinationService memberPlayInclinationService;
+    private final ThemeAnalysisService themeAnalysisService;
+    private final ThemePlayMemberService themePlayMemberService;
 
     private final FollowService followService;
 
-    private final ThemeAnalysisService themeAnalysisService;
 
-    private final ReviewLikeService reviewLikeService;
 
     @Transactional
     public Long createReview(Long memberId, Long themeId, ReviewCreateDto reviewCreateDto) {
@@ -64,6 +66,8 @@ public class ReviewApplicationService {
         memberPlayInclinationService.reflectingPropensityOfMemberToPlay(member, theme.getGenre());
 
         themeService.increaseThemeRating(theme, reviewCreateDto.getRating());
+
+        themePlayMemberService.playTheme(theme, member);
 
         return reviewId;
     }
@@ -88,9 +92,7 @@ public class ReviewApplicationService {
     @Transactional
     public void addDetailToReview(Long reviewId, Long authenticatedMemberId, ReviewDetailCreateDto reviewDetailCreateDto) {
         Review review = reviewService.getReview(reviewId);
-
-        Member reviewMember = review.getMember();
-        reviewService.checkIfMyReview(authenticatedMemberId, reviewMember.getId());
+        reviewService.checkIfMyReview(authenticatedMemberId, review);
 
         reviewService.addDetailToReview(review, reviewDetailCreateDto);
     }
@@ -98,9 +100,7 @@ public class ReviewApplicationService {
     @Transactional
     public void addSurveyToReview(Long reviewId, Long authenticatedMemberId, ReviewSurveyCreateDto reviewSurveyCreateDto) {
         Review review = reviewService.getReview(reviewId);
-
-        Member reviewMember = review.getMember();
-        reviewService.checkIfMyReview(authenticatedMemberId, reviewMember.getId());
+        reviewService.checkIfMyReview(authenticatedMemberId, review);
 
         reviewService.addSurveyToReview(review, reviewSurveyCreateDto);
 
@@ -110,9 +110,7 @@ public class ReviewApplicationService {
     @Transactional
     public void updateReview(Long reviewId, Long authenticatedMemberId, ReviewUpdateDto reviewUpdateDto) {
         Review review = reviewService.getReview(reviewId);
-
-        Member reviewMember = review.getMember();
-        reviewService.checkIfMyReview(authenticatedMemberId, reviewMember.getId());
+        reviewService.checkIfMyReview(authenticatedMemberId, review);
 
         themeService.updateThemeRating(review.getTheme(), review.getRating(), reviewUpdateDto.getRating());
 
@@ -120,6 +118,7 @@ public class ReviewApplicationService {
         reviewService.clearReviewDetail(review);
 
         reviewService.updateReviewBase(review, reviewUpdateDto.toReviewUpdateBaseDto());
+        Member reviewMember = review.getMember();
         List<Member> twoWayFollowMembers = getTwoWayFollowMembers(reviewMember.getId(), reviewUpdateDto.getFriendIds());
         reviewService.addPlayTogetherFriendsToReview(review, twoWayFollowMembers);
         if (reviewUpdateDto.getReviewType() == ReviewType.DETAIL) {
@@ -127,10 +126,11 @@ public class ReviewApplicationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public ReviewResponseDto getReview(Long reviewId, Long authenticatedMemberId) {
         Review review = reviewService.getReview(reviewId);
         Member authenticatedMember = memberService.getMember(authenticatedMemberId);
-        boolean existsReviewLike = reviewLikeService.getExistsReviewLike(authenticatedMemberId, reviewId);
+        boolean existsReviewLike = reviewLikeService.isMemberLikeToReview(authenticatedMemberId, reviewId);
         boolean possibleOfAddReviewSurvey = reviewService.isPossibleOfAddReviewSurvey(review.getRegisterTimes());
         return convertReviewToResponseDto(review, authenticatedMember, existsReviewLike, possibleOfAddReviewSurvey);
     }
@@ -150,5 +150,48 @@ public class ReviewApplicationService {
             default:
                 return null;
         }
+    }
+
+    @Transactional
+    public void deleteReview(Long authenticatedMemberId, Long reviewId) {
+        Review review = reviewService.getReview(reviewId);
+        reviewService.checkIfMyReview(authenticatedMemberId, review);
+        reviewService.deleteReview(review);
+
+        Member reviewMember = review.getMember();
+        Theme reviewTheme = review.getTheme();
+        ThemePlayMember themePlayMember = themePlayMemberService.getThemePlayMember(reviewTheme.getId(), reviewMember.getId());
+
+        boolean existReviewHistory = reviewService.isExistReviewHistory(reviewMember.getId(), reviewTheme.getId());
+        if (existReviewHistory) {
+            themePlayMember.decreaseReviewLikeCount(review.getLikeCount());
+        } else {
+            themePlayMemberService.deleteThemePlayMember(themePlayMember);
+        }
+    }
+
+    @Transactional
+    public void addLikeToReview(Long memberId, Long reviewId) {
+        Member member = memberService.getMember(memberId);
+        Review review = reviewService.getReview(reviewId);
+
+        reviewLikeService.addLikeToReview(member, review);
+
+        Theme reviewTheme = review.getTheme();
+        Member reviewMember = review.getMember();
+        ThemePlayMember themePlayMember = themePlayMemberService.getThemePlayMember(reviewTheme.getId(), reviewMember.getId());
+        themePlayMember.increaseReviewLikeCount();
+    }
+
+    public void removeLikeFromReview(Long memberId, Long reviewId) {
+        Review review = reviewService.getReview(reviewId);
+
+        ReviewLike reviewLike = reviewLikeService.getReviewLike(memberId, reviewId);
+        reviewLikeService.removeReviewLike(reviewLike);
+
+        Member reviewMember = review.getMember();
+        Theme reviewTheme = review.getTheme();
+        ThemePlayMember themePlayMember = themePlayMemberService.getThemePlayMember(reviewTheme.getId(), reviewMember.getId());
+        themePlayMember.decreaseReviewLikeCount();
     }
 }

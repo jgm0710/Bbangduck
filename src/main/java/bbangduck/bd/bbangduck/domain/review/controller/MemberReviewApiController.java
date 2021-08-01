@@ -133,7 +133,7 @@ public class MemberReviewApiController{
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {
         if (currentMember != null) {
-            return reviewLikeService.getExistsReviewLike(currentMember.getId(), reviewId);
+            return reviewLikeService.isMemberLikeToReview(currentMember.getId(), reviewId);
         }
         return false;
     }

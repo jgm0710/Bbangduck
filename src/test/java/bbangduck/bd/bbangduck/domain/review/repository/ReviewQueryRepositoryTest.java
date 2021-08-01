@@ -1,8 +1,10 @@
 package bbangduck.bd.bbangduck.domain.review.repository;
 
 import bbangduck.bd.bbangduck.domain.auth.dto.controller.MemberSocialSignUpRequestDto;
+import bbangduck.bd.bbangduck.domain.member.entity.Member;
 import bbangduck.bd.bbangduck.domain.review.dto.controller.request.ReviewCreateRequestDto;
 import bbangduck.bd.bbangduck.domain.review.dto.entity.ReviewRecodesCountsDto;
+import bbangduck.bd.bbangduck.domain.review.entity.Review;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
 import bbangduck.bd.bbangduck.member.BaseJGMServiceTest;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +46,7 @@ class ReviewQueryRepositoryTest extends BaseJGMServiceTest {
         em.flush();
         em.clear();
 
-        reviewService.deleteReview(member1Review1Id);
+        reviewApplicationService.deleteReview(signUpId, member1Review1Id);
         em.flush();
         em.clear();
 
@@ -63,6 +65,62 @@ class ReviewQueryRepositoryTest extends BaseJGMServiceTest {
         assertEquals(3, recodesCountsByMember2.getTotalRecodesCount(), "회원 2번의 총 리뷰 개수는 3개");
         assertEquals(0,recodesCountsByMember2.getSuccessRecodesCount(),"회원 2번의 성공 리뷰 개수는 0개");
         assertEquals(3,recodesCountsByMember2.getFailRecodesCount(), "회원 2번의 총 실패 리뷰 개수는 3개");
+
+    }
+
+    @Test
+    @DisplayName("특정 회원이 테마에 등록한 리뷰 개수 조회")
+    public void getReviewsCountByMemberIdAndThemeId() {
+        //given
+        Member member = Member.builder().build();
+        Theme theme = Theme.builder().build();
+
+        Review review1 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .deleteYN(false)
+                .build();
+        Review review2 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .deleteYN(false)
+                .build();
+        Review review3 = Review.builder()
+                .member(member)
+                .theme(theme)
+                .deleteYN(true)
+                .build();
+
+        memberRepository.save(member);
+        themeRepository.save(theme);
+        reviewRepository.save(review1);
+        reviewRepository.save(review2);
+        reviewRepository.save(review3);
+
+        Member member2 = Member.builder().build();
+        Theme theme2 = Theme.builder().build();
+
+        Review review4 = Review.builder()
+                .member(member2)
+                .theme(theme2)
+                .deleteYN(false)
+                .build();
+        Review review5 = Review.builder()
+                .member(member2)
+                .theme(theme2)
+                .deleteYN(true)
+                .build();
+
+        memberRepository.save(member2);
+        themeRepository.save(theme2);
+        reviewRepository.save(review4);
+        reviewRepository.save(review5);
+
+        //when
+        long reviewsCount = reviewQueryRepository.getReviewsCountByMemberIdAndThemeId(member.getId(), theme.getId());
+
+        //then
+        assertEquals(2, reviewsCount, "member 가 theme 에 생성한 리뷰 개수는 총 3개이고, 하나가 삭제된 리뷰이므로 조회되는 개수는 2개이다.");
 
     }
 

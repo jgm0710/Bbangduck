@@ -189,7 +189,7 @@ public class ReviewApiController {
 
     private boolean getExistsReviewLike(Long reviewId, Member currentMember) {
         if (currentMember != null) {
-            return reviewLikeService.getExistsReviewLike(currentMember.getId(), reviewId);
+            return reviewLikeService.isMemberLikeToReview(currentMember.getId(), reviewId);
         }
         return false;
     }
@@ -278,10 +278,7 @@ public class ReviewApiController {
             @PathVariable Long reviewId,
             @CurrentUser Member currentMember
     ) {
-        Review findReview = reviewService.getReview(reviewId);
-        checkIsReviewCreatedByMe(currentMember, findReview);
-
-        reviewService.deleteReview(reviewId);
+        reviewApplicationService.deleteReview(currentMember.getId(),reviewId);
 
         return ResponseEntity.noContent().build();
     }
@@ -311,7 +308,7 @@ public class ReviewApiController {
             @PathVariable Long reviewId,
             @CurrentUser Member currentMember
     ) {
-        reviewLikeService.addLikeToReview(currentMember.getId(), reviewId);
+        reviewApplicationService.addLikeToReview(currentMember.getId(), reviewId);
 
         URI linkToGetReview = linkTo(methodOn(ReviewApiController.class).getReview(reviewId, currentMember)).toUri();
 
@@ -338,7 +335,7 @@ public class ReviewApiController {
             @PathVariable Long reviewId,
             @CurrentUser Member currentMember
     ) {
-        reviewLikeService.removeLikeFromReview(currentMember.getId(), reviewId);
+        reviewApplicationService.removeLikeFromReview(currentMember.getId(), reviewId);
 
         return ResponseEntity.noContent().build();
     }

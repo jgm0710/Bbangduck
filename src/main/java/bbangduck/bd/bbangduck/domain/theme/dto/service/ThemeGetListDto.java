@@ -8,6 +8,7 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeRatingFilteringType;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeSortCondition;
 import bbangduck.bd.bbangduck.domain.theme.enumerate.ThemeType;
+import bbangduck.bd.bbangduck.global.common.util.PagingQuery;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThemeGetListDto {
+public class ThemeGetListDto implements PagingQuery {
+
+    private Long pageNum;
+
+    private Integer amount;
 
     private Genre genre;
 
@@ -40,4 +45,13 @@ public class ThemeGetListDto {
 
     private ThemeSortCondition sortCondition;
 
+    @Override
+    public long getPageNum() {
+        return pageNum;
+    }
+
+    @Override
+    public int getAmount() {
+        return amount;
+    }
 }

@@ -41,6 +41,13 @@ public class ReviewLike {
         this.review = review;
     }
 
+    public static ReviewLike init(Member member, Review review) {
+        return ReviewLike.builder()
+                .member(member)
+                .review(review)
+                .build();
+    }
+
     public Long getId() {
         return id;
     }
