@@ -1,6 +1,5 @@
 package bbangduck.bd.bbangduck.global.common;
 
-import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.response.ThemeGetListResponseDto;
@@ -19,12 +18,6 @@ class PaginationResultResponseDtoTest {
         //given
         List<Theme> themeList = new ArrayList<>();
         for (long i = 1; i < 11; i++) {
-            Area area = Area.builder()
-                    .id(i)
-                    .code("CD" + i)
-                    .name("areaName" + i)
-                    .build();
-
             Franchise franchise = Franchise.builder()
                     .id(i)
                     .name("franchiseName" + i)
@@ -55,7 +48,7 @@ class PaginationResultResponseDtoTest {
 
     @Test
     @DisplayName("null Contents Test")
-    public void nullContentsTest() throws Exception {
+    public void nullContentsTest() {
         //given
         List<Theme> themes = new ArrayList<>();
         PaginationResultResponseDto<ThemeGetListResponseDto> result = new PaginationResultResponseDto<>(themes, 1, 1, 1).convert(ThemeGetListResponseDto::convert);

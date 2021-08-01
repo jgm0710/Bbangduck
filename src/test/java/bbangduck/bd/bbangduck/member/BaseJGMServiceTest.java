@@ -33,10 +33,8 @@ import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
-import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -137,9 +135,6 @@ public class BaseJGMServiceTest extends BaseTest {
     protected AdminInfoRepository adminInfoRepository;
 
     @Autowired
-    protected AreaRepository areaRepository;
-
-    @Autowired
     protected FranchiseRepository franchiseRepository;
 
     @Autowired
@@ -180,7 +175,6 @@ public class BaseJGMServiceTest extends BaseTest {
         themeAnalysisRepository.deleteAll();
         themeRepository.deleteAll();
         shopRepository.deleteAll();
-        areaRepository.deleteAll();
         franchiseRepository.deleteAll();
         adminInfoRepository.deleteAll();
         memberPlayInclinationRepository.deleteAll();
@@ -293,9 +287,7 @@ public class BaseJGMServiceTest extends BaseTest {
 
         Franchise franchise = createFranchiseSample(adminInfo);
 
-        Area area = createAreaSample();
-
-        Shop shop = createShopSample(franchise, area);
+        Shop shop = createShopSample(franchise);
 
         Theme theme = Theme.builder()
                 .shop(shop)
@@ -356,7 +348,7 @@ public class BaseJGMServiceTest extends BaseTest {
         return franchiseRepository.save(franchise);
     }
 
-    protected Shop createShopSample(Franchise franchise, Area area) {
+    protected Shop createShopSample(Franchise franchise) {
         Shop shop = Shop.builder()
                 .franchise(franchise)
                 .name("빵덕 샵")
@@ -369,21 +361,11 @@ public class BaseJGMServiceTest extends BaseTest {
         return shopRepository.save(shop);
     }
 
-    protected Area createAreaSample() {
-        Area area = Area.builder()
-                .code("GN1")
-                .name("강남")
-                .build();
-
-        return areaRepository.save(area);
-    }
-
     protected Theme createNotRegisterGenreTheme() {
         Member adminMemberSample = createAdminMemberSample();
         AdminInfo adminInfoSample = createAdminInfoSample(adminMemberSample);
         Franchise franchiseSample = createFranchiseSample(adminInfoSample);
-        Area areaSample = createAreaSample();
-        Shop shopSample = createShopSample(franchiseSample, areaSample);
+        Shop shopSample = createShopSample(franchiseSample);
 
         Theme theme = Theme.builder()
                 .shop(shopSample)
@@ -469,9 +451,7 @@ public class BaseJGMServiceTest extends BaseTest {
 
         Franchise franchise = createFranchiseSample(adminInfo);
 
-        Area area = createAreaSample();
-
-        Shop shop = createShopSample(franchise, area);
+        Shop shop = createShopSample(franchise);
 
         Theme theme = Theme.builder()
                 .shop(shop)

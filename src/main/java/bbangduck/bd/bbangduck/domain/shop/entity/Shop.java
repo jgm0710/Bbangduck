@@ -128,7 +128,4 @@ public class Shop {
     return franchise;
   }
 
-  public Area getArea() {
-    return Area.builder().build().areaMock().get(0);
-  }
 }

@@ -7,7 +7,6 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
-import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.theme.dto.service.ThemeGetPlayMemberListDto;
@@ -45,11 +44,6 @@ class ThemeApplicationServiceUnitTest {
     @DisplayName("테마 조회")
     public void getTheme() {
         //given
-        Area area = Area.builder()
-                .id(1L)
-                .code("AR1")
-                .name("지역1")
-                .build();
 
         Franchise franchise = Franchise.builder()
                 .id(1L)

@@ -8,7 +8,6 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
-import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.theme.dto.controller.request.ThemeGetPlayMemberListRequestDto;
@@ -203,12 +202,6 @@ class ThemeApiControllerTest extends BaseControllerTest {
     @DisplayName("테마 조회")
     public void getTheme() throws Exception {
         //given
-        Area area = Area.builder()
-                .id(1L)
-                .code("AR1")
-                .name("지역1")
-                .build();
-
         Franchise franchise = Franchise.builder()
                 .id(1L)
                 .name("franchiseName")
@@ -270,10 +263,10 @@ class ThemeApiControllerTest extends BaseControllerTest {
                                 fieldWithPath("shopInfo.franchiseInfo.franchiseName").description("조회된 테마의 샵의 프렌차이즈의 이름"),
                                 fieldWithPath("shopInfo.shopId").description("조회된 테마의 샵의 식별 ID"),
                                 fieldWithPath("shopInfo.shopName").description("조회된 테마의 샵의 이름"),
-                                fieldWithPath("shopInfo.areaInfo").description("조회된 테마의 샵의 지역 정보"),
-                                fieldWithPath("shopInfo.areaInfo.areaId").description("조회된 테마의 샵의 지역의 식별 ID"),
-                                fieldWithPath("shopInfo.areaInfo.areaCode").description("조회된 테마의 샵의 지역의 코드 값"),
-                                fieldWithPath("shopInfo.areaInfo.areaName").description("조회된 테마의 샵의 지역의 이름"),
+//                                fieldWithPath("shopInfo.areaInfo").description("조회된 테마의 샵의 지역 정보"),
+//                                fieldWithPath("shopInfo.areaInfo.areaId").description("조회된 테마의 샵의 지역의 식별 ID"),
+//                                fieldWithPath("shopInfo.areaInfo.areaCode").description("조회된 테마의 샵의 지역의 코드 값"),
+//                                fieldWithPath("shopInfo.areaInfo.areaName").description("조회된 테마의 샵의 지역의 이름"),
                                 fieldWithPath("playTime").description("조회된 테마의 플레이 시간"),
                                 fieldWithPath("numberOfPeoples").description("조회된 테마의 참여 가능 인원 수 목록 +\n" +
                                         generateLinkCode(NUMBER_OF_PEOPLE)),

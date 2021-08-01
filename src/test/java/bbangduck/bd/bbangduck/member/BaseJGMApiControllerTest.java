@@ -33,10 +33,8 @@ import bbangduck.bd.bbangduck.domain.review.repository.ReviewRepository;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewApplicationService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewLikeService;
 import bbangduck.bd.bbangduck.domain.review.service.ReviewService;
-import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
-import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -137,9 +135,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
     protected FollowRepository followRepository;
 
     @Autowired
-    protected AreaRepository areaRepository;
-
-    @Autowired
     protected FranchiseRepository franchiseRepository;
 
     @Autowired
@@ -189,7 +184,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         themeAnalysisRepository.deleteAll();
         themeRepository.deleteAll();
         shopRepository.deleteAll();
-        areaRepository.deleteAll();
         franchiseRepository.deleteAll();
         adminInfoRepository.deleteAll();
         memberPlayInclinationRepository.deleteAll();
@@ -278,9 +272,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
         Franchise franchise = createFranchiseSample(adminInfo);
 
-        Area area = createAreaSample();
-
-        Shop shop = createShopSample(franchise, area);
+        Shop shop = createShopSample(franchise);
 
         Theme theme = Theme.builder()
                 .shop(shop)
@@ -316,9 +308,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
 
         Franchise franchise = createFranchiseSample(adminInfo);
 
-        Area area = createAreaSample();
-
-        Shop shop = createShopSample(franchise, area);
+        Shop shop = createShopSample(franchise);
 
         Theme theme = Theme.builder()
                 .shop(shop)
@@ -378,7 +368,7 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
         return franchiseRepository.save(franchise);
     }
 
-    protected Shop createShopSample(Franchise franchise, Area area) {
+    protected Shop createShopSample(Franchise franchise) {
         Shop shop = Shop.builder()
                 .franchise(franchise)
                 .name("빵덕 샵")
@@ -389,15 +379,6 @@ public class BaseJGMApiControllerTest extends BaseControllerTest {
                 .build();
 
         return shopRepository.save(shop);
-    }
-
-    protected Area createAreaSample() {
-        Area area = Area.builder()
-                .code("GN1")
-                .name("강남")
-                .build();
-
-        return areaRepository.save(area);
     }
 
     protected Theme createNotRegisterGenreTheme() {

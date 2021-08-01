@@ -5,11 +5,9 @@ import bbangduck.bd.bbangduck.domain.model.emumerate.Activity;
 import bbangduck.bd.bbangduck.domain.model.emumerate.Difficulty;
 import bbangduck.bd.bbangduck.domain.model.emumerate.HorrorGrade;
 import bbangduck.bd.bbangduck.domain.model.emumerate.NumberOfPeople;
-import bbangduck.bd.bbangduck.domain.shop.entity.Area;
 import bbangduck.bd.bbangduck.domain.shop.entity.Franchise;
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
-import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.domain.theme.entity.Theme;
@@ -31,8 +29,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ThemeDeveloperService {
-
-    private final AreaRepository areaRepository;
 
     private final FranchiseRepository franchiseRepository;
 
@@ -68,13 +64,6 @@ public class ThemeDeveloperService {
                 .build();
 
         franchiseRepository.save(franchise);
-
-        Area area = Area.builder()
-                .code("TMPYS1")
-                .name("용산")
-                .build();
-
-        areaRepository.save(area);
 
         Shop shop = Shop.builder()
                 .franchise(franchise)
@@ -124,13 +113,6 @@ public class ThemeDeveloperService {
                 .build();
 
         franchiseRepository.save(franchise);
-
-        Area area = Area.builder()
-                .code("TMPGD1")
-                .name("건대")
-                .build();
-
-        areaRepository.save(area);
 
         Shop shop = Shop.builder()
                 .franchise(franchise)
@@ -205,13 +187,6 @@ public class ThemeDeveloperService {
 
         franchiseRepository.save(franchise);
 
-        Area area = Area.builder()
-                .code("TMPYSN1")
-                .name("연신내")
-                .build();
-
-        areaRepository.save(area);
-
         Shop shop = Shop.builder()
                 .franchise(franchise)
                 .shopImage(null)
@@ -259,13 +234,6 @@ public class ThemeDeveloperService {
 
         franchiseRepository.save(franchise);
 
-        Area area = Area.builder()
-                .code("TMPSNH1")
-                .name("신논현")
-                .build();
-
-        areaRepository.save(area);
-
         Shop shop = Shop.builder()
                 .franchise(franchise)
                 .shopImage(null)
@@ -311,13 +279,6 @@ public class ThemeDeveloperService {
                 .build();
 
         franchiseRepository.save(franchise);
-
-        Area area = Area.builder()
-                .code("TMPMP1")
-                .name("마포")
-                .build();
-
-        areaRepository.save(area);
 
         Shop shop = Shop.builder()
                 .name("마포점")

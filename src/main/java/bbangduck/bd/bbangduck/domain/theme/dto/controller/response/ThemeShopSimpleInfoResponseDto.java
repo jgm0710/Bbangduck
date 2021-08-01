@@ -24,8 +24,6 @@ public class ThemeShopSimpleInfoResponseDto {
 
     private String shopName;
 
-    private ThemeShopAreaResponseDto areaInfo;
-
     public static ThemeShopSimpleInfoResponseDto convert(Shop shop) {
         if (!NullCheckUtils.isNotNull(shop)) {
             return null;
@@ -35,7 +33,6 @@ public class ThemeShopSimpleInfoResponseDto {
                 .franchiseInfo(ThemeShopFranchiseSimpleInfoResponseDto.convert(shop.getFranchise()))
                 .shopId(shop.getId())
                 .shopName(shop.getName())
-                .areaInfo(ThemeShopAreaResponseDto.convert(shop.getArea()))
                 .build();
     }
 }

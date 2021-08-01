@@ -19,7 +19,6 @@ import bbangduck.bd.bbangduck.domain.shop.dto.controller.ShopCreateDto;
 import bbangduck.bd.bbangduck.domain.shop.entity.*;
 import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
 import bbangduck.bd.bbangduck.domain.shop.entity.enumerate.ShopPriceUnit;
-import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import org.hamcrest.CoreMatchers;
@@ -73,8 +72,7 @@ public class EventTestContoller {
 
     @Autowired
     private ShopRepository shopRepository;
-    @Autowired
-    private AreaRepository areaRepository;
+
     @Autowired
     private FranchiseRepository franchiseRepository;
 
@@ -123,10 +121,6 @@ public class EventTestContoller {
                 .build();
         this.boardRepository.save(board);
 
-
-        Area area = Area.builder().code("SU00").name("서울").build();
-        this.areaRepository.save(area);
-
         Franchise franchise = Franchise.builder()
                 .name("용미니 가맹")
                 .ownerTelephone("010-0000-0000")
@@ -153,7 +147,7 @@ public class EventTestContoller {
                 .build();
         ShopImage shopImage = ShopImage.builder()
                 .fileName("미니 사진")
-                .fileStorageId(1l)
+                .fileStorageId(1L)
                 .build();
         ShopPrice shopPrice = ShopPrice.builder()
                 .price(10000)
@@ -192,7 +186,7 @@ public class EventTestContoller {
         List<ShopEvent> shopEventRepositoryAll = this.shopEventRepository.findAll();
 
         System.out.println("=======================");
-        shopEventRepositoryAll.stream().forEach(System.out::println);
+        shopEventRepositoryAll.forEach(System.out::println);
         System.out.println("=======================");
 
         MatcherAssert.assertThat(shopEventRepositoryAll.size(), CoreMatchers.is(1));
@@ -218,7 +212,7 @@ public class EventTestContoller {
 
 
         System.out.println("=======================");
-        System.out.println("old : " + oldShopEvent.toString());
+        System.out.println("old : " + oldShopEvent);
         System.out.println("=======================");
         System.out.println("new : " + newShopEvent.toString());
         System.out.println("=======================");
@@ -239,7 +233,7 @@ public class EventTestContoller {
         eventSaveTest();
         List<ShopEvent> list = this.eventService.runningEvent();
 
-        list.forEach(shopEvent -> shopEvent.toString());
+        list.forEach(ShopEvent::toString);
 
 
     }

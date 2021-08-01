@@ -3,10 +3,7 @@ package bbangduck.bd.bbangduck.domain.shop.service;
 
 import bbangduck.bd.bbangduck.domain.shop.entity.Shop;
 import bbangduck.bd.bbangduck.domain.shop.entity.embeded.Location;
-import bbangduck.bd.bbangduck.domain.shop.repository.AreaRepository;
-import bbangduck.bd.bbangduck.domain.shop.repository.FranchiseRepository;
 import bbangduck.bd.bbangduck.domain.shop.repository.ShopQueryRepository;
-import bbangduck.bd.bbangduck.domain.shop.repository.ShopRepository;
 import bbangduck.bd.bbangduck.global.common.util.DistanceUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +14,6 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 @DisplayName("Shop 서비스 테스트")
 class ShopServiceTest {
