@@ -9,7 +9,6 @@ import bbangduck.bd.bbangduck.domain.member.entity.enbeded.RefreshInfo;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRole;
 import bbangduck.bd.bbangduck.domain.member.enumerate.MemberRoomEscapeRecodesOpenStatus;
 import bbangduck.bd.bbangduck.domain.member.repository.MemberRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,21 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Set;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
 /**
@@ -143,19 +135,19 @@ public class AdminInfoAllTest {
     }
 
     //
-    @Test
-    public void admin_info_기본_테스트() throws Exception {
-        AdminInfoDto.Search build = AdminInfoDto.Search.builder()
-                .owner("빵덕")
-                .address("용산구")
-                .telephone("010-0000-0000")
-                .companyName("뻥덕네")
-                .build();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(build);
-        this.mockMvc.perform(get("/admin/info/").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse().getContentAsString();
-    }
+//    @Test
+//    public void admin_info_기본_테스트() throws Exception {
+//        AdminInfoDto.Search build = AdminInfoDto.Search.builder()
+//                .owner("빵덕")
+//                .address("용산구")
+//                .telephone("010-0000-0000")
+//                .companyName("뻥덕네")
+//                .build();
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = objectMapper.writeValueAsString(build);
+//        this.mockMvc.perform(get("/admin/info/").contentType(MediaType.APPLICATION_JSON).content(json))
+//                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse().getContentAsString();
+//    }
 
     @Test
     public void admin_info_service_test() {
@@ -165,30 +157,30 @@ public class AdminInfoAllTest {
                 .build();
         List<AdminInfoDto> adminInfoList = adminInfoService.getAdminInfoList(build);
         System.out.println("+==============================================");
-        adminInfoList.stream().forEach(System.out::println);
+        adminInfoList.forEach(System.out::println);
         System.out.println("+==============================================");
     }
 
-    @Test
-    public void admin_info_contoller_test() throws Exception {
-//        BDDMockito.given()
-//        BDDMockito.when()
-//        BDDMockito.then()
-
-        AdminInfoDto build = AdminInfoDto.builder().owner("빵덕님1").build();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(build);
-        ResultActions perform = this.mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/admin/info/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json)
-        ).andDo(print());
-
-        //then
-        perform
-                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.content().string("Test1"))
-                .andReturn().getResponse().getContentAsString();
-
-    }
+//    @Test
+//    public void admin_info_contoller_test() throws Exception {
+////        BDDMockito.given()
+////        BDDMockito.when()
+////        BDDMockito.then()
+//
+//        AdminInfoDto build = AdminInfoDto.builder().owner("빵덕님1").build();
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = objectMapper.writeValueAsString(build);
+//        ResultActions perform = this.mockMvc.perform(
+//                RestDocumentationRequestBuilders.get("/admin/info/")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(json)
+//        ).andDo(print());
+//
+//        //then
+//        perform
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+////                .andExpect(MockMvcResultMatchers.content().string("Test1"))
+//                .andReturn().getResponse().getContentAsString();
+//
+//    }
 }
