@@ -33,12 +33,12 @@ public class AdminInfoController {
     private final AdminInfoService adminInfoService;
 
 
-    @GetMapping("/searcg")
+    @GetMapping("/search")
     public ResponseEntity<List<AdminInfoDto>> adminInfoSearch(@RequestBody @Valid AdminInfoDto.Search adminInfoSearch) {
 
 
-        List<AdminInfoDto> adminInfoDtos = adminInfoService.getAdminInfoList(adminInfoSearch);
+        List<AdminInfoDto> adminInfoDTOs = adminInfoService.getAdminInfoList(adminInfoSearch);
 
-        return ResponseEntity.ok().body(adminInfoDtos);
+        return ResponseEntity.ok().body(adminInfoDTOs);
     }
 }

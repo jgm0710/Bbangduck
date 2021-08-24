@@ -128,12 +128,13 @@ public class ShopControllerTest {
     @Test
     public void shopFindByIdTest() throws Exception {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/shop/1")).andDo(print());
+//        this.mockMvc.perform(MockMvcRequestBuilders.get("/shop/1")).andDo(print());
     }
 
 
     @Test
     public void shopSaveTest() throws Exception {
+
 
         Area area = this.areaRepository.findByName("서울");
         

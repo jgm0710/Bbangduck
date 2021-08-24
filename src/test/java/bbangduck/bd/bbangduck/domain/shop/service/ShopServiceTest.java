@@ -50,6 +50,4 @@ class ShopServiceTest {
       assertTrue(distance < DISTANCE);
     }
   }
-
-
 }

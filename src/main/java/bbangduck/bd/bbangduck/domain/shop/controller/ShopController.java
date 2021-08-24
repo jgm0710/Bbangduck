@@ -37,6 +37,7 @@ public class ShopController {
     @PostMapping(value = "/")
     public ResponseEntity<Shop> shopSave(ShopDto shopDto,
                                           ShopImageDto shopImageDto) {
+
         Shop shop = this.shopService.save(shopDto, shopImageDto);
         return ResponseEntity.ok().body(shop);
     }

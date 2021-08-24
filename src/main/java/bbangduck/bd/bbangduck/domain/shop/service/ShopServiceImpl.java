@@ -32,10 +32,6 @@ public class ShopServiceImpl implements ShopService{
     private final FranchiseRepository franchiseRepository;
     private final ShopImageService shopImageService;
 
-
-    private final ShopQueryRepository shopQueryRepository;
-
-
     @Override
     public List<Shop> search(ShopDto shopDto) {
 
